@@ -1,13 +1,45 @@
-import { SectionPlaceholder } from "@/components/section-placeholder";
+import Link from "next/link";
 
-export default function WarrantiesPage() {
+import { AppShell } from "@/components/app-shell";
+import { DataSourceNote } from "@/components/data-source-note";
+import { PageHeader } from "@/components/page-header";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getWarranties } from "@/lib/home-data";
+
+export const dynamic = "force-dynamic";
+
+export default async function WarrantiesPage() {
+  const warranties = await getWarranties();
+
   return (
-    <SectionPlaceholder
-      section="Warranties"
-      title="Keep warranty details easy to find when something breaks."
-      description="Warranty records will connect assets to coverage dates, purchase details and supporting documents once storage is approved."
-      items={["Active warranties", "Expiring soon", "Coverage notes", "Linked assets"]}
-    />
+    <AppShell activeSection="Warranties">
+      <section className="space-y-5">
+        <PageHeader
+          eyebrow="Warranties"
+          title="Keep warranty details easy to find when something breaks."
+          description="Review warranty coverage linked to household assets. These screens are read-only in Phase 1C."
+        />
+        <DataSourceNote source={warranties.source} />
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {warranties.data.map((warranty) => (
+            <Link key={warranty.id} href={`/warranties/${warranty.id}`}>
+              <Card className="h-full transition-colors hover:bg-accent">
+                <CardHeader>
+                  <CardTitle>{warranty.assetName}</CardTitle>
+                  <CardDescription>{warranty.provider || "Provider not recorded"}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <Badge variant="secondary">Expires {warranty.expiresAt || "not recorded"}</Badge>
+                  <p>Policy: {warranty.policyNumber || "Not recorded"}</p>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </AppShell>
   );
 }
 

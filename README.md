@@ -2,14 +2,14 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1B adds the Prisma data model foundation on top of the Phase 1A visual shell. It includes schema and seed setup only. It does not include production authentication, live database connection, uploads, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1C adds controlled read-only core screen shells on top of the Phase 1B Prisma data model foundation. It includes partially database-backed list/detail screens with sample-data fallback and non-saving create/edit shells. It does not include production authentication, full CRUD persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1B Data Model Foundation`
+- Phase: `1C Core Screen Shells`
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
-- Data: Prisma schema and local seed setup, no runtime app queries yet
+- Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
 - Storage: not implemented pending approval
 
 ## Local Setup
@@ -38,7 +38,20 @@ npm run db:seed
 
 Set `DATABASE_URL` in `.env` before running database commands. See `docs/PRISMA_LOCAL_SETUP.md`.
 
-Vercel builds do not require a live database connection in Phase 1B.
+Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable.
+
+## Phase 1C Routes
+
+- `/vault/rooms`
+- `/vault/rooms/new`
+- `/vault/rooms/[roomId]/edit`
+- `/vault/assets`
+- `/vault/assets/new`
+- `/vault/assets/[assetId]`
+- `/vault/assets/[assetId]/edit`
+- `/maintenance/[taskId]`
+- `/warranties/[warrantyId]`
+- `/receipts/[recordId]`
 
 ## Development Workflow
 
@@ -50,5 +63,5 @@ Vercel builds do not require a live database connection in Phase 1B.
 
 ## Vercel Notes
 
-Connect the GitHub repository to Vercel and choose the Next.js preset. No production database connection is required for Phase 1B builds. Authentication, file storage and paid integrations must not be configured until their approaches are approved.
+Connect the GitHub repository to Vercel and choose the Next.js preset. No production database connection is required for Phase 1C builds. Authentication, file storage and paid integrations must not be configured until their approaches are approved.
 
