@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum HouseholdRole {
+  OWNER
+  ADULT
+  CHILD
+  GUEST
+}
+
+enum AssetStatus {
+  ACTIVE
+  STORED
+  REPAIR_NEEDED
+  RETIRED
+  DISPOSED
+}
+
+enum MaintenanceFrequency {
+  ONCE
+  WEEKLY
+  FORTNIGHTLY
+  MONTHLY
+  QUARTERLY
+  SIX_MONTHLY
+  YEARLY
+  CUSTOM
+}
+
+enum MaintenanceStatus {
+  ACTIVE
+  PAUSED
+  COMPLETED
+  ARCHIVED
+}
+
+enum DocumentType {
+  MANUAL
+  WARRANTY
+  RECEIPT
+  INSURANCE
+  SERVICE_RECORD
+  CERTIFICATE
+  OTHER
+}
+
+enum ReminderStatus {
+  PENDING
+  DONE
+  SNOOZED
+  CANCELLED
+}
+
+model User {
+  id          String            @id @default(cuid())
+  email       String            @unique
+  name        String
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  memberships HouseholdMember[]
+}
+
+model Home {
+  id          String   @id @default(cuid())
+  name        String
+  addressLine String?
+  suburb      String?
+  state       String?
+  postcode    String?
+  country     String   @default("Australia")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members          HouseholdMember[]
+  rooms            Room[]
+  assetCategories  AssetCategory[]
+  assets           Asset[]
+  maintenanceTasks MaintenanceTask[]
+  warranties       Warranty[]
+  receipts         Receipt[]
+  documents        Document[]
+  reminders        Reminder[]
+  serviceProviders ServiceProvider[]
+}
+
+model HouseholdMember {
+  id        String        @id @default(cuid())
+  homeId    String
+  userId    String
+  role      HouseholdRole @default(ADULT)
+  nickname  String?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  home Home @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([homeId, userId])
+  @@index([userId])
+}
+
+model Room {
+  id        String   @id @default(cuid())
+  homeId    String
+  name      String
+  floor     String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  home   Home    @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  assets Asset[]
+
+  @@unique([homeId, name])
+  @@index([homeId])
+}
+
+model AssetCategory {
+  id          String   @id @default(cuid())
+  homeId      String
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  home   Home    @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  assets Asset[]
+
+  @@unique([homeId, name])
+  @@index([homeId])
+}
+
+model Asset {
+  id            String      @id @default(cuid())
+  homeId        String
+  roomId        String?
+  categoryId    String?
+  name          String
+  brand         String?
+  model         String?
+  serialNumber  String?
+  purchaseDate  DateTime?
+  purchasePlace String?
+  notes         String?
+  status        AssetStatus @default(ACTIVE)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  home             Home                    @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  room             Room?                   @relation(fields: [roomId], references: [id], onDelete: SetNull)
+  category         AssetCategory?          @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  maintenanceTasks MaintenanceTask[]
+  warranties       Warranty[]
+  receipts         Receipt[]
+  documents        Document[]
+  reminders        Reminder[]
+  completions      MaintenanceCompletion[]
+
+  @@index([homeId])
+  @@index([roomId])
+  @@index([categoryId])
+  @@index([status])
+}
+
+model MaintenanceTask {
+  id                 String               @id @default(cuid())
+  homeId             String
+  assetId            String?
+  serviceProviderId  String?
+  title              String
+  description        String?
+  frequency          MaintenanceFrequency @default(ONCE)
+  customIntervalDays Int?
+  nextDueDate        DateTime?
+  status             MaintenanceStatus    @default(ACTIVE)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  home            Home                    @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  asset           Asset?                  @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  serviceProvider ServiceProvider?        @relation(fields: [serviceProviderId], references: [id], onDelete: SetNull)
+  completions     MaintenanceCompletion[]
+  reminders       Reminder[]
+  documents       Document[]
+
+  @@index([homeId])
+  @@index([assetId])
+  @@index([nextDueDate])
+  @@index([status])
+}
+
+model MaintenanceCompletion {
+  id          String   @id @default(cuid())
+  taskId      String
+  assetId     String?
+  completedAt DateTime @default(now())
+  completedBy String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  task  MaintenanceTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  asset Asset?          @relation(fields: [assetId], references: [id], onDelete: SetNull)
+
+  @@index([taskId])
+  @@index([assetId])
+  @@index([completedAt])
+}
+
+model Warranty {
+  id           String    @id @default(cuid())
+  homeId       String
+  assetId      String
+  provider     String?
+  policyNumber String?
+  startsAt     DateTime?
+  expiresAt    DateTime?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  home      Home       @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  asset     Asset      @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  documents Document[]
+  reminders Reminder[]
+
+  @@index([homeId])
+  @@index([assetId])
+  @@index([expiresAt])
+}
+
+model Receipt {
+  id               String    @id @default(cuid())
+  homeId           String
+  assetId          String?
+  merchant         String
+  purchaseDate     DateTime?
+  totalAmountCents Int?
+  currency         String    @default("AUD")
+  receiptNumber    String?
+  notes            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  home      Home       @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  asset     Asset?     @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  documents Document[]
+
+  @@index([homeId])
+  @@index([assetId])
+  @@index([purchaseDate])
+}
+
+model Document {
+  id                String       @id @default(cuid())
+  homeId            String
+  assetId           String?
+  warrantyId        String?
+  receiptId         String?
+  maintenanceTaskId String?
+  title             String
+  type              DocumentType @default(OTHER)
+  fileName          String?
+  storageKey        String?
+  notes             String?
+  issuedAt          DateTime?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  home            Home             @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  asset           Asset?           @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  warranty        Warranty?        @relation(fields: [warrantyId], references: [id], onDelete: SetNull)
+  receipt         Receipt?         @relation(fields: [receiptId], references: [id], onDelete: SetNull)
+  maintenanceTask MaintenanceTask? @relation(fields: [maintenanceTaskId], references: [id], onDelete: SetNull)
+
+  @@index([homeId])
+  @@index([assetId])
+  @@index([warrantyId])
+  @@index([receiptId])
+  @@index([type])
+}
+
+model Reminder {
+  id         String         @id @default(cuid())
+  homeId     String
+  assetId    String?
+  warrantyId String?
+  taskId     String?
+  title      String
+  dueAt      DateTime
+  status     ReminderStatus @default(PENDING)
+  notes      String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  home     Home             @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  asset    Asset?           @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  warranty Warranty?        @relation(fields: [warrantyId], references: [id], onDelete: SetNull)
+  task     MaintenanceTask? @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([homeId])
+  @@index([assetId])
+  @@index([warrantyId])
+  @@index([taskId])
+  @@index([dueAt])
+  @@index([status])
+}
+
+model ServiceProvider {
+  id        String   @id @default(cuid())
+  homeId    String
+  name      String
+  trade     String?
+  phone     String?
+  email     String?
+  website   String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  home             Home              @relation(fields: [homeId], references: [id], onDelete: Cascade)
+  maintenanceTasks MaintenanceTask[]
+
+  @@unique([homeId, name])
+  @@index([homeId])
+}
