@@ -1,13 +1,23 @@
 # Seed Data
 
-Phase 1A uses static placeholder content only.
+Phase 1B adds a Prisma seed script for local development.
 
-## Future Sample Records
+## Sample Records
 
-- Kitchen fridge with warranty expiry.
-- Washing machine receipt.
-- Air conditioner filter maintenance task.
-- Lawn mower service record.
-- Garage tool category.
-- Insurance document metadata.
+- Taylor Family Home in Carindale, Queensland.
+- Kitchen, Laundry, Garage and Backyard rooms.
+- Appliance, outdoor equipment and tool categories.
+- Fisher & Paykel fridge with warranty, receipt and manual metadata.
+- Ryobi lawn mower with receipt and maintenance history.
+- Air conditioner filter maintenance task and service note.
+- Sample Brisbane service providers.
+- Reminder records for maintenance and warranty review.
+
+Run with:
+
+```bash
+npm run db:seed
+```
+
+Requires a local `DATABASE_URL`.
 

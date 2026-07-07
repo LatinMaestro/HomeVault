@@ -16,3 +16,7 @@
 - Server-side authorization checks.
 - Secrets managed through Vercel environment variables.
 
+## Phase 1B Database Boundary
+
+The Prisma schema supports local development and future approved provisioning only. Do not connect a production database, store real household documents, or add live user accounts until the relevant approaches are approved.
+
