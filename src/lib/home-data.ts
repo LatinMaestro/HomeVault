@@ -1,0 +1,270 @@
+import { getDb } from "@/lib/db";
+import {
+  sampleAssets,
+  sampleHome,
+  sampleMaintenanceTasks,
+  sampleRecords,
+  sampleRooms,
+  sampleWarranties,
+  type AssetDetail,
+  type DataSource,
+  type MaintenanceTaskDetail,
+  type RecordDetail,
+  type RoomSummary,
+  type WarrantyDetail,
+} from "@/lib/sample-data";
+
+type Result<T> = {
+  data: T;
+  source: DataSource;
+};
+
+const dateFormatter = new Intl.DateTimeFormat("en-AU", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+});
+
+const currencyFormatter = new Intl.NumberFormat("en-AU", {
+  style: "currency",
+  currency: "AUD",
+});
+
+function formatDate(value?: Date | string | null) {
+  if (!value) return null;
+  return dateFormatter.format(new Date(value));
+}
+
+function formatCurrency(cents?: number | null) {
+  if (typeof cents !== "number") return null;
+  return currencyFormatter.format(cents / 100);
+}
+
+async function withDatabase<T>(query: () => Promise<T>, fallback: T): Promise<Result<T>> {
+  if (!process.env.DATABASE_URL) {
+    return { data: fallback, source: "sample" };
+  }
+
+  try {
+    return { data: await query(), source: "database" };
+  } catch {
+    return { data: fallback, source: "sample" };
+  }
+}
+
+async function getCurrentHomeId() {
+  const db = getDb();
+  const home = await db.home.findFirst({
+    where: { name: sampleHome.name },
+    select: { id: true },
+  });
+  return home?.id ?? null;
+}
+
+export async function getRooms(): Promise<Result<RoomSummary[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    if (!homeId) return sampleRooms;
+
+    const rooms = await getDb().room.findMany({
+      where: { homeId },
+      orderBy: { name: "asc" },
+      include: { _count: { select: { assets: true } } },
+    });
+
+    return rooms.map((room) => ({
+      id: room.id,
+      name: room.name,
+      floor: room.floor,
+      notes: room.notes,
+      assetCount: room._count.assets,
+    }));
+  }, sampleRooms);
+}
+
+export async function getAssets(): Promise<Result<AssetDetail[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    if (!homeId) return sampleAssets;
+
+    const assets = await getDb().asset.findMany({
+      where: { homeId },
+      orderBy: { name: "asc" },
+      include: {
+        room: true,
+        category: true,
+        warranties: true,
+        receipts: true,
+        documents: true,
+      },
+    });
+
+    return assets.map((asset) => ({
+      id: asset.id,
+      name: asset.name,
+      brand: asset.brand,
+      model: asset.model,
+      serialNumber: asset.serialNumber,
+      purchaseDate: formatDate(asset.purchaseDate),
+      purchasePlace: asset.purchasePlace,
+      notes: asset.notes,
+      status: asset.status,
+      roomName: asset.room?.name,
+      categoryName: asset.category?.name,
+      warranties: asset.warranties.map((warranty) => ({
+        id: warranty.id,
+        provider: warranty.provider,
+        expiresAt: formatDate(warranty.expiresAt),
+      })),
+      receipts: asset.receipts.map((receipt) => ({
+        id: receipt.id,
+        merchant: receipt.merchant,
+        purchaseDate: formatDate(receipt.purchaseDate),
+        totalAmount: formatCurrency(receipt.totalAmountCents),
+      })),
+      documents: asset.documents.map((document) => ({
+        id: document.id,
+        title: document.title,
+        type: document.type,
+      })),
+    }));
+  }, sampleAssets);
+}
+
+export async function getAsset(id: string): Promise<Result<AssetDetail | null>> {
+  const assets = await getAssets();
+  return {
+    data: assets.data.find((asset) => asset.id === id) ?? null,
+    source: assets.source,
+  };
+}
+
+export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetail[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    if (!homeId) return sampleMaintenanceTasks;
+
+    const tasks = await getDb().maintenanceTask.findMany({
+      where: { homeId },
+      orderBy: [{ nextDueDate: "asc" }, { title: "asc" }],
+      include: {
+        asset: true,
+        serviceProvider: true,
+        completions: { orderBy: { completedAt: "desc" } },
+      },
+    });
+
+    return tasks.map((task) => ({
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      frequency: task.frequency,
+      nextDueDate: formatDate(task.nextDueDate),
+      status: task.status,
+      assetName: task.asset?.name,
+      serviceProviderName: task.serviceProvider?.name,
+      completions: task.completions.map((completion) => ({
+        id: completion.id,
+        completedAt: formatDate(completion.completedAt) ?? "Unknown date",
+        completedBy: completion.completedBy,
+        notes: completion.notes,
+      })),
+    }));
+  }, sampleMaintenanceTasks);
+}
+
+export async function getMaintenanceTask(id: string): Promise<Result<MaintenanceTaskDetail | null>> {
+  const tasks = await getMaintenanceTasks();
+  return {
+    data: tasks.data.find((task) => task.id === id) ?? null,
+    source: tasks.source,
+  };
+}
+
+export async function getWarranties(): Promise<Result<WarrantyDetail[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    if (!homeId) return sampleWarranties;
+
+    const warranties = await getDb().warranty.findMany({
+      where: { homeId },
+      orderBy: { expiresAt: "asc" },
+      include: { asset: true, documents: true },
+    });
+
+    return warranties.map((warranty) => ({
+      id: warranty.id,
+      assetName: warranty.asset.name,
+      provider: warranty.provider,
+      policyNumber: warranty.policyNumber,
+      startsAt: formatDate(warranty.startsAt),
+      expiresAt: formatDate(warranty.expiresAt),
+      notes: warranty.notes,
+      documents: warranty.documents.map((document) => ({
+        id: document.id,
+        title: document.title,
+        type: document.type,
+      })),
+    }));
+  }, sampleWarranties);
+}
+
+export async function getWarranty(id: string): Promise<Result<WarrantyDetail | null>> {
+  const warranties = await getWarranties();
+  return {
+    data: warranties.data.find((warranty) => warranty.id === id) ?? null,
+    source: warranties.source,
+  };
+}
+
+export async function getRecords(): Promise<Result<RecordDetail[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    if (!homeId) return sampleRecords;
+
+    const db = getDb();
+    const [receipts, documents] = await Promise.all([
+      db.receipt.findMany({
+        where: { homeId },
+        orderBy: { purchaseDate: "desc" },
+        include: { asset: true },
+      }),
+      db.document.findMany({
+        where: { homeId },
+        orderBy: { createdAt: "desc" },
+        include: { asset: true },
+      }),
+    ]);
+
+    return [
+      ...receipts.map((receipt) => ({
+        id: receipt.id,
+        title: receipt.merchant,
+        type: "Receipt" as const,
+        secondary: receipt.receiptNumber ?? "Purchase receipt",
+        date: formatDate(receipt.purchaseDate),
+        linkedAsset: receipt.asset?.name,
+        amount: formatCurrency(receipt.totalAmountCents),
+        notes: receipt.notes,
+      })),
+      ...documents.map((document) => ({
+        id: document.id,
+        title: document.title,
+        type: "Document" as const,
+        secondary: document.type,
+        date: formatDate(document.issuedAt),
+        linkedAsset: document.asset?.name,
+        fileName: document.fileName,
+        notes: document.notes,
+      })),
+    ];
+  }, sampleRecords);
+}
+
+export async function getRecord(id: string): Promise<Result<RecordDetail | null>> {
+  const records = await getRecords();
+  return {
+    data: records.data.find((record) => record.id === id) ?? null,
+    source: records.source,
+  };
+}

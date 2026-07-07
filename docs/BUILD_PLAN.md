@@ -10,7 +10,7 @@ Confirm PostgreSQL provisioning, then implement Prisma schema, migrations and se
 
 ## Phase 1C: Core Screens
 
-Build core browse/create/edit flows for rooms, assets, maintenance tasks, warranties and receipt metadata.
+Build controlled read-only list/detail screens and non-saving create/edit shells for rooms, assets, maintenance tasks, warranties and receipt/document metadata.
 
 ## Phase 1D: Review And Hardening
 
