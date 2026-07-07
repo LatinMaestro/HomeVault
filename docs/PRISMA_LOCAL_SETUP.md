@@ -25,6 +25,8 @@ npm run prisma:studio
 
 `npm run prisma:validate`, `npm run prisma:format` and `npm run prisma:generate` can run without real credentials because Prisma config includes the same non-secret local fallback shown in `.env.example`. Commands that connect to a database, such as `npm run db:push`, `npm run db:seed` and `npm run prisma:studio`, require a reachable PostgreSQL database.
 
+`npm run build` runs `prisma generate` before `next build` so fresh Vercel installs have Prisma Client types available during TypeScript checking. This does not connect to a live database.
+
 ## Seed Data
 
 The seed script creates a sample Australian family home in Carindale, Queensland with rooms, asset categories, appliances, outdoor equipment, service providers, warranties, receipts, documents, maintenance tasks, completions and reminders.
