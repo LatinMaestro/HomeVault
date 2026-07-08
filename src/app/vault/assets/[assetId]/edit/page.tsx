@@ -19,7 +19,7 @@ export default async function EditAssetPage({
         <PageHeader
           eyebrow="Assets"
           title={`Edit ${asset.data?.name ?? "asset"} shell`}
-          description="This edit screen is a non-saving Phase 1C shell."
+          description="This edit screen previews the future asset workflow. It does not save records yet."
         />
         <ShellForm
           title="Asset details"
