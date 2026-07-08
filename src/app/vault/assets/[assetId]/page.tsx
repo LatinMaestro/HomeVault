@@ -58,9 +58,14 @@ export default async function AssetDetailPage({
           title={asset.data.name}
           description="Read-only asset detail."
           action={
-            <Button asChild variant="outline">
-              <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit shell</Link>
-            </Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button asChild variant="outline">
+                <Link href="/vault/assets">Back to assets</Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit shell</Link>
+              </Button>
+            </div>
           }
         />
         <DataSourceNote source={asset.source} />

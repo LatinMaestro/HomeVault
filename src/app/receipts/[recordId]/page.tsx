@@ -56,6 +56,11 @@ export default async function RecordPage({
           eyebrow={record.data.type}
           title={record.data.title}
           description="Metadata-only record detail. File uploads and storage remain out of scope."
+          action={
+            <Button asChild variant="outline">
+              <Link href="/receipts">Back to receipts</Link>
+            </Button>
+          }
         />
         <DataSourceNote source={record.source} />
 

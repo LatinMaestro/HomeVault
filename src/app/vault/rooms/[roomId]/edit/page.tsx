@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
+import { Button } from "@/components/ui/button";
 import { getRooms } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -28,6 +30,11 @@ export default async function EditRoomPage({
           eyebrow="Rooms"
           title={`Edit ${room?.name ?? "room"} shell`}
           description="This edit screen previews the future room workflow. It does not save records yet."
+          action={
+            <Button asChild variant="outline">
+              <Link href="/vault/rooms">Back to rooms</Link>
+            </Button>
+          }
         />
         <ShellForm
           title="Room details"

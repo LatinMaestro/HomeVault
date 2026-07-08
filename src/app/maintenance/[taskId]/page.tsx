@@ -56,6 +56,11 @@ export default async function MaintenanceTaskPage({
           eyebrow="Maintenance"
           title={task.data.title}
           description={task.data.description || "Read-only maintenance task detail."}
+          action={
+            <Button asChild variant="outline">
+              <Link href="/maintenance">Back to maintenance</Link>
+            </Button>
+          }
         />
         <DataSourceNote source={task.source} />
 
