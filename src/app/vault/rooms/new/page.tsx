@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
-import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "New Room",
@@ -19,11 +18,7 @@ export default function NewRoomPage() {
           eyebrow="Rooms"
           title="Create room shell"
           description="This form previews the future room workflow. It does not save records yet."
-          action={
-            <Button asChild variant="outline">
-              <Link href="/vault/rooms">Back to rooms</Link>
-            </Button>
-          }
+          action={<BackLinkButton href="/vault/rooms">Back to rooms</BackLinkButton>}
         />
         <ShellForm
           title="Room details"
