@@ -9,7 +9,7 @@ export default function NewRoomPage() {
         <PageHeader
           eyebrow="Rooms"
           title="Create room shell"
-          description="This form previews the future room workflow. It does not save records in Phase 1C."
+          description="This form previews the future room workflow. It does not save records yet."
         />
         <ShellForm
           title="Room details"

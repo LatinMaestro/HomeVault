@@ -20,7 +20,7 @@ export default async function EditRoomPage({
         <PageHeader
           eyebrow="Rooms"
           title={`Edit ${room?.name ?? "room"} shell`}
-          description="This edit screen is a non-saving Phase 1C shell."
+          description="This edit screen previews the future room workflow. It does not save records yet."
         />
         <ShellForm
           title="Room details"

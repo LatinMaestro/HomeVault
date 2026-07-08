@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import type { FormEvent } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +27,11 @@ export function ShellForm({
 }) {
   const [message, setMessage] = useState<string | null>(null);
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setMessage("Saving will be enabled in a later phase. Nothing has been changed.");
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -33,7 +39,7 @@ export function ShellForm({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           {fields.map((field) => (
             <label key={field.name} className="block space-y-2 text-sm font-medium">
               <span>{field.label}</span>
@@ -55,19 +61,18 @@ export function ShellForm({
           ))}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button
-              type="button"
-              onClick={() => setMessage("Saving will be enabled in a later phase.")}
-            >
-              Save
-            </Button>
+            <Button type="submit">Save</Button>
             <p className="text-sm text-muted-foreground">
-              These fields are a non-saving Phase 1C shell.
+              This preview form does not save yet.
             </p>
           </div>
 
           {message ? (
-            <div className="rounded-md border bg-secondary px-3 py-2 text-sm text-secondary-foreground">
+            <div
+              className="rounded-md border bg-secondary px-3 py-2 text-sm text-secondary-foreground"
+              role="status"
+              aria-live="polite"
+            >
               {message}
             </div>
           ) : null}
