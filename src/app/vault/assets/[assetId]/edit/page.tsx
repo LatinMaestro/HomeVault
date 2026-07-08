@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
-import { Button } from "@/components/ui/button";
 import { getAsset } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -29,11 +28,7 @@ export default async function EditAssetPage({
           eyebrow="Assets"
           title={`Edit ${asset.data?.name ?? "asset"} shell`}
           description="This edit screen previews the future asset workflow. It does not save records yet."
-          action={
-            <Button asChild variant="outline">
-              <Link href="/vault/assets">Back to assets</Link>
-            </Button>
-          }
+          action={<BackLinkButton href="/vault/assets">Back to assets</BackLinkButton>}
         />
         <ShellForm
           title="Asset details"
