@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
@@ -9,6 +10,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAsset } from "@/lib/home-data";
+
+export const metadata: Metadata = {
+  title: "Asset Detail",
+  description: "Review a read-only HomeVault household asset record.",
+};
 
 export const dynamic = "force-dynamic";
 
