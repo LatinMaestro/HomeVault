@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
+import { ReviewSummary } from "@/components/review-summary";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -42,6 +43,25 @@ export default function VaultPage() {
           eyebrow="Vault"
           title="A simple record of the things that make up your home."
           description="Review rooms, assets and important home records in read-only screens."
+        />
+        <ReviewSummary
+          items={[
+            {
+              label: "Sections",
+              value: `${vaultSections.length}`,
+              detail: "Reviewable areas are available from the Vault hub.",
+            },
+            {
+              label: "Mode",
+              value: "Read-only",
+              detail: "Create and edit pages remain non-saving previews.",
+            },
+            {
+              label: "Storage",
+              value: "Metadata",
+              detail: "Uploads and production file storage remain disabled.",
+            },
+          ]}
         />
 
         <div className="grid gap-4 md:grid-cols-2">
