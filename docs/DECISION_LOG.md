@@ -28,4 +28,5 @@
 | 2026-07-08 | Use a shared icon back-link button. | Repeated back actions should be visually consistent and easier to maintain across read-only shell and detail pages. | Accepted |
 | 2026-07-08 | Add list review summary panels. | Core list screens should show record counts, data mode and read-only status so visual review is easier without adding workflows. | Accepted |
 | 2026-07-08 | Add Vault and Rooms review summaries. | The Vault hub and rooms list should match the review summary pattern used by other core list screens. | Accepted |
+| 2026-07-08 | Add shell form guardrail panels. | Preview forms should make it immediately clear what can be reviewed and that Save does not persist data. | Accepted |
 
