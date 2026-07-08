@@ -56,6 +56,11 @@ export default async function WarrantyPage({
           eyebrow="Warranties"
           title={warranty.data.assetName}
           description="Read-only warranty detail."
+          action={
+            <Button asChild variant="outline">
+              <Link href="/warranties">Back to warranties</Link>
+            </Button>
+          }
         />
         <DataSourceNote source={warranty.source} />
 
