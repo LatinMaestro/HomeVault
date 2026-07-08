@@ -6,22 +6,42 @@ Phase 1C adds controlled read-only core screen shells on top of the Phase 1B Pri
 
 ## Current Status
 
-- Phase: `1C Core Screen Shells`
+- Phase: `1C Core Screen Shells` complete and merged
+- Next phase: `1D` planning/review only, not started
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
 - Storage: not implemented pending approval
 
-## Local Setup
+## Default Development Workflow
+
+HomeVault is developed online-first. The client should not need to run the app, install packages or manage developer tooling on their local PC for normal MVP work.
+
+1. Use GitHub `main` as the source of truth.
+2. Work from scoped GitHub branches.
+3. Use Codex cloud/sandbox environments for implementation and checks where available.
+4. Open pull requests for review.
+5. Use GitHub PR diffs and checks as code review evidence.
+6. Use Vercel Preview Deployment URLs as the preferred UI review method.
+7. Merge to `main` only after the PR is in scope and review evidence is acceptable.
+8. Let Vercel deploy production from `main` after merge.
+
+Do not ask the client to run local `npm`, PowerShell, Git, database, package-cache or dev-server commands unless there is genuinely no online alternative. Do not bypass, allowlist or disable antivirus protections casually.
+
+See `docs/ONLINE_DEVELOPMENT_WORKFLOW.md` for the full workflow.
+
+## Optional Developer Local Reference
+
+The commands below are optional developer reference only. They are not the default client workflow and should not be required for normal MVP development.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+If used by a developer, open `http://localhost:3000`.
 
-## Available Scripts
+## Optional Developer Scripts
 
 ```bash
 npm run dev
@@ -34,9 +54,11 @@ npm run db:push
 npm run db:seed
 ```
 
-## Prisma Local Setup
+## Optional Prisma Local Reference
 
-Set `DATABASE_URL` in `.env` before running database commands. See `docs/PRISMA_LOCAL_SETUP.md`.
+Local database setup is optional developer reference only. Normal MVP development should not require local secrets, local databases or local dependency installs.
+
+If a developer explicitly chooses local database work, set `DATABASE_URL` in `.env` before running database commands. See `docs/PRISMA_LOCAL_SETUP.md`.
 
 Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable.
 
@@ -52,14 +74,6 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/maintenance/[taskId]`
 - `/warranties/[warrantyId]`
 - `/receipts/[recordId]`
-
-## Development Workflow
-
-1. Work from a feature branch, not `main`, after the initial setup.
-2. Keep changes aligned to the phase prompts in `prompts/`.
-3. Update relevant docs and `docs/DECISION_LOG.md` when decisions are made.
-4. Run lint, typecheck and build before opening a pull request.
-5. Use the Vercel Preview Deployment as the visual review gate.
 
 ## Vercel Notes
 
