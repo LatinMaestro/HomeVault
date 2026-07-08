@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,29 +29,41 @@ export default async function AssetsPage() {
         />
         <DataSourceNote source={assets.source} />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {assets.data.map((asset) => (
-            <Link key={asset.id} href={`/vault/assets/${asset.id}`}>
-              <Card className="h-full transition-colors hover:bg-accent">
-                <CardHeader>
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <CardTitle>{asset.name}</CardTitle>
-                      <CardDescription>
-                        {[asset.brand, asset.model].filter(Boolean).join(" ") || "Details not recorded"}
-                      </CardDescription>
+        {assets.data.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            {assets.data.map((asset) => (
+              <Link key={asset.id} href={`/vault/assets/${asset.id}`}>
+                <Card className="h-full transition-colors hover:bg-accent">
+                  <CardHeader>
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <CardTitle>{asset.name}</CardTitle>
+                        <CardDescription>
+                          {[asset.brand, asset.model].filter(Boolean).join(" ") || "Details not recorded"}
+                        </CardDescription>
+                      </div>
+                      <Badge variant="secondary">{asset.status}</Badge>
                     </div>
-                    <Badge variant="secondary">{asset.status}</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-muted-foreground">
-                  <p>{asset.roomName || "No room"} · {asset.categoryName || "No category"}</p>
-                  <p>Purchased {asset.purchaseDate || "date not recorded"}</p>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2 text-sm text-muted-foreground">
+                    <p>{asset.roomName || "No room"} · {asset.categoryName || "No category"}</p>
+                    <p>Purchased {asset.purchaseDate || "date not recorded"}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="No assets yet"
+            description="Assets will hold appliances, tools and equipment details once saving is enabled. For now, the create screen is a non-saving preview."
+            action={
+              <Button asChild variant="outline">
+                <Link href="/vault/assets/new">Preview asset form</Link>
+              </Button>
+            }
+          />
+        )}
       </section>
     </AppShell>
   );
