@@ -9,8 +9,8 @@ export function DataSourceNote({ source }: { source: DataSource }) {
       </Badge>
       <span>
         {source === "database"
-          ? "Reading from the configured HomeVault database."
-          : "Using built-in sample data because DATABASE_URL is not configured or unavailable."}
+          ? "Showing records from the configured HomeVault database."
+          : "Showing built-in sample records because a live database is not connected for this view."}
       </span>
     </div>
   );
