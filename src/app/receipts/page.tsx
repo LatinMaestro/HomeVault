@@ -19,7 +19,7 @@ export default async function ReceiptsPage() {
         <PageHeader
           eyebrow="Receipts"
           title="A calm place for receipts and important home documents."
-          description="Phase 1C shows metadata only. Uploads and production file storage remain out of scope."
+          description="These screens show metadata only. Uploads and production file storage remain out of scope."
         />
         <DataSourceNote source={records.source} />
 
