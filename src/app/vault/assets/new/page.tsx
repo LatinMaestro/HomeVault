@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
+import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "New Asset",
@@ -17,6 +19,11 @@ export default function NewAssetPage() {
           eyebrow="Assets"
           title="Create asset shell"
           description="This form previews the future asset workflow. It does not save records yet."
+          action={
+            <Button asChild variant="outline">
+              <Link href="/vault/assets">Back to assets</Link>
+            </Button>
+          }
         />
         <ShellForm
           title="Asset details"
