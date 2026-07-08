@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTask } from "@/lib/home-data";
 
@@ -38,11 +37,7 @@ export default async function MaintenanceTaskPage({
           <EmptyState
             title="No matching maintenance task"
             description="The task may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={
-              <Button asChild variant="outline">
-                <Link href="/maintenance">Back to maintenance</Link>
-              </Button>
-            }
+            action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
           />
         </section>
       </AppShell>
@@ -56,11 +51,7 @@ export default async function MaintenanceTaskPage({
           eyebrow="Maintenance"
           title={task.data.title}
           description={task.data.description || "Read-only maintenance task detail."}
-          action={
-            <Button asChild variant="outline">
-              <Link href="/maintenance">Back to maintenance</Link>
-            </Button>
-          }
+          action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
         />
         <DataSourceNote source={task.source} />
 
