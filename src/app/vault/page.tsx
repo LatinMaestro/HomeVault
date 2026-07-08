@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Vault",
+  description: "Review rooms, assets and important home records in HomeVault.",
+};
 
 const vaultSections = [
   {
