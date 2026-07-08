@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import { Database, LockKeyhole, ShieldCheck } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Settings",
+  description: "Review HomeVault preview settings, privacy posture and current product guardrails.",
+};
 
 const readinessCards = [
   {

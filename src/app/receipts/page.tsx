@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
@@ -7,6 +8,11 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecords } from "@/lib/home-data";
+
+export const metadata: Metadata = {
+  title: "Receipts and Documents",
+  description: "Review metadata-only receipt and home document records in HomeVault.",
+};
 
 export const dynamic = "force-dynamic";
 

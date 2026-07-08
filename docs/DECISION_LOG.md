@@ -22,4 +22,5 @@
 | 2026-07-08 | Use beginner-friendly data-source copy. | Review screens should explain database and sample-data states without exposing environment variable details to non-technical users. | Accepted |
 | 2026-07-08 | Add skip navigation and stronger shell landmarks. | Keyboard and assistive-technology users should be able to jump directly to the main content and identify the dashboard link clearly. | Accepted |
 | 2026-07-08 | Polish app metadata. | Browser metadata should describe HomeVault as a home records vault across assets, maintenance, warranties, receipts and documents. | Accepted |
+| 2026-07-08 | Add section-specific route metadata. | Main app sections should produce meaningful browser titles and descriptions without changing runtime behaviour. | Accepted |
 
