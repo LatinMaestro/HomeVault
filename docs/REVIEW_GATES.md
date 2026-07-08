@@ -12,16 +12,18 @@
 
 For app-code changes:
 
+- GitHub Actions passes where available.
 - Lint passes.
 - Typecheck passes.
 - Build passes.
 - Prisma validation/generation pass when Prisma or database access changes.
+- If Vercel is unavailable or quota-limited, GitHub Actions may provide the online build evidence.
 
 For documentation-only changes, app builds may be skipped when no app files, dependencies or runtime behaviour are changed.
 
 ## Vercel Visual Gate
 
-- Preview deployment loads.
+- Preview deployment loads when Vercel is available.
 - Mobile layout is usable.
 - Navigation works.
 - Visual style matches HomeVault principles.
