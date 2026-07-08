@@ -35,7 +35,7 @@ export default function VaultPage() {
         <PageHeader
           eyebrow="Vault"
           title="A simple record of the things that make up your home."
-          description="Review rooms, assets and important home records in read-only Phase 1C screens."
+          description="Review rooms, assets and important home records in read-only screens."
         />
 
         <div className="grid gap-4 md:grid-cols-2">

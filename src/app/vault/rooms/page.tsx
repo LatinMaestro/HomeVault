@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,22 +28,34 @@ export default async function RoomsPage() {
         />
         <DataSourceNote source={rooms.source} />
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {rooms.data.map((room) => (
-            <Card key={room.id}>
-              <CardHeader>
-                <CardTitle>{room.name}</CardTitle>
-                <CardDescription>{room.floor || "Floor not recorded"}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">{room.assetCount} linked assets</p>
-                <Button asChild variant="outline" size="sm">
-                  <Link href={`/vault/rooms/${room.id}/edit`}>Edit shell</Link>
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {rooms.data.length > 0 ? (
+          <div className="grid gap-4 md:grid-cols-2">
+            {rooms.data.map((room) => (
+              <Card key={room.id}>
+                <CardHeader>
+                  <CardTitle>{room.name}</CardTitle>
+                  <CardDescription>{room.floor || "Floor not recorded"}</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-sm text-muted-foreground">{room.assetCount} linked assets</p>
+                  <Button asChild variant="outline" size="sm">
+                    <Link href={`/vault/rooms/${room.id}/edit`}>Edit shell</Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="No rooms yet"
+            description="Rooms will help group assets by kitchen, laundry, garage, outdoor areas and other home zones once saving is enabled."
+            action={
+              <Button asChild variant="outline">
+                <Link href="/vault/rooms/new">Preview room form</Link>
+              </Button>
+            }
+          />
+        )}
       </section>
     </AppShell>
   );
