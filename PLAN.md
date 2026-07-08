@@ -8,7 +8,8 @@ HomeVault now uses an online-first workflow for normal MVP development.
 - Work happens through scoped branches and pull requests.
 - Codex cloud/sandbox environments are preferred for implementation and checks.
 - GitHub PRs are the preferred code review method.
-- Vercel Preview Deployment URLs are the preferred UI review method.
+- GitHub Actions is the primary automated check gate when Vercel usage is constrained.
+- Vercel Preview Deployment URLs are the preferred UI review method when usage allows.
 - Vercel production deployment comes from `main` after merge.
 - The client should not be asked to run local development commands unless there is genuinely no online alternative.
 - Local development instructions are optional developer reference only.
@@ -34,9 +35,18 @@ HomeVault now uses an online-first workflow for normal MVP development.
 - Kept create/edit pages as non-saving shells.
 - Kept auth single-user and stubbed.
 
-## Phase 1D: Review And Hardening - Approved Next
+## Phase 1D: Review And Hardening - In Progress
 
-Phase 1D is a controlled polish, accessibility, reliability and review-readiness phase. It should improve the existing Phase 1C screens without adding persistent mutations, production auth, uploads, AI, OCR, notifications, payments, analytics or native app work.
+Phase 1D is a controlled polish, accessibility, reliability and review-readiness phase. It improves the existing Phase 1C screens without adding persistent mutations, production auth, uploads, AI, OCR, notifications, payments, analytics or native app work.
+
+Completed Phase 1D hardening so far includes:
+
+- Clearer non-saving shell form states.
+- Empty, loading, not-found and error states.
+- Better page metadata and route navigation.
+- Review summary panels for core list and hub screens.
+- Online CI workflow for Prisma, lint, typecheck and build evidence.
+- Online-first and Vercel-light workflow documentation.
 
 See `docs/PHASE_1D_PLAN.md` for the detailed scope.
 

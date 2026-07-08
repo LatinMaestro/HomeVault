@@ -12,7 +12,7 @@ Implement Prisma, a PostgreSQL-compatible schema, seed data and lazy database he
 
 Build controlled read-only list/detail screens and non-saving create/edit shells for rooms, assets, maintenance tasks, warranties and receipt/document metadata.
 
-## Phase 1D: Review And Hardening - Next
+## Phase 1D: Review And Hardening - In Progress
 
 Improve the existing foundation before adding persistence:
 
@@ -20,8 +20,11 @@ Improve the existing foundation before adding persistence:
 - Clarify empty, fallback and non-saving shell states.
 - Improve accessibility basics across existing screens.
 - Preserve sample-data fallback when `DATABASE_URL` is missing or unavailable.
-- Keep Vercel Preview Deployment as the UI review gate.
+- Use GitHub Actions as the primary automated check gate when Vercel usage is constrained.
+- Use Vercel Preview Deployment as the UI review gate when usage allows.
 - Keep GitHub PRs as the code review gate.
+
+Completed Phase 1D hardening includes review summaries, clearer shell-form guardrails, branded error/loading/not-found states, stronger metadata, explicit back navigation and online CI evidence.
 
 Phase 1D must not add persistent mutations, production auth, uploads, OCR, AI, notifications, payments, analytics or native iOS work.
 

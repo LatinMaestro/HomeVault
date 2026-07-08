@@ -2,16 +2,16 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1C adds controlled read-only core screen shells on top of the Phase 1B Prisma data model foundation. It includes partially database-backed list/detail screens with sample-data fallback and non-saving create/edit shells. It does not include production authentication, full CRUD persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1D is hardening the Phase 1C read-only core screen shells. The app includes partially database-backed list/detail screens with sample-data fallback and non-saving create/edit shells. It does not include production authentication, full CRUD persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1C Core Screen Shells` complete and merged
-- Next phase: `1D` planning/review only, not started
+- Phase: `1D Review and Hardening` in progress
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
 - Storage: not implemented pending approval
+- Current review posture: read-only, fallback-safe and Vercel-build-safe without live database access
 
 ## Default Development Workflow
 
@@ -22,9 +22,10 @@ HomeVault is developed online-first. The client should not need to run the app, 
 3. Use Codex cloud/sandbox environments for implementation and checks where available.
 4. Open pull requests for review.
 5. Use GitHub PR diffs and checks as code review evidence.
-6. Use Vercel Preview Deployment URLs as the preferred UI review method.
-7. Merge to `main` only after the PR is in scope and review evidence is acceptable.
-8. Let Vercel deploy production from `main` after merge.
+6. Use GitHub Actions as the primary automated check gate when Vercel usage is constrained.
+7. Use Vercel Preview Deployment URLs as the preferred UI review method when usage allows.
+8. Merge to `main` only after the PR is in scope and review evidence is acceptable.
+9. Let Vercel deploy production from `main` after merge.
 
 Do not ask the client to run local `npm`, PowerShell, Git, database, package-cache or dev-server commands unless there is genuinely no online alternative. Do not bypass, allowlist or disable antivirus protections casually.
 
@@ -62,8 +63,10 @@ If a developer explicitly chooses local database work, set `DATABASE_URL` in `.e
 
 Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable.
 
-## Phase 1C Routes
+## Core Routes
 
+- `/`
+- `/vault`
 - `/vault/rooms`
 - `/vault/rooms/new`
 - `/vault/rooms/[roomId]/edit`
@@ -71,11 +74,17 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/vault/assets/new`
 - `/vault/assets/[assetId]`
 - `/vault/assets/[assetId]/edit`
+- `/maintenance`
 - `/maintenance/[taskId]`
+- `/warranties`
 - `/warranties/[warrantyId]`
+- `/receipts`
 - `/receipts/[recordId]`
+- `/settings`
 
 ## Vercel Notes
 
-Connect the GitHub repository to Vercel and choose the Next.js preset. No production database connection is required for Phase 1C builds. Authentication, file storage and paid integrations must not be configured until their approaches are approved.
+Connect the GitHub repository to Vercel and choose the Next.js preset. No production database connection is required for current builds. Authentication, file storage and paid integrations must not be configured until their approaches are approved.
+
+When Vercel usage is capped, batch app changes into fewer PRs and use GitHub Actions as the primary automated build evidence. Avoid extra Vercel inspection unless diagnosing a Vercel-specific problem.
 
