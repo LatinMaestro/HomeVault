@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { ReviewSummary } from "@/components/review-summary";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRooms } from "@/lib/home-data";
@@ -18,6 +19,7 @@ export const dynamic = "force-dynamic";
 
 export default async function RoomsPage() {
   const rooms = await getRooms();
+  const linkedAssetCount = rooms.data.reduce((total, room) => total + room.assetCount, 0);
 
   return (
     <AppShell activeSection="Vault">
@@ -33,6 +35,25 @@ export default async function RoomsPage() {
           }
         />
         <DataSourceNote source={rooms.source} />
+        <ReviewSummary
+          items={[
+            {
+              label: "Rooms",
+              value: `${rooms.data.length}`,
+              detail: rooms.data.length === 1 ? "Home zone available for review." : "Home zones available for review.",
+            },
+            {
+              label: "Linked assets",
+              value: `${linkedAssetCount}`,
+              detail: "Assets are grouped by room where the current data source includes that link.",
+            },
+            {
+              label: "Data",
+              value: rooms.source === "database" ? "Database" : "Sample",
+              detail: "Room screens stay reviewable without a live database.",
+            },
+          ]}
+        />
 
         {rooms.data.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
