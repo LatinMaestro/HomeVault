@@ -86,42 +86,54 @@ export default async function AssetDetailPage({
           <Card>
             <CardHeader>
               <CardTitle>Warranties</CardTitle>
+              <CardDescription>Coverage linked to this asset.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <CardContent className="space-y-3 text-sm">
               {asset.data.warranties.length ? (
                 asset.data.warranties.map((warranty) => (
-                  <p key={warranty.id}>{warranty.provider || "Warranty"} · {warranty.expiresAt || "No expiry"}</p>
+                  <div key={warranty.id} className="rounded-md border bg-background p-3">
+                    <p className="font-medium text-foreground">{warranty.provider || "Warranty"}</p>
+                    <p className="text-muted-foreground">Expires {warranty.expiresAt || "not recorded yet"}</p>
+                  </div>
                 ))
               ) : (
-                <p>No warranties recorded.</p>
+                <p className="text-muted-foreground">No linked warranty records yet.</p>
               )}
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <CardTitle>Receipts</CardTitle>
+              <CardDescription>Purchase metadata linked to this asset.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <CardContent className="space-y-3 text-sm">
               {asset.data.receipts.length ? (
                 asset.data.receipts.map((receipt) => (
-                  <p key={receipt.id}>{receipt.merchant} · {receipt.totalAmount || "No amount"}</p>
+                  <div key={receipt.id} className="rounded-md border bg-background p-3">
+                    <p className="font-medium text-foreground">{receipt.merchant}</p>
+                    <p className="text-muted-foreground">{receipt.totalAmount || "Amount not recorded yet"}</p>
+                  </div>
                 ))
               ) : (
-                <p>No receipts recorded.</p>
+                <p className="text-muted-foreground">No linked receipt records yet.</p>
               )}
             </CardContent>
           </Card>
           <Card>
             <CardHeader>
               <CardTitle>Documents</CardTitle>
+              <CardDescription>Metadata-only documents linked to this asset.</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm text-muted-foreground">
+            <CardContent className="space-y-3 text-sm">
               {asset.data.documents.length ? (
                 asset.data.documents.map((document) => (
-                  <p key={document.id}>{document.title} · {document.type}</p>
+                  <div key={document.id} className="rounded-md border bg-background p-3">
+                    <p className="font-medium text-foreground">{document.title}</p>
+                    <p className="text-muted-foreground">{document.type}</p>
+                  </div>
                 ))
               ) : (
-                <p>No documents recorded.</p>
+                <p className="text-muted-foreground">No linked document records yet.</p>
               )}
             </CardContent>
           </Card>
