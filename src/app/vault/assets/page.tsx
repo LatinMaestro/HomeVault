@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -34,6 +35,25 @@ export default async function AssetsPage() {
           }
         />
         <DataSourceNote source={assets.source} />
+        <ReviewSummary
+          items={[
+            {
+              label: "Records",
+              value: `${assets.data.length}`,
+              detail: assets.data.length === 1 ? "Asset available for review." : "Assets available for review.",
+            },
+            {
+              label: "Mode",
+              value: "Read-only",
+              detail: "Create and edit screens are previews until saving is approved.",
+            },
+            {
+              label: "Data",
+              value: assets.source === "database" ? "Database" : "Sample",
+              detail: "Pages stay useful even when a database is not configured.",
+            },
+          ]}
+        />
 
         {assets.data.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
