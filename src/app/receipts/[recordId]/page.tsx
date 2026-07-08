@@ -1,7 +1,11 @@
+import Link from "next/link";
+
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecord } from "@/lib/home-data";
 
@@ -18,11 +22,23 @@ export default async function RecordPage({
   if (!record.data) {
     return (
       <AppShell activeSection="Receipts">
-        <PageHeader
-          eyebrow="Receipts"
-          title="Record not found"
-          description="This record was not found in the database or sample data."
-        />
+        <section className="space-y-5">
+          <PageHeader
+            eyebrow="Receipts"
+            title="Record not found"
+            description="This receipt or document record was not found in the current HomeVault data source."
+          />
+          <DataSourceNote source={record.source} />
+          <EmptyState
+            title="No matching record"
+            description="The record may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
+            action={
+              <Button asChild variant="outline">
+                <Link href="/receipts">Back to receipts</Link>
+              </Button>
+            }
+          />
+        </section>
       </AppShell>
     );
   }
