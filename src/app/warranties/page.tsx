@@ -19,7 +19,7 @@ export default async function WarrantiesPage() {
         <PageHeader
           eyebrow="Warranties"
           title="Keep warranty details easy to find when something breaks."
-          description="Review warranty coverage linked to household assets. These screens are read-only in Phase 1C."
+          description="Review warranty coverage linked to household assets. These screens are read-only for now."
         />
         <DataSourceNote source={warranties.source} />
 
