@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
@@ -8,6 +9,11 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTask } from "@/lib/home-data";
+
+export const metadata: Metadata = {
+  title: "Maintenance Detail",
+  description: "Review a read-only HomeVault maintenance task record.",
+};
 
 export const dynamic = "force-dynamic";
 
