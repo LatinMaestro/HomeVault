@@ -34,9 +34,11 @@ HomeVault now uses an online-first workflow for normal MVP development.
 - Kept create/edit pages as non-saving shells.
 - Kept auth single-user and stubbed.
 
-## Phase 1D: Not Started
+## Phase 1D: Review And Hardening - Approved Next
 
-Phase 1D should not begin until its scope is explicitly approved. Recommended focus is review, hardening and preparation for any future persistence/mutation decisions.
+Phase 1D is a controlled polish, accessibility, reliability and review-readiness phase. It should improve the existing Phase 1C screens without adding persistent mutations, production auth, uploads, AI, OCR, notifications, payments, analytics or native app work.
+
+See `docs/PHASE_1D_PLAN.md` for the detailed scope.
 
 ## Later Phases
 
