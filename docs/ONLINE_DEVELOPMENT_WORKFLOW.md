@@ -10,8 +10,9 @@ HomeVault uses an online-first development workflow. GitHub, Codex cloud/sandbox
 4. Open a pull request for code and documentation review.
 5. Use GitHub PR diffs and checks as the code review record.
 6. Use Vercel Preview Deployments as the preferred UI review method.
-7. Merge to `main` only after the PR is in scope and review evidence is acceptable.
-8. Let Vercel deploy production from `main` after merge.
+7. Use GitHub Actions checks as online build evidence, especially when Vercel is unavailable or quota-limited.
+8. Merge to `main` only after the PR is in scope and review evidence is acceptable.
+9. Let Vercel deploy production from `main` after merge.
 
 ## Client Local Machine Policy
 
@@ -40,6 +41,7 @@ Vercel builds must continue to avoid build-time database dependency. Runtime dat
 ## Review Gates
 
 - Code review: GitHub pull requests.
+- Automated checks: GitHub Actions lint, typecheck, Prisma validation/generation and build where configured.
 - UI review: Vercel Preview Deployment URLs.
 - Deployment review: Vercel build/deployment status and preview smoke checks.
 - Product review: approved phase scope, documentation and decision log alignment.
