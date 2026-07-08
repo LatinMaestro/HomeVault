@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -22,11 +23,23 @@ export default async function AssetDetailPage({
   if (!asset.data) {
     return (
       <AppShell activeSection="Vault">
-        <PageHeader
-          eyebrow="Assets"
-          title="Asset not found"
-          description="This record was not found in the database or sample data."
-        />
+        <section className="space-y-5">
+          <PageHeader
+            eyebrow="Assets"
+            title="Asset not found"
+            description="This record was not found in the current HomeVault data source."
+          />
+          <DataSourceNote source={asset.source} />
+          <EmptyState
+            title="No matching asset"
+            description="The asset may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
+            action={
+              <Button asChild variant="outline">
+                <Link href="/vault/assets">Back to assets</Link>
+              </Button>
+            }
+          />
+        </section>
       </AppShell>
     );
   }
@@ -37,7 +50,7 @@ export default async function AssetDetailPage({
         <PageHeader
           eyebrow="Assets"
           title={asset.data.name}
-          description="Read-only asset detail for Phase 1C."
+          description="Read-only asset detail."
           action={
             <Button asChild variant="outline">
               <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit shell</Link>

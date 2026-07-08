@@ -1,7 +1,11 @@
+import Link from "next/link";
+
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTask } from "@/lib/home-data";
 
@@ -18,11 +22,23 @@ export default async function MaintenanceTaskPage({
   if (!task.data) {
     return (
       <AppShell activeSection="Maintenance">
-        <PageHeader
-          eyebrow="Maintenance"
-          title="Task not found"
-          description="This task was not found in the database or sample data."
-        />
+        <section className="space-y-5">
+          <PageHeader
+            eyebrow="Maintenance"
+            title="Task not found"
+            description="This task was not found in the current HomeVault data source."
+          />
+          <DataSourceNote source={task.source} />
+          <EmptyState
+            title="No matching maintenance task"
+            description="The task may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
+            action={
+              <Button asChild variant="outline">
+                <Link href="/maintenance">Back to maintenance</Link>
+              </Button>
+            }
+          />
+        </section>
       </AppShell>
     );
   }
