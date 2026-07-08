@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
+
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
+
+export const metadata: Metadata = {
+  title: "New Asset",
+  description: "Preview the non-saving HomeVault asset form.",
+};
 
 export default function NewAssetPage() {
   return (
