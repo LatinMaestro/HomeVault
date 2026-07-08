@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
+
 import { AppShell } from "@/components/app-shell";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
 import { getAsset } from "@/lib/home-data";
+
+export const metadata: Metadata = {
+  title: "Edit Asset Shell",
+  description: "Preview the non-saving HomeVault asset edit form.",
+};
 
 export const dynamic = "force-dynamic";
 
