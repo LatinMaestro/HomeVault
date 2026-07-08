@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
@@ -39,11 +40,7 @@ export default async function AssetDetailPage({
           <EmptyState
             title="No matching asset"
             description="The asset may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={
-              <Button asChild variant="outline">
-                <Link href="/vault/assets">Back to assets</Link>
-              </Button>
-            }
+            action={<BackLinkButton href="/vault/assets">Back to assets</BackLinkButton>}
           />
         </section>
       </AppShell>
@@ -59,9 +56,7 @@ export default async function AssetDetailPage({
           description="Read-only asset detail."
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
-              <Button asChild variant="outline">
-                <Link href="/vault/assets">Back to assets</Link>
-              </Button>
+              <BackLinkButton href="/vault/assets">Back to assets</BackLinkButton>
               <Button asChild variant="outline">
                 <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit shell</Link>
               </Button>
