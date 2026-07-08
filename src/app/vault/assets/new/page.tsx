@@ -9,7 +9,7 @@ export default function NewAssetPage() {
         <PageHeader
           eyebrow="Assets"
           title="Create asset shell"
-          description="This form previews the future asset workflow. It does not save records in Phase 1C."
+          description="This form previews the future asset workflow. It does not save records yet."
         />
         <ShellForm
           title="Asset details"
