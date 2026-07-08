@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecords } from "@/lib/home-data";
@@ -28,6 +29,25 @@ export default async function ReceiptsPage() {
           description="These screens show metadata only. Uploads and production file storage remain out of scope."
         />
         <DataSourceNote source={records.source} />
+        <ReviewSummary
+          items={[
+            {
+              label: "Records",
+              value: `${records.data.length}`,
+              detail: records.data.length === 1 ? "Metadata record available for review." : "Metadata records available for review.",
+            },
+            {
+              label: "Mode",
+              value: "Metadata",
+              detail: "File uploads and storage remain deliberately disabled.",
+            },
+            {
+              label: "Data",
+              value: records.source === "database" ? "Database" : "Sample",
+              detail: "Receipt and document screens stay useful without a live database.",
+            },
+          ]}
+        />
 
         {records.data.length > 0 ? (
           <div className="grid gap-4">
