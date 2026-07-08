@@ -14,8 +14,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HomeVault",
-  description: "A privacy-first home records vault for maintenance, warranties, receipts and assets.",
+  title: {
+    default: "HomeVault",
+    template: "%s | HomeVault",
+  },
+  description:
+    "A privacy-first home records vault for maintenance, warranties, receipts, documents and household assets.",
 };
 
 export default function RootLayout({
