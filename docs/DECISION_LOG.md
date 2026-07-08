@@ -20,4 +20,5 @@
 | 2026-07-08 | Add a branded app error boundary. | Unexpected runtime failures should provide calm recovery actions without exposing framework-default error UI. | Accepted |
 | 2026-07-08 | Add a branded loading state. | Dynamic route transitions should preserve the HomeVault visual style and provide accessible loading feedback. | Accepted |
 | 2026-07-08 | Use beginner-friendly data-source copy. | Review screens should explain database and sample-data states without exposing environment variable details to non-technical users. | Accepted |
+| 2026-07-08 | Add skip navigation and stronger shell landmarks. | Keyboard and assistive-technology users should be able to jump directly to the main content and identify the dashboard link clearly. | Accepted |
 
