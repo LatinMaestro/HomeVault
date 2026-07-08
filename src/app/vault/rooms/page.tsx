@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
@@ -7,6 +8,11 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRooms } from "@/lib/home-data";
+
+export const metadata: Metadata = {
+  title: "Rooms",
+  description: "Review HomeVault rooms and home zones for household records.",
+};
 
 export const dynamic = "force-dynamic";
 
