@@ -26,4 +26,5 @@
 | 2026-07-08 | Add shell and detail route metadata. | Create, edit and detail screens should remain clear in browser chrome while staying read-only and fallback-safe. | Accepted |
 | 2026-07-08 | Add explicit back navigation on shell and detail pages. | Reviewers should be able to move through read-only flows confidently without relying on browser controls. | Accepted |
 | 2026-07-08 | Use a shared icon back-link button. | Repeated back actions should be visually consistent and easier to maintain across read-only shell and detail pages. | Accepted |
+| 2026-07-08 | Add list review summary panels. | Core list screens should show record counts, data mode and read-only status so visual review is easier without adding workflows. | Accepted |
 

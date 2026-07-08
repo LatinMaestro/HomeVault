@@ -6,6 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTasks } from "@/lib/home-data";
@@ -29,6 +30,25 @@ export default async function MaintenancePage() {
           description="Read-only task screens show upcoming maintenance and service history."
         />
         <DataSourceNote source={tasks.source} />
+        <ReviewSummary
+          items={[
+            {
+              label: "Tasks",
+              value: `${tasks.data.length}`,
+              detail: tasks.data.length === 1 ? "Maintenance task available for review." : "Maintenance tasks available for review.",
+            },
+            {
+              label: "Mode",
+              value: "Read-only",
+              detail: "Task creation, completion and reminders are not enabled yet.",
+            },
+            {
+              label: "Data",
+              value: tasks.source === "database" ? "Database" : "Sample",
+              detail: "Screens fall back gracefully when a database is unavailable.",
+            },
+          ]}
+        />
 
         {tasks.data.length > 0 ? (
           <div className="grid gap-4">
