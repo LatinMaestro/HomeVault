@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecord } from "@/lib/home-data";
 
@@ -38,11 +37,7 @@ export default async function RecordPage({
           <EmptyState
             title="No matching record"
             description="The record may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={
-              <Button asChild variant="outline">
-                <Link href="/receipts">Back to receipts</Link>
-              </Button>
-            }
+            action={<BackLinkButton href="/receipts">Back to receipts</BackLinkButton>}
           />
         </section>
       </AppShell>
@@ -56,11 +51,7 @@ export default async function RecordPage({
           eyebrow={record.data.type}
           title={record.data.title}
           description="Metadata-only record detail. File uploads and storage remain out of scope."
-          action={
-            <Button asChild variant="outline">
-              <Link href="/receipts">Back to receipts</Link>
-            </Button>
-          }
+          action={<BackLinkButton href="/receipts">Back to receipts</BackLinkButton>}
         />
         <DataSourceNote source={record.source} />
 
