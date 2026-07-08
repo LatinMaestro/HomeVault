@@ -5,6 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
+import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getWarranties } from "@/lib/home-data";
@@ -28,6 +29,25 @@ export default async function WarrantiesPage() {
           description="Review warranty coverage linked to household assets. These screens are read-only for now."
         />
         <DataSourceNote source={warranties.source} />
+        <ReviewSummary
+          items={[
+            {
+              label: "Records",
+              value: `${warranties.data.length}`,
+              detail: warranties.data.length === 1 ? "Warranty available for review." : "Warranties available for review.",
+            },
+            {
+              label: "Mode",
+              value: "Read-only",
+              detail: "Expiry reminders and edits are planned for a later approved phase.",
+            },
+            {
+              label: "Data",
+              value: warranties.source === "database" ? "Database" : "Sample",
+              detail: "Warranty screens remain reviewable without live database access.",
+            },
+          ]}
+        />
 
         {warranties.data.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
