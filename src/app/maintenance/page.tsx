@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarClock } from "lucide-react";
 
@@ -8,6 +9,11 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTasks } from "@/lib/home-data";
+
+export const metadata: Metadata = {
+  title: "Maintenance",
+  description: "Review recurring home maintenance tasks and service records in HomeVault.",
+};
 
 export const dynamic = "force-dynamic";
 
