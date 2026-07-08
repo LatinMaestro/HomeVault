@@ -73,18 +73,23 @@ export default async function MaintenanceTaskPage({
         <Card>
           <CardHeader>
             <CardTitle>Completion history</CardTitle>
-            <CardDescription>Read-only records from seed or sample data.</CardDescription>
+            <CardDescription>Read-only service records linked to this task.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm text-muted-foreground">
+          <CardContent className="space-y-3 text-sm">
             {task.data.completions.length ? (
               task.data.completions.map((completion) => (
-                <div key={completion.id} className="rounded-md border p-3">
+                <div key={completion.id} className="rounded-md border bg-background p-3">
                   <p className="font-medium text-foreground">{completion.completedAt}</p>
-                  <p>{completion.completedBy || "Unknown"} · {completion.notes || "No notes"}</p>
+                  <p className="text-muted-foreground">
+                    {completion.completedBy || "Person not recorded yet"}
+                  </p>
+                  <p className="mt-2 text-muted-foreground">
+                    {completion.notes || "Notes not recorded yet"}
+                  </p>
                 </div>
               ))
             ) : (
-              <p>No completions recorded.</p>
+              <p className="text-muted-foreground">No completion records yet.</p>
             )}
           </CardContent>
         </Card>
