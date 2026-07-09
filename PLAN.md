@@ -51,6 +51,14 @@ Completed Phase 1D hardening includes:
 
 See `docs/PHASE_1D_PLAN.md` for the detailed completion summary.
 
+## Phase 1E: Persistence Readiness - Planned
+
+Phase 1E prepares room and asset create/edit shells for future persistence without enabling real saving yet. It may improve shared field definitions, preview-only validation, helper text and acceptance criteria while preserving the current fallback-safe read-only data behaviour.
+
+Phase 1E must not add persistent mutations, production auth, uploads, OCR, AI, notifications, payments, analytics, native app work or local-client setup requirements.
+
+See `docs/PHASE_1E_PLAN.md` for the detailed scope.
+
 ## Later Phases
 
 - Approved persistence and mutation flows.
