@@ -15,6 +15,8 @@ export type ShellField = {
   placeholder?: string;
   defaultValue?: string;
   multiline?: boolean;
+  recommended?: boolean;
+  helperText?: string;
 };
 
 export function ShellForm({
@@ -66,25 +68,43 @@ export function ShellForm({
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          {fields.map((field) => (
-            <label key={field.name} className="block space-y-2 text-sm font-medium">
-              <span>{field.label}</span>
-              {field.multiline ? (
-                <Textarea
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  defaultValue={field.defaultValue}
-                  rows={4}
-                />
-              ) : (
-                <Input
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  defaultValue={field.defaultValue}
-                />
-              )}
-            </label>
-          ))}
+          {fields.map((field) => {
+            const helperId = field.helperText ? `${field.name}-helper` : undefined;
+
+            return (
+              <label key={field.name} className="block space-y-2 text-sm font-medium">
+                <span className="flex flex-wrap items-center gap-2">
+                  <span>{field.label}</span>
+                  {field.recommended ? (
+                    <span className="rounded-sm bg-secondary px-1.5 py-0.5 text-xs font-medium text-secondary-foreground">
+                      Recommended
+                    </span>
+                  ) : null}
+                </span>
+                {field.multiline ? (
+                  <Textarea
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    defaultValue={field.defaultValue}
+                    rows={4}
+                    aria-describedby={helperId}
+                  />
+                ) : (
+                  <Input
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    defaultValue={field.defaultValue}
+                    aria-describedby={helperId}
+                  />
+                )}
+                {field.helperText ? (
+                  <span id={helperId} className="block text-sm font-normal leading-6 text-muted-foreground">
+                    {field.helperText}
+                  </span>
+                ) : null}
+              </label>
+            );
+          })}
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button type="submit">Save</Button>
