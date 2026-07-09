@@ -12,15 +12,15 @@
 
 ## Near Term
 
-- Asset persistence planning and implementation.
+- Phase 1G asset persistence.
+- Enable real asset create/edit when `DATABASE_URL` is configured.
 - Preserve fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, production auth and storage out of the next mutation slice unless separately approved.
+- Keep deletes, production auth, file storage and non-asset persistence out of the asset mutation slice.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
 ## Future Approved-Decision Candidates
 
-- Persistent create/edit flows for assets.
 - Persistent maintenance and warranty workflows.
 - Receipt/document metadata improvements.
 - Production authentication.
