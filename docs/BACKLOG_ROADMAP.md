@@ -8,14 +8,15 @@
 - Phase 1D review and hardening.
 - Phase 1E persistence readiness for room and asset shell forms.
 - Phase 1F first room persistence.
+- Phase 1G asset persistence.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1G asset persistence.
-- Enable real asset create/edit when `DATABASE_URL` is configured.
+- Plan maintenance and warranty persistence as separate controlled slices.
+- Keep each persistence slice focused on one workflow family at a time.
 - Preserve fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, production auth, file storage and non-asset persistence out of the asset mutation slice.
+- Keep deletes, production auth, file storage and unrelated persistence out of each mutation slice until separately approved.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
@@ -37,4 +38,3 @@
 - Budgeting or financial features.
 - Paid integrations.
 - Native iOS app.
-
