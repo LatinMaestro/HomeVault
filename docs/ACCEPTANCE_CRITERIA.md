@@ -39,7 +39,7 @@
 - Save performs preview-only checks and clearly states that no records changed.
 - No persistent create/edit/delete mutations were added.
 
-## Phase 1F - Planned
+## Phase 1F - In Progress
 
 - Room create persists when `DATABASE_URL` is configured and the database is reachable.
 - Room edit persists when `DATABASE_URL` is configured and the room exists in the database.
