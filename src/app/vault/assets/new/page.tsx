@@ -4,6 +4,7 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
+import { assetShellFields } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "New Asset",
@@ -22,14 +23,8 @@ export default function NewAssetPage() {
         />
         <ShellForm
           title="Asset details"
-          description="Saving is intentionally disabled until persistent CRUD is approved."
-          fields={[
-            { label: "Asset name", name: "name", placeholder: "French door fridge" },
-            { label: "Brand", name: "brand", placeholder: "Fisher & Paykel" },
-            { label: "Model", name: "model", placeholder: "RF605QDUVX1" },
-            { label: "Room", name: "room", placeholder: "Kitchen" },
-            { label: "Notes", name: "notes", placeholder: "Optional asset notes", multiline: true },
-          ]}
+          description="Review the asset fields that will support future saving. Saving is intentionally disabled until persistent CRUD is approved."
+          fields={assetShellFields}
         />
       </section>
     </AppShell>

@@ -4,6 +4,7 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
+import { roomShellFields } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "New Room",
@@ -22,12 +23,8 @@ export default function NewRoomPage() {
         />
         <ShellForm
           title="Room details"
-          description="Saving is intentionally disabled until persistent CRUD is approved."
-          fields={[
-            { label: "Room name", name: "name", placeholder: "Kitchen" },
-            { label: "Floor or zone", name: "floor", placeholder: "Ground floor" },
-            { label: "Notes", name: "notes", placeholder: "Optional room notes", multiline: true },
-          ]}
+          description="Review the room fields that will support future saving. Saving is intentionally disabled until persistent CRUD is approved."
+          fields={roomShellFields}
         />
       </section>
     </AppShell>

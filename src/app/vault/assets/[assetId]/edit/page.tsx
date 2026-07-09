@@ -5,6 +5,7 @@ import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
 import { ShellForm } from "@/components/shell-form";
 import { getAsset } from "@/lib/home-data";
+import { getAssetEditShellFields } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "Edit Asset Shell",
@@ -32,14 +33,8 @@ export default async function EditAssetPage({
         />
         <ShellForm
           title="Asset details"
-          description="Saving is intentionally disabled until persistent CRUD is approved."
-          fields={[
-            { label: "Asset name", name: "name", defaultValue: asset.data?.name, placeholder: "French door fridge" },
-            { label: "Brand", name: "brand", defaultValue: asset.data?.brand ?? "", placeholder: "Fisher & Paykel" },
-            { label: "Model", name: "model", defaultValue: asset.data?.model ?? "", placeholder: "RF605QDUVX1" },
-            { label: "Room", name: "room", defaultValue: asset.data?.roomName ?? "", placeholder: "Kitchen" },
-            { label: "Notes", name: "notes", defaultValue: asset.data?.notes ?? "", multiline: true },
-          ]}
+          description="Review the pre-filled asset fields that will support future saving. Saving is intentionally disabled until persistent CRUD is approved."
+          fields={getAssetEditShellFields(asset.data)}
         />
       </section>
     </AppShell>
