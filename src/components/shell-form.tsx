@@ -32,7 +32,21 @@ export function ShellForm({
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setMessage("Saving will be enabled in a later phase. Nothing has been changed.");
+
+    const formData = new FormData(event.currentTarget);
+    const missingRecommendedFields = fields
+      .filter((field) => field.recommended)
+      .filter((field) => !String(formData.get(field.name) ?? "").trim())
+      .map((field) => field.label.toLowerCase());
+
+    if (missingRecommendedFields.length > 0) {
+      setMessage(
+        `Preview check: add ${missingRecommendedFields.join(" and ")} before future saving is enabled. Nothing has been changed.`,
+      );
+      return;
+    }
+
+    setMessage("Preview check complete. Saving will be enabled in a later phase. Nothing has been changed.");
   }
 
   return (
@@ -109,7 +123,7 @@ export function ShellForm({
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button type="submit">Save</Button>
             <p className="text-sm text-muted-foreground">
-              This preview form does not save yet.
+              This preview form checks recommended fields but does not save yet.
             </p>
           </div>
 
