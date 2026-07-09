@@ -82,7 +82,7 @@ export function getAssetEditShellFields(asset?: {
   model?: string | null;
   roomName?: string | null;
   notes?: string | null;
-}): ShellField[] {
+} | null): ShellField[] {
   return assetShellFields.map((field) => ({
     ...field,
     defaultValue:
