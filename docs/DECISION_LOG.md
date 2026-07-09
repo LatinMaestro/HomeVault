@@ -41,4 +41,5 @@
 | 2026-07-09 | Use Server Actions for room create/edit persistence. | Room mutations need progressive form behavior, route revalidation and runtime database checks without adding API routes or client-side database access. | Accepted |
 | 2026-07-09 | Close Phase 1F first room persistence. | Room create/edit persistence is implemented and CI-verified, so asset persistence can be planned as a separate next slice. | Accepted |
 | 2026-07-10 | Start Phase 1G with asset persistence only. | Assets are the next core vault record after rooms, and can reuse the proven mutation pattern without adding deletes, storage, auth or other workflows. | Accepted |
+| 2026-07-10 | Use Server Actions for asset create/edit persistence. | Asset mutations need the same progressive form behavior, route revalidation and runtime database checks proven by room persistence. | Accepted |
 
