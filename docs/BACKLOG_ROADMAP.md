@@ -7,14 +7,14 @@
 - Phase 1C read-only core screen shells with non-saving create/edit shells.
 - Phase 1D review and hardening.
 - Phase 1E persistence readiness for room and asset shell forms.
+- Phase 1F first room persistence.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1F first room persistence.
-- Enable real room create/edit when `DATABASE_URL` is configured.
+- Asset persistence planning and implementation.
 - Preserve fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, asset persistence, production auth and storage out of the first mutation slice.
+- Keep deletes, production auth and storage out of the next mutation slice unless separately approved.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
