@@ -75,9 +75,16 @@ Phase 1G did not add deletes, warranty/receipt/document/maintenance persistence,
 
 See `docs/PHASE_1G_PLAN.md` for the detailed completion summary.
 
+## Phase 1H: Maintenance Persistence - Planned
+
+Phase 1H will introduce maintenance task create/edit persistence and a simple additive completion workflow when `DATABASE_URL` is configured. It keeps recurrence automation, notifications, deletes, warranty persistence, production auth, uploads, OCR, AI, payments, analytics and native app work out of scope.
+
+See `docs/PHASE_1H_PLAN.md` for the detailed scope.
+
 ## Later Phases
 
-- Maintenance and warranty persistence.
+- Warranty persistence.
+- Receipt/document metadata persistence improvements.
 - Production authentication.
 - Approved file storage.
 - Reminder delivery.
