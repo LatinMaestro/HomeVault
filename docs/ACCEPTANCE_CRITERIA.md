@@ -48,3 +48,13 @@
 - Vercel builds do not require live database access.
 - No delete actions, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work was added.
 
+## Phase 1G - Planned
+
+- Asset create persists when `DATABASE_URL` is configured and the database is reachable.
+- Asset edit persists when `DATABASE_URL` is configured and the asset exists in the database.
+- Optional room association is handled safely when a matching room exists.
+- Missing or unavailable database states show clear non-destructive messages.
+- Asset list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
+- Vercel builds do not require live database access.
+- No delete actions, warranty/receipt/document/maintenance persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work is added.
+

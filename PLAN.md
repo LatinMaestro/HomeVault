@@ -67,9 +67,16 @@ Phase 1F did not add deletes, asset persistence, production auth, uploads, OCR, 
 
 See `docs/PHASE_1F_PLAN.md` for the detailed completion summary.
 
+## Phase 1G: Asset Persistence - Planned
+
+Phase 1G extends the room mutation pattern to assets only. It enables asset create/edit persistence when `DATABASE_URL` is configured, including optional room association by room name, while preserving database-independent builds and useful unavailable-database messaging.
+
+Phase 1G must not add deletes, warranty/receipt/document/maintenance persistence, production auth, uploads, OCR, AI, notifications, payments, analytics, native app work or local-client setup requirements.
+
+See `docs/PHASE_1G_PLAN.md` for the detailed scope.
+
 ## Later Phases
 
-- Asset persistence after the room mutation pattern is proven.
 - Maintenance and warranty persistence.
 - Production authentication.
 - Approved file storage.
