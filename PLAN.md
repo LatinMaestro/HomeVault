@@ -35,20 +35,21 @@ HomeVault now uses an online-first workflow for normal MVP development.
 - Kept create/edit pages as non-saving shells.
 - Kept auth single-user and stubbed.
 
-## Phase 1D: Review And Hardening - In Progress
+## Phase 1D: Review And Hardening - Complete
 
-Phase 1D is a controlled polish, accessibility, reliability and review-readiness phase. It improves the existing Phase 1C screens without adding persistent mutations, production auth, uploads, AI, OCR, notifications, payments, analytics or native app work.
+Phase 1D completed the controlled polish, accessibility, reliability and review-readiness pass for the Phase 1C screens. It improved existing read-only flows without adding persistent mutations, production auth, uploads, AI, OCR, notifications, payments, analytics or native app work.
 
-Completed Phase 1D hardening so far includes:
+Completed Phase 1D hardening includes:
 
 - Clearer non-saving shell form states.
 - Empty, loading, not-found and error states.
 - Better page metadata and route navigation.
 - Review summary panels for core list and hub screens.
+- More accessible data-source and empty-state presentation.
 - Online CI workflow for Prisma, lint, typecheck and build evidence.
 - Online-first and Vercel-light workflow documentation.
 
-See `docs/PHASE_1D_PLAN.md` for the detailed scope.
+See `docs/PHASE_1D_PLAN.md` for the detailed completion summary.
 
 ## Later Phases
 
