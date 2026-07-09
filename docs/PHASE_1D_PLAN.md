@@ -1,6 +1,25 @@
 # Phase 1D Plan: Review And Hardening
 
-Phase 1D is a controlled review and hardening phase. It improves confidence in the Phase 1A-1C foundation before HomeVault adds persistent mutations, production authentication, uploads or integrations.
+Phase 1D was a controlled review and hardening phase. It improved confidence in the Phase 1A-1C foundation before HomeVault adds persistent mutations, production authentication, uploads or integrations.
+
+## Status
+
+Phase 1D is complete as of 2026-07-09. It closed with read-only, fallback-safe UI and documentation hardening only. No persistence, production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS or external integrations were added.
+
+## Completion Summary
+
+Completed Phase 1D work includes:
+
+- Clearer non-saving create/edit shell guardrails.
+- Shared empty and missing-record states.
+- Branded loading, not-found and error states.
+- Better page and route metadata.
+- Explicit back navigation on shell and detail pages.
+- Review summary panels for core list and hub screens.
+- More accessible data-source and empty-state presentation.
+- Settings copy that reflects the current preview/readiness posture.
+- GitHub Actions CI for online Prisma, lint, typecheck and build evidence.
+- Online-first and Vercel-light workflow documentation.
 
 ## Goals
 
@@ -42,14 +61,14 @@ Phase 1D is a controlled review and hardening phase. It improves confidence in t
 
 ## Review Checklist
 
-- All existing Phase 1C routes still render useful fallback/sample data without `DATABASE_URL`.
-- Create/edit shells clearly state that saving is not enabled yet.
-- No UI suggests a record was saved when it was not.
-- Mobile navigation remains usable and predictable.
-- Desktop layout remains clean without becoming a separate product direction.
-- Visual tone stays calm, practical, home-focused and privacy-first.
-- Vercel preview remains the preferred UI review surface.
-- GitHub PR remains the preferred code review surface.
+- [x] All existing Phase 1C routes still render useful fallback/sample data without `DATABASE_URL`.
+- [x] Create/edit shells clearly state that saving is not enabled yet.
+- [x] No UI suggests a record was saved when it was not.
+- [x] Mobile navigation remains usable and predictable.
+- [x] Desktop layout remains clean without becoming a separate product direction.
+- [x] Visual tone stays calm, practical, home-focused and privacy-first.
+- [x] Vercel preview remains the preferred UI review surface when usage allows.
+- [x] GitHub PR remains the preferred code review surface.
 
 ## Quality Gates
 
@@ -59,11 +78,11 @@ For code changes, use available Codex/cloud, GitHub or Vercel checks:
 - Lint.
 - Typecheck.
 - Build.
-- Vercel Preview visual review for UI changes.
+- Vercel Preview visual review for UI changes when usage allows.
 
 Documentation-only changes may skip app builds when no app files, dependencies or runtime behavior are changed.
 
 ## Client Actions
 
-No client action is required for Phase 1D hardening unless a later task needs a secret, paid service, hosted database change, production auth decision, storage decision or product-scope decision outside this plan.
+No client action is required to close Phase 1D. Future phases may require a decision before adding persistence, production authentication, hosted database changes, approved file storage or paid services.
 
