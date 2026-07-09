@@ -2,18 +2,18 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1G extends the room mutation pattern to asset create/edit only. Asset saving uses the existing Prisma/PostgreSQL foundation when `DATABASE_URL` is configured and preserves safe messaging when a database is unavailable. The app does not include production authentication, deletes, warranty/receipt/document/maintenance persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1G is complete. HomeVault now supports guarded room and asset create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, warranty/receipt/document/maintenance persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1G Asset Persistence` in progress
+- Phase: `1G Asset Persistence` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
 - Mutations: room and asset create/edit only when `DATABASE_URL` is configured
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and Vercel-build-safe without live database access
-- Next implementation focus: verify asset persistence, then consider maintenance/warranty persistence separately
+- Next implementation focus: plan maintenance and warranty persistence as separate controlled slices
 
 ## Default Development Workflow
 
@@ -89,4 +89,3 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 Connect the GitHub repository to Vercel and choose the Next.js preset. No production database connection is required for current builds. Authentication, file storage and paid integrations must not be configured until their approaches are approved.
 
 When Vercel usage is capped, batch app changes into fewer PRs and use GitHub Actions as the primary automated build evidence. Avoid extra Vercel inspection unless diagnosing a Vercel-specific problem.
-
