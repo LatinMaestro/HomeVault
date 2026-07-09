@@ -6,13 +6,12 @@
 - Phase 1B Prisma data model foundation.
 - Phase 1C read-only core screen shells with non-saving create/edit shells.
 - Phase 1D review and hardening.
+- Phase 1E persistence readiness for room and asset shell forms.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1E persistence readiness.
-- Improve room and asset shell form structure without enabling real saving.
-- Clarify preview-only validation, helper text and future persistence acceptance criteria.
+- Persistence decision for the first real room and asset mutations.
 - Keep Vercel builds safe without build-time database dependency.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
