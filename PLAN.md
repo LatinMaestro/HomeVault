@@ -59,13 +59,13 @@ Phase 1E did not add persistent mutations, production auth, uploads, OCR, AI, no
 
 See `docs/PHASE_1E_PLAN.md` for the detailed completion summary.
 
-## Phase 1F: First Room Persistence - Planned
+## Phase 1F: First Room Persistence - Complete
 
-Phase 1F introduces the first real database-backed mutation workflow for rooms only. It enables room create/edit persistence when `DATABASE_URL` is configured while preserving database-independent builds and useful unavailable-database messaging.
+Phase 1F introduced the first real database-backed mutation workflow for rooms only. It enables room create/edit persistence when `DATABASE_URL` is configured while preserving database-independent builds and useful unavailable-database messaging.
 
-Phase 1F must not add deletes, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics, native app work or local-client setup requirements.
+Phase 1F did not add deletes, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics, native app work or local-client setup requirements.
 
-See `docs/PHASE_1F_PLAN.md` for the detailed scope.
+See `docs/PHASE_1F_PLAN.md` for the detailed completion summary.
 
 ## Later Phases
 

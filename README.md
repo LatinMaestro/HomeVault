@@ -2,18 +2,18 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1F introduces the first real persistence workflow: room create/edit only. Room saving uses the existing Prisma/PostgreSQL foundation when `DATABASE_URL` is configured and preserves safe messaging when a database is unavailable. The app does not include production authentication, deletes, asset persistence, full CRUD persistence across all records, uploads, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1F completed the first real persistence workflow: room create/edit only. Room saving uses the existing Prisma/PostgreSQL foundation when `DATABASE_URL` is configured and preserves safe messaging when a database is unavailable. The app does not include production authentication, deletes, asset persistence, full CRUD persistence across all records, uploads, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1F First Room Persistence` in progress
+- Phase: `1F First Room Persistence` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
 - Mutations: room create/edit only when `DATABASE_URL` is configured
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and Vercel-build-safe without live database access
-- Next implementation focus: verify room persistence, then consider asset persistence separately
+- Next implementation focus: asset persistence planning and implementation
 
 ## Default Development Workflow
 

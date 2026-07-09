@@ -1,19 +1,20 @@
 # Phase 1F Plan: First Room Persistence
 
-Phase 1F introduces the first real database-backed mutation workflow in HomeVault. It starts with rooms only so the project can prove the mutation pattern before applying it to assets, maintenance, warranties or documents.
+Phase 1F introduced the first real database-backed mutation workflow in HomeVault. It started with rooms only so the project could prove the mutation pattern before applying it to assets, maintenance, warranties or documents.
 
 ## Status
 
-Phase 1F is in progress. The first implementation slice adds room create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+Phase 1F is complete as of 2026-07-09. Room create and edit persistence is available when `DATABASE_URL` is configured, while graceful fallback and clear unavailable-database messages remain in place when a database is missing or unreachable.
 
-## Implementation Slice
+## Completion Summary
 
-The first Phase 1F code slice includes:
+Completed Phase 1F work includes:
 
 - Runtime-only room create and edit Server Actions.
 - A room-specific form that shows success, validation and unavailable-database messages.
 - Route revalidation for the vault and room routes after successful room saves.
 - Updated room create/edit copy so room forms no longer describe themselves as preview-only.
+- Documentation and decision-log updates for the first mutation pattern.
 - No delete actions and no non-room persistence.
 
 ## Goals
@@ -74,16 +75,14 @@ The first Phase 1F code slice includes:
 
 ## Completion Criteria
 
-Phase 1F is complete when:
-
-- Room create saves to the configured database.
-- Room edit updates an existing room in the configured database.
-- Missing or unavailable database states are handled with clear messages.
-- No delete actions or non-room persistence are added.
-- Builds remain database-independent.
-- CI evidence passes for Prisma validation/generation, lint, typecheck and build.
+- [x] Room create saves to the configured database.
+- [x] Room edit updates an existing room in the configured database.
+- [x] Missing or unavailable database states are handled with clear messages.
+- [x] No delete actions or non-room persistence are added.
+- [x] Builds remain database-independent.
+- [x] CI evidence passes for Prisma validation/generation, lint, typecheck and build.
 
 ## Client Actions
 
-No immediate client action is required to implement the code path. To use real persistence in Vercel Preview or Production, `DATABASE_URL` must be configured to point at the approved Neon Postgres database.
+To use real persistence in Vercel Preview or Production, `DATABASE_URL` must be configured to point at the approved Neon Postgres database.
 

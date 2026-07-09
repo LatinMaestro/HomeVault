@@ -40,18 +40,18 @@ Prepared the room and asset create/edit shells for future persistence while keep
 
 Phase 1E did not add persistent mutations, production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
-## Phase 1F: First Room Persistence - Planned
+## Phase 1F: First Room Persistence - Complete
 
-Introduce the first real database-backed mutation workflow for rooms only:
+Introduced the first real database-backed mutation workflow for rooms only:
 
-- Add runtime-only room create and edit server actions.
-- Keep deletes out of scope.
-- Keep asset and other record persistence out of scope.
-- Preserve database-independent builds and fallback/sample reads.
-- Show clear success, validation and unavailable-database messages.
-- Keep stubbed current-home assumptions explicit until production auth is approved.
+- Added runtime-only room create and edit server actions.
+- Kept deletes out of scope.
+- Kept asset and other record persistence out of scope.
+- Preserved database-independent builds and fallback/sample reads.
+- Added clear success, validation and unavailable-database messages.
+- Kept stubbed current-home assumptions explicit until production auth is approved.
 
-Phase 1F must not add production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
+Phase 1F did not add production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
 ## Future Phases
 
