@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 
+import { createRoomAction } from "@/app/vault/rooms/actions";
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
-import { ShellForm } from "@/components/shell-form";
+import { RoomForm } from "@/components/room-form";
 import { roomShellFields } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "New Room",
-  description: "Preview the non-saving HomeVault room form.",
+  description: "Create a HomeVault room when database persistence is configured.",
 };
 
 export default function NewRoomPage() {
@@ -17,14 +18,16 @@ export default function NewRoomPage() {
       <section className="space-y-5">
         <PageHeader
           eyebrow="Rooms"
-          title="Create room shell"
-          description="This form previews the future room workflow. It does not save records yet."
+          title="Create room"
+          description="Save a room to organise household assets and records when database persistence is available."
           action={<BackLinkButton href="/vault/rooms">Back to rooms</BackLinkButton>}
         />
-        <ShellForm
+        <RoomForm
           title="Room details"
-          description="Review the room fields that will support future saving. Saving is intentionally disabled until persistent CRUD is approved."
+          description="Room saving is now enabled when the database is configured. If the database is unavailable, HomeVault will explain that nothing changed."
           fields={roomShellFields}
+          action={createRoomAction}
+          databaseConfigured={Boolean(process.env.DATABASE_URL)}
         />
       </section>
     </AppShell>
