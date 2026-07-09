@@ -39,12 +39,12 @@
 - Save performs preview-only checks and clearly states that no records changed.
 - No persistent create/edit/delete mutations were added.
 
-## Phase 1F - In Progress
+## Phase 1F - Complete
 
 - Room create persists when `DATABASE_URL` is configured and the database is reachable.
 - Room edit persists when `DATABASE_URL` is configured and the room exists in the database.
 - Missing or unavailable database states show clear non-destructive messages.
 - Room list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
 - Vercel builds do not require live database access.
-- No delete actions, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work is added.
+- No delete actions, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work was added.
 
