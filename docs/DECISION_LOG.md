@@ -31,4 +31,5 @@
 | 2026-07-08 | Add shell form guardrail panels. | Preview forms should make it immediately clear what can be reviewed and that Save does not persist data. | Accepted |
 | 2026-07-08 | Use Vercel-light mode when usage is constrained. | HomeVault should batch changes and rely on GitHub Actions as the primary check gate when Vercel preview usage is capped. | Accepted |
 | 2026-07-08 | Improve data-source notice accessibility. | Database and sample-data fallback states should be visually scannable and announced as a distinct page note. | Accepted |
+| 2026-07-09 | Improve empty-state presentation. | Empty and missing-record states should be easier to identify visually while preserving clear explanatory copy and actions. | Accepted |
 
