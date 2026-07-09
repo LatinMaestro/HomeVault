@@ -13,7 +13,7 @@ import { getAssets } from "@/lib/home-data";
 
 export const metadata: Metadata = {
   title: "Assets",
-  description: "Browse appliances, tools and equipment tracked in HomeVault.",
+  description: "Browse and manage appliances, tools and equipment tracked in HomeVault.",
 };
 
 export const dynamic = "force-dynamic";
@@ -43,9 +43,9 @@ export default async function AssetsPage() {
               detail: assets.data.length === 1 ? "Asset available for review." : "Assets available for review.",
             },
             {
-              label: "Mode",
-              value: "Read-only",
-              detail: "Create and edit screens are previews until saving is approved.",
+              label: "Saving",
+              value: "Assets",
+              detail: "Asset create/edit can save when the database is configured. Deletes and uploads are still off.",
             },
             {
               label: "Data",
@@ -82,10 +82,10 @@ export default async function AssetsPage() {
         ) : (
           <EmptyState
             title="No assets yet"
-            description="Assets will hold appliances, tools and equipment details once saving is enabled. For now, the create screen is a non-saving preview."
+            description="Assets hold appliances, tools and equipment details. Add the first asset when database saving is configured."
             action={
               <Button asChild variant="outline">
-                <Link href="/vault/assets/new">Preview asset form</Link>
+                <Link href="/vault/assets/new">Add asset</Link>
               </Button>
             }
           />
