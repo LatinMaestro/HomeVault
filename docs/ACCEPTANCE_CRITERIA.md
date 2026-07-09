@@ -23,12 +23,28 @@
 - Runtime reads use Prisma when `DATABASE_URL` is available and fallback/sample data when unavailable.
 - No persistent create/edit/delete mutations were added.
 
-## Phase 1D - In Progress
+## Phase 1D - Complete
 
 - Online-first workflow is documented and followed.
-- Vercel Preview URLs are used as the preferred UI review surface.
 - Empty and missing-record states are useful.
 - Active navigation state is accessible.
 - Home dashboard reflects current reviewable app areas.
 - Visible copy does not imply unapproved features are working.
+- GitHub Actions provides online Prisma, lint, typecheck and build evidence when app code changes.
+
+## Phase 1E - Complete
+
+- Room and asset create/edit shells use shared field definitions.
+- Field helper text and recommended-field cues are visible and beginner-friendly.
+- Save performs preview-only checks and clearly states that no records changed.
+- No persistent create/edit/delete mutations were added.
+
+## Phase 1F - Planned
+
+- Room create persists when `DATABASE_URL` is configured and the database is reachable.
+- Room edit persists when `DATABASE_URL` is configured and the room exists in the database.
+- Missing or unavailable database states show clear non-destructive messages.
+- Room list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
+- Vercel builds do not require live database access.
+- No delete actions, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work is added.
 
