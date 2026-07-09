@@ -6,13 +6,13 @@ Phase 1D has completed the review and hardening pass for the Phase 1C read-only 
 
 ## Current Status
 
-- Phase: `1D Review and Hardening` complete
+- Phase: `1E Persistence Readiness` planned
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
 - Storage: not implemented pending approval
 - Current review posture: read-only, fallback-safe and Vercel-build-safe without live database access
-- Next phase: future persistence and mutation planning, not started yet
+- Next implementation focus: room and asset form readiness without enabling real saving
 
 ## Default Development Workflow
 

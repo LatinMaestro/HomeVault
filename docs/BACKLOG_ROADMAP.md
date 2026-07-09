@@ -5,14 +5,17 @@
 - Phase 1A foundation and visual shell.
 - Phase 1B Prisma data model foundation.
 - Phase 1C read-only core screen shells with non-saving create/edit shells.
+- Phase 1D review and hardening.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1D review and hardening.
-- Improve mobile usability, accessibility, fallback states and review readiness.
+- Phase 1E persistence readiness.
+- Improve room and asset shell form structure without enabling real saving.
+- Clarify preview-only validation, helper text and future persistence acceptance criteria.
 - Keep Vercel builds safe without build-time database dependency.
-- Keep GitHub PRs and Vercel previews as the default review path.
+- Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
+- Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
 ## Future Approved-Decision Candidates
 
