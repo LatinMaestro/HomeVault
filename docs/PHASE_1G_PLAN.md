@@ -1,20 +1,19 @@
 # Phase 1G Plan: Asset Persistence
 
-Phase 1G extends the proven Phase 1F mutation pattern from rooms to assets. It enables asset create/edit persistence only, while keeping deletes, uploads, warranty/receipt/document persistence and production auth out of scope.
+Phase 1G extended the proven Phase 1F mutation pattern from rooms to assets. It enabled asset create/edit persistence only, while keeping deletes, uploads, warranty/receipt/document persistence and production auth out of scope.
 
 ## Status
 
-Phase 1G is in progress. The first implementation slice adds asset create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+Phase 1G is complete. The implementation adds asset create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
 
-## Implementation Slice
-
-The first Phase 1G code slice includes:
+## Completed Work
 
 - Runtime-only asset create and edit Server Actions.
-- A asset-specific form that shows success, validation and unavailable-database messages.
+- An asset-specific form that shows success, validation and unavailable-database messages.
 - Optional room association by matching the entered room name to an existing room.
 - Route revalidation for vault, asset and room routes after successful asset saves.
-- Updated asset create/edit/detail copy so asset forms no longer describe themselves as preview-only.
+- Updated asset create/edit/detail copy so asset forms no longer describe themselves as preview-only when persistence is available.
+- Documentation updates for README, acceptance criteria and the decision log.
 - No delete actions, uploads or non-asset persistence.
 
 ## Goals
@@ -64,8 +63,8 @@ The first Phase 1G code slice includes:
 - `DATABASE_URL` may be used only at runtime.
 - No database queries or Prisma client creation may happen at module import time.
 - `next build` and GitHub Actions must pass without a live database.
-- When `DATABASE_URL` is missing, asset forms should explain that saving needs a configured database rather than crashing.
-- When database writes fail, the user should see a non-destructive failure message.
+- When `DATABASE_URL` is missing, asset forms explain that saving needs a configured database rather than crashing.
+- When database writes fail, the user sees a non-destructive failure message.
 
 ## Review Approach
 
@@ -76,17 +75,16 @@ The first Phase 1G code slice includes:
 
 ## Completion Criteria
 
-Phase 1G is complete when:
+Phase 1G is complete because:
 
 - Asset create saves to the configured database.
 - Asset edit updates an existing asset in the configured database.
 - Optional room association is handled safely when a matching room exists.
 - Missing or unavailable database states are handled with clear messages.
-- No delete actions or non-asset persistence are added.
+- No delete actions or non-asset persistence were added.
 - Builds remain database-independent.
-- CI evidence passes for Prisma validation/generation, lint, typecheck and build.
+- CI evidence passed for Prisma validation/generation, lint, typecheck and build.
 
 ## Client Actions
 
-No immediate client action is required to implement the code path. To use real persistence in Vercel Preview or Production, `DATABASE_URL` must be configured to point at the approved Neon Postgres database.
-
+No immediate client action is required. To use real persistence in Vercel Preview or Production, `DATABASE_URL` must be configured to point at the approved Neon Postgres database.

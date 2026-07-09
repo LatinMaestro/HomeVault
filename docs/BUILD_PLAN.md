@@ -53,20 +53,19 @@ Introduced the first real database-backed mutation workflow for rooms only:
 
 Phase 1F did not add production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
-## Phase 1G: Asset Persistence - Planned
+## Phase 1G: Asset Persistence - Complete
 
-Extend the proven mutation pattern to assets only:
+Extended the proven mutation pattern to assets only:
 
-- Add runtime-only asset create and edit server actions.
-- Support optional room association by matching room name.
-- Keep deletes out of scope.
-- Keep warranty, receipt, document and maintenance persistence out of scope.
-- Preserve database-independent builds and fallback/sample reads.
-- Show clear success, validation and unavailable-database messages.
+- Added runtime-only asset create and edit server actions.
+- Supported optional room association by matching room name.
+- Kept deletes out of scope.
+- Kept warranty, receipt, document and maintenance persistence out of scope.
+- Preserved database-independent builds and fallback/sample reads.
+- Added clear success, validation and unavailable-database messages.
 
-Phase 1G must not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
+Phase 1G did not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
 ## Future Phases
 
 Add maintenance/warranty persistence, production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
-
