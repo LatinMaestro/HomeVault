@@ -1,10 +1,21 @@
 # Phase 1E Plan: Persistence Readiness
 
-Phase 1E prepares HomeVault for future persistent create and edit workflows without turning on real mutations yet. It keeps the app reviewable, fallback-safe and online-first while tightening form structure, data contracts and review evidence.
+Phase 1E prepared HomeVault for future persistent create and edit workflows without turning on real mutations. It kept the app reviewable, fallback-safe and online-first while tightening form structure, data contracts and review evidence.
 
 ## Status
 
-Phase 1E is the next planned phase after Phase 1D. It may begin with safe, non-persistent implementation work once this plan is merged.
+Phase 1E is complete as of 2026-07-09. It closed with shared room and asset field metadata, helper text, recommended-field cues and non-persistent preview checks. No saving, production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS work or external integrations were added.
+
+## Completion Summary
+
+Completed Phase 1E work includes:
+
+- Shared room and asset shell form field definitions.
+- Consistent create/edit shell fields for rooms and assets.
+- Field-level helper text for future-ready data entry.
+- Recommended-field markers for the core room and asset names.
+- Non-persistent Save checks that explain missing recommended fields or confirm preview readiness.
+- Decision-log updates documenting the persistence-readiness boundary.
 
 ## Goals
 
@@ -61,15 +72,13 @@ Phase 1E is the next planned phase after Phase 1D. It may begin with safe, non-p
 
 ## Completion Criteria
 
-Phase 1E is complete when:
-
-- Room and asset shell forms have clear, reusable field structure.
-- Preview-only validation or required-field communication is understandable and non-misleading.
-- No save action persists data or implies persistence.
-- Documentation clearly separates Phase 1E readiness from the later persistence phase.
-- CI evidence passes for app-code changes.
+- [x] Room and asset shell forms have clear, reusable field structure.
+- [x] Preview-only validation or required-field communication is understandable and non-misleading.
+- [x] No save action persists data or implies persistence.
+- [x] Documentation clearly separates Phase 1E readiness from the later persistence phase.
+- [x] CI evidence passes for app-code changes.
 
 ## Client Actions
 
-No client action is required for Phase 1E unless a later task needs a hosted database decision, production auth decision, file storage decision, secret, paid service or product-scope change.
+No client action is required to close Phase 1E. The next major product decision is whether to approve real persistence and mutations for the first room and asset workflows.
 
