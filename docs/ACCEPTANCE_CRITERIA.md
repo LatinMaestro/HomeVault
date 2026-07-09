@@ -48,7 +48,7 @@
 - Vercel builds do not require live database access.
 - No delete actions, asset persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work was added.
 
-## Phase 1G - Planned
+## Phase 1G - In Progress
 
 - Asset create persists when `DATABASE_URL` is configured and the database is reachable.
 - Asset edit persists when `DATABASE_URL` is configured and the asset exists in the database.

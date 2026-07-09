@@ -14,7 +14,7 @@ import { getAsset } from "@/lib/home-data";
 
 export const metadata: Metadata = {
   title: "Asset Detail",
-  description: "Review a read-only HomeVault household asset record.",
+  description: "Review a HomeVault household asset record.",
 };
 
 export const dynamic = "force-dynamic";
@@ -53,12 +53,12 @@ export default async function AssetDetailPage({
         <PageHeader
           eyebrow="Assets"
           title={asset.data.name}
-          description="Read-only asset detail."
+          description="Asset detail with database-backed editing when persistence is configured."
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
               <BackLinkButton href="/vault/assets">Back to assets</BackLinkButton>
               <Button asChild variant="outline">
-                <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit shell</Link>
+                <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit asset</Link>
               </Button>
             </div>
           }

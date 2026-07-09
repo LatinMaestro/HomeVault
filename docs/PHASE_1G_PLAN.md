@@ -4,7 +4,18 @@ Phase 1G extends the proven Phase 1F mutation pattern from rooms to assets. It e
 
 ## Status
 
-Phase 1G is planned as the next implementation phase after Phase 1F. The first implementation slice should enable asset create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+Phase 1G is in progress. The first implementation slice adds asset create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+
+## Implementation Slice
+
+The first Phase 1G code slice includes:
+
+- Runtime-only asset create and edit Server Actions.
+- A asset-specific form that shows success, validation and unavailable-database messages.
+- Optional room association by matching the entered room name to an existing room.
+- Route revalidation for vault, asset and room routes after successful asset saves.
+- Updated asset create/edit/detail copy so asset forms no longer describe themselves as preview-only.
+- No delete actions, uploads or non-asset persistence.
 
 ## Goals
 
