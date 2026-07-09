@@ -11,14 +11,16 @@
 
 ## Near Term
 
-- Persistence decision for the first real room and asset mutations.
-- Keep Vercel builds safe without build-time database dependency.
+- Phase 1F first room persistence.
+- Enable real room create/edit when `DATABASE_URL` is configured.
+- Preserve fallback-safe rendering and unavailable-database messaging.
+- Keep deletes, asset persistence, production auth and storage out of the first mutation slice.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
 ## Future Approved-Decision Candidates
 
-- Persistent create/edit flows for rooms and assets.
+- Persistent create/edit flows for assets.
 - Persistent maintenance and warranty workflows.
 - Receipt/document metadata improvements.
 - Production authentication.
