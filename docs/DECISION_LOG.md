@@ -37,4 +37,5 @@
 | 2026-07-09 | Use shared shell form field metadata for rooms and assets. | Create and edit shells should stay consistent while adding helper text and preview readiness without introducing persistence. | Accepted |
 | 2026-07-09 | Add preview-only checks for recommended shell fields. | Save actions can guide future-ready form completion while remaining non-persistent and non-destructive. | Accepted |
 | 2026-07-09 | Close Phase 1E persistence readiness. | The approved readiness scope is complete, and the next major gate is whether to approve real room and asset persistence. | Accepted |
+| 2026-07-09 | Start Phase 1F with room persistence only. | Proving create/edit mutations on the smallest core record type reduces risk before assets, deletes, auth or storage are introduced. | Accepted |
 
