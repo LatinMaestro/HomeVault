@@ -2,18 +2,18 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1G is planned as the asset persistence phase. It will extend the room mutation pattern to asset create/edit only, using the existing Prisma/PostgreSQL foundation when `DATABASE_URL` is configured and preserving safe messaging when a database is unavailable. The app does not include production authentication, deletes, warranty/receipt/document/maintenance persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1G extends the room mutation pattern to asset create/edit only. Asset saving uses the existing Prisma/PostgreSQL foundation when `DATABASE_URL` is configured and preserves safe messaging when a database is unavailable. The app does not include production authentication, deletes, warranty/receipt/document/maintenance persistence, uploads, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1G Asset Persistence` planned
+- Phase: `1G Asset Persistence` in progress
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
-- Mutations: room create/edit only; asset create/edit planned next
+- Mutations: room and asset create/edit only when `DATABASE_URL` is configured
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and Vercel-build-safe without live database access
-- Next implementation focus: asset create/edit persistence only
+- Next implementation focus: verify asset persistence, then consider maintenance/warranty persistence separately
 
 ## Default Development Workflow
 
@@ -63,7 +63,7 @@ Local database setup is optional developer reference only. Normal MVP developmen
 
 If a developer explicitly chooses local database work, set `DATABASE_URL` in `.env` before running database commands. See `docs/PRISMA_LOCAL_SETUP.md`.
 
-Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable. Room create/edit actions show a clear unavailable-database message when saving cannot run.
+Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable. Room and asset create/edit actions show clear unavailable-database messages when saving cannot run.
 
 ## Core Routes
 
