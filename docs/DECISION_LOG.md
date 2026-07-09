@@ -35,4 +35,5 @@
 | 2026-07-09 | Close Phase 1D review and hardening. | The approved hardening scope is complete and the repository is ready for the next approved phase to be planned without starting it in this docs-only change. | Accepted |
 | 2026-07-09 | Plan Phase 1E as persistence readiness before real mutations. | Room and asset forms can be made more production-like while saving remains disabled and future persistence is kept as an explicit later gate. | Accepted |
 | 2026-07-09 | Use shared shell form field metadata for rooms and assets. | Create and edit shells should stay consistent while adding helper text and preview readiness without introducing persistence. | Accepted |
+| 2026-07-09 | Add preview-only checks for recommended shell fields. | Save actions can guide future-ready form completion while remaining non-persistent and non-destructive. | Accepted |
 
