@@ -28,6 +28,18 @@ Completed Phase 1D hardening includes review summaries, clearer shell-form guard
 
 Phase 1D did not add persistent mutations, production auth, uploads, OCR, AI, notifications, payments, analytics or native iOS work.
 
+## Phase 1E: Persistence Readiness - Planned
+
+Prepare the room and asset create/edit shells for future persistence while keeping saving disabled:
+
+- Improve reusable form field structure where it reduces duplication.
+- Add preview-only helper text, required-field communication or client-side review messages where useful.
+- Keep all Save actions non-persistent and explicit about that behaviour.
+- Preserve fallback-safe runtime reads and database-independent builds.
+- Add documentation and acceptance criteria for the later persistence phase.
+
+Phase 1E must not add persistent mutations, production auth, uploads, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
+
 ## Future Phases
 
 Add approved persistence, production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
