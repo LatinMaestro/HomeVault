@@ -12,7 +12,7 @@ import { getRooms } from "@/lib/home-data";
 
 export const metadata: Metadata = {
   title: "Rooms",
-  description: "Review HomeVault rooms and home zones for household records.",
+  description: "Review and manage HomeVault rooms and home zones for household records.",
 };
 
 export const dynamic = "force-dynamic";
@@ -27,7 +27,7 @@ export default async function RoomsPage() {
         <PageHeader
           eyebrow="Rooms"
           title="Rooms and home zones"
-          description="Review the spaces that organise household assets and records."
+          description="Review spaces that organise household assets and save room changes when a database is configured."
           action={
             <Button asChild>
               <Link href="/vault/rooms/new">New room</Link>
@@ -66,7 +66,7 @@ export default async function RoomsPage() {
                 <CardContent className="space-y-4">
                   <p className="text-sm text-muted-foreground">{room.assetCount} linked assets</p>
                   <Button asChild variant="outline" size="sm">
-                    <Link href={`/vault/rooms/${room.id}/edit`}>Edit shell</Link>
+                    <Link href={`/vault/rooms/${room.id}/edit`}>Edit room</Link>
                   </Button>
                 </CardContent>
               </Card>
@@ -75,10 +75,10 @@ export default async function RoomsPage() {
         ) : (
           <EmptyState
             title="No rooms yet"
-            description="Rooms will help group assets by kitchen, laundry, garage, outdoor areas and other home zones once saving is enabled."
+            description="Rooms help group assets by kitchen, laundry, garage, outdoor areas and other home zones. Add the first room when database saving is configured."
             action={
               <Button asChild variant="outline">
-                <Link href="/vault/rooms/new">Preview room form</Link>
+                <Link href="/vault/rooms/new">Add room</Link>
               </Button>
             }
           />

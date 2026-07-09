@@ -4,7 +4,17 @@ Phase 1F introduces the first real database-backed mutation workflow in HomeVaul
 
 ## Status
 
-Phase 1F is planned as the next implementation phase after Phase 1E. The first implementation slice should enable room create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback when a database is unavailable.
+Phase 1F is in progress. The first implementation slice adds room create and edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+
+## Implementation Slice
+
+The first Phase 1F code slice includes:
+
+- Runtime-only room create and edit Server Actions.
+- A room-specific form that shows success, validation and unavailable-database messages.
+- Route revalidation for the vault and room routes after successful room saves.
+- Updated room create/edit copy so room forms no longer describe themselves as preview-only.
+- No delete actions and no non-room persistence.
 
 ## Goals
 
