@@ -1,12 +1,12 @@
 # Phase 1J Plan: Receipt And Document Metadata Persistence
 
-Phase 1J introduces create/edit persistence for receipt and document metadata as a controlled slice after warranty persistence. It makes the existing combined records area useful without adding file uploads, production storage, OCR, email ingestion, financial tracking, production auth or delete actions.
+Phase 1J introduced create/edit persistence for receipt and document metadata as a controlled slice after warranty persistence. It makes the existing combined records area useful without adding file uploads, production storage, OCR, email ingestion, financial tracking, production auth or delete actions.
 
 ## Status
 
-Phase 1J is in progress. The implementation slice adds runtime-only receipt and document metadata create/edit actions and the planned routes while preserving database-independent builds and fallback data.
+Phase 1J is complete. The implementation adds runtime-only receipt and document metadata create/edit actions and the planned routes while preserving database-independent builds and fallback data.
 
-## Implementation Slice
+## Completed Work
 
 - Runtime-only receipt and document Server Actions.
 - A record type chooser plus separate receipt/document create forms.
@@ -102,9 +102,9 @@ Purchase totals are archival receipt metadata only. Phase 1J will not add budget
 - Keep Vercel builds independent of live database access.
 - Use Vercel inspection only for a deliberate visual checkpoint or deployment investigation.
 
-## Completion Criteria
+## Completion Record
 
-Phase 1J will be complete when:
+Phase 1J is complete because:
 
 - Receipt create/edit persists when the configured database is reachable.
 - Document create/edit persists when the configured database is reachable.

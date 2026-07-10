@@ -11,13 +11,14 @@
 - Phase 1G asset persistence.
 - Phase 1H maintenance persistence.
 - Phase 1I warranty persistence.
+- Phase 1J receipt and document metadata persistence.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1J receipt and document metadata persistence.
-- Add guarded create/edit actions while preserving metadata-only records, fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, production auth, file storage, document uploads, OCR, email ingestion and reminder delivery out of the next mutation slice.
+- Plan a focused usability pass for existing create/edit forms and relationship choices.
+- Replace brittle free-text option entry with controlled choices where the current models already define valid values.
+- Preserve fallback-safe rendering and keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 

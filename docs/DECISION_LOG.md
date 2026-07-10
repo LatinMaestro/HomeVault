@@ -53,3 +53,4 @@
 | 2026-07-10 | Treat receipt totals as archival metadata only. | Purchase totals may support warranty and household records, but HomeVault must not become a budgeting, spending analytics or payment product. | Accepted |
 | 2026-07-10 | Use separate Server Actions for receipt and document metadata. | The records share list/detail UI but map to distinct Prisma models, so separate writes keep validation and record-type behavior explicit. | Accepted |
 | 2026-07-10 | Keep record type immutable during edit. | Changing a receipt into a document would require destructive cross-model behavior and could mislead users, so edits remain within the original record type. | Accepted |
+| 2026-07-10 | Close Phase 1J receipt and document metadata persistence. | Receipt and document metadata create/edit workflows are implemented and CI-verified with database-safe fallback behavior and no file or financial scope expansion. | Accepted |
