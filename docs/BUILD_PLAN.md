@@ -130,6 +130,10 @@ Aggregated the existing fallback-safe household reads into a useful Home snapsho
 
 Added a shared presentation formatter so existing stored enum values render as beginner-friendly household language across lists and details, without changing persistence contracts.
 
+## Phase 1O: Core List Search - Complete
+
+Added server-rendered GET search across all existing core lists. Filtering uses each page's already-loaded database or sample records and introduces no database search dependency.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
