@@ -63,3 +63,4 @@
 | 2026-07-10 | Use existing fallback-safe loaders for the household dashboard. | The Home screen can become useful immediately without adding a new query contract, schema change or build-time database dependency. | Accepted |
 | 2026-07-10 | Treat mixed dashboard data sources as sample mode. | The UI must not imply that every dashboard value came from the configured database when any area used fallback data. | Accepted |
 | 2026-07-10 | Format stored enum values only at the presentation boundary. | Homeowners should see natural language while Prisma values and Server Action contracts remain stable. | Accepted |
+| 2026-07-10 | Use server-rendered GET search over existing loaded records. | Core lists are small in the current single-household MVP, and query-parameter filtering is accessible, shareable and database-independent without premature search infrastructure. | Accepted |
