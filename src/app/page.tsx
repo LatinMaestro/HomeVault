@@ -38,7 +38,7 @@ export default async function HomePage() {
       icon: Wrench,
     },
     {
-      title: "Next warranty expiry",
+      title: "Warranty coverage",
       value: nextWarranty?.assetName ?? "No warranties yet",
       detail: nextWarranty?.expiresAt
         ? `Coverage date: ${nextWarranty.expiresAt}`
