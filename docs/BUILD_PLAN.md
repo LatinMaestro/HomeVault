@@ -126,6 +126,10 @@ Reviewed the available Vercel deployment at desktop and mobile sizes, confirmed 
 
 Aggregated the existing fallback-safe household reads into a useful Home snapshot covering maintenance, warranty, inventory, receipt and document records. The dashboard remains runtime-only and database-independent at build time.
 
+## Phase 1N: Readable Household Labels - Complete
+
+Added a shared presentation formatter so existing stored enum values render as beginner-friendly household language across lists and details, without changing persistence contracts.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
