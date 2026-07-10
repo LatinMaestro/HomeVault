@@ -226,6 +226,7 @@ export async function updateAssetAction(
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/vault");
     revalidatePath("/vault/assets");
     revalidatePath(`/vault/assets/${assetId}`);
