@@ -4,7 +4,17 @@ Phase 1K improves the existing persisted create/edit forms so beginners can choo
 
 ## Status
 
-Phase 1K is planned. Implementation may begin after this plan is merged.
+Phase 1K is in progress. The implementation adds shared field rendering, fallback-safe relationship choices and native bounded inputs without changing mutation capability.
+
+## Implementation Slice
+
+- Shared persisted-form controls for menus, dates, numbers, text and notes.
+- Fallback-safe room choices for asset forms.
+- Fallback-safe asset choices for maintenance, warranty, receipt and document forms.
+- Bounded maintenance-frequency and document-type menus.
+- Native date controls with separate raw edit values.
+- Native non-negative decimal control for receipt totals.
+- No new routes, models, actions or schema migration.
 
 ## Goals
 
