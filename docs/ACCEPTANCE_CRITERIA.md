@@ -77,3 +77,14 @@
 - Warranty list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
 - Vercel builds do not require live database access.
 - No delete actions, document uploads/storage, reminder delivery, production auth, OCR, AI, payments, analytics or native app work was added.
+
+## Phase 1J - Planned
+
+- Receipt metadata create/edit persists when `DATABASE_URL` is configured and reachable.
+- Document metadata create/edit persists when `DATABASE_URL` is configured and reachable.
+- Receipt and document record types remain distinct and stable during edit.
+- Optional asset association is handled safely.
+- Missing or unavailable database states show clear non-destructive messages.
+- Combined record list/detail pages remain useful with sample fallback.
+- Vercel builds do not require live database access.
+- No delete actions, file uploads/storage, OCR, email ingestion, reminder delivery, budgeting, payments, production auth, analytics or native app work is added.
