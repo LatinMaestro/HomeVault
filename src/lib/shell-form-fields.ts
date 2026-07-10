@@ -227,3 +227,134 @@ export function getWarrantyEditShellFields(warranty?: {
                   : field.defaultValue,
   }));
 }
+
+
+export const receiptShellFields: ShellField[] = [
+  {
+    label: "Merchant",
+    name: "merchant",
+    placeholder: "The Good Guys Mount Gravatt",
+    recommended: true,
+    helperText: "Use the retailer or service provider shown on the receipt.",
+  },
+  {
+    label: "Purchase date",
+    name: "purchaseDate",
+    placeholder: "2024-03-14",
+    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+  },
+  {
+    label: "Purchase total (AUD)",
+    name: "totalAmount",
+    placeholder: "2899.00",
+    helperText: "Optional archival reference only. HomeVault does not create budgets or spending reports.",
+  },
+  {
+    label: "Receipt or order number",
+    name: "receiptNumber",
+    placeholder: "Optional reference number",
+    helperText: "Useful when contacting a retailer or making a warranty claim.",
+  },
+  {
+    label: "Linked asset",
+    name: "assetName",
+    placeholder: "French door fridge",
+    helperText: "Optional. Enter the exact name of an existing asset to link it.",
+  },
+  {
+    label: "Notes",
+    name: "notes",
+    placeholder: "Optional receipt notes",
+    multiline: true,
+    helperText: "Capture return conditions or reference details. No receipt image is uploaded.",
+  },
+];
+
+export function getReceiptEditShellFields(receipt?: {
+  merchant?: string | null;
+  purchaseDateInput?: string | null;
+  totalAmountCents?: number | null;
+  receiptNumber?: string | null;
+  linkedAsset?: string | null;
+  notes?: string | null;
+} | null): ShellField[] {
+  return receiptShellFields.map((field) => ({
+    ...field,
+    defaultValue:
+      field.name === "merchant"
+        ? receipt?.merchant ?? ""
+        : field.name === "purchaseDate"
+          ? receipt?.purchaseDateInput ?? ""
+          : field.name === "totalAmount"
+            ? typeof receipt?.totalAmountCents === "number"
+              ? (receipt.totalAmountCents / 100).toFixed(2)
+              : ""
+            : field.name === "receiptNumber"
+              ? receipt?.receiptNumber ?? ""
+              : field.name === "assetName"
+                ? receipt?.linkedAsset ?? ""
+                : field.name === "notes"
+                  ? receipt?.notes ?? ""
+                  : field.defaultValue,
+  }));
+}
+
+export const documentShellFields: ShellField[] = [
+  {
+    label: "Document title",
+    name: "title",
+    placeholder: "Fridge manual",
+    recommended: true,
+    helperText: "Use a title your household can recognise quickly.",
+  },
+  {
+    label: "Document type",
+    name: "documentType",
+    placeholder: "MANUAL",
+    recommended: true,
+    helperText: "Use MANUAL, WARRANTY, RECEIPT, INSURANCE, SERVICE_RECORD, CERTIFICATE or OTHER.",
+  },
+  {
+    label: "Issue date",
+    name: "issuedAt",
+    placeholder: "2026-03-01",
+    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+  },
+  {
+    label: "Linked asset",
+    name: "assetName",
+    placeholder: "French door fridge",
+    helperText: "Optional. Enter the exact name of an existing asset to link it.",
+  },
+  {
+    label: "Notes",
+    name: "notes",
+    placeholder: "Optional document notes",
+    multiline: true,
+    helperText: "Describe where the original is kept or what it covers. No file is uploaded or stored.",
+  },
+];
+
+export function getDocumentEditShellFields(document?: {
+  title?: string | null;
+  documentType?: string | null;
+  issuedAtInput?: string | null;
+  linkedAsset?: string | null;
+  notes?: string | null;
+} | null): ShellField[] {
+  return documentShellFields.map((field) => ({
+    ...field,
+    defaultValue:
+      field.name === "title"
+        ? document?.title ?? ""
+        : field.name === "documentType"
+          ? document?.documentType ?? ""
+          : field.name === "issuedAt"
+            ? document?.issuedAtInput ?? ""
+            : field.name === "assetName"
+              ? document?.linkedAsset ?? ""
+              : field.name === "notes"
+                ? document?.notes ?? ""
+                : field.defaultValue,
+  }));
+}

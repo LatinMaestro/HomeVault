@@ -78,7 +78,7 @@
 - Vercel builds do not require live database access.
 - No delete actions, document uploads/storage, reminder delivery, production auth, OCR, AI, payments, analytics or native app work was added.
 
-## Phase 1J - Planned
+## Phase 1J - In Progress
 
 - Receipt metadata create/edit persists when `DATABASE_URL` is configured and reachable.
 - Document metadata create/edit persists when `DATABASE_URL` is configured and reachable.

@@ -92,6 +92,13 @@ export type RecordDetail = RecordSummary & {
   notes?: string | null;
   fileName?: string | null;
   amount?: string | null;
+  merchant?: string | null;
+  receiptNumber?: string | null;
+  purchaseDateInput?: string | null;
+  totalAmountCents?: number | null;
+  currency?: string | null;
+  documentType?: string | null;
+  issuedAtInput?: string | null;
 };
 
 export const sampleHome = {
@@ -206,6 +213,10 @@ export const sampleRecords: RecordDetail[] = [
     date: "14 Mar 2024",
     linkedAsset: "French door fridge",
     amount: "$2,899.00",
+    merchant: "The Good Guys Mount Gravatt",
+    purchaseDateInput: "2024-03-14",
+    totalAmountCents: 289900,
+    currency: "AUD",
     notes: "Receipt metadata only. No file upload is connected.",
   },
   {
@@ -216,6 +227,10 @@ export const sampleRecords: RecordDetail[] = [
     date: "2 Sep 2023",
     linkedAsset: "Battery lawn mower",
     amount: "$649.00",
+    merchant: "Bunnings Cannon Hill",
+    purchaseDateInput: "2023-09-02",
+    totalAmountCents: 64900,
+    currency: "AUD",
     notes: "Receipt metadata only. No file upload is connected.",
   },
   {
@@ -225,6 +240,7 @@ export const sampleRecords: RecordDetail[] = [
     secondary: "MANUAL",
     linkedAsset: "French door fridge",
     fileName: "fisher-paykel-fridge-manual.pdf",
+    documentType: "MANUAL",
     notes: "Document metadata only. Storage will be approved in a later phase.",
   },
   {
@@ -233,6 +249,8 @@ export const sampleRecords: RecordDetail[] = [
     type: "Document",
     secondary: "SERVICE_RECORD",
     date: "1 Mar 2026",
+    documentType: "SERVICE_RECORD",
+    issuedAtInput: "2026-03-01",
     notes: "Sample service record metadata.",
   },
 ];

@@ -2,18 +2,18 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1J is planned. HomeVault currently supports guarded room, asset, maintenance and warranty metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1J is in progress. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1J Receipt And Document Metadata Persistence` planned
+- Phase: `1J Receipt And Document Metadata Persistence` in progress
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
-- Mutations: room, asset, maintenance task and warranty metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
+- Mutations: room, asset, maintenance task, warranty, receipt and document metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and Vercel-build-safe without live database access
-- Next implementation focus: implement receipt and document metadata persistence as a controlled slice
+- Next implementation focus: verify and close the controlled Phase 1J metadata slice
 
 ## Default Development Workflow
 
@@ -63,7 +63,7 @@ Local database setup is optional developer reference only. Normal MVP developmen
 
 If a developer explicitly chooses local database work, set `DATABASE_URL` in `.env` before running database commands. See `docs/PRISMA_LOCAL_SETUP.md`.
 
-Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable. Room, asset, maintenance and warranty actions show clear unavailable-database messages when saving cannot run.
+Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable. Room, asset, maintenance, warranty, receipt and document actions show clear unavailable-database messages when saving cannot run.
 
 ## Core Routes
 
@@ -85,7 +85,11 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/warranties/[warrantyId]`
 - `/warranties/[warrantyId]/edit`
 - `/receipts`
+- `/receipts/new`
+- `/receipts/new/receipt`
+- `/receipts/new/document`
 - `/receipts/[recordId]`
+- `/receipts/[recordId]/edit`
 - `/settings`
 
 ## Vercel Notes

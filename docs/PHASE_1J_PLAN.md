@@ -4,7 +4,16 @@ Phase 1J introduces create/edit persistence for receipt and document metadata as
 
 ## Status
 
-Phase 1J is planned. Implementation may begin after this plan is merged and must remain within the scope below.
+Phase 1J is in progress. The implementation slice adds runtime-only receipt and document metadata create/edit actions and the planned routes while preserving database-independent builds and fallback data.
+
+## Implementation Slice
+
+- Runtime-only receipt and document Server Actions.
+- A record type chooser plus separate receipt/document create forms.
+- Type-aware metadata editing with immutable record type.
+- Optional existing asset association by matching asset name.
+- Raw edit values alongside formatted display values in the shared data layer.
+- No schema migration, file fields, uploads, storage, OCR, email ingestion, deletes or financial workflows.
 
 ## Goals
 
