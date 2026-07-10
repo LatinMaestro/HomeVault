@@ -87,9 +87,14 @@ Phase 1I introduced metadata-only warranty create/edit persistence when `DATABAS
 
 See `docs/PHASE_1I_PLAN.md` for the detailed completion summary.
 
+## Phase 1J: Receipt And Document Metadata Persistence - Planned
+
+Phase 1J will add guarded create/edit persistence for receipt and document metadata while keeping files, storage, OCR, email ingestion, deletes and financial workflows out of scope.
+
+See `docs/PHASE_1J_PLAN.md` for the approved implementation boundaries.
+
 ## Later Phases
 
-- Receipt/document metadata persistence improvements.
 - Production authentication.
 - Approved file storage.
 - Reminder delivery.
