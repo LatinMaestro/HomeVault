@@ -5,12 +5,14 @@ import { completeMaintenanceTaskAction } from "@/app/maintenance/actions";
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
+import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { MaintenanceCompletionForm } from "@/components/maintenance-form";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDateStatus } from "@/lib/date-status";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getMaintenanceTask } from "@/lib/home-data";
 
@@ -68,8 +70,11 @@ export default async function MaintenanceTaskPage({
         </div>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Task details</CardTitle>
+            <DateStatusBadge
+              status={getDateStatus(task.data.nextDueDateInput, "maintenance")}
+            />
           </CardHeader>
           <CardContent>
             <FieldList
