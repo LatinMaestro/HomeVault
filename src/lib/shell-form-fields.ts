@@ -159,3 +159,71 @@ export function getMaintenanceTaskEditShellFields(task?: {
                 : field.defaultValue,
   }));
 }
+
+export const warrantyShellFields: ShellField[] = [
+  {
+    label: "Linked asset",
+    name: "assetName",
+    placeholder: "French door fridge",
+    recommended: true,
+    helperText: "Warranty records must link to an existing asset by name.",
+  },
+  {
+    label: "Provider",
+    name: "provider",
+    placeholder: "Fisher & Paykel",
+    helperText: "Manufacturer, retailer or warranty provider.",
+  },
+  {
+    label: "Policy number",
+    name: "policyNumber",
+    placeholder: "Optional policy or reference number",
+    helperText: "Useful for support calls and warranty claims.",
+  },
+  {
+    label: "Start date",
+    name: "startsAt",
+    placeholder: "2024-03-14",
+    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+  },
+  {
+    label: "Expiry date",
+    name: "expiresAt",
+    placeholder: "2026-03-14",
+    helperText: "Optional. Reminder delivery is not enabled yet.",
+  },
+  {
+    label: "Notes",
+    name: "notes",
+    placeholder: "Optional warranty notes",
+    multiline: true,
+    helperText: "Capture coverage details, exclusions or claim instructions. No document upload is connected yet.",
+  },
+];
+
+export function getWarrantyEditShellFields(warranty?: {
+  assetName?: string | null;
+  provider?: string | null;
+  policyNumber?: string | null;
+  startsAt?: string | null;
+  expiresAt?: string | null;
+  notes?: string | null;
+} | null): ShellField[] {
+  return warrantyShellFields.map((field) => ({
+    ...field,
+    defaultValue:
+      field.name === "assetName"
+        ? warranty?.assetName ?? ""
+        : field.name === "provider"
+          ? warranty?.provider ?? ""
+          : field.name === "policyNumber"
+            ? warranty?.policyNumber ?? ""
+            : field.name === "startsAt"
+              ? warranty?.startsAt ?? ""
+              : field.name === "expiresAt"
+                ? warranty?.expiresAt ?? ""
+                : field.name === "notes"
+                  ? warranty?.notes ?? ""
+                  : field.defaultValue,
+  }));
+}
