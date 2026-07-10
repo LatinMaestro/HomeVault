@@ -84,7 +84,23 @@ export function RecordMetadataForm({
                     </span>
                   ) : null}
                 </span>
-                {field.multiline ? (
+                {field.name === "documentType" ? (
+                  <select
+                    name={field.name}
+                    defaultValue={field.defaultValue}
+                    aria-describedby={helperId}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">Choose a document type</option>
+                    <option value="MANUAL">Manual</option>
+                    <option value="WARRANTY">Warranty</option>
+                    <option value="RECEIPT">Receipt</option>
+                    <option value="INSURANCE">Insurance</option>
+                    <option value="SERVICE_RECORD">Service record</option>
+                    <option value="CERTIFICATE">Certificate</option>
+                    <option value="OTHER">Other</option>
+                  </select>
+                ) : field.multiline ? (
                   <Textarea
                     name={field.name}
                     placeholder={field.placeholder}
@@ -98,6 +114,16 @@ export function RecordMetadataForm({
                     placeholder={field.placeholder}
                     defaultValue={field.defaultValue}
                     aria-describedby={helperId}
+                    type={
+                      field.name === "purchaseDate" || field.name === "issuedAt"
+                        ? "date"
+                        : field.name === "totalAmount"
+                          ? "number"
+                          : "text"
+                    }
+                    inputMode={field.name === "totalAmount" ? "decimal" : undefined}
+                    min={field.name === "totalAmount" ? "0" : undefined}
+                    step={field.name === "totalAmount" ? "0.01" : undefined}
                   />
                 )}
                 {field.helperText ? (
