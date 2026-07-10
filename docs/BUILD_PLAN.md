@@ -66,19 +66,19 @@ Extended the proven mutation pattern to assets only:
 
 Phase 1G did not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
-## Phase 1H: Maintenance Persistence - Planned
+## Phase 1H: Maintenance Persistence - Complete
 
-Introduce the next controlled mutation workflow for maintenance only:
+Introduced the next controlled mutation workflow for maintenance only:
 
-- Add runtime-only maintenance task create and edit server actions.
-- Add a simple additive task completion action.
-- Keep deletes out of scope.
-- Keep recurrence automation, notifications and calendar integrations out of scope.
-- Keep warranty, receipt and document persistence out of scope.
-- Preserve database-independent builds and fallback/sample reads.
-- Show clear success, validation and unavailable-database messages.
+- Added runtime-only maintenance task create and edit server actions.
+- Added a simple additive task completion action.
+- Kept deletes out of scope.
+- Kept recurrence automation, notifications and calendar integrations out of scope.
+- Kept warranty, receipt and document persistence out of scope.
+- Preserved database-independent builds and fallback/sample reads.
+- Added clear success, validation and unavailable-database messages.
 
-Phase 1H must not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
+Phase 1H did not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
 ## Future Phases
 
