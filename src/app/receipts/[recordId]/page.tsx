@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
@@ -6,6 +7,7 @@ import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecord } from "@/lib/home-data";
 
@@ -50,8 +52,15 @@ export default async function RecordPage({
         <PageHeader
           eyebrow={record.data.type}
           title={record.data.title}
-          description="Metadata-only record detail. File uploads and storage remain out of scope."
-          action={<BackLinkButton href="/receipts">Back to receipts</BackLinkButton>}
+          description="Metadata-only record detail with database-backed editing when persistence is configured. File uploads and storage remain out of scope."
+          action={
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <BackLinkButton href="/receipts">Back to receipts</BackLinkButton>
+              <Button asChild variant="outline">
+                <Link href={`/receipts/${record.data.id}/edit`}>Edit metadata</Link>
+              </Button>
+            </div>
+          }
         />
         <DataSourceNote source={record.source} />
 
