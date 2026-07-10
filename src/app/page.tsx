@@ -30,16 +30,16 @@ const dashboardCards = [
   {
     title: "Receipts/documents",
     value: "Metadata only",
-    detail: "Review receipt, manual and service-note records without uploads or storage.",
+    detail: "Review and save receipt, manual and service-note metadata without uploads or storage.",
     href: "/receipts",
     icon: ReceiptText,
   },
 ];
 
 const reviewNotes = [
-  "Read-only database screens fall back to sample data when DATABASE_URL is unavailable.",
-  "Create and edit pages are preview shells only; saving is not enabled yet.",
-  "Uploads, OCR, AI, notifications, payments and analytics remain out of scope.",
+  "Runtime database screens use configured data and fall back to sample data when database access is unavailable.",
+  "Guarded create and edit saving is available for rooms, assets, maintenance, warranties, receipts and document metadata when the database is configured.",
+  "Deletes, uploads, OCR, AI, notifications, payments and analytics remain out of scope.",
 ];
 
 export default function HomePage() {
@@ -47,7 +47,7 @@ export default function HomePage() {
     <AppShell activeSection="Home">
       <section className="space-y-6">
         <div className="space-y-3">
-          <Badge variant="secondary">Phase 1D hardening</Badge>
+          <Badge variant="secondary">Home overview</Badge>
           <div className="max-w-3xl space-y-3">
             <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
               Keep the important home details close at hand.
@@ -91,7 +91,7 @@ export default function HomePage() {
             <CardDescription>Review status</CardDescription>
             <CardTitle className="flex items-center gap-2 text-xl">
               <ClipboardCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-              Safe for visual review
+              Current app status
             </CardTitle>
           </CardHeader>
           <CardContent>
