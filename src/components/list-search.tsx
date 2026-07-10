@@ -11,6 +11,7 @@ type ListSearchProps = {
   placeholder: string;
   resultCount: number;
   resultNoun: string;
+  resultNounPlural?: string;
 };
 
 export function ListSearch({
@@ -20,6 +21,7 @@ export function ListSearch({
   placeholder,
   resultCount,
   resultNoun,
+  resultNounPlural,
 }: ListSearchProps) {
   const hasQuery = defaultValue.trim().length > 0;
   const inputId = `list-search-${resultNoun.replaceAll(" ", "-")}`;
@@ -57,7 +59,7 @@ export function ListSearch({
       </form>
       <p className="text-sm text-muted-foreground" aria-live="polite">
         {hasQuery ? "Found" : "Showing"} {resultCount} {resultNoun}
-        {resultCount === 1 ? "" : "s"}.
+        {resultCount === 1 ? "" : resultNounPlural?.slice(resultNoun.length) ?? "s"}.
       </p>
     </div>
   );
