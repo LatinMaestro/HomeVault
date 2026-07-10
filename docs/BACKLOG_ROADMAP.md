@@ -15,15 +15,14 @@
 
 ## Near Term
 
-- Plan receipt/document metadata persistence improvements as a separate controlled slice.
-- Preserve metadata-only records, fallback-safe rendering and unavailable-database messaging.
+- Phase 1J receipt and document metadata persistence.
+- Add guarded create/edit actions while preserving metadata-only records, fallback-safe rendering and unavailable-database messaging.
 - Keep deletes, production auth, file storage, document uploads, OCR, email ingestion and reminder delivery out of the next mutation slice.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
 ## Future Approved-Decision Candidates
 
-- Receipt/document metadata improvements.
 - Production authentication.
 - Approved file storage.
 - Reminder delivery.
