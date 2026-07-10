@@ -108,6 +108,16 @@ Introduced guarded metadata writes for the combined records area:
 - Preserved database-independent builds and fallback/sample reads.
 - Kept deletes, uploads, storage, OCR, email ingestion and reminders out of scope.
 
+## Phase 1K: Form Choice Usability - Planned
+
+Improve the existing persisted forms without adding capability:
+
+- Populate room and asset relationship choices from fallback-safe current-home reads.
+- Use bounded menus for maintenance frequency and document type.
+- Use native date and amount inputs where appropriate.
+- Preserve current Server Actions, routes, data models and fallback behavior.
+- Keep auth, deletes, uploads, storage, OCR, email ingestion, reminders and financial workflows out of scope.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
