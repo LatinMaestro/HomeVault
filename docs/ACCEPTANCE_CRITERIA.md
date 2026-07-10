@@ -97,3 +97,11 @@
 - Current routes, Server Actions and mutation capabilities remain unchanged.
 - Missing or unavailable database states continue rendering useful choices and non-destructive messages.
 - No new models, routes, deletes, auth, uploads, storage, OCR, email ingestion, reminders, financial workflows, analytics or native app work was added.
+
+## Phase 1L - Complete
+
+- A live Vercel preview loads the dashboard and receipt/document chooser successfully.
+- The reviewed mobile viewport has no horizontal overflow and no browser console errors.
+- Dashboard and Settings copy accurately reflects guarded create/edit persistence.
+- GitHub Actions remains the authoritative automated gate while Vercel is behind `main`.
+- No routes, models, actions, auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.

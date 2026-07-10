@@ -99,6 +99,12 @@ Phase 1K improved existing forms with controlled room, asset, enum, date and amo
 
 See `docs/PHASE_1K_PLAN.md` for the completion record.
 
+## Phase 1L: Workflow Consistency Review - Complete
+
+Phase 1L reviewed the deployed app at desktop and mobile sizes, confirmed fallback screens load without browser errors, and corrected stale dashboard and Settings copy that still described approved create/edit persistence as unavailable.
+
+The review did not add routes, mutations, data models or product features. See `docs/PHASE_1L_REVIEW.md` for the review evidence.
+
 ## Later Phases
 
 - Production authentication.
