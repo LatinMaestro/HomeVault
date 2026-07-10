@@ -5,12 +5,14 @@ import { Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
+import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getWarranties } from "@/lib/home-data";
+import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
 export const metadata: Metadata = {
   title: "Warranties",
@@ -19,8 +21,21 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function WarrantiesPage() {
+export default async function WarrantiesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string | string[] }>;
+}) {
+  const query = getQueryParam((await searchParams).q);
   const warranties = await getWarranties();
+  const visibleWarranties = warranties.data.filter((warranty) =>
+    matchesQuery(query, [
+      warranty.assetName,
+      warranty.provider,
+      warranty.policyNumber,
+      warranty.expiresAt,
+    ]),
+  );
 
   return (
     <AppShell activeSection="Warranties">
@@ -59,9 +74,19 @@ export default async function WarrantiesPage() {
           ]}
         />
 
-        {warranties.data.length > 0 ? (
+        <ListSearch
+          action="/warranties"
+          defaultValue={query}
+          label="Search warranties"
+          placeholder="Search assets, providers or policies"
+          resultCount={visibleWarranties.length}
+          resultNoun="warranty"
+          resultNounPlural="warranties"
+        />
+
+        {visibleWarranties.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
-            {warranties.data.map((warranty) => (
+            {visibleWarranties.map((warranty) => (
               <Link key={warranty.id} href={`/warranties/${warranty.id}`}>
                 <Card className="h-full transition-colors hover:bg-accent">
                   <CardHeader>
@@ -78,11 +103,17 @@ export default async function WarrantiesPage() {
           </div>
         ) : (
           <EmptyState
-            title="No warranties yet"
-            description="Add warranty metadata when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
+            title={query ? "No matching warranties" : "No warranties yet"}
+            description={
+              query
+                ? "Try another asset, provider or policy number, or clear the current search."
+                : "Add warranty metadata when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
+            }
             action={
               <Button asChild>
-                <Link href="/warranties/new">Add first warranty</Link>
+                <Link href={query ? "/warranties" : "/warranties/new"}>
+                  {query ? "Clear search" : "Add first warranty"}
+                </Link>
               </Button>
             }
           />

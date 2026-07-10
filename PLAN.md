@@ -117,6 +117,12 @@ Phase 1N replaced database-style enum text on existing list and detail screens w
 
 See `docs/PHASE_1N_PLAN.md` for the completion record.
 
+## Phase 1O: Core List Search - Complete
+
+Phase 1O added accessible query-parameter search to the existing room, asset, maintenance, warranty and receipt/document lists using each page's already-loaded fallback-safe records.
+
+See `docs/PHASE_1O_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.

@@ -5,6 +5,7 @@ import { Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
+import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getRecords } from "@/lib/home-data";
+import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
 export const metadata: Metadata = {
   title: "Receipts and Documents",
@@ -20,8 +22,24 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ReceiptsPage() {
+export default async function ReceiptsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string | string[] }>;
+}) {
+  const query = getQueryParam((await searchParams).q);
   const records = await getRecords();
+  const visibleRecords = records.data.filter((record) =>
+    matchesQuery(query, [
+      record.title,
+      record.type,
+      record.secondary,
+      getDisplayLabel(record.secondary),
+      record.date,
+      record.linkedAsset,
+      record.amount,
+    ]),
+  );
 
   return (
     <AppShell activeSection="Receipts">
@@ -60,9 +78,18 @@ export default async function ReceiptsPage() {
           ]}
         />
 
-        {records.data.length > 0 ? (
+        <ListSearch
+          action="/receipts"
+          defaultValue={query}
+          label="Search receipts and documents"
+          placeholder="Search records, assets or document types"
+          resultCount={visibleRecords.length}
+          resultNoun="record"
+        />
+
+        {visibleRecords.length > 0 ? (
           <div className="grid gap-4">
-            {records.data.map((record) => (
+            {visibleRecords.map((record) => (
               <Link key={record.id} href={`/receipts/${record.id}`}>
                 <Card className="transition-colors hover:bg-accent">
                   <CardHeader>
@@ -85,11 +112,17 @@ export default async function ReceiptsPage() {
           </div>
         ) : (
           <EmptyState
-            title="No receipt or document records yet"
-            description="Add receipt or document metadata when database saving is configured. File uploads and storage remain out of scope."
+            title={query ? "No matching records" : "No receipt or document records yet"}
+            description={
+              query
+                ? "Try another merchant, asset or document type, or clear the current search."
+                : "Add receipt or document metadata when database saving is configured. File uploads and storage remain out of scope."
+            }
             action={
               <Button asChild>
-                <Link href="/receipts/new">Add first record</Link>
+                <Link href={query ? "/receipts" : "/receipts/new"}>
+                  {query ? "Clear search" : "Add first record"}
+                </Link>
               </Button>
             }
           />

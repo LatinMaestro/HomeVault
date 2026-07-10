@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
+import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getAssets } from "@/lib/home-data";
+import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
 export const metadata: Metadata = {
   title: "Assets",
@@ -19,8 +21,25 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function AssetsPage() {
+export default async function AssetsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string | string[] }>;
+}) {
+  const query = getQueryParam((await searchParams).q);
   const assets = await getAssets();
+  const visibleAssets = assets.data.filter((asset) =>
+    matchesQuery(query, [
+      asset.name,
+      asset.brand,
+      asset.model,
+      asset.status,
+      getDisplayLabel(asset.status),
+      asset.roomName,
+      asset.categoryName,
+      asset.purchaseDate,
+    ]),
+  );
 
   return (
     <AppShell activeSection="Vault">
@@ -56,9 +75,18 @@ export default async function AssetsPage() {
           ]}
         />
 
-        {assets.data.length > 0 ? (
+        <ListSearch
+          action="/vault/assets"
+          defaultValue={query}
+          label="Search assets"
+          placeholder="Search assets, rooms or brands"
+          resultCount={visibleAssets.length}
+          resultNoun="asset"
+        />
+
+        {visibleAssets.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
-            {assets.data.map((asset) => (
+            {visibleAssets.map((asset) => (
               <Link key={asset.id} href={`/vault/assets/${asset.id}`}>
                 <Card className="h-full transition-colors hover:bg-accent">
                   <CardHeader>
@@ -82,11 +110,17 @@ export default async function AssetsPage() {
           </div>
         ) : (
           <EmptyState
-            title="No assets yet"
-            description="Assets hold appliances, tools and equipment details. Add the first asset when database saving is configured."
+            title={query ? "No matching assets" : "No assets yet"}
+            description={
+              query
+                ? "Try another asset, brand or room, or clear the current search."
+                : "Assets hold appliances, tools and equipment details. Add the first asset when database saving is configured."
+            }
             action={
               <Button asChild variant="outline">
-                <Link href="/vault/assets/new">Add asset</Link>
+                <Link href={query ? "/vault/assets" : "/vault/assets/new"}>
+                  {query ? "Clear search" : "Add asset"}
+                </Link>
               </Button>
             }
           />

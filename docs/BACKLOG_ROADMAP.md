@@ -16,6 +16,7 @@
 - Phase 1L workflow consistency review and stale-status correction.
 - Phase 1M fallback-safe household dashboard.
 - Phase 1N readable status, frequency and document labels.
+- Phase 1O fallback-safe search across core lists.
 - Online-first development workflow.
 
 ## Near Term

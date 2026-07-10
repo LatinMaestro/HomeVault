@@ -4,11 +4,13 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
+import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRooms } from "@/lib/home-data";
+import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
 export const metadata: Metadata = {
   title: "Rooms",
@@ -17,8 +19,16 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function RoomsPage() {
+export default async function RoomsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string | string[] }>;
+}) {
+  const query = getQueryParam((await searchParams).q);
   const rooms = await getRooms();
+  const visibleRooms = rooms.data.filter((room) =>
+    matchesQuery(query, [room.name, room.floor, room.notes]),
+  );
   const linkedAssetCount = rooms.data.reduce((total, room) => total + room.assetCount, 0);
 
   return (
@@ -55,9 +65,18 @@ export default async function RoomsPage() {
           ]}
         />
 
-        {rooms.data.length > 0 ? (
+        <ListSearch
+          action="/vault/rooms"
+          defaultValue={query}
+          label="Search rooms"
+          placeholder="Search rooms or zones"
+          resultCount={visibleRooms.length}
+          resultNoun="room"
+        />
+
+        {visibleRooms.length > 0 ? (
           <div className="grid gap-4 md:grid-cols-2">
-            {rooms.data.map((room) => (
+            {visibleRooms.map((room) => (
               <Card key={room.id}>
                 <CardHeader>
                   <CardTitle>{room.name}</CardTitle>
@@ -74,11 +93,17 @@ export default async function RoomsPage() {
           </div>
         ) : (
           <EmptyState
-            title="No rooms yet"
-            description="Rooms help group assets by kitchen, laundry, garage, outdoor areas and other home zones. Add the first room when database saving is configured."
+            title={query ? "No matching rooms" : "No rooms yet"}
+            description={
+              query
+                ? "Try another room name or clear the current search."
+                : "Rooms help group assets by kitchen, laundry, garage, outdoor areas and other home zones. Add the first room when database saving is configured."
+            }
             action={
               <Button asChild variant="outline">
-                <Link href="/vault/rooms/new">Add room</Link>
+                <Link href={query ? "/vault/rooms" : "/vault/rooms/new"}>
+                  {query ? "Clear search" : "Add room"}
+                </Link>
               </Button>
             }
           />
