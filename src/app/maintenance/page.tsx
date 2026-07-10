@@ -34,8 +34,10 @@ export default async function MaintenancePage({
       task.title,
       task.description,
       task.frequency,
+      getDisplayLabel(task.frequency),
       task.nextDueDate,
       task.status,
+      getDisplayLabel(task.status),
       task.assetName,
     ]),
   );
