@@ -12,13 +12,14 @@
 - Phase 1H maintenance persistence.
 - Phase 1I warranty persistence.
 - Phase 1J receipt and document metadata persistence.
+- Phase 1K form choice usability.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1K form choice usability.
-- Add controlled room, asset, enum, date and amount inputs to existing persisted forms.
-- Preserve fallback-safe rendering and keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope.
+- Perform a controlled end-to-end review of the existing persisted workflows.
+- Confirm database and sample-fallback behavior across create, edit and detail flows.
+- Keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope until separately approved.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
