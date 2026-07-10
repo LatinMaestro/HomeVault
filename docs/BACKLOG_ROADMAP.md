@@ -18,6 +18,7 @@
 - Phase 1N readable status, frequency and document labels.
 - Phase 1O fallback-safe search across core lists.
 - Phase 1P maintenance due and warranty expiry awareness.
+- Phase 1Q navigation between existing linked household records.
 - Online-first development workflow.
 
 ## Near Term

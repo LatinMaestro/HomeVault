@@ -98,10 +98,14 @@ export default async function AssetDetailPage({
             <CardContent className="space-y-3 text-sm">
               {asset.data.warranties.length ? (
                 asset.data.warranties.map((warranty) => (
-                  <div key={warranty.id} className="rounded-md border bg-background p-3">
+                  <Link
+                    key={warranty.id}
+                    href={`/warranties/${warranty.id}`}
+                    className="block rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
                     <p className="font-medium text-foreground">{warranty.provider || "Warranty"}</p>
                     <p className="text-muted-foreground">Expires {warranty.expiresAt || "not recorded yet"}</p>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <p className="text-muted-foreground">No linked warranty records yet.</p>
@@ -116,10 +120,14 @@ export default async function AssetDetailPage({
             <CardContent className="space-y-3 text-sm">
               {asset.data.receipts.length ? (
                 asset.data.receipts.map((receipt) => (
-                  <div key={receipt.id} className="rounded-md border bg-background p-3">
+                  <Link
+                    key={receipt.id}
+                    href={`/receipts/${receipt.id}`}
+                    className="block rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
                     <p className="font-medium text-foreground">{receipt.merchant}</p>
                     <p className="text-muted-foreground">{receipt.totalAmount || "Amount not recorded yet"}</p>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <p className="text-muted-foreground">No linked receipt records yet.</p>
@@ -134,10 +142,14 @@ export default async function AssetDetailPage({
             <CardContent className="space-y-3 text-sm">
               {asset.data.documents.length ? (
                 asset.data.documents.map((document) => (
-                  <div key={document.id} className="rounded-md border bg-background p-3">
+                  <Link
+                    key={document.id}
+                    href={`/receipts/${document.id}`}
+                    className="block rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
                     <p className="font-medium text-foreground">{document.title}</p>
                     <p className="text-muted-foreground">{getDisplayLabel(document.type)}</p>
-                  </div>
+                  </Link>
                 ))
               ) : (
                 <p className="text-muted-foreground">No linked document records yet.</p>

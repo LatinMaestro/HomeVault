@@ -129,6 +129,12 @@ Phase 1P added runtime status cues for existing maintenance due dates and warran
 
 See `docs/PHASE_1P_PLAN.md` for the completion record.
 
+## Phase 1Q: Linked Record Navigation - Complete
+
+Phase 1Q made existing room, asset, maintenance, warranty, receipt and document relationships navigable using current routes and already-loaded relation IDs.
+
+See `docs/PHASE_1Q_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.

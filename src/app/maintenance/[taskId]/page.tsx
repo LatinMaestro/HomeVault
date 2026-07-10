@@ -67,6 +67,11 @@ export default async function MaintenanceTaskPage({
           <Button asChild variant="secondary">
             <Link href={`/maintenance/${task.data.id}/edit`}>Edit task</Link>
           </Button>
+          {task.data.assetId ? (
+            <Button asChild variant="outline">
+              <Link href={`/vault/assets/${task.data.assetId}`}>View linked asset</Link>
+            </Button>
+          ) : null}
         </div>
 
         <Card>

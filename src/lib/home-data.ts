@@ -192,6 +192,7 @@ export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetai
       nextDueDateInput: formatDateInput(task.nextDueDate),
       status: task.status,
       assetName: task.asset?.name,
+      assetId: task.asset?.id,
       serviceProviderName: task.serviceProvider?.name,
       completions: task.completions.map((completion) => ({
         id: completion.id,
@@ -225,6 +226,7 @@ export async function getWarranties(): Promise<Result<WarrantyDetail[]>> {
     return warranties.map((warranty) => ({
       id: warranty.id,
       assetName: warranty.asset.name,
+      assetId: warranty.asset.id,
       provider: warranty.provider,
       policyNumber: warranty.policyNumber,
       startsAt: formatDate(warranty.startsAt),
@@ -276,6 +278,7 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         secondary: receipt.receiptNumber ?? "Purchase receipt",
         date: formatDate(receipt.purchaseDate),
         linkedAsset: receipt.asset?.name,
+        linkedAssetId: receipt.asset?.id,
         amount: formatCurrency(receipt.totalAmountCents),
         notes: receipt.notes,
         merchant: receipt.merchant,
@@ -291,6 +294,7 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         secondary: document.type,
         date: formatDate(document.issuedAt),
         linkedAsset: document.asset?.name,
+        linkedAssetId: document.asset?.id,
         fileName: document.fileName,
         notes: document.notes,
         documentType: document.type,

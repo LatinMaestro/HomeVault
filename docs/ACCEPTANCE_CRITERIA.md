@@ -142,3 +142,14 @@
 - Derived status is not persisted and does not mutate records.
 - No reminders, notifications, jobs, queues, schema changes, dependencies or environment variables were added.
 - No auth, deletes, uploads, storage, OCR, AI, payments, analytics or native app work was added.
+
+## Phase 1Q - Complete
+
+- Rooms can open the existing asset list filtered to their name.
+- Asset details link to existing related warranty, receipt and document routes.
+- Maintenance, warranty and receipt/document details link to their associated asset when present.
+- Warranty details link to related document metadata when present.
+- Database and curated sample relationships use the same navigation behavior.
+- Missing optional relationships do not render misleading actions.
+- No routes, queries, schema changes, migrations, actions, dependencies or environment variables were added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
