@@ -60,6 +60,13 @@ export default async function RecordPage({
               <Button asChild variant="outline">
                 <Link href={`/receipts/${record.data.id}/edit`}>Edit metadata</Link>
               </Button>
+              {record.data.linkedAssetId ? (
+                <Button asChild variant="outline">
+                  <Link href={`/vault/assets/${record.data.linkedAssetId}`}>
+                    View linked asset
+                  </Link>
+                </Button>
+              ) : null}
             </div>
           }
         />
