@@ -9,6 +9,7 @@ import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getAssets } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -68,7 +69,7 @@ export default async function AssetsPage() {
                           {[asset.brand, asset.model].filter(Boolean).join(" ") || "Details not recorded"}
                         </CardDescription>
                       </div>
-                      <Badge variant="secondary">{asset.status}</Badge>
+                      <Badge variant="secondary">{getDisplayLabel(asset.status)}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2 text-sm text-muted-foreground">
