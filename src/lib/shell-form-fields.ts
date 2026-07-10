@@ -82,7 +82,7 @@ export const assetShellFields: ShellField[] = [
     label: "Room",
     name: "room",
     placeholder: "Kitchen",
-    helperText: "This will become a room relationship when saving is enabled.",
+    helperText: "Choose an existing room, or leave the asset unlinked.",
   },
   {
     label: "Notes",
@@ -161,7 +161,7 @@ export const maintenanceTaskShellFields: ShellField[] = [
     label: "Linked asset",
     name: "assetName",
     placeholder: "Battery lawn mower",
-    helperText: "Optional. If the asset name matches an existing asset, the task will be linked to it.",
+    helperText: "Optional. Choose an existing asset to link this task.",
   },
 ];
 
@@ -196,7 +196,7 @@ export const warrantyShellFields: ShellField[] = [
     name: "assetName",
     placeholder: "French door fridge",
     recommended: true,
-    helperText: "Warranty records must link to an existing asset by name.",
+    helperText: "Choose the existing asset covered by this warranty.",
   },
   {
     label: "Provider",
@@ -297,7 +297,7 @@ export const receiptShellFields: ShellField[] = [
     label: "Linked asset",
     name: "assetName",
     placeholder: "French door fridge",
-    helperText: "Optional. Enter the exact name of an existing asset to link it.",
+    helperText: "Optional. Choose an existing asset to link this record.",
   },
   {
     label: "Notes",
@@ -373,7 +373,7 @@ export const documentShellFields: ShellField[] = [
     label: "Linked asset",
     name: "assetName",
     placeholder: "French door fridge",
-    helperText: "Optional. Enter the exact name of an existing asset to link it.",
+    helperText: "Optional. Choose an existing asset to link this record.",
   },
   {
     label: "Notes",
