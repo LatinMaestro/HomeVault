@@ -1,10 +1,24 @@
 # Phase 1H Plan: Maintenance Persistence
 
-Phase 1H introduces the next controlled persistence slice after rooms and assets: maintenance tasks. The phase should make maintenance records more useful without adding reminders, notifications, recurrence automation, deletes, production auth or warranty persistence.
+Phase 1H introduces the next controlled persistence slice after rooms and assets: maintenance tasks. The phase makes maintenance records more useful without adding reminders, notifications, recurrence automation, deletes, production auth or warranty persistence.
 
 ## Status
 
-Phase 1H is planned. Implementation should begin only after this planning PR is merged.
+Phase 1H is in progress. The first implementation slice adds maintenance task create/edit persistence and additive completion records when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+
+## Implementation Slice
+
+The first Phase 1H code slice includes:
+
+- Runtime-only maintenance task create and edit Server Actions.
+- A runtime-only completion Server Action that creates additive maintenance completion records.
+- Maintenance create and edit routes at `/maintenance/new` and `/maintenance/[taskId]/edit`.
+- A maintenance task form consistent with the room and asset persistence forms.
+- A completion form on the maintenance detail page.
+- Optional asset association by matching the entered asset name to an existing asset.
+- Route revalidation for dashboard, maintenance and related asset routes after successful maintenance changes.
+- Updated maintenance list/detail copy so the screens describe available persistence accurately.
+- No delete actions, reminders, recurrence automation or warranty persistence.
 
 ## Goals
 
