@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
@@ -6,12 +7,13 @@ import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getWarranty } from "@/lib/home-data";
 
 export const metadata: Metadata = {
   title: "Warranty Detail",
-  description: "Review a read-only HomeVault warranty record.",
+  description: "Review a HomeVault warranty record.",
 };
 
 export const dynamic = "force-dynamic";
@@ -50,10 +52,16 @@ export default async function WarrantyPage({
         <PageHeader
           eyebrow="Warranties"
           title={warranty.data.assetName}
-          description="Read-only warranty detail."
+          description="Warranty detail with database-backed editing when persistence is configured. Document uploads and reminders are not enabled yet."
           action={<BackLinkButton href="/warranties">Back to warranties</BackLinkButton>}
         />
         <DataSourceNote source={warranty.source} />
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button asChild variant="secondary">
+            <Link href={`/warranties/${warranty.data.id}/edit`}>Edit warranty</Link>
+          </Button>
+        </div>
 
         <Card>
           <CardHeader>
