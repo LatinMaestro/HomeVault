@@ -58,7 +58,7 @@
 - Vercel builds do not require live database access.
 - No delete actions, warranty/receipt/document/maintenance persistence, production auth, uploads, OCR, AI, notifications, payments, analytics or native app work was added.
 
-## Phase 1H - Planned
+## Phase 1H - In Progress
 
 - Maintenance task create persists when `DATABASE_URL` is configured and the database is reachable.
 - Maintenance task edit persists when `DATABASE_URL` is configured and the task exists in the database.
