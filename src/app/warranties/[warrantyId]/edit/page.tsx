@@ -5,8 +5,8 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
 import { WarrantyForm } from "@/components/warranty-form";
-import { getWarranty } from "@/lib/home-data";
-import { getWarrantyEditShellFields } from "@/lib/shell-form-fields";
+import { getAssets, getWarranty } from "@/lib/home-data";
+import { getWarrantyEditShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "Edit Warranty",
@@ -21,7 +21,13 @@ export default async function EditWarrantyPage({
   params: Promise<{ warrantyId: string }>;
 }) {
   const { warrantyId } = await params;
-  const warranty = await getWarranty(warrantyId);
+  const [warranty, assets] = await Promise.all([getWarranty(warrantyId), getAssets()]);
+  const fields = withFieldOptions(
+    getWarrantyEditShellFields(warranty.data),
+    "assetName",
+    assets.data.map((asset) => asset.name),
+    "Choose an asset",
+  );
   const updateAction = updateWarrantyAction.bind(null, warrantyId);
 
   return (
@@ -36,7 +42,7 @@ export default async function EditWarrantyPage({
         <WarrantyForm
           title="Warranty details"
           description="Warranty saving is enabled when this warranty exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
-          fields={getWarrantyEditShellFields(warranty.data)}
+          fields={fields}
           action={updateAction}
           databaseConfigured={Boolean(process.env.DATABASE_URL)}
         />
