@@ -14,15 +14,15 @@
 
 ## Near Term
 
-- Plan warranty persistence as a separate controlled slice.
+- Phase 1I warranty persistence.
+- Enable metadata-only warranty create/edit when `DATABASE_URL` is configured.
 - Preserve fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, production auth, file storage, document uploads and unrelated persistence out of the warranty mutation slice until separately approved.
+- Keep deletes, production auth, file storage, document uploads, reminder delivery and unrelated persistence out of the warranty mutation slice.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
 ## Future Approved-Decision Candidates
 
-- Persistent warranty workflows.
 - Receipt/document metadata improvements.
 - Production authentication.
 - Approved file storage.

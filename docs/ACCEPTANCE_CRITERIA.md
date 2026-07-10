@@ -67,3 +67,13 @@
 - Maintenance list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
 - Vercel builds do not require live database access.
 - No delete actions, recurrence automation, notifications, warranty/receipt/document persistence, production auth, uploads, OCR, AI, payments, analytics or native app work was added.
+
+## Phase 1I - Planned
+
+- Warranty create persists when `DATABASE_URL` is configured and the database is reachable.
+- Warranty edit persists when `DATABASE_URL` is configured and the warranty exists in the database.
+- Warranty records are linked to an existing asset.
+- Missing or unavailable database states show clear non-destructive messages.
+- Warranty list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
+- Vercel builds do not require live database access.
+- No delete actions, document uploads/storage, reminder delivery, production auth, OCR, AI, payments, analytics or native app work is added.
