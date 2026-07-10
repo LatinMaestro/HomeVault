@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -7,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getRecords } from "@/lib/home-data";
 
@@ -26,7 +28,15 @@ export default async function ReceiptsPage() {
         <PageHeader
           eyebrow="Receipts"
           title="A calm place for receipts and important home documents."
-          description="These screens show metadata only. Uploads and production file storage remain out of scope."
+          description="Review and save receipt or document metadata when a database is configured. Uploads and production file storage remain out of scope."
+          action={
+            <Button asChild>
+              <Link href="/receipts/new">
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                Add record
+              </Link>
+            </Button>
+          }
         />
         <DataSourceNote source={records.source} />
         <ReviewSummary
@@ -39,7 +49,7 @@ export default async function ReceiptsPage() {
             {
               label: "Mode",
               value: "Metadata",
-              detail: "File uploads and storage remain deliberately disabled.",
+              detail: "Metadata create/edit can save when the database is configured. Files and deletes remain disabled.",
             },
             {
               label: "Data",
@@ -75,7 +85,12 @@ export default async function ReceiptsPage() {
         ) : (
           <EmptyState
             title="No receipt or document records yet"
-            description="Metadata-only records will appear here once saving is approved. File uploads and storage remain out of scope."
+            description="Add receipt or document metadata when database saving is configured. File uploads and storage remain out of scope."
+            action={
+              <Button asChild>
+                <Link href="/receipts/new">Add first record</Link>
+              </Button>
+            }
           />
         )}
       </section>
