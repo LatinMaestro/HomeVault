@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getAsset } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -69,7 +70,7 @@ export default async function AssetDetailPage({
           <CardHeader>
             <CardTitle>Asset information</CardTitle>
             <CardDescription>
-              <Badge variant="secondary">{asset.data.status}</Badge>
+              <Badge variant="secondary">{getDisplayLabel(asset.data.status)}</Badge>
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -135,7 +136,7 @@ export default async function AssetDetailPage({
                 asset.data.documents.map((document) => (
                   <div key={document.id} className="rounded-md border bg-background p-3">
                     <p className="font-medium text-foreground">{document.title}</p>
-                    <p className="text-muted-foreground">{document.type}</p>
+                    <p className="text-muted-foreground">{getDisplayLabel(document.type)}</p>
                   </div>
                 ))
               ) : (
