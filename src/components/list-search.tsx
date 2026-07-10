@@ -58,8 +58,8 @@ export function ListSearch({
         ) : null}
       </form>
       <p className="text-sm text-muted-foreground" aria-live="polite">
-        {hasQuery ? "Found" : "Showing"} {resultCount} {resultNoun}
-        {resultCount === 1 ? "" : resultNounPlural?.slice(resultNoun.length) ?? "s"}.
+        {hasQuery ? "Found" : "Showing"} {resultCount}{" "}
+        {resultCount === 1 ? resultNoun : resultNounPlural ?? `${resultNoun}s`}.
       </p>
     </div>
   );
