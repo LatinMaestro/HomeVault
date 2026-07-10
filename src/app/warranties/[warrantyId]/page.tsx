@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getWarranty } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -102,7 +103,7 @@ export default async function WarrantyPage({
                   className="block rounded-md border bg-background p-3 transition-colors hover:bg-accent"
                 >
                   <p className="font-medium text-foreground">{document.title}</p>
-                  <p className="text-muted-foreground">{document.type}</p>
+                  <p className="text-muted-foreground">{getDisplayLabel(document.type)}</p>
                 </Link>
               ))}
             </CardContent>
