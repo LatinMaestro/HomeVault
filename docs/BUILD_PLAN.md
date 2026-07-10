@@ -138,6 +138,10 @@ Added server-rendered GET search across all existing core lists. Filtering uses 
 
 Added runtime-only Brisbane-calendar status cues for existing maintenance due dates and warranty expiry dates across Home, list and detail surfaces. No reminder delivery or persisted status was added.
 
+## Phase 1Q: Linked Record Navigation - Complete
+
+Connected existing room, asset, task, warranty, receipt and document relationships to their current routes using relation IDs already loaded by the data layer.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
