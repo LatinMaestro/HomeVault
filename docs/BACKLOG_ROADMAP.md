@@ -9,15 +9,14 @@
 - Phase 1E persistence readiness for room and asset shell forms.
 - Phase 1F first room persistence.
 - Phase 1G asset persistence.
+- Phase 1H maintenance persistence.
 - Online-first development workflow.
 
 ## Near Term
 
-- Phase 1H maintenance persistence.
-- Enable maintenance task create/edit when `DATABASE_URL` is configured.
-- Add simple additive maintenance completion records.
+- Plan warranty persistence as a separate controlled slice.
 - Preserve fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, recurrence automation, notifications, production auth, file storage and unrelated persistence out of the maintenance mutation slice.
+- Keep deletes, production auth, file storage, document uploads and unrelated persistence out of the warranty mutation slice until separately approved.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 

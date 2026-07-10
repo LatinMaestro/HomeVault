@@ -1,14 +1,12 @@
 # Phase 1H Plan: Maintenance Persistence
 
-Phase 1H introduces the next controlled persistence slice after rooms and assets: maintenance tasks. The phase makes maintenance records more useful without adding reminders, notifications, recurrence automation, deletes, production auth or warranty persistence.
+Phase 1H introduced the next controlled persistence slice after rooms and assets: maintenance tasks. The phase made maintenance records more useful without adding reminders, notifications, recurrence automation, deletes, production auth or warranty persistence.
 
 ## Status
 
-Phase 1H is in progress. The first implementation slice adds maintenance task create/edit persistence and additive completion records when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+Phase 1H is complete. The implementation adds maintenance task create/edit persistence and additive completion records when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
 
-## Implementation Slice
-
-The first Phase 1H code slice includes:
+## Completed Work
 
 - Runtime-only maintenance task create and edit Server Actions.
 - A runtime-only completion Server Action that creates additive maintenance completion records.
@@ -64,16 +62,16 @@ The first Phase 1H code slice includes:
 
 - `DATABASE_URL` may be used only at runtime.
 - No database queries or Prisma client creation may happen at module import time.
-- Missing `DATABASE_URL` should render the same useful sample/fallback maintenance screens and show non-destructive messages on attempted saves.
-- Failed writes should never imply that a task was saved or completed.
-- Completion records should be additive only; Phase 1H should not delete or rewrite historical completion records.
+- Missing `DATABASE_URL` renders the same useful sample/fallback maintenance screens and shows non-destructive messages on attempted saves.
+- Failed writes never imply that a task was saved or completed.
+- Completion records are additive only; Phase 1H does not delete or rewrite historical completion records.
 
 ## UI Behavior
 
-- Maintenance create/edit forms should be mobile-first and consistent with room and asset persistence forms.
-- Task completion should be explicit and non-destructive.
-- Copy should avoid implying notifications, automated reminders or recurring schedule generation are active.
-- The maintenance detail page may show completion history if available, but should remain clear when using fallback data.
+- Maintenance create/edit forms are mobile-first and consistent with room and asset persistence forms.
+- Task completion is explicit and non-destructive.
+- Copy avoids implying notifications, automated reminders or recurring schedule generation are active.
+- The maintenance detail page can show completion history if available and remains clear when using fallback data.
 
 ## Review Approach
 
@@ -84,7 +82,7 @@ The first Phase 1H code slice includes:
 
 ## Completion Criteria
 
-Phase 1H will be complete when:
+Phase 1H is complete because:
 
 - Maintenance task create persists when `DATABASE_URL` is configured and the database is reachable.
 - Maintenance task edit persists when `DATABASE_URL` is configured and the task exists in the database.
@@ -92,7 +90,7 @@ Phase 1H will be complete when:
 - Missing or unavailable database states show clear non-destructive messages.
 - Maintenance list/detail pages continue rendering useful sample/fallback data when database access is unavailable.
 - Vercel builds do not require live database access.
-- No delete actions, notifications, recurrence automation, warranty persistence, production auth, uploads, OCR, AI, payments, analytics or native app work is added.
+- No delete actions, notifications, recurrence automation, warranty persistence, production auth, uploads, OCR, AI, payments, analytics or native app work was added.
 
 ## Client Actions
 
