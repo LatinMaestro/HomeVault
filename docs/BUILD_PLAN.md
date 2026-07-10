@@ -122,6 +122,10 @@ Improved the existing persisted forms without adding capability:
 
 Reviewed the available Vercel deployment at desktop and mobile sizes, confirmed useful fallback rendering without console errors, and corrected stale dashboard and Settings persistence-status copy. No routes, models, actions or new capabilities were added.
 
+## Phase 1M: Household Dashboard - Complete
+
+Aggregated the existing fallback-safe household reads into a useful Home snapshot covering maintenance, warranty, inventory, receipt and document records. The dashboard remains runtime-only and database-independent at build time.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
