@@ -10,6 +10,7 @@ import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getRecords } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -68,7 +69,7 @@ export default async function ReceiptsPage() {
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                       <div>
                         <CardTitle>{record.title}</CardTitle>
-                        <CardDescription>{record.secondary}</CardDescription>
+                        <CardDescription>{getDisplayLabel(record.secondary)}</CardDescription>
                       </div>
                       <Badge variant="secondary">{record.type}</Badge>
                     </div>

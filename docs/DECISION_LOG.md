@@ -62,3 +62,4 @@
 | 2026-07-10 | Keep GitHub Actions authoritative while Vercel deployment lags `main`. | Automated Prisma, lint, typecheck and build evidence should remain dependable without consuming extra manual Vercel deployments. | Accepted |
 | 2026-07-10 | Use existing fallback-safe loaders for the household dashboard. | The Home screen can become useful immediately without adding a new query contract, schema change or build-time database dependency. | Accepted |
 | 2026-07-10 | Treat mixed dashboard data sources as sample mode. | The UI must not imply that every dashboard value came from the configured database when any area used fallback data. | Accepted |
+| 2026-07-10 | Format stored enum values only at the presentation boundary. | Homeowners should see natural language while Prisma values and Server Action contracts remain stable. | Accepted |

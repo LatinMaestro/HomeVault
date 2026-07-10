@@ -114,3 +114,11 @@
 - Missing or unavailable database access renders useful sample data.
 - No build-time database access, schema change, mutation, dependency or new environment variable was added.
 - No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1N - Complete
+
+- Existing list and detail screens use readable status, frequency and document-type labels.
+- Stored enum values and form submission values remain unchanged.
+- Unknown or user-authored display values remain unchanged.
+- No routes, models, migrations, actions, dependencies or environment variables were added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.

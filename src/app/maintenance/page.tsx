@@ -10,6 +10,7 @@ import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getMaintenanceTasks } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -70,7 +71,7 @@ export default async function MaintenancePage() {
                         <CardTitle>{task.title}</CardTitle>
                         <CardDescription>{task.description || "No description recorded"}</CardDescription>
                       </div>
-                      <Badge variant="secondary">{task.status}</Badge>
+                      <Badge variant="secondary">{getDisplayLabel(task.status)}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="flex flex-wrap gap-4 text-sm text-muted-foreground">
@@ -78,7 +79,7 @@ export default async function MaintenancePage() {
                       <CalendarClock className="h-4 w-4" aria-hidden="true" />
                       {task.nextDueDate || "No due date"}
                     </span>
-                    <span>{task.frequency}</span>
+                    <span>{getDisplayLabel(task.frequency)}</span>
                     {task.assetName ? <span>{task.assetName}</span> : null}
                   </CardContent>
                 </Card>

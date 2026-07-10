@@ -9,6 +9,7 @@ import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getRecord } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -72,7 +73,7 @@ export default async function RecordPage({
             <FieldList
               fields={[
                 { label: "Type", value: record.data.type },
-                { label: "Details", value: record.data.secondary },
+                { label: "Details", value: getDisplayLabel(record.data.secondary) },
                 { label: "Date", value: record.data.date },
                 { label: "Linked asset", value: record.data.linkedAsset },
                 { label: "Amount", value: record.data.amount },

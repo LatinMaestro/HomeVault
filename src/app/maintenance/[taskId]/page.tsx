@@ -11,6 +11,7 @@ import { MaintenanceCompletionForm } from "@/components/maintenance-form";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDisplayLabel } from "@/lib/display-labels";
 import { getMaintenanceTask } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -73,9 +74,9 @@ export default async function MaintenanceTaskPage({
           <CardContent>
             <FieldList
               fields={[
-                { label: "Frequency", value: task.data.frequency },
+                { label: "Frequency", value: getDisplayLabel(task.data.frequency) },
                 { label: "Next due", value: task.data.nextDueDate },
-                { label: "Status", value: task.data.status },
+                { label: "Status", value: getDisplayLabel(task.data.status) },
                 { label: "Asset", value: task.data.assetName },
                 { label: "Service provider", value: task.data.serviceProviderName },
               ]}
