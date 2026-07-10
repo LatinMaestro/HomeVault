@@ -81,7 +81,11 @@ async function getCurrentHomeId() {
     where: { name: sampleHome.name },
     select: { id: true },
   });
-  return home?.id ?? null;
+  if (!home) {
+    throw new Error("Current HomeVault home was not found");
+  }
+
+  return home.id;
 }
 
 export async function getRooms(): Promise<Result<RoomSummary[]>> {
