@@ -17,6 +17,11 @@ export type ShellField = {
   multiline?: boolean;
   recommended?: boolean;
   helperText?: string;
+  inputType?: "text" | "date" | "number";
+  min?: string;
+  step?: string;
+  options?: Array<{ label: string; value: string }>;
+  emptyOptionLabel?: string;
 };
 
 export function ShellForm({

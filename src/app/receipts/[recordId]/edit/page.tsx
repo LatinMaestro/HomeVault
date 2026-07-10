@@ -6,8 +6,12 @@ import { BackLinkButton } from "@/components/back-link-button";
 import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { RecordMetadataForm } from "@/components/record-metadata-form";
-import { getRecord } from "@/lib/home-data";
-import { getDocumentEditShellFields, getReceiptEditShellFields } from "@/lib/shell-form-fields";
+import { getAssets, getRecord } from "@/lib/home-data";
+import {
+  getDocumentEditShellFields,
+  getReceiptEditShellFields,
+  withFieldOptions,
+} from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "Edit Record",
@@ -22,7 +26,7 @@ export default async function EditRecordPage({
   params: Promise<{ recordId: string }>;
 }) {
   const { recordId } = await params;
-  const record = await getRecord(recordId);
+  const [record, assets] = await Promise.all([getRecord(recordId), getAssets()]);
 
   if (!record.data) {
     return (
@@ -47,9 +51,15 @@ export default async function EditRecordPage({
   const action = isReceipt
     ? updateReceiptAction.bind(null, recordId)
     : updateDocumentAction.bind(null, recordId);
-  const fields = isReceipt
+  const baseFields = isReceipt
     ? getReceiptEditShellFields(record.data)
     : getDocumentEditShellFields(record.data);
+  const fields = withFieldOptions(
+    baseFields,
+    "assetName",
+    assets.data.map((asset) => asset.name),
+    "No linked asset",
+  );
 
   return (
     <AppShell activeSection="Receipts">

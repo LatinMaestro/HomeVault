@@ -89,7 +89,7 @@
 - Vercel builds do not require live database access.
 - No delete actions, file uploads/storage, OCR, email ingestion, reminder delivery, budgeting, payments, production auth, analytics or native app work was added.
 
-## Phase 1K - Planned
+## Phase 1K - In Progress
 
 - Existing room and asset relationship fields offer valid current-home or sample choices.
 - Maintenance frequency and document type use bounded controls.

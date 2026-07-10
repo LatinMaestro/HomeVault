@@ -5,8 +5,8 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { MaintenanceTaskForm } from "@/components/maintenance-form";
 import { PageHeader } from "@/components/page-header";
-import { getMaintenanceTask } from "@/lib/home-data";
-import { getMaintenanceTaskEditShellFields } from "@/lib/shell-form-fields";
+import { getAssets, getMaintenanceTask } from "@/lib/home-data";
+import { getMaintenanceTaskEditShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "Edit Maintenance Task",
@@ -21,7 +21,13 @@ export default async function EditMaintenanceTaskPage({
   params: Promise<{ taskId: string }>;
 }) {
   const { taskId } = await params;
-  const task = await getMaintenanceTask(taskId);
+  const [task, assets] = await Promise.all([getMaintenanceTask(taskId), getAssets()]);
+  const fields = withFieldOptions(
+    getMaintenanceTaskEditShellFields(task.data),
+    "assetName",
+    assets.data.map((asset) => asset.name),
+    "No linked asset",
+  );
   const updateAction = updateMaintenanceTaskAction.bind(null, taskId);
 
   return (
@@ -36,7 +42,7 @@ export default async function EditMaintenanceTaskPage({
         <MaintenanceTaskForm
           title="Task details"
           description="Maintenance saving is enabled when this task exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
-          fields={getMaintenanceTaskEditShellFields(task.data)}
+          fields={fields}
           action={updateAction}
           databaseConfigured={Boolean(process.env.DATABASE_URL)}
         />

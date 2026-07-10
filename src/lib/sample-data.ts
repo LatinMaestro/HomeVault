@@ -47,6 +47,7 @@ export type MaintenanceTaskSummary = {
   description?: string | null;
   frequency: string;
   nextDueDate?: string | null;
+  nextDueDateInput?: string | null;
   status: string;
   assetName?: string | null;
 };
@@ -71,6 +72,8 @@ export type WarrantySummary = {
 
 export type WarrantyDetail = WarrantySummary & {
   startsAt?: string | null;
+  startsAtInput?: string | null;
+  expiresAtInput?: string | null;
   notes?: string | null;
   documents: Array<{
     id: string;
@@ -169,6 +172,7 @@ export const sampleMaintenanceTasks: MaintenanceTaskDetail[] = [
     description: "Rinse and dry split-system filters before reinstalling.",
     frequency: "QUARTERLY",
     nextDueDate: "1 Sep 2026",
+    nextDueDateInput: "2026-09-01",
     status: "ACTIVE",
     serviceProviderName: "Brisbane Home Electrical",
     completions: [],
@@ -179,6 +183,7 @@ export const sampleMaintenanceTasks: MaintenanceTaskDetail[] = [
     description: "Check blades, battery contacts and mower deck.",
     frequency: "SIX_MONTHLY",
     nextDueDate: "15 Oct 2026",
+    nextDueDateInput: "2026-10-15",
     status: "ACTIVE",
     assetName: "Battery lawn mower",
     completions: [
@@ -198,7 +203,9 @@ export const sampleWarranties: WarrantyDetail[] = [
     assetName: "French door fridge",
     provider: "Fisher & Paykel",
     startsAt: "14 Mar 2024",
+    startsAtInput: "2024-03-14",
     expiresAt: "14 Mar 2026",
+    expiresAtInput: "2026-03-14",
     notes: "Sample manufacturer warranty.",
     documents: [],
   },

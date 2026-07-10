@@ -165,6 +165,7 @@ export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetai
       description: task.description,
       frequency: task.frequency,
       nextDueDate: formatDate(task.nextDueDate),
+      nextDueDateInput: formatDateInput(task.nextDueDate),
       status: task.status,
       assetName: task.asset?.name,
       serviceProviderName: task.serviceProvider?.name,
@@ -203,7 +204,9 @@ export async function getWarranties(): Promise<Result<WarrantyDetail[]>> {
       provider: warranty.provider,
       policyNumber: warranty.policyNumber,
       startsAt: formatDate(warranty.startsAt),
+      startsAtInput: formatDateInput(warranty.startsAt),
       expiresAt: formatDate(warranty.expiresAt),
+      expiresAtInput: formatDateInput(warranty.expiresAt),
       notes: warranty.notes,
       documents: warranty.documents.map((document) => ({
         id: document.id,
