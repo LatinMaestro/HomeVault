@@ -4,15 +4,25 @@ import { createDocumentAction } from "@/app/receipts/actions";
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
+import { getAssets } from "@/lib/home-data";
 import { RecordMetadataForm } from "@/components/record-metadata-form";
-import { documentShellFields } from "@/lib/shell-form-fields";
+import { documentShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
   title: "New Document Record",
   description: "Create document metadata when HomeVault database persistence is configured.",
 };
 
-export default function NewDocumentPage() {
+export const dynamic = "force-dynamic";
+
+export default async function NewDocumentPage() {
+  const assets = await getAssets();
+  const fields = withFieldOptions(
+    documentShellFields,
+    "assetName",
+    assets.data.map((asset) => asset.name),
+    "No linked asset",
+  );
   return (
     <AppShell activeSection="Receipts">
       <section className="space-y-5">
@@ -26,7 +36,7 @@ export default function NewDocumentPage() {
           recordType="document"
           title="Document details"
           description="Add a clear title and supported document type. File handling remains disabled."
-          fields={documentShellFields}
+          fields={fields}
           action={createDocumentAction}
           databaseConfigured={Boolean(process.env.DATABASE_URL)}
         />
