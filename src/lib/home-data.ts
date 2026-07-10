@@ -19,6 +19,24 @@ type Result<T> = {
   source: DataSource;
 };
 
+export type HomeDashboard = {
+  roomCount: number;
+  assetCount: number;
+  assetNames: string[];
+  nextTask: {
+    id: string;
+    title: string;
+    nextDueDate?: string | null;
+  } | null;
+  nextWarranty: {
+    id: string;
+    assetName: string;
+    expiresAt?: string | null;
+  } | null;
+  receiptCount: number;
+  documentCount: number;
+};
+
 const dateFormatter = new Intl.DateTimeFormat("en-AU", {
   day: "numeric",
   month: "short",
@@ -63,7 +81,11 @@ async function getCurrentHomeId() {
     where: { name: sampleHome.name },
     select: { id: true },
   });
-  return home?.id ?? null;
+  if (!home) {
+    throw new Error("Current HomeVault home was not found");
+  }
+
+  return home.id;
 }
 
 export async function getRooms(): Promise<Result<RoomSummary[]>> {
@@ -281,5 +303,46 @@ export async function getRecord(id: string): Promise<Result<RecordDetail | null>
   return {
     data: records.data.find((record) => record.id === id) ?? null,
     source: records.source,
+  };
+}
+
+export async function getHomeDashboard(): Promise<Result<HomeDashboard>> {
+  const [rooms, assets, tasks, warranties, records] = await Promise.all([
+    getRooms(),
+    getAssets(),
+    getMaintenanceTasks(),
+    getWarranties(),
+    getRecords(),
+  ]);
+
+  const nextTask = tasks.data.find((task) => task.status === "ACTIVE") ?? tasks.data[0] ?? null;
+  const nextWarranty = warranties.data[0] ?? null;
+
+  return {
+    data: {
+      roomCount: rooms.data.length,
+      assetCount: assets.data.length,
+      assetNames: assets.data.slice(0, 2).map((asset) => asset.name),
+      nextTask: nextTask
+        ? {
+            id: nextTask.id,
+            title: nextTask.title,
+            nextDueDate: nextTask.nextDueDate,
+          }
+        : null,
+      nextWarranty: nextWarranty
+        ? {
+            id: nextWarranty.id,
+            assetName: nextWarranty.assetName,
+            expiresAt: nextWarranty.expiresAt,
+          }
+        : null,
+      receiptCount: records.data.filter((record) => record.type === "Receipt").length,
+      documentCount: records.data.filter((record) => record.type === "Document").length,
+    },
+    source:
+      [rooms, assets, tasks, warranties, records].every((result) => result.source === "database")
+        ? "database"
+        : "sample",
   };
 }

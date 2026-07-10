@@ -2,47 +2,69 @@ import Link from "next/link";
 import { ArrowRight, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
+import { DataSourceNote } from "@/components/data-source-note";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-const dashboardCards = [
-  {
-    title: "Maintenance",
-    value: "Upcoming tasks",
-    detail: "Review recurring upkeep and service history before reminders are introduced.",
-    href: "/maintenance",
-    icon: Wrench,
-  },
-  {
-    title: "Warranties",
-    value: "Coverage records",
-    detail: "Keep provider, policy and expiry details close when something breaks.",
-    href: "/warranties",
-    icon: ShieldCheck,
-  },
-  {
-    title: "Assets",
-    value: "Home inventory",
-    detail: "Browse appliances, tools and equipment grouped by room and category.",
-    href: "/vault/assets",
-    icon: Home,
-  },
-  {
-    title: "Receipts/documents",
-    value: "Metadata only",
-    detail: "Review and save receipt, manual and service-note metadata without uploads or storage.",
-    href: "/receipts",
-    icon: ReceiptText,
-  },
-];
+import { getHomeDashboard } from "@/lib/home-data";
 
 const reviewNotes = [
-  "Runtime database screens use configured data and fall back to sample data when database access is unavailable.",
+  "The household overview uses configured records and falls back to sample data when database access is unavailable.",
   "Guarded create and edit saving is available for rooms, assets, maintenance, warranties, receipts and document metadata when the database is configured.",
   "Deletes, uploads, OCR, AI, notifications, payments and analytics remain out of scope.",
 ];
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const dashboard = await getHomeDashboard();
+  const {
+    assetCount,
+    assetNames,
+    documentCount,
+    nextTask,
+    nextWarranty,
+    receiptCount,
+    roomCount,
+  } = dashboard.data;
+
+  const dashboardCards = [
+    {
+      title: "Next maintenance",
+      value: nextTask?.title ?? "No tasks yet",
+      detail: nextTask?.nextDueDate
+        ? `Due ${nextTask.nextDueDate}`
+        : "Add a due date when the next maintenance task is ready.",
+      href: nextTask ? `/maintenance/${nextTask.id}` : "/maintenance",
+      icon: Wrench,
+    },
+    {
+      title: "Warranty coverage",
+      value: nextWarranty?.assetName ?? "No warranties yet",
+      detail: nextWarranty?.expiresAt
+        ? `Coverage date: ${nextWarranty.expiresAt}`
+        : "Keep warranty metadata linked to the relevant household asset.",
+      href: nextWarranty ? `/warranties/${nextWarranty.id}` : "/warranties",
+      icon: ShieldCheck,
+    },
+    {
+      title: "Home inventory",
+      value: `${assetCount} ${assetCount === 1 ? "asset" : "assets"}`,
+      detail:
+        assetNames.length > 0
+          ? `${roomCount} ${roomCount === 1 ? "room" : "rooms"} · ${assetNames.join(", ")}`
+          : `${roomCount} ${roomCount === 1 ? "room" : "rooms"} ready for household records.`,
+      href: "/vault/assets",
+      icon: Home,
+    },
+    {
+      title: "Receipts and documents",
+      value: `${receiptCount + documentCount} ${receiptCount + documentCount === 1 ? "record" : "records"}`,
+      detail: `${receiptCount} ${receiptCount === 1 ? "receipt" : "receipts"} · ${documentCount} ${documentCount === 1 ? "document" : "documents"}`,
+      href: "/receipts",
+      icon: ReceiptText,
+    },
+  ];
+
   return (
     <AppShell activeSection="Home">
       <section className="space-y-6">
@@ -58,6 +80,8 @@ export default function HomePage() {
             </p>
           </div>
         </div>
+
+        <DataSourceNote source={dashboard.source} />
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {dashboardCards.map((card) => {
@@ -88,10 +112,10 @@ export default function HomePage() {
 
         <Card>
           <CardHeader>
-            <CardDescription>Review status</CardDescription>
+            <CardDescription>Current boundaries</CardDescription>
             <CardTitle className="flex items-center gap-2 text-xl">
               <ClipboardCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-              Current app status
+              Household records, kept practical
             </CardTitle>
           </CardHeader>
           <CardContent>

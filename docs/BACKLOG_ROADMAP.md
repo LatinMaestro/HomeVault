@@ -14,11 +14,12 @@
 - Phase 1J receipt and document metadata persistence.
 - Phase 1K form choice usability.
 - Phase 1L workflow consistency review and stale-status correction.
+- Phase 1M fallback-safe household dashboard.
 - Online-first development workflow.
 
 ## Near Term
 
-- Review the latest merged app on Vercel after deployment catches up with `main`.
+- Review the latest merged dashboard on Vercel after deployment catches up with `main`.
 - Continue controlled database and sample-fallback review across create, edit and detail flows.
 - Keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope until separately approved.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.

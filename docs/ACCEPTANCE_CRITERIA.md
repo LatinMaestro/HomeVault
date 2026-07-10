@@ -105,3 +105,12 @@
 - Dashboard and Settings copy accurately reflects guarded create/edit persistence.
 - GitHub Actions remains the authoritative automated gate while Vercel is behind `main`.
 - No routes, models, actions, auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1M - Complete
+
+- Home summarises existing maintenance, warranty, inventory, receipt and document data.
+- Dashboard summaries link to existing list or detail routes.
+- Runtime database data is used when all dashboard reads succeed.
+- Missing or unavailable database access renders useful sample data.
+- No build-time database access, schema change, mutation, dependency or new environment variable was added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.

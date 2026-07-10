@@ -105,6 +105,12 @@ Phase 1L reviewed the deployed app at desktop and mobile sizes, confirmed fallba
 
 The review did not add routes, mutations, data models or product features. See `docs/PHASE_1L_REVIEW.md` for the review evidence.
 
+## Phase 1M: Household Dashboard - Complete
+
+Phase 1M turned Home into a useful household snapshot using existing fallback-safe runtime reads. It surfaces upcoming maintenance, warranty coverage, inventory counts and receipt/document counts without adding models, mutations or integrations.
+
+See `docs/PHASE_1M_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.
