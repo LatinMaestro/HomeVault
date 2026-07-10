@@ -5,6 +5,7 @@ import { CalendarClock, Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
+import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getMaintenanceTasks } from "@/lib/home-data";
+import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
 export const metadata: Metadata = {
   title: "Maintenance",
@@ -20,8 +22,23 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function MaintenancePage() {
+export default async function MaintenancePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string | string[] }>;
+}) {
+  const query = getQueryParam((await searchParams).q);
   const tasks = await getMaintenanceTasks();
+  const visibleTasks = tasks.data.filter((task) =>
+    matchesQuery(query, [
+      task.title,
+      task.description,
+      task.frequency,
+      task.nextDueDate,
+      task.status,
+      task.assetName,
+    ]),
+  );
 
   return (
     <AppShell activeSection="Maintenance">
@@ -60,9 +77,18 @@ export default async function MaintenancePage() {
           ]}
         />
 
-        {tasks.data.length > 0 ? (
+        <ListSearch
+          action="/maintenance"
+          defaultValue={query}
+          label="Search maintenance tasks"
+          placeholder="Search tasks, assets or frequencies"
+          resultCount={visibleTasks.length}
+          resultNoun="task"
+        />
+
+        {visibleTasks.length > 0 ? (
           <div className="grid gap-4">
-            {tasks.data.map((task) => (
+            {visibleTasks.map((task) => (
               <Link key={task.id} href={`/maintenance/${task.id}`}>
                 <Card className="transition-colors hover:bg-accent">
                   <CardHeader>
@@ -88,11 +114,17 @@ export default async function MaintenancePage() {
           </div>
         ) : (
           <EmptyState
-            title="No maintenance tasks yet"
-            description="Add a maintenance task when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
+            title={query ? "No matching tasks" : "No maintenance tasks yet"}
+            description={
+              query
+                ? "Try another task, asset or frequency, or clear the current search."
+                : "Add a maintenance task when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
+            }
             action={
               <Button asChild>
-                <Link href="/maintenance/new">Add first task</Link>
+                <Link href={query ? "/maintenance" : "/maintenance/new"}>
+                  {query ? "Clear search" : "Add first task"}
+                </Link>
               </Button>
             }
           />
