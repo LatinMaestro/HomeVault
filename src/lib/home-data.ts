@@ -35,6 +35,11 @@ function formatDate(value?: Date | string | null) {
   return dateFormatter.format(new Date(value));
 }
 
+function formatDateInput(value?: Date | string | null) {
+  if (!value) return null;
+  return new Date(value).toISOString().slice(0, 10);
+}
+
 function formatCurrency(cents?: number | null) {
   if (typeof cents !== "number") return null;
   return currencyFormatter.format(cents / 100);
@@ -246,6 +251,11 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         linkedAsset: receipt.asset?.name,
         amount: formatCurrency(receipt.totalAmountCents),
         notes: receipt.notes,
+        merchant: receipt.merchant,
+        receiptNumber: receipt.receiptNumber,
+        purchaseDateInput: formatDateInput(receipt.purchaseDate),
+        totalAmountCents: receipt.totalAmountCents,
+        currency: receipt.currency,
       })),
       ...documents.map((document) => ({
         id: document.id,
@@ -256,6 +266,8 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         linkedAsset: document.asset?.name,
         fileName: document.fileName,
         notes: document.notes,
+        documentType: document.type,
+        issuedAtInput: formatDateInput(document.issuedAt),
       })),
     ];
   }, sampleRecords);
