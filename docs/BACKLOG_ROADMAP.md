@@ -13,12 +13,13 @@
 - Phase 1I warranty persistence.
 - Phase 1J receipt and document metadata persistence.
 - Phase 1K form choice usability.
+- Phase 1L workflow consistency review and stale-status correction.
 - Online-first development workflow.
 
 ## Near Term
 
-- Perform a controlled end-to-end review of the existing persisted workflows.
-- Confirm database and sample-fallback behavior across create, edit and detail flows.
+- Review the latest merged app on Vercel after deployment catches up with `main`.
+- Continue controlled database and sample-fallback review across create, edit and detail flows.
 - Keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope until separately approved.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
