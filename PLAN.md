@@ -135,6 +135,12 @@ Phase 1Q made existing room, asset, maintenance, warranty, receipt and document 
 
 See `docs/PHASE_1Q_PLAN.md` for the completion record.
 
+## Phase 1R: Asset Record Completeness - Complete
+
+Phase 1R completed the existing asset metadata workflow with serial number, purchase date, purchase place and lifecycle status using the current guarded Server Actions and Asset model.
+
+See `docs/PHASE_1R_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.
