@@ -132,3 +132,13 @@
 - Search is keyboard accessible, resettable and browser-navigation friendly.
 - No schema, index, action, dependency or environment-variable change was added.
 - No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1P - Complete
+
+- Existing maintenance dates render overdue, due-soon, scheduled or missing-date states.
+- Existing warranty dates render expired, expiring-soon, current or missing-date states.
+- Date status is visible on Home, maintenance and warranty review surfaces.
+- Calculations use the Australia/Brisbane calendar date.
+- Derived status is not persisted and does not mutate records.
+- No reminders, notifications, jobs, queues, schema changes, dependencies or environment variables were added.
+- No auth, deletes, uploads, storage, OCR, AI, payments, analytics or native app work was added.

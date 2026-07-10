@@ -123,6 +123,12 @@ Phase 1O added accessible query-parameter search to the existing room, asset, ma
 
 See `docs/PHASE_1O_PLAN.md` for the completion record.
 
+## Phase 1P: Maintenance And Warranty Date Awareness - Complete
+
+Phase 1P added runtime status cues for existing maintenance due dates and warranty expiry dates using the Brisbane calendar, without introducing reminders, notifications or persisted status changes.
+
+See `docs/PHASE_1P_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.

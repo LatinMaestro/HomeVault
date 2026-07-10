@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 1O is complete. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 1P is complete. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `1O Core List Search` complete
+- Phase: `1P Maintenance And Warranty Date Awareness` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
@@ -16,6 +16,7 @@ Phase 1O is complete. HomeVault supports guarded room, asset, maintenance, warra
 - Home: fallback-safe household snapshot for maintenance, warranties, inventory, receipts and documents
 - Presentation: household-friendly status, frequency and document labels
 - Findability: server-rendered search across all core household lists
+- Date awareness: Brisbane-calendar maintenance due and warranty coverage states
 - Next implementation focus: continue strengthening the existing single-household experience before the explicit auth or storage decision gates
 
 ## Default Development Workflow

@@ -17,6 +17,7 @@
 - Phase 1M fallback-safe household dashboard.
 - Phase 1N readable status, frequency and document labels.
 - Phase 1O fallback-safe search across core lists.
+- Phase 1P maintenance due and warranty expiry awareness.
 - Online-first development workflow.
 
 ## Near Term

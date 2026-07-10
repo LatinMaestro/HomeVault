@@ -27,11 +27,13 @@ export type HomeDashboard = {
     id: string;
     title: string;
     nextDueDate?: string | null;
+    nextDueDateInput?: string | null;
   } | null;
   nextWarranty: {
     id: string;
     assetName: string;
     expiresAt?: string | null;
+    expiresAtInput?: string | null;
   } | null;
   receiptCount: number;
   documentCount: number;
@@ -328,6 +330,7 @@ export async function getHomeDashboard(): Promise<Result<HomeDashboard>> {
             id: nextTask.id,
             title: nextTask.title,
             nextDueDate: nextTask.nextDueDate,
+            nextDueDateInput: nextTask.nextDueDateInput,
           }
         : null,
       nextWarranty: nextWarranty
@@ -335,6 +338,7 @@ export async function getHomeDashboard(): Promise<Result<HomeDashboard>> {
             id: nextWarranty.id,
             assetName: nextWarranty.assetName,
             expiresAt: nextWarranty.expiresAt,
+            expiresAtInput: nextWarranty.expiresAtInput,
           }
         : null,
       receiptCount: records.data.filter((record) => record.type === "Receipt").length,

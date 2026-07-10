@@ -4,11 +4,13 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
+import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDateStatus } from "@/lib/date-status";
 import { getWarranty } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -64,8 +66,11 @@ export default async function WarrantyPage({
         </div>
 
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Warranty information</CardTitle>
+            <DateStatusBadge
+              status={getDateStatus(warranty.data.expiresAtInput, "warranty")}
+            />
           </CardHeader>
           <CardContent>
             <FieldList
