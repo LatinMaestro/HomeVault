@@ -67,3 +67,5 @@
 | 2026-07-10 | Derive due and expiry status at runtime from existing date metadata. | Homeowners need timely context now, while reminders and notifications remain separate unapproved capabilities. | Accepted |
 | 2026-07-10 | Use the Australia/Brisbane calendar for household date status. | Vercel server regions must not shift an Australian household's due-today or expiry-today state. | Accepted |
 | 2026-07-11 | Expose existing related-record IDs in presentation shapes. | Relationship navigation should use stable route identifiers already loaded by Prisma rather than name matching or extra queries. | Accepted |
+| 2026-07-11 | Complete asset identifying and purchase metadata before adding new workflows. | The existing detail screen exposed fields that create/edit could not maintain, creating a practical record-quality gap. | Accepted |
+| 2026-07-11 | Use lifecycle status instead of delete for normal asset transitions. | Stored, repair, retired and disposed states preserve household history while delete remains out of scope. | Accepted |
