@@ -135,6 +135,7 @@ export async function getAssets(): Promise<Result<AssetDetail[]>> {
       model: asset.model,
       serialNumber: asset.serialNumber,
       purchaseDate: formatDate(asset.purchaseDate),
+      purchaseDateInput: formatDateInput(asset.purchaseDate),
       purchasePlace: asset.purchasePlace,
       notes: asset.notes,
       status: asset.status,

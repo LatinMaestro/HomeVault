@@ -59,7 +59,7 @@ export function AssetForm({
               <div className="space-y-1">
                 <p className="text-sm font-medium">Assets only</p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  This phase saves asset create/edit changes only. Deletes, uploads and warranty saving are still off.
+                  Asset create/edit saves metadata only. Deletes and uploads remain off; warranties are managed separately.
                 </p>
               </div>
             </div>

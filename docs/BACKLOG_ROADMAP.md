@@ -19,6 +19,7 @@
 - Phase 1O fallback-safe search across core lists.
 - Phase 1P maintenance due and warranty expiry awareness.
 - Phase 1Q navigation between existing linked household records.
+- Phase 1R complete identifying, purchase and lifecycle asset metadata.
 - Online-first development workflow.
 
 ## Near Term

@@ -33,6 +33,8 @@ export default async function AssetsPage({
       asset.name,
       asset.brand,
       asset.model,
+      asset.serialNumber,
+      asset.purchasePlace,
       asset.status,
       getDisplayLabel(asset.status),
       asset.roomName,
@@ -79,7 +81,7 @@ export default async function AssetsPage({
           action="/vault/assets"
           defaultValue={query}
           label="Search assets"
-          placeholder="Search assets, rooms or brands"
+          placeholder="Search assets, serials, rooms or brands"
           resultCount={visibleAssets.length}
           resultNoun="asset"
         />

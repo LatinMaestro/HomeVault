@@ -142,6 +142,10 @@ Added runtime-only Brisbane-calendar status cues for existing maintenance due da
 
 Connected existing room, asset, task, warranty, receipt and document relationships to their current routes using relation IDs already loaded by the data layer.
 
+## Phase 1R: Asset Record Completeness - Complete
+
+Completed guarded asset metadata persistence for serial number, purchase date, purchase place and lifecycle status using existing schema fields and Server Actions.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.

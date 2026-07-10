@@ -5,6 +5,16 @@ import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { sampleHome } from "@/lib/sample-data";
 
+const assetStatusValues = [
+  "ACTIVE",
+  "STORED",
+  "REPAIR_NEEDED",
+  "RETIRED",
+  "DISPOSED",
+] as const;
+
+type AssetStatusValue = (typeof assetStatusValues)[number];
+
 export type AssetActionState = {
   status: "idle" | "success" | "error";
   message: string;
@@ -13,6 +23,21 @@ export type AssetActionState = {
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
+}
+
+function getDateValue(value: string) {
+  if (!value) return null;
+
+  const normalisedValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
+    ? `${value}T00:00:00`
+    : value;
+  const date = new Date(normalisedValue);
+
+  return Number.isNaN(date.getTime()) ? undefined : date;
+}
+
+function getStatusValue(value: string): AssetStatusValue | null {
+  return assetStatusValues.find((status) => status === value.trim().toUpperCase()) ?? null;
 }
 
 async function getCurrentHomeId() {
@@ -58,9 +83,32 @@ function getAssetValues(formData: FormData) {
     name: getFieldValue(formData, "name"),
     brand: getFieldValue(formData, "brand"),
     model: getFieldValue(formData, "model"),
+    serialNumber: getFieldValue(formData, "serialNumber"),
     roomName: getFieldValue(formData, "room"),
+    purchaseDate: getDateValue(getFieldValue(formData, "purchaseDate")),
+    purchasePlace: getFieldValue(formData, "purchasePlace"),
+    status: getStatusValue(getFieldValue(formData, "status")),
     notes: getFieldValue(formData, "notes"),
   };
+}
+
+function invalidAssetState(values: ReturnType<typeof getAssetValues>): AssetActionState | null {
+  if (!values.name) {
+    return { status: "error", message: "Add an asset name before saving." };
+  }
+
+  if (!values.status) {
+    return { status: "error", message: "Choose a recognised asset status before saving." };
+  }
+
+  if (values.purchaseDate === undefined) {
+    return {
+      status: "error",
+      message: "Use a readable purchase date, such as 2024-03-14. Nothing was changed.",
+    };
+  }
+
+  return null;
 }
 
 export async function createAssetAction(
@@ -68,10 +116,11 @@ export async function createAssetAction(
   formData: FormData,
 ): Promise<AssetActionState> {
   const values = getAssetValues(formData);
+  const invalidState = invalidAssetState(values);
+  if (invalidState) return invalidState;
 
-  if (!values.name) {
-    return { status: "error", message: "Add an asset name before saving." };
-  }
+  const status = values.status;
+  if (!status) return unknownFailureState();
 
   if (!process.env.DATABASE_URL) {
     return unavailableState();
@@ -97,10 +146,15 @@ export async function createAssetAction(
         name: values.name,
         brand: values.brand || null,
         model: values.model || null,
+        serialNumber: values.serialNumber || null,
+        purchaseDate: values.purchaseDate,
+        purchasePlace: values.purchasePlace || null,
+        status,
         notes: values.notes || null,
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/vault");
     revalidatePath("/vault/assets");
     revalidatePath("/vault/rooms");
@@ -122,10 +176,11 @@ export async function updateAssetAction(
   formData: FormData,
 ): Promise<AssetActionState> {
   const values = getAssetValues(formData);
+  const invalidState = invalidAssetState(values);
+  if (invalidState) return invalidState;
 
-  if (!values.name) {
-    return { status: "error", message: "Add an asset name before saving." };
-  }
+  const status = values.status;
+  if (!status) return unknownFailureState();
 
   if (!process.env.DATABASE_URL) {
     return unavailableState();
@@ -163,10 +218,15 @@ export async function updateAssetAction(
         name: values.name,
         brand: values.brand || null,
         model: values.model || null,
+        serialNumber: values.serialNumber || null,
+        purchaseDate: values.purchaseDate,
+        purchasePlace: values.purchasePlace || null,
+        status,
         notes: values.notes || null,
       },
     });
 
+    revalidatePath("/");
     revalidatePath("/vault");
     revalidatePath("/vault/assets");
     revalidatePath(`/vault/assets/${assetId}`);

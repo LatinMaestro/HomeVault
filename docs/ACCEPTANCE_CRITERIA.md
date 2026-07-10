@@ -153,3 +153,15 @@
 - Missing optional relationships do not render misleading actions.
 - No routes, queries, schema changes, migrations, actions, dependencies or environment variables were added.
 - No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1R - Complete
+
+- Asset create/edit captures serial number, purchase date, purchase place and lifecycle status.
+- Purchase date uses a date control and rejects unreadable submitted dates.
+- Asset status is restricted to existing Prisma AssetStatus values.
+- Added metadata persists only when the configured database and current home are available.
+- Missing database access remains non-destructive.
+- Asset detail and search use the completed metadata.
+- Home, asset and room views revalidate after asset saving.
+- No schema, migrations, dependencies or environment variables were added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.

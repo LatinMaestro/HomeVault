@@ -17,6 +17,7 @@ export type AssetSummary = {
   roomName?: string | null;
   categoryName?: string | null;
   purchaseDate?: string | null;
+  purchaseDateInput?: string | null;
 };
 
 export type AssetDetail = AssetSummary & {
@@ -131,6 +132,7 @@ export const sampleAssets: AssetDetail[] = [
     roomName: "Kitchen",
     categoryName: "Appliances",
     purchaseDate: "14 Mar 2024",
+    purchaseDateInput: "2024-03-14",
     purchasePlace: "The Good Guys Mount Gravatt",
     notes: "Seed/sample asset used for Phase 1C screen review.",
     warranties: [{ id: "warranty-fridge", provider: "Fisher & Paykel", expiresAt: "14 Mar 2026" }],
@@ -153,6 +155,7 @@ export const sampleAssets: AssetDetail[] = [
     roomName: "Garage",
     categoryName: "Outdoor Equipment",
     purchaseDate: "2 Sep 2023",
+    purchaseDateInput: "2023-09-02",
     purchasePlace: "Bunnings Cannon Hill",
     notes: "Sample outdoor equipment record.",
     warranties: [],
