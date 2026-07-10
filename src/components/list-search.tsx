@@ -49,7 +49,7 @@ export function ListSearch({
           Search
         </Button>
         {hasQuery ? (
-          <Button asChild type="button" variant="outline">
+          <Button asChild variant="outline">
             <Link href={action}>
               <X className="h-4 w-4" aria-hidden="true" />
               Clear
