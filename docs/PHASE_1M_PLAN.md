@@ -25,6 +25,7 @@ Make the Home screen useful as the first household review surface by summarising
 - The dashboard is dynamically rendered and uses runtime reads only.
 - Existing loaders remain responsible for database fallback behavior.
 - A mixed or failed data load is described as sample data rather than implying that every value came from the database.
+- A configured database without the temporary current-home record now falls back with an accurate sample-data label.
 - No schema, migration, Server Action, dependency or environment-variable change was required.
 
 ## Out Of Scope
