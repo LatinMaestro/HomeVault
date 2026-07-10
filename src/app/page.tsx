@@ -3,8 +3,10 @@ import { ArrowRight, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } fr
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { DateStatusBadge } from "@/components/date-status-badge";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDateStatus } from "@/lib/date-status";
 import { getHomeDashboard } from "@/lib/home-data";
 
 const reviewNotes = [
@@ -26,29 +28,30 @@ export default async function HomePage() {
     receiptCount,
     roomCount,
   } = dashboard.data;
+  const nextTaskStatus = getDateStatus(nextTask?.nextDueDateInput, "maintenance");
+  const nextWarrantyStatus = getDateStatus(nextWarranty?.expiresAtInput, "warranty");
 
   const dashboardCards = [
     {
       title: "Next maintenance",
       value: nextTask?.title ?? "No tasks yet",
-      detail: nextTask?.nextDueDate
-        ? `Due ${nextTask.nextDueDate}`
-        : "Add a due date when the next maintenance task is ready.",
+      detail: nextTask?.nextDueDate ?? "Add a due date when the next maintenance task is ready.",
+      dateStatus: nextTask ? nextTaskStatus : null,
       href: nextTask ? `/maintenance/${nextTask.id}` : "/maintenance",
       icon: Wrench,
     },
     {
       title: "Warranty coverage",
       value: nextWarranty?.assetName ?? "No warranties yet",
-      detail: nextWarranty?.expiresAt
-        ? `Coverage date: ${nextWarranty.expiresAt}`
-        : "Keep warranty metadata linked to the relevant household asset.",
+      detail: nextWarranty?.expiresAt ?? "Keep warranty metadata linked to the relevant household asset.",
+      dateStatus: nextWarranty ? nextWarrantyStatus : null,
       href: nextWarranty ? `/warranties/${nextWarranty.id}` : "/warranties",
       icon: ShieldCheck,
     },
     {
       title: "Home inventory",
       value: `${assetCount} ${assetCount === 1 ? "asset" : "assets"}`,
+      dateStatus: null,
       detail:
         assetNames.length > 0
           ? `${roomCount} ${roomCount === 1 ? "room" : "rooms"} · ${assetNames.join(", ")}`
@@ -60,6 +63,7 @@ export default async function HomePage() {
       title: "Receipts and documents",
       value: `${receiptCount + documentCount} ${receiptCount + documentCount === 1 ? "record" : "records"}`,
       detail: `${receiptCount} ${receiptCount === 1 ? "receipt" : "receipts"} · ${documentCount} ${documentCount === 1 ? "document" : "documents"}`,
+      dateStatus: null,
       href: "/receipts",
       icon: ReceiptText,
     },
@@ -101,7 +105,8 @@ export default async function HomePage() {
                       <CardTitle className="mt-1 text-xl">{card.value}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-3">
+                    {card.dateStatus ? <DateStatusBadge status={card.dateStatus} /> : null}
                     <p className="text-sm leading-6 text-muted-foreground">{card.detail}</p>
                   </CardContent>
                 </Card>
