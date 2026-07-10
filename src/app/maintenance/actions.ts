@@ -122,6 +122,9 @@ export async function createMaintenanceTaskAction(
   const invalidState = invalidTaskState(values);
   if (invalidState) return invalidState;
 
+  const frequency = values.frequency;
+  if (!frequency) return invalidTaskState(values) ?? unknownFailureState();
+
   if (!process.env.DATABASE_URL) {
     return unavailableState();
   }
@@ -145,7 +148,7 @@ export async function createMaintenanceTaskAction(
         assetId,
         title: values.title,
         description: values.description || null,
-        frequency: values.frequency,
+        frequency,
         nextDueDate: values.nextDueDate,
       },
     });
@@ -173,6 +176,9 @@ export async function updateMaintenanceTaskAction(
   const values = getTaskValues(formData);
   const invalidState = invalidTaskState(values);
   if (invalidState) return invalidState;
+
+  const frequency = values.frequency;
+  if (!frequency) return invalidTaskState(values) ?? unknownFailureState();
 
   if (!process.env.DATABASE_URL) {
     return unavailableState();
@@ -209,7 +215,7 @@ export async function updateMaintenanceTaskAction(
         assetId,
         title: values.title,
         description: values.description || null,
-        frequency: values.frequency,
+        frequency,
         nextDueDate: values.nextDueDate,
       },
     });
