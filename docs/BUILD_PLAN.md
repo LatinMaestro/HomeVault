@@ -80,6 +80,21 @@ Introduced the next controlled mutation workflow for maintenance only:
 
 Phase 1H did not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
+## Phase 1I: Warranty Persistence - Planned
+
+Introduce the next controlled mutation workflow for warranties only:
+
+- Add runtime-only warranty create and edit server actions.
+- Add warranty create and edit routes.
+- Require or clearly validate asset association.
+- Keep warranty records metadata-only.
+- Keep deletes out of scope.
+- Keep document uploads, production storage and reminder delivery out of scope.
+- Preserve database-independent builds and fallback/sample reads.
+- Show clear success, validation and unavailable-database messages.
+
+Phase 1I must not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
+
 ## Future Phases
 
-Add warranty persistence, receipt/document metadata improvements, production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
+Add receipt/document metadata improvements, production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
