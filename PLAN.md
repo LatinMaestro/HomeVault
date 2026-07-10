@@ -81,11 +81,11 @@ Phase 1H introduced maintenance task create/edit persistence and a simple additi
 
 See `docs/PHASE_1H_PLAN.md` for the detailed completion summary.
 
-## Phase 1I: Warranty Persistence - Planned
+## Phase 1I: Warranty Persistence - Complete
 
-Phase 1I will introduce metadata-only warranty create/edit persistence when `DATABASE_URL` is configured. It keeps document uploads, reminder delivery, deletes, production auth, OCR, AI, payments, analytics and native app work out of scope.
+Phase 1I introduced metadata-only warranty create/edit persistence when `DATABASE_URL` is configured. It keeps document uploads, reminder delivery, deletes, production auth, OCR, AI, payments, analytics and native app work out of scope.
 
-See `docs/PHASE_1I_PLAN.md` for the detailed scope.
+See `docs/PHASE_1I_PLAN.md` for the detailed completion summary.
 
 ## Later Phases
 
