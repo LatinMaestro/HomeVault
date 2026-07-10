@@ -95,6 +95,19 @@ Extended the proven mutation pattern to warranty metadata only:
 
 Phase 1I did not add production auth, uploads, storage, OCR, AI, notifications, payments, analytics, native iOS work or local-client setup requirements.
 
+## Phase 1J: Receipt And Document Metadata Persistence - Planned
+
+Introduce guarded metadata writes for the combined records area:
+
+- Add a record type chooser and separate receipt/document create forms.
+- Add type-aware receipt/document edit behavior.
+- Reuse the existing Prisma models without a schema migration.
+- Keep optional asset association within the current sample home.
+- Keep document records metadata-only.
+- Keep receipt totals as archival reference metadata, not budgeting or expense tracking.
+- Preserve database-independent builds and fallback/sample reads.
+- Keep deletes, uploads, storage, OCR, email ingestion and reminders out of scope.
+
 ## Future Phases
 
-Add receipt/document metadata improvements, production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
+Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
