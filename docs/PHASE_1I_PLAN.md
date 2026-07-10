@@ -1,10 +1,22 @@
 # Phase 1I Plan: Warranty Persistence
 
-Phase 1I introduces warranty create/edit persistence as a separate controlled slice after rooms, assets and maintenance. It should make warranty records useful for household record keeping without adding document uploads, reminder delivery, insurance automation, production auth or delete actions.
+Phase 1I introduces warranty create/edit persistence as a separate controlled slice after rooms, assets and maintenance. It makes warranty records useful for household record keeping without adding document uploads, reminder delivery, insurance automation, production auth or delete actions.
 
 ## Status
 
-Phase 1I is planned. Implementation should begin only after this planning PR is merged.
+Phase 1I is in progress. The first implementation slice adds metadata-only warranty create/edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+
+## Implementation Slice
+
+The first Phase 1I code slice includes:
+
+- Runtime-only warranty create and edit Server Actions.
+- Warranty create and edit routes at `/warranties/new` and `/warranties/[warrantyId]/edit`.
+- A warranty form consistent with the room, asset and maintenance persistence forms.
+- Required existing asset association by matching the entered asset name.
+- Route revalidation for dashboard, warranty and related asset routes after successful warranty changes.
+- Updated warranty list/detail copy so screens describe metadata persistence accurately.
+- No delete actions, document uploads, production storage, reminders or insurance automation.
 
 ## Goals
 

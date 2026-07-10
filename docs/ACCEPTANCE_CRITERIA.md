@@ -68,7 +68,7 @@
 - Vercel builds do not require live database access.
 - No delete actions, recurrence automation, notifications, warranty/receipt/document persistence, production auth, uploads, OCR, AI, payments, analytics or native app work was added.
 
-## Phase 1I - Planned
+## Phase 1I - In Progress
 
 - Warranty create persists when `DATABASE_URL` is configured and the database is reachable.
 - Warranty edit persists when `DATABASE_URL` is configured and the warranty exists in the database.
