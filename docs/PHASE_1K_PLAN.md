@@ -1,12 +1,12 @@
 # Phase 1K Plan: Form Choice Usability
 
-Phase 1K improves the existing persisted create/edit forms so beginners can choose valid relationships and enum values without typing internal names or codes. It does not add new records, mutations, integrations or product areas.
+Phase 1K improved the existing persisted create/edit forms so beginners can choose valid relationships and enum values without typing internal names or codes. It does not add new records, mutations, integrations or product areas.
 
 ## Status
 
-Phase 1K is in progress. The implementation adds shared field rendering, fallback-safe relationship choices and native bounded inputs without changing mutation capability.
+Phase 1K is complete. The implementation adds shared field rendering, fallback-safe relationship choices and native bounded inputs without changing mutation capability.
 
-## Implementation Slice
+## Completed Work
 
 - Shared persisted-form controls for menus, dates, numbers, text and notes.
 - Fallback-safe room choices for asset forms.
@@ -77,9 +77,9 @@ Phase 1K is in progress. The implementation adds shared field rendering, fallbac
 - Apply the React accessibility and component-quality checklist.
 - Use Vercel only for a deliberate visual checkpoint or deployment investigation.
 
-## Completion Criteria
+## Completion Record
 
-Phase 1K will be complete when:
+Phase 1K is complete because:
 
 - Existing relationship fields present valid current-home or sample choices.
 - Existing enum fields use bounded controls.
