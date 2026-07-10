@@ -1,5 +1,22 @@
 import type { ShellField } from "@/components/shell-form";
 
+export function withFieldOptions(
+  fields: ShellField[],
+  fieldName: string,
+  values: string[],
+  emptyOptionLabel: string,
+): ShellField[] {
+  return fields.map((field) =>
+    field.name === fieldName
+      ? {
+          ...field,
+          options: values.map((value) => ({ label: value, value })),
+          emptyOptionLabel,
+        }
+      : field,
+  );
+}
+
 export const roomShellFields: ShellField[] = [
   {
     label: "Room name",
@@ -120,13 +137,25 @@ export const maintenanceTaskShellFields: ShellField[] = [
     name: "frequency",
     placeholder: "QUARTERLY",
     recommended: true,
-    helperText: "Use ONCE, MONTHLY, QUARTERLY, SIX_MONTHLY or YEARLY. Automation is not enabled yet.",
+    options: [
+      { label: "One-off", value: "ONCE" },
+      { label: "Weekly", value: "WEEKLY" },
+      { label: "Fortnightly", value: "FORTNIGHTLY" },
+      { label: "Monthly", value: "MONTHLY" },
+      { label: "Quarterly", value: "QUARTERLY" },
+      { label: "Every six months", value: "SIX_MONTHLY" },
+      { label: "Yearly", value: "YEARLY" },
+      { label: "Custom", value: "CUSTOM" },
+    ],
+    emptyOptionLabel: "Choose a frequency",
+    helperText: "Choose how often this task is normally due. Automation is not enabled yet.",
   },
   {
     label: "Next due date",
     name: "nextDueDate",
     placeholder: "2026-09-01",
-    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+    inputType: "date",
+    helperText: "Optional. Choose the next date this task is due.",
   },
   {
     label: "Linked asset",
@@ -184,12 +213,14 @@ export const warrantyShellFields: ShellField[] = [
     label: "Start date",
     name: "startsAt",
     placeholder: "2024-03-14",
-    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+    inputType: "date",
+    helperText: "Optional. Choose when coverage started.",
   },
   {
     label: "Expiry date",
     name: "expiresAt",
     placeholder: "2026-03-14",
+    inputType: "date",
     helperText: "Optional. Reminder delivery is not enabled yet.",
   },
   {
@@ -241,12 +272,16 @@ export const receiptShellFields: ShellField[] = [
     label: "Purchase date",
     name: "purchaseDate",
     placeholder: "2024-03-14",
-    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+    inputType: "date",
+    helperText: "Optional. Choose the purchase date.",
   },
   {
     label: "Purchase total (AUD)",
     name: "totalAmount",
     placeholder: "2899.00",
+    inputType: "number",
+    min: "0",
+    step: "0.01",
     helperText: "Optional archival reference only. HomeVault does not create budgets or spending reports.",
   },
   {
@@ -312,13 +347,24 @@ export const documentShellFields: ShellField[] = [
     name: "documentType",
     placeholder: "MANUAL",
     recommended: true,
-    helperText: "Use MANUAL, WARRANTY, RECEIPT, INSURANCE, SERVICE_RECORD, CERTIFICATE or OTHER.",
+    options: [
+      { label: "Manual", value: "MANUAL" },
+      { label: "Warranty", value: "WARRANTY" },
+      { label: "Receipt", value: "RECEIPT" },
+      { label: "Insurance", value: "INSURANCE" },
+      { label: "Service record", value: "SERVICE_RECORD" },
+      { label: "Certificate", value: "CERTIFICATE" },
+      { label: "Other", value: "OTHER" },
+    ],
+    emptyOptionLabel: "Choose a document type",
+    helperText: "Choose the category that best describes this record.",
   },
   {
     label: "Issue date",
     name: "issuedAt",
     placeholder: "2026-03-01",
-    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+    inputType: "date",
+    helperText: "Optional. Choose the date shown on the document.",
   },
   {
     label: "Linked asset",
