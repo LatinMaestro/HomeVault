@@ -4,6 +4,7 @@ import { useActionState } from "react";
 import { CheckCircle2, ClipboardCheck, Database, Save, TriangleAlert } from "lucide-react";
 
 import type { MaintenanceActionState } from "@/app/maintenance/actions";
+import { PersistentFormFields } from "@/components/persistent-form-fields";
 import type { ShellField } from "@/components/shell-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,43 +89,7 @@ export function MaintenanceTaskForm({
         </div>
 
         <form className="space-y-4" action={formAction}>
-          {fields.map((field) => {
-            const helperId = field.helperText ? `${field.name}-helper` : undefined;
-
-            return (
-              <label key={field.name} className="block space-y-2 text-sm font-medium">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span>{field.label}</span>
-                  {field.recommended ? (
-                    <span className="rounded-sm bg-secondary px-1.5 py-0.5 text-xs font-medium text-secondary-foreground">
-                      Required
-                    </span>
-                  ) : null}
-                </span>
-                {field.multiline ? (
-                  <Textarea
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    defaultValue={field.defaultValue}
-                    rows={4}
-                    aria-describedby={helperId}
-                  />
-                ) : (
-                  <Input
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    defaultValue={field.defaultValue}
-                    aria-describedby={helperId}
-                  />
-                )}
-                {field.helperText ? (
-                  <span id={helperId} className="block text-sm font-normal leading-6 text-muted-foreground">
-                    {field.helperText}
-                  </span>
-                ) : null}
-              </label>
-            );
-          })}
+          <PersistentFormFields fields={fields} />
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button type="submit" disabled={isPending}>
@@ -179,7 +144,7 @@ export function MaintenanceCompletionForm({
         <form className="space-y-4" action={formAction}>
           <label className="block space-y-2 text-sm font-medium">
             <span>Completed date</span>
-            <Input name="completedAt" placeholder="2026-09-01" />
+            <Input name="completedAt" type="date" />
             <span className="block text-sm font-normal leading-6 text-muted-foreground">
               Optional. Leave blank to use today when the database records the completion.
             </span>
