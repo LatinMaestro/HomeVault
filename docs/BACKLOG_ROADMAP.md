@@ -13,16 +13,17 @@
 
 ## Near Term
 
-- Plan maintenance and warranty persistence as separate controlled slices.
-- Keep each persistence slice focused on one workflow family at a time.
+- Phase 1H maintenance persistence.
+- Enable maintenance task create/edit when `DATABASE_URL` is configured.
+- Add simple additive maintenance completion records.
 - Preserve fallback-safe rendering and unavailable-database messaging.
-- Keep deletes, production auth, file storage and unrelated persistence out of each mutation slice until separately approved.
+- Keep deletes, recurrence automation, notifications, production auth, file storage and unrelated persistence out of the maintenance mutation slice.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
 
 ## Future Approved-Decision Candidates
 
-- Persistent maintenance and warranty workflows.
+- Persistent warranty workflows.
 - Receipt/document metadata improvements.
 - Production authentication.
 - Approved file storage.
