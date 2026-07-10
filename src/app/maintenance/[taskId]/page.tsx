@@ -1,17 +1,21 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
+import { completeMaintenanceTaskAction } from "@/app/maintenance/actions";
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
+import { MaintenanceCompletionForm } from "@/components/maintenance-form";
 import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTask } from "@/lib/home-data";
 
 export const metadata: Metadata = {
   title: "Maintenance Detail",
-  description: "Review a read-only HomeVault maintenance task record.",
+  description: "Review a HomeVault maintenance task record.",
 };
 
 export const dynamic = "force-dynamic";
@@ -23,6 +27,7 @@ export default async function MaintenanceTaskPage({
 }) {
   const { taskId } = await params;
   const task = await getMaintenanceTask(taskId);
+  const completionAction = completeMaintenanceTaskAction.bind(null, taskId);
 
   if (!task.data) {
     return (
@@ -50,10 +55,16 @@ export default async function MaintenanceTaskPage({
         <PageHeader
           eyebrow="Maintenance"
           title={task.data.title}
-          description={task.data.description || "Read-only maintenance task detail."}
+          description={task.data.description || "Maintenance task detail with database-backed editing when persistence is configured."}
           action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
         />
         <DataSourceNote source={task.source} />
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button asChild variant="secondary">
+            <Link href={`/maintenance/${task.data.id}/edit`}>Edit task</Link>
+          </Button>
+        </div>
 
         <Card>
           <CardHeader>
@@ -72,10 +83,15 @@ export default async function MaintenanceTaskPage({
           </CardContent>
         </Card>
 
+        <MaintenanceCompletionForm
+          action={completionAction}
+          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+        />
+
         <Card>
           <CardHeader>
             <CardTitle>Completion history</CardTitle>
-            <CardDescription>Read-only service records linked to this task.</CardDescription>
+            <CardDescription>Service records linked to this task.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
             {task.data.completions.length ? (
