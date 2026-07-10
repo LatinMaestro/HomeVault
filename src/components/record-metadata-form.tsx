@@ -4,11 +4,10 @@ import { useActionState } from "react";
 import { CheckCircle2, Database, FileText, Save, TriangleAlert } from "lucide-react";
 
 import type { RecordActionState } from "@/app/receipts/actions";
+import { PersistentFormFields } from "@/components/persistent-form-fields";
 import type { ShellField } from "@/components/shell-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 const initialState: RecordActionState = {
   status: "idle",
@@ -71,69 +70,7 @@ export function RecordMetadataForm({
         </div>
 
         <form className="space-y-4" action={formAction}>
-          {fields.map((field) => {
-            const helperId = field.helperText ? `${field.name}-helper` : undefined;
-
-            return (
-              <label key={field.name} className="block space-y-2 text-sm font-medium">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span>{field.label}</span>
-                  {field.recommended ? (
-                    <span className="rounded-sm bg-secondary px-1.5 py-0.5 text-xs font-medium text-secondary-foreground">
-                      Required
-                    </span>
-                  ) : null}
-                </span>
-                {field.name === "documentType" ? (
-                  <select
-                    name={field.name}
-                    defaultValue={field.defaultValue}
-                    aria-describedby={helperId}
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <option value="">Choose a document type</option>
-                    <option value="MANUAL">Manual</option>
-                    <option value="WARRANTY">Warranty</option>
-                    <option value="RECEIPT">Receipt</option>
-                    <option value="INSURANCE">Insurance</option>
-                    <option value="SERVICE_RECORD">Service record</option>
-                    <option value="CERTIFICATE">Certificate</option>
-                    <option value="OTHER">Other</option>
-                  </select>
-                ) : field.multiline ? (
-                  <Textarea
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    defaultValue={field.defaultValue}
-                    rows={4}
-                    aria-describedby={helperId}
-                  />
-                ) : (
-                  <Input
-                    name={field.name}
-                    placeholder={field.placeholder}
-                    defaultValue={field.defaultValue}
-                    aria-describedby={helperId}
-                    type={
-                      field.name === "purchaseDate" || field.name === "issuedAt"
-                        ? "date"
-                        : field.name === "totalAmount"
-                          ? "number"
-                          : "text"
-                    }
-                    inputMode={field.name === "totalAmount" ? "decimal" : undefined}
-                    min={field.name === "totalAmount" ? "0" : undefined}
-                    step={field.name === "totalAmount" ? "0.01" : undefined}
-                  />
-                )}
-                {field.helperText ? (
-                  <span id={helperId} className="block text-sm font-normal leading-6 text-muted-foreground">
-                    {field.helperText}
-                  </span>
-                ) : null}
-              </label>
-            );
-          })}
+          <PersistentFormFields fields={fields} />
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button type="submit" disabled={isPending}>
