@@ -26,7 +26,7 @@ const readinessCards = [
   },
   {
     title: "Data mode",
-    description: "Runtime pages can read from a configured database, but they remain useful with built-in sample data when DATABASE_URL is unavailable.",
+    description: "Runtime pages can read and save approved metadata with a configured database, while built-in sample data keeps review flows useful when database access is unavailable.",
     badge: "Fallback-safe",
     icon: Database,
   },
@@ -38,7 +38,7 @@ const unavailableItems = [
   "OCR or AI extraction",
   "Notifications or email ingestion",
   "Payments, subscriptions or analytics",
-  "Persistent create, edit or delete actions",
+  "Delete actions",
 ];
 
 export default function SettingsPage() {
@@ -48,7 +48,7 @@ export default function SettingsPage() {
         <PageHeader
           eyebrow="Settings"
           title="Preview settings and project readiness"
-          description="Settings are intentionally read-only while HomeVault hardens the core screens and keeps larger product decisions separate."
+          description="Settings remain read-only while account, storage and integration decisions stay separate from the working household record flows."
         />
 
         <div className="grid gap-4 lg:grid-cols-3">
