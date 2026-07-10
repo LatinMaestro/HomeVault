@@ -1,9 +1,12 @@
 const displayLabels: Record<string, string> = {
   ACTIVE: "Active",
-  INACTIVE: "Inactive",
+  STORED: "Stored",
+  REPAIR_NEEDED: "Needs repair",
   RETIRED: "Retired",
-  DRAFT: "Draft",
+  DISPOSED: "Disposed",
+  PAUSED: "Paused",
   COMPLETED: "Completed",
+  ARCHIVED: "Archived",
   ONCE: "One-off",
   WEEKLY: "Weekly",
   FORTNIGHTLY: "Fortnightly",
@@ -19,6 +22,14 @@ const displayLabels: Record<string, string> = {
   SERVICE_RECORD: "Service record",
   CERTIFICATE: "Certificate",
   OTHER: "Other",
+  OWNER: "Owner",
+  ADULT: "Adult",
+  CHILD: "Child",
+  GUEST: "Guest",
+  PENDING: "Pending",
+  DONE: "Done",
+  SNOOZED: "Snoozed",
+  CANCELLED: "Cancelled",
 };
 
 export function getDisplayLabel(value?: string | null) {
