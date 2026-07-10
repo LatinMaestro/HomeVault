@@ -1,13 +1,31 @@
 import { Badge } from "@/components/ui/badge";
 import type { DateStatus } from "@/lib/date-status";
 
-const badgeVariants = {
-  critical: "destructive",
-  attention: "default",
-  normal: "secondary",
-  missing: "outline",
+const badgeStyles = {
+  critical: {
+    variant: "outline",
+    className: "border-red-200 bg-red-50 text-red-800",
+  },
+  attention: {
+    variant: "default",
+    className: "",
+  },
+  normal: {
+    variant: "secondary",
+    className: "",
+  },
+  missing: {
+    variant: "outline",
+    className: "",
+  },
 } as const;
 
 export function DateStatusBadge({ status }: { status: DateStatus }) {
-  return <Badge variant={badgeVariants[status.tone]}>{status.label}</Badge>;
+  const style = badgeStyles[status.tone];
+
+  return (
+    <Badge variant={style.variant} className={style.className}>
+      {status.label}
+    </Badge>
+  );
 }
