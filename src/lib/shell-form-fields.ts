@@ -99,3 +99,63 @@ export function getAssetEditShellFields(asset?: {
                 : field.defaultValue,
   }));
 }
+
+export const maintenanceTaskShellFields: ShellField[] = [
+  {
+    label: "Task title",
+    name: "title",
+    placeholder: "Clean air conditioner filters",
+    recommended: true,
+    helperText: "Use a practical action name your household will recognise.",
+  },
+  {
+    label: "Description",
+    name: "description",
+    placeholder: "Rinse and dry split-system filters before reinstalling.",
+    multiline: true,
+    helperText: "Optional notes about what should be checked or serviced.",
+  },
+  {
+    label: "Frequency",
+    name: "frequency",
+    placeholder: "QUARTERLY",
+    recommended: true,
+    helperText: "Use ONCE, MONTHLY, QUARTERLY, SIX_MONTHLY or YEARLY. Automation is not enabled yet.",
+  },
+  {
+    label: "Next due date",
+    name: "nextDueDate",
+    placeholder: "2026-09-01",
+    helperText: "Optional. Use YYYY-MM-DD for the clearest saved date.",
+  },
+  {
+    label: "Linked asset",
+    name: "assetName",
+    placeholder: "Battery lawn mower",
+    helperText: "Optional. If the asset name matches an existing asset, the task will be linked to it.",
+  },
+];
+
+export function getMaintenanceTaskEditShellFields(task?: {
+  title?: string | null;
+  description?: string | null;
+  frequency?: string | null;
+  nextDueDate?: string | null;
+  assetName?: string | null;
+} | null): ShellField[] {
+  return maintenanceTaskShellFields.map((field) => ({
+    ...field,
+    defaultValue:
+      field.name === "title"
+        ? task?.title ?? ""
+        : field.name === "description"
+          ? task?.description ?? ""
+          : field.name === "frequency"
+            ? task?.frequency ?? ""
+            : field.name === "nextDueDate"
+              ? task?.nextDueDate ?? ""
+              : field.name === "assetName"
+                ? task?.assetName ?? ""
+                : field.defaultValue,
+  }));
+}

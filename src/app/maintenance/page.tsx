@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarClock } from "lucide-react";
+import { CalendarClock, Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getMaintenanceTasks } from "@/lib/home-data";
 
@@ -27,7 +28,15 @@ export default async function MaintenancePage() {
         <PageHeader
           eyebrow="Maintenance"
           title="Track recurring home upkeep before it becomes stressful."
-          description="Read-only task screens show upcoming maintenance and service history."
+          description="Review maintenance tasks, save task changes when a database is configured, and record simple completion notes."
+          action={
+            <Button asChild>
+              <Link href="/maintenance/new">
+                <Plus className="h-4 w-4" aria-hidden="true" />
+                Add task
+              </Link>
+            </Button>
+          }
         />
         <DataSourceNote source={tasks.source} />
         <ReviewSummary
@@ -38,9 +47,9 @@ export default async function MaintenancePage() {
               detail: tasks.data.length === 1 ? "Maintenance task available for review." : "Maintenance tasks available for review.",
             },
             {
-              label: "Mode",
-              value: "Read-only",
-              detail: "Task creation, completion and reminders are not enabled yet.",
+              label: "Saving",
+              value: "Tasks",
+              detail: "Task create/edit and completion records can save when the database is configured. Deletes and reminders are still off.",
             },
             {
               label: "Data",
@@ -79,7 +88,12 @@ export default async function MaintenancePage() {
         ) : (
           <EmptyState
             title="No maintenance tasks yet"
-            description="Maintenance tasks will show recurring jobs like filter cleaning, servicing and seasonal checks once task saving is approved."
+            description="Add a maintenance task when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
+            action={
+              <Button asChild>
+                <Link href="/maintenance/new">Add first task</Link>
+              </Button>
+            }
           />
         )}
       </section>
