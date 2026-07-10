@@ -50,6 +50,7 @@ export type MaintenanceTaskSummary = {
   nextDueDateInput?: string | null;
   status: string;
   assetName?: string | null;
+  assetId?: string | null;
 };
 
 export type MaintenanceTaskDetail = MaintenanceTaskSummary & {
@@ -65,6 +66,7 @@ export type MaintenanceTaskDetail = MaintenanceTaskSummary & {
 export type WarrantySummary = {
   id: string;
   assetName: string;
+  assetId: string;
   provider?: string | null;
   policyNumber?: string | null;
   expiresAt?: string | null;
@@ -89,6 +91,7 @@ export type RecordSummary = {
   secondary: string;
   date?: string | null;
   linkedAsset?: string | null;
+  linkedAssetId?: string | null;
 };
 
 export type RecordDetail = RecordSummary & {
@@ -186,6 +189,7 @@ export const sampleMaintenanceTasks: MaintenanceTaskDetail[] = [
     nextDueDateInput: "2026-10-15",
     status: "ACTIVE",
     assetName: "Battery lawn mower",
+    assetId: "asset-mower",
     completions: [
       {
         id: "completion-mower-april",
@@ -201,6 +205,7 @@ export const sampleWarranties: WarrantyDetail[] = [
   {
     id: "warranty-fridge",
     assetName: "French door fridge",
+    assetId: "asset-fridge",
     provider: "Fisher & Paykel",
     startsAt: "14 Mar 2024",
     startsAtInput: "2024-03-14",
@@ -219,6 +224,7 @@ export const sampleRecords: RecordDetail[] = [
     secondary: "Fridge purchase receipt",
     date: "14 Mar 2024",
     linkedAsset: "French door fridge",
+    linkedAssetId: "asset-fridge",
     amount: "$2,899.00",
     merchant: "The Good Guys Mount Gravatt",
     purchaseDateInput: "2024-03-14",
@@ -233,6 +239,7 @@ export const sampleRecords: RecordDetail[] = [
     secondary: "Lawn mower purchase receipt",
     date: "2 Sep 2023",
     linkedAsset: "Battery lawn mower",
+    linkedAssetId: "asset-mower",
     amount: "$649.00",
     merchant: "Bunnings Cannon Hill",
     purchaseDateInput: "2023-09-02",
@@ -246,6 +253,7 @@ export const sampleRecords: RecordDetail[] = [
     type: "Document",
     secondary: "MANUAL",
     linkedAsset: "French door fridge",
+    linkedAssetId: "asset-fridge",
     fileName: "fisher-paykel-fridge-manual.pdf",
     documentType: "MANUAL",
     notes: "Document metadata only. Storage will be approved in a later phase.",
