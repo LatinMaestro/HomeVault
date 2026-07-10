@@ -170,6 +170,7 @@ export function getMaintenanceTaskEditShellFields(task?: {
   description?: string | null;
   frequency?: string | null;
   nextDueDate?: string | null;
+  nextDueDateInput?: string | null;
   assetName?: string | null;
 } | null): ShellField[] {
   return maintenanceTaskShellFields.map((field) => ({
@@ -182,7 +183,7 @@ export function getMaintenanceTaskEditShellFields(task?: {
           : field.name === "frequency"
             ? task?.frequency ?? ""
             : field.name === "nextDueDate"
-              ? task?.nextDueDate ?? ""
+              ? task?.nextDueDateInput ?? ""
               : field.name === "assetName"
                 ? task?.assetName ?? ""
                 : field.defaultValue,
@@ -237,7 +238,9 @@ export function getWarrantyEditShellFields(warranty?: {
   provider?: string | null;
   policyNumber?: string | null;
   startsAt?: string | null;
+  startsAtInput?: string | null;
   expiresAt?: string | null;
+  expiresAtInput?: string | null;
   notes?: string | null;
 } | null): ShellField[] {
   return warrantyShellFields.map((field) => ({
@@ -250,9 +253,9 @@ export function getWarrantyEditShellFields(warranty?: {
           : field.name === "policyNumber"
             ? warranty?.policyNumber ?? ""
             : field.name === "startsAt"
-              ? warranty?.startsAt ?? ""
+              ? warranty?.startsAtInput ?? ""
               : field.name === "expiresAt"
-                ? warranty?.expiresAt ?? ""
+                ? warranty?.expiresAtInput ?? ""
                 : field.name === "notes"
                   ? warranty?.notes ?? ""
                   : field.defaultValue,
