@@ -34,6 +34,7 @@ export default async function ReceiptsPage({
       record.title,
       record.type,
       record.secondary,
+      getDisplayLabel(record.secondary),
       record.date,
       record.linkedAsset,
       record.amount,
