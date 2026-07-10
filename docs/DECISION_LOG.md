@@ -64,3 +64,5 @@
 | 2026-07-10 | Treat mixed dashboard data sources as sample mode. | The UI must not imply that every dashboard value came from the configured database when any area used fallback data. | Accepted |
 | 2026-07-10 | Format stored enum values only at the presentation boundary. | Homeowners should see natural language while Prisma values and Server Action contracts remain stable. | Accepted |
 | 2026-07-10 | Use server-rendered GET search over existing loaded records. | Core lists are small in the current single-household MVP, and query-parameter filtering is accessible, shareable and database-independent without premature search infrastructure. | Accepted |
+| 2026-07-10 | Derive due and expiry status at runtime from existing date metadata. | Homeowners need timely context now, while reminders and notifications remain separate unapproved capabilities. | Accepted |
+| 2026-07-10 | Use the Australia/Brisbane calendar for household date status. | Vercel server regions must not shift an Australian household's due-today or expiry-today state. | Accepted |
