@@ -111,6 +111,12 @@ Phase 1M turned Home into a useful household snapshot using existing fallback-sa
 
 See `docs/PHASE_1M_PLAN.md` for the completion record.
 
+## Phase 1N: Readable Household Labels - Complete
+
+Phase 1N replaced database-style enum text on existing list and detail screens with household-friendly labels while preserving stored values and form contracts.
+
+See `docs/PHASE_1N_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.
