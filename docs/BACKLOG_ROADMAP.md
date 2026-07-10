@@ -16,8 +16,8 @@
 
 ## Near Term
 
-- Plan a focused usability pass for existing create/edit forms and relationship choices.
-- Replace brittle free-text option entry with controlled choices where the current models already define valid values.
+- Phase 1K form choice usability.
+- Add controlled room, asset, enum, date and amount inputs to existing persisted forms.
 - Preserve fallback-safe rendering and keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope.
 - Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
 - Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
