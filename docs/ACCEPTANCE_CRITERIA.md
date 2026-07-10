@@ -122,3 +122,13 @@
 - Unknown or user-authored display values remain unchanged.
 - No routes, models, migrations, actions, dependencies or environment variables were added.
 - No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1O - Complete
+
+- Rooms, assets, maintenance, warranties and receipt/document lists accept a `q` search parameter.
+- Search works consistently with configured database records and curated sample records.
+- Searches match relevant visible record fields and readable status/type labels.
+- Empty lists and zero-match searches provide distinct, useful states.
+- Search is keyboard accessible, resettable and browser-navigation friendly.
+- No schema, index, action, dependency or environment-variable change was added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
