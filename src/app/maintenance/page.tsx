@@ -4,6 +4,7 @@ import { CalendarClock, Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
@@ -11,6 +12,7 @@ import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDateStatus } from "@/lib/date-status";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getMaintenanceTasks } from "@/lib/home-data";
 import { getQueryParam, matchesQuery } from "@/lib/list-filter";
@@ -99,7 +101,12 @@ export default async function MaintenancePage({
                         <CardTitle>{task.title}</CardTitle>
                         <CardDescription>{task.description || "No description recorded"}</CardDescription>
                       </div>
-                      <Badge variant="secondary">{getDisplayLabel(task.status)}</Badge>
+                      <div className="flex flex-wrap gap-2">
+                        <DateStatusBadge
+                          status={getDateStatus(task.nextDueDateInput, "maintenance")}
+                        />
+                        <Badge variant="secondary">{getDisplayLabel(task.status)}</Badge>
+                      </div>
                     </div>
                   </CardHeader>
                   <CardContent className="flex flex-wrap gap-4 text-sm text-muted-foreground">
