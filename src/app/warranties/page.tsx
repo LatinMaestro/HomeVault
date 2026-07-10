@@ -4,6 +4,7 @@ import { Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
+import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
@@ -11,6 +12,7 @@ import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getDateStatus } from "@/lib/date-status";
 import { getWarranties } from "@/lib/home-data";
 import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
@@ -94,7 +96,12 @@ export default async function WarrantiesPage({
                     <CardDescription>{warranty.provider || "Provider not recorded"}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3 text-sm text-muted-foreground">
-                    <Badge variant="secondary">Expires {warranty.expiresAt || "not recorded"}</Badge>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <DateStatusBadge
+                        status={getDateStatus(warranty.expiresAtInput, "warranty")}
+                      />
+                      <span>Expires {warranty.expiresAt || "not recorded"}</span>
+                    </div>
                     <p>Policy: {warranty.policyNumber || "Not recorded"}</p>
                   </CardContent>
                 </Card>
