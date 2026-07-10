@@ -79,17 +79,51 @@ export const assetShellFields: ShellField[] = [
     helperText: "Add the model number when it is easy to find.",
   },
   {
+    label: "Serial number",
+    name: "serialNumber",
+    placeholder: "Optional serial number",
+    helperText: "Useful for support calls, repairs, insurance records and warranty claims.",
+  },
+  {
     label: "Room",
     name: "room",
     placeholder: "Kitchen",
     helperText: "Choose an existing room, or leave the asset unlinked.",
   },
   {
+    label: "Purchase date",
+    name: "purchaseDate",
+    placeholder: "2024-03-14",
+    inputType: "date",
+    helperText: "Optional. Choose the original purchase date when known.",
+  },
+  {
+    label: "Purchase place",
+    name: "purchasePlace",
+    placeholder: "The Good Guys Mount Gravatt",
+    helperText: "Optional retailer, supplier or previous owner.",
+  },
+  {
+    label: "Asset status",
+    name: "status",
+    recommended: true,
+    defaultValue: "ACTIVE",
+    options: [
+      { label: "Active", value: "ACTIVE" },
+      { label: "Stored", value: "STORED" },
+      { label: "Needs repair", value: "REPAIR_NEEDED" },
+      { label: "Retired", value: "RETIRED" },
+      { label: "Disposed", value: "DISPOSED" },
+    ],
+    emptyOptionLabel: "Choose an asset status",
+    helperText: "Use status instead of deleting an asset when its household role changes.",
+  },
+  {
     label: "Notes",
     name: "notes",
     placeholder: "Optional asset notes",
     multiline: true,
-    helperText: "Capture serial number locations, filter sizes or care notes.",
+    helperText: "Capture filter sizes, care instructions, identifying marks or service notes.",
   },
 ];
 
@@ -97,7 +131,11 @@ export function getAssetEditShellFields(asset?: {
   name?: string | null;
   brand?: string | null;
   model?: string | null;
+  serialNumber?: string | null;
   roomName?: string | null;
+  purchaseDateInput?: string | null;
+  purchasePlace?: string | null;
+  status?: string | null;
   notes?: string | null;
 } | null): ShellField[] {
   return assetShellFields.map((field) => ({
@@ -109,11 +147,19 @@ export function getAssetEditShellFields(asset?: {
           ? asset?.brand ?? ""
           : field.name === "model"
             ? asset?.model ?? ""
-            : field.name === "room"
-              ? asset?.roomName ?? ""
-              : field.name === "notes"
-                ? asset?.notes ?? ""
-                : field.defaultValue,
+            : field.name === "serialNumber"
+              ? asset?.serialNumber ?? ""
+              : field.name === "room"
+                ? asset?.roomName ?? ""
+                : field.name === "purchaseDate"
+                  ? asset?.purchaseDateInput ?? ""
+                  : field.name === "purchasePlace"
+                    ? asset?.purchasePlace ?? ""
+                    : field.name === "status"
+                      ? asset?.status ?? "ACTIVE"
+                      : field.name === "notes"
+                        ? asset?.notes ?? ""
+                        : field.defaultValue,
   }));
 }
 
