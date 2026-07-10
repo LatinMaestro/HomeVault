@@ -44,3 +44,4 @@
 | 2026-07-10 | Use Server Actions for asset create/edit persistence. | Asset mutations need the same progressive form behavior, route revalidation and runtime database checks proven by room persistence. | Accepted |
 | 2026-07-10 | Close Phase 1G asset persistence. | Asset create/edit persistence is implemented and CI-verified, so maintenance and warranty persistence can be planned as separate controlled slices. | Accepted |
 | 2026-07-10 | Plan Phase 1H as maintenance persistence only. | Maintenance tasks are the next practical homeowner workflow and should be handled separately from warranties, reminders, recurrence automation and deletes. | Accepted |
+| 2026-07-10 | Use Server Actions for maintenance task persistence and completion records. | Maintenance mutations need progressive form behavior, additive completion history and runtime database checks without adding reminders, recurrence automation or API routes. | Accepted |
