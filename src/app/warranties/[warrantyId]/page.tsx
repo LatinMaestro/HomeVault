@@ -9,7 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
 import { getWarranty } from "@/lib/home-data";
 
@@ -63,6 +63,9 @@ export default async function WarrantyPage({
           <Button asChild variant="secondary">
             <Link href={`/warranties/${warranty.data.id}/edit`}>Edit warranty</Link>
           </Button>
+          <Button asChild variant="outline">
+            <Link href={`/vault/assets/${warranty.data.assetId}`}>View covered asset</Link>
+          </Button>
         </div>
 
         <Card>
@@ -84,6 +87,27 @@ export default async function WarrantyPage({
             />
           </CardContent>
         </Card>
+
+        {warranty.data.documents.length > 0 ? (
+          <Card>
+            <CardHeader>
+              <CardTitle>Related documents</CardTitle>
+              <CardDescription>Document metadata linked to this warranty.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {warranty.data.documents.map((document) => (
+                <Link
+                  key={document.id}
+                  href={`/receipts/${document.id}`}
+                  className="block rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                >
+                  <p className="font-medium text-foreground">{document.title}</p>
+                  <p className="text-muted-foreground">{document.type}</p>
+                </Link>
+              ))}
+            </CardContent>
+          </Card>
+        ) : null}
       </section>
     </AppShell>
   );
