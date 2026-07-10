@@ -34,6 +34,7 @@ export default async function AssetsPage({
       asset.brand,
       asset.model,
       asset.status,
+      getDisplayLabel(asset.status),
       asset.roomName,
       asset.categoryName,
       asset.purchaseDate,
