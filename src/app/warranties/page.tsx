@@ -81,6 +81,7 @@ export default async function WarrantiesPage({
           placeholder="Search assets, providers or policies"
           resultCount={visibleWarranties.length}
           resultNoun="warranty"
+          resultNounPlural="warranties"
         />
 
         {visibleWarranties.length > 0 ? (
