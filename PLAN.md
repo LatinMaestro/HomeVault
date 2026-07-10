@@ -93,11 +93,11 @@ Phase 1J added guarded create/edit persistence for receipt and document metadata
 
 See `docs/PHASE_1J_PLAN.md` for the completion record.
 
-## Phase 1K: Form Choice Usability - Planned
+## Phase 1K: Form Choice Usability - Complete
 
-Phase 1K will improve existing forms with controlled room, asset, enum, date and amount inputs while preserving current routes, actions and scope.
+Phase 1K improved existing forms with controlled room, asset, enum, date and amount inputs while preserving current routes, actions and scope.
 
-See `docs/PHASE_1K_PLAN.md` for the approved implementation boundaries.
+See `docs/PHASE_1K_PLAN.md` for the completion record.
 
 ## Later Phases
 
