@@ -1,14 +1,14 @@
 # Phase 1I Plan: Warranty Persistence
 
-Phase 1I introduces warranty create/edit persistence as a separate controlled slice after rooms, assets and maintenance. It makes warranty records useful for household record keeping without adding document uploads, reminder delivery, insurance automation, production auth or delete actions.
+Phase 1I introduced warranty create/edit persistence as a separate controlled slice after rooms, assets and maintenance. It makes warranty records useful for household record keeping without adding document uploads, reminder delivery, insurance automation, production auth or delete actions.
 
 ## Status
 
-Phase 1I is in progress. The first implementation slice adds metadata-only warranty create/edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
+Phase 1I is complete. The implementation adds metadata-only warranty create/edit persistence when `DATABASE_URL` is configured, while preserving graceful fallback and clear unavailable-database messages when a database is missing or unreachable.
 
-## Implementation Slice
+## Completed Work
 
-The first Phase 1I code slice includes:
+The completed Phase 1I slice includes:
 
 - Runtime-only warranty create and edit Server Actions.
 - Warranty create and edit routes at `/warranties/new` and `/warranties/[warrantyId]/edit`.
@@ -80,9 +80,9 @@ The first Phase 1I code slice includes:
 - Avoid manual Vercel inspection unless diagnosing a deployment issue or doing a deliberate visual checkpoint.
 - Keep implementation PRs small enough to review and merge safely.
 
-## Completion Criteria
+## Completion Record
 
-Phase 1I will be complete when:
+Phase 1I is complete because:
 
 - Warranty create persists when `DATABASE_URL` is configured and the database is reachable.
 - Warranty edit persists when `DATABASE_URL` is configured and the warranty exists in the database.

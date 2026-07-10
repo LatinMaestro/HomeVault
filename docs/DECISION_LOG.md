@@ -48,3 +48,4 @@
 | 2026-07-10 | Close Phase 1H maintenance persistence. | Maintenance task create/edit and additive completion records are implemented and CI-verified, so warranty persistence can be planned as a separate controlled slice. | Accepted |
 | 2026-07-10 | Plan Phase 1I as warranty persistence only. | Warranty records are the next practical home record after assets and maintenance, and should remain metadata-only until file storage and reminders are separately approved. | Accepted |
 | 2026-07-10 | Use Server Actions for warranty metadata persistence. | Warranty mutations need progressive form behavior, required asset association and runtime database checks without adding uploads, reminders or API routes. | Accepted |
+| 2026-07-10 | Close Phase 1I warranty persistence. | Warranty metadata create/edit persistence is implemented and CI-verified, so receipt/document metadata improvements can be planned as a separate controlled slice. | Accepted |
