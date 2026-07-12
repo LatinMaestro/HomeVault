@@ -187,7 +187,7 @@ export async function updateReceiptAction(
 
     const receipt = await getDb().receipt.findFirst({
       where: { id: receiptId, homeId },
-      select: { id: true },
+      select: { id: true, assetId: true },
     });
     if (!receipt) {
       return { status: "error", message: "This receipt was not found in the configured database. Nothing was changed." };
@@ -207,6 +207,7 @@ export async function updateReceiptAction(
     });
 
     revalidateRecordPaths(receiptId, assetId);
+    if (receipt.assetId) revalidatePath(`/vault/assets/${receipt.assetId}`);
     return { status: "success", message: "Receipt metadata updated. The records list now reflects this change." };
   } catch {
     return unknownFailureState("receipt");
@@ -290,7 +291,7 @@ export async function updateDocumentAction(
 
     const document = await getDb().document.findFirst({
       where: { id: documentId, homeId },
-      select: { id: true },
+      select: { id: true, assetId: true },
     });
     if (!document) {
       return { status: "error", message: "This document was not found in the configured database. Nothing was changed." };
@@ -308,6 +309,7 @@ export async function updateDocumentAction(
     });
 
     revalidateRecordPaths(documentId, assetId);
+    if (document.assetId) revalidatePath(`/vault/assets/${document.assetId}`);
     return { status: "success", message: "Document metadata updated. No file was uploaded or stored." };
   } catch {
     return unknownFailureState("document");

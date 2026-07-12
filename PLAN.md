@@ -207,6 +207,12 @@ Phase 2C makes room duplicate checks case-insensitive, matching the existing cas
 
 No schema or room workflow changes were introduced. Vercel visual review remains deferred. See `docs/PHASE_2C_PLAN.md`.
 
+## Phase 2D: Linked Asset Revalidation - Complete
+
+Phase 2D invalidates both previous and new asset detail routes when existing tasks, warranties, receipts or documents are reassigned.
+
+No data model or mutation capability changed. Vercel visual review remains deferred. See `docs/PHASE_2D_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.

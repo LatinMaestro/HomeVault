@@ -276,7 +276,7 @@ export async function updateMaintenanceTaskAction(
 
     const task = await db.maintenanceTask.findFirst({
       where: { id: taskId, homeId },
-      select: { id: true },
+      select: { id: true, assetId: true },
     });
 
     if (!task) {
@@ -315,6 +315,7 @@ export async function updateMaintenanceTaskAction(
     revalidatePath("/maintenance");
     revalidatePath(`/maintenance/${taskId}`);
     revalidatePath(`/maintenance/${taskId}/edit`);
+    if (task.assetId) revalidatePath(`/vault/assets/${task.assetId}`);
     if (assetId) revalidatePath(`/vault/assets/${assetId}`);
 
     return {

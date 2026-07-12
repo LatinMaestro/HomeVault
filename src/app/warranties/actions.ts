@@ -167,7 +167,7 @@ export async function updateWarrantyAction(
 
     const warranty = await db.warranty.findFirst({
       where: { id: warrantyId, homeId },
-      select: { id: true },
+      select: { id: true, assetId: true },
     });
 
     if (!warranty) {
@@ -202,6 +202,7 @@ export async function updateWarrantyAction(
     revalidatePath("/warranties");
     revalidatePath(`/warranties/${warrantyId}`);
     revalidatePath(`/warranties/${warrantyId}/edit`);
+    revalidatePath(`/vault/assets/${warranty.assetId}`);
     revalidatePath(`/vault/assets/${assetId}`);
 
     return { status: "success", message: "Warranty updated. The warranty list now reflects this change." };
