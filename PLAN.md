@@ -183,6 +183,12 @@ Phase 1Y prevents additive maintenance history from accepting completion dates a
 
 Validation runs before database access and does not add scheduling, recurrence automation or notifications. Vercel visual review remains deferred. See `docs/PHASE_1Y_PLAN.md`.
 
+## Phase 1Z: Historical Record Date Guards - Complete
+
+Phase 1Z prevents asset purchase dates, receipt purchase dates and document issue dates from being saved after the current Australia/Brisbane calendar date.
+
+The shared validation runs before database access and does not add financial analysis, automation or schema changes. Vercel visual review remains deferred. See `docs/PHASE_1Z_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
