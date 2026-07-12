@@ -150,6 +150,10 @@ Completed guarded asset metadata persistence for serial number, purchase date, p
 
 Connected guarded asset create/edit to existing seeded AssetCategory records with database/sample fallback choices and no schema or category-management expansion. Vercel visual review is deferred until client access is restored.
 
+## Phase 1T: Maintenance Lifecycle Control - Complete
+
+Added guarded lifecycle status selection and persistence to existing maintenance create/edit using the current MaintenanceStatus enum. Completion history remains independent and additive. Vercel visual review is deferred.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
