@@ -87,3 +87,7 @@ Reject warranty expiry dates earlier than their start dates before database acce
 ## 2026-07-12: Guard maintenance completion dates
 
 Reject completion dates after the current Australia/Brisbane date before database access so historical service records cannot represent work that has not happened.
+
+## 2026-07-12: Guard historical record dates
+
+Reject future asset purchase, receipt purchase and document issue dates using the Australia/Brisbane calendar before database access, while keeping each date optional.
