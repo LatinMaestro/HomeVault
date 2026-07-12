@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getDb } from "@/lib/db";
+import { getOptionalDateValue } from "@/lib/form-values";
 import { sampleHome } from "@/lib/sample-data";
 
 export type WarrantyActionState = {
@@ -13,17 +14,6 @@ export type WarrantyActionState = {
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
-}
-
-function getDateValue(value: string) {
-  if (!value) return null;
-
-  const normalisedValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ? `${value}T00:00:00`
-    : value;
-  const date = new Date(normalisedValue);
-
-  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 async function getCurrentHomeId() {
@@ -69,8 +59,8 @@ function getWarrantyValues(formData: FormData) {
     assetName: getFieldValue(formData, "assetName"),
     provider: getFieldValue(formData, "provider"),
     policyNumber: getFieldValue(formData, "policyNumber"),
-    startsAt: getDateValue(getFieldValue(formData, "startsAt")),
-    expiresAt: getDateValue(getFieldValue(formData, "expiresAt")),
+    startsAt: getOptionalDateValue(getFieldValue(formData, "startsAt")),
+    expiresAt: getOptionalDateValue(getFieldValue(formData, "expiresAt")),
     notes: getFieldValue(formData, "notes"),
   };
 }
