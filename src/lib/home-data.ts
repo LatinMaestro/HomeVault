@@ -1,3 +1,4 @@
+import { getCurrentHomeId as resolveCurrentHomeId } from "@/lib/current-home";
 import { getDb } from "@/lib/db";
 import {
   sampleAssetCategories,
@@ -82,16 +83,12 @@ async function withDatabase<T>(query: () => Promise<T>, fallback: T): Promise<Re
 }
 
 async function getCurrentHomeId() {
-  const db = getDb();
-  const home = await db.home.findFirst({
-    where: { name: sampleHome.name },
-    select: { id: true },
-  });
-  if (!home) {
+  const homeId = await resolveCurrentHomeId();
+  if (!homeId) {
     throw new Error("Current HomeVault home was not found");
   }
 
-  return home.id;
+  return homeId;
 }
 
 export async function getRooms(): Promise<Result<RoomSummary[]>> {
