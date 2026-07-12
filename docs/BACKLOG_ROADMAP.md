@@ -22,6 +22,7 @@
 - Phase 1R complete identifying, purchase and lifecycle asset metadata.
 - Phase 1S optional asset category linking.
 - Phase 1T maintenance lifecycle status control.
+- Phase 1U optional maintenance service-provider linking.
 - Online-first development workflow.
 
 ## Near Term
