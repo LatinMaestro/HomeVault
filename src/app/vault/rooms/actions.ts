@@ -67,7 +67,7 @@ export async function createRoomAction(
     }
 
     const existingRoom = await db.room.findFirst({
-      where: { homeId, name },
+      where: { homeId, name: { equals: name, mode: "insensitive" } },
       select: { id: true },
     });
 
@@ -136,7 +136,7 @@ export async function updateRoomAction(
     const duplicateRoom = await db.room.findFirst({
       where: {
         homeId,
-        name,
+        name: { equals: name, mode: "insensitive" },
         id: { not: roomId },
       },
       select: { id: true },
