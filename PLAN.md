@@ -237,6 +237,12 @@ Phase 2H adds guarded editing for the current home's name and Australian address
 
 Multi-home switching, members, roles and production authentication remain separate decision gates. Vercel visual review remains deferred. See `docs/PHASE_2H_PLAN.md`.
 
+## Phase 2I: Read-only Reminder Centre - Complete
+
+Phase 2I exposes existing reminder metadata in a searchable, fallback-safe list and detail workflow with links to related assets, warranties and maintenance tasks.
+
+No reminder create/edit, scheduling automation or notification delivery was introduced. Vercel visual review remains deferred. See `docs/PHASE_2I_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.

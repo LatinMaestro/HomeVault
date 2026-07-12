@@ -6,6 +6,7 @@ import {
   sampleHome,
   sampleMaintenanceTasks,
   sampleRecords,
+  sampleReminders,
   sampleRooms,
   sampleServiceProviders,
   sampleWarranties,
@@ -15,6 +16,7 @@ import {
   type HomeProfile,
   type MaintenanceTaskDetail,
   type RecordDetail,
+  type ReminderDetail,
   type RoomSummary,
   type ServiceProviderDetail,
   type WarrantyDetail,
@@ -385,6 +387,46 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
       })),
     ];
   }, sampleRecords);
+}
+
+export async function getReminders(): Promise<Result<ReminderDetail[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    const reminders = await getDb().reminder.findMany({
+      where: { homeId },
+      orderBy: [{ dueAt: "asc" }, { title: "asc" }],
+      include: {
+        asset: true,
+        warranty: { include: { asset: true } },
+        task: true,
+      },
+    });
+
+    return reminders.map((reminder) => ({
+      id: reminder.id,
+      title: reminder.title,
+      dueAt: formatDate(reminder.dueAt) ?? "Unknown date",
+      dueAtInput: formatDateInput(reminder.dueAt) ?? "",
+      status: reminder.status,
+      notes: reminder.notes,
+      assetName: reminder.asset?.name,
+      assetId: reminder.asset?.id,
+      warrantyName: reminder.warranty
+        ? `${reminder.warranty.asset.name} warranty`
+        : null,
+      warrantyId: reminder.warranty?.id,
+      taskTitle: reminder.task?.title,
+      taskId: reminder.task?.id,
+    }));
+  }, sampleReminders);
+}
+
+export async function getReminder(id: string): Promise<Result<ReminderDetail | null>> {
+  const reminders = await getReminders();
+  return {
+    data: reminders.data.find((reminder) => reminder.id === id) ?? null,
+    source: reminders.source,
+  };
 }
 
 export async function getRecord(id: string): Promise<Result<RecordDetail | null>> {

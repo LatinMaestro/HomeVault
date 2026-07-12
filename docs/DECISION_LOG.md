@@ -123,3 +123,7 @@ Resolve the earliest Home record lazily through one server helper instead of mat
 ## 2026-07-12: Allow current household profile editing
 
 Expose guarded name and Australian address metadata editing after removing name-based current-home resolution. Keep multi-home behavior, members and roles behind the production authentication decision gate.
+
+## 2026-07-12: Separate reminder visibility from delivery
+
+Expose existing reminder metadata and relationships now, while keeping record mutations, scheduling automation and notification channels behind later approval gates.

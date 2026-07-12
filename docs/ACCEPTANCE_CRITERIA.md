@@ -300,3 +300,11 @@
 - Saving is guarded by `DATABASE_URL` and missing-home states are non-destructive.
 - Renaming the household does not break subsequent current-home reads.
 - No auth, multi-home, member or role workflow is added.
+
+## Phase 2I Acceptance
+
+- Reminder list and detail routes render database or sample records without build-time access.
+- Search covers reminder, status, linked-record and note metadata.
+- Due status uses the Australia/Brisbane calendar.
+- Related asset, warranty and maintenance routes are navigable.
+- No reminder mutation or notification delivery is added.
