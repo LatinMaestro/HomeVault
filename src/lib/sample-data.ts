@@ -8,6 +8,12 @@ export type RoomSummary = {
   assetCount: number;
 };
 
+export type AssetCategorySummary = {
+  id: string;
+  name: string;
+  description?: string | null;
+};
+
 export type AssetSummary = {
   id: string;
   name: string;
@@ -119,6 +125,19 @@ export const sampleRooms: RoomSummary[] = [
   { id: "room-laundry", name: "Laundry", floor: "Ground", assetCount: 0 },
   { id: "room-garage", name: "Garage", floor: "Ground", assetCount: 1 },
   { id: "room-backyard", name: "Backyard", floor: "Ground", assetCount: 0 },
+];
+
+export const sampleAssetCategories: AssetCategorySummary[] = [
+  {
+    id: "category-appliances",
+    name: "Appliances",
+    description: "Kitchen and laundry appliances",
+  },
+  {
+    id: "category-outdoor-equipment",
+    name: "Outdoor Equipment",
+    description: "Garden and backyard equipment",
+  },
 ];
 
 export const sampleAssets: AssetDetail[] = [
