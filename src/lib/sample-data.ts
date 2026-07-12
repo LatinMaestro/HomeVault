@@ -101,6 +101,21 @@ export type MaintenanceTaskDetail = MaintenanceTaskSummary & {
   }>;
 };
 
+export type ReminderDetail = {
+  id: string;
+  title: string;
+  dueAt: string;
+  dueAtInput: string;
+  status: string;
+  notes?: string | null;
+  assetName?: string | null;
+  assetId?: string | null;
+  warrantyName?: string | null;
+  warrantyId?: string | null;
+  taskTitle?: string | null;
+  taskId?: string | null;
+};
+
 export type WarrantySummary = {
   id: string;
   assetName: string;
@@ -351,5 +366,30 @@ export const sampleRecords: RecordDetail[] = [
     documentType: "SERVICE_RECORD",
     issuedAtInput: "2026-03-01",
     notes: "Sample service record metadata.",
+  },
+];
+
+
+export const sampleReminders: ReminderDetail[] = [
+  {
+    id: "reminder-fridge-warranty",
+    title: "Review fridge warranty",
+    dueAt: "14 Feb 2026",
+    dueAtInput: "2026-02-14",
+    status: "PENDING",
+    notes: "Check warranty coverage before expiry.",
+    assetName: "French door fridge",
+    assetId: "asset-fridge",
+    warrantyName: "French door fridge warranty",
+    warrantyId: "warranty-fridge",
+  },
+  {
+    id: "reminder-aircon-filters",
+    title: "Air conditioner filter clean due",
+    dueAt: "1 Sep 2026",
+    dueAtInput: "2026-09-01",
+    status: "PENDING",
+    taskTitle: "Clean air conditioner filters",
+    taskId: "task-aircon-filters",
   },
 ];
