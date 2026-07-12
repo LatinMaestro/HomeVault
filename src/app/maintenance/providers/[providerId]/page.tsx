@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getServiceProvider } from "@/lib/home-data";
@@ -60,10 +61,14 @@ export default async function ServiceProviderPage({
         />
         <DataSourceNote source={provider.source} />
 
+        <Button asChild variant="secondary">
+          <Link href={`/maintenance/providers/${provider.data.id}/edit`}>Edit provider</Link>
+        </Button>
+
         <Card>
           <CardHeader>
             <CardTitle>Contact details</CardTitle>
-            <CardDescription>Read-only provider information for the current home.</CardDescription>
+            <CardDescription>Provider information for the current home.</CardDescription>
           </CardHeader>
           <CardContent>
             <FieldList
