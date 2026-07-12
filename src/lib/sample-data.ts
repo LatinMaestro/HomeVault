@@ -48,6 +48,16 @@ export type AssetDetail = AssetSummary & {
   }>;
 };
 
+export type ServiceProviderSummary = {
+  id: string;
+  name: string;
+  trade?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  website?: string | null;
+  notes?: string | null;
+};
+
 export type MaintenanceTaskSummary = {
   id: string;
   title: string;
@@ -187,6 +197,22 @@ export const sampleAssets: AssetDetail[] = [
       },
     ],
     documents: [],
+  },
+];
+
+export const sampleServiceProviders: ServiceProviderSummary[] = [
+  {
+    id: "provider-brisbane-home-electrical",
+    name: "Brisbane Home Electrical",
+    trade: "Electrician",
+    phone: "07 3000 0000",
+    notes: "Sample local service provider for seed data.",
+  },
+  {
+    id: "provider-southside-appliance-care",
+    name: "Southside Appliance Care",
+    trade: "Appliance repair",
+    phone: "07 3000 1111",
   },
 ];
 
