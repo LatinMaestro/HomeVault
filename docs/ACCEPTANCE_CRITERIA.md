@@ -207,7 +207,7 @@
 - Custom frequency requires a valid interval.
 - Non-custom frequencies clear custom interval metadata.
 - Guarded saving persists the existing MaintenanceTask.customIntervalDays field.
-- Lists, details and search use a readable “Every N days” label.
+- Lists, details and search use a readable "Every N days" label.
 - Missing database access remains non-destructive.
 - No recurrence calculation, reminders, jobs, queues, schema changes, dependencies or environment variables were added.
 - Vercel visual review remains deferred until client access is available.
