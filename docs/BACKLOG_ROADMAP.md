@@ -54,3 +54,7 @@
 ## Phase 1W Complete
 
 Added searchable provider list/detail routes and linked-task navigation. Provider mutations and external service integrations remain deferred.
+
+## Phase 1X Complete
+
+Added warranty start/expiry consistency validation without adding automation, reminders or schema changes.
