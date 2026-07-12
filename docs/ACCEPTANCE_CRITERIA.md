@@ -241,3 +241,10 @@
 - Today, past and blank dates retain existing behavior.
 - Validation uses the Brisbane calendar and confirms nothing was changed.
 - Validation does not require `DATABASE_URL`.
+
+## Phase 2A Acceptance
+
+- All persisted date fields accept valid YYYY-MM-DD dates and optional blanks.
+- Impossible dates and alternate date strings are rejected before database access.
+- Existing future-date and warranty-order guards continue to apply.
+- No schema or route behavior changes.

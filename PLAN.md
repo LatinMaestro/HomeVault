@@ -189,6 +189,12 @@ Phase 1Z prevents asset purchase dates, receipt purchase dates and document issu
 
 The shared validation runs before database access and does not add financial analysis, automation or schema changes. Vercel visual review remains deferred. See `docs/PHASE_1Z_PLAN.md`.
 
+## Phase 2A: Strict Calendar Date Validation - Complete
+
+Phase 2A centralised form date parsing and rejects impossible or non-calendar values instead of allowing JavaScript date rollover.
+
+All existing optional date fields keep their current behavior. Vercel visual review remains deferred. See `docs/PHASE_2A_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
