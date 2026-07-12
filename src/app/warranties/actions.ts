@@ -87,6 +87,13 @@ function invalidWarrantyState(values: ReturnType<typeof getWarrantyValues>): War
     };
   }
 
+  if (values.startsAt && values.expiresAt && values.expiresAt < values.startsAt) {
+    return {
+      status: "error",
+      message: "The warranty expiry date cannot be before its start date. Nothing was changed.",
+    };
+  }
+
   return null;
 }
 
