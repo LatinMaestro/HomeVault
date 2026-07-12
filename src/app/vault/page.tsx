@@ -19,6 +19,11 @@ const vaultSections = [
     href: "/vault/rooms",
   },
   {
+    title: "Asset categories",
+    description: "Manage broad labels used to organise household assets.",
+    href: "/vault/categories",
+  },
+  {
     title: "Assets",
     description: "Browse appliances, tools and outdoor equipment linked to rooms and records.",
     href: "/vault/assets",
@@ -42,7 +47,7 @@ export default function VaultPage() {
         <PageHeader
           eyebrow="Vault"
           title="A simple record of the things that make up your home."
-          description="Review rooms, assets and important home records in read-only screens."
+          description="Review and maintain rooms, assets, categories and important home record metadata."
         />
         <ReviewSummary
           items={[
@@ -53,8 +58,8 @@ export default function VaultPage() {
             },
             {
               label: "Mode",
-              value: "Read-only",
-              detail: "Create and edit pages remain non-saving previews.",
+              value: "Guarded edits",
+              detail: "Core metadata can save when the database is configured.",
             },
             {
               label: "Storage",
