@@ -63,6 +63,7 @@ export type MaintenanceTaskSummary = {
   title: string;
   description?: string | null;
   frequency: string;
+  customIntervalDays?: number | null;
   nextDueDate?: string | null;
   nextDueDateInput?: string | null;
   status: string;
