@@ -165,3 +165,7 @@ Completed the existing Custom frequency with validated day-interval metadata, pe
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
+
+## Phase 1W Complete
+
+Delivered a read-only service provider directory using the existing ServiceProvider model, server-side data layer and sample-data fallback. Vercel visual review is deferred; GitHub Actions remains the merge gate.
