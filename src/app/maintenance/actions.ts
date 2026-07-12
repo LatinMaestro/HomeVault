@@ -233,6 +233,7 @@ export async function createMaintenanceTaskAction(
 
     revalidatePath("/");
     revalidatePath("/maintenance");
+    if (task.assetId) revalidatePath(`/vault/assets/${task.assetId}`);
     if (assetId) revalidatePath(`/vault/assets/${assetId}`);
 
     return {
@@ -276,7 +277,7 @@ export async function updateMaintenanceTaskAction(
 
     const task = await db.maintenanceTask.findFirst({
       where: { id: taskId, homeId },
-      select: { id: true },
+      select: { id: true, assetId: true },
     });
 
     if (!task) {
