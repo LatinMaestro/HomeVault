@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { AssetForm } from "@/components/asset-form";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
-import { getRooms } from "@/lib/home-data";
+import { getAssetCategories, getRooms } from "@/lib/home-data";
 import { assetShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
@@ -16,8 +16,19 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function NewAssetPage() {
-  const rooms = await getRooms();
-  const fields = withFieldOptions(assetShellFields, "room", rooms.data.map((room) => room.name), "No linked room");
+  const [rooms, categories] = await Promise.all([getRooms(), getAssetCategories()]);
+  const roomFields = withFieldOptions(
+    assetShellFields,
+    "room",
+    rooms.data.map((room) => room.name),
+    "No linked room",
+  );
+  const fields = withFieldOptions(
+    roomFields,
+    "category",
+    categories.data.map((category) => category.name),
+    "No linked category",
+  );
   return (
     <AppShell activeSection="Vault">
       <section className="space-y-5">
