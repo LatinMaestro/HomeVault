@@ -147,6 +147,12 @@ Phase 1S connected asset create/edit to the existing optional AssetCategory rela
 
 Vercel visual review is deferred until client access is restored. See `docs/PHASE_1S_PLAN.md` for the completion and review record.
 
+## Phase 1T: Maintenance Lifecycle Control - Complete
+
+Phase 1T added guarded Active, Paused, Completed and Archived lifecycle control to existing maintenance create/edit while keeping completion history additive and reminders unimplemented.
+
+Vercel visual review is deferred until client access is restored. See `docs/PHASE_1T_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.
