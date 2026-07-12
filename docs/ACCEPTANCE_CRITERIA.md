@@ -248,3 +248,10 @@
 - Impossible dates and alternate date strings are rejected before database access.
 - Existing future-date and warranty-order guards continue to apply.
 - No schema or route behavior changes.
+
+## Phase 2B Acceptance
+
+- Blank and representable non-negative receipt totals retain existing behavior.
+- Totals above 21474836.47 or unsafe numeric conversions are rejected.
+- The validation message confirms nothing was changed.
+- No budgeting or financial analysis is introduced.
