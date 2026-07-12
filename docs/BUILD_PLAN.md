@@ -154,6 +154,10 @@ Connected guarded asset create/edit to existing seeded AssetCategory records wit
 
 Added guarded lifecycle status selection and persistence to existing maintenance create/edit using the current MaintenanceStatus enum. Completion history remains independent and additive. Vercel visual review is deferred.
 
+## Phase 1U: Maintenance Service Provider Linking - Complete
+
+Connected guarded maintenance create/edit to existing ServiceProvider records with database/sample fallback choices, list visibility and search. Provider management remains out of scope and Vercel visual review is deferred.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
