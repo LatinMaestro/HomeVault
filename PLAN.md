@@ -231,6 +231,12 @@ Phase 2G replaces repeated name-based home lookup with one lazy earliest-home re
 
 Production authentication and household isolation remain separate decision gates. Vercel visual review remains deferred. See `docs/PHASE_2G_PLAN.md`.
 
+## Phase 2H: Household Profile Settings - Complete
+
+Phase 2H adds guarded editing for the current home's name and Australian address metadata in Settings, backed by the shared temporary current-home resolver.
+
+Multi-home switching, members, roles and production authentication remain separate decision gates. Vercel visual review remains deferred. See `docs/PHASE_2H_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.

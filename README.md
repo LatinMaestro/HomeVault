@@ -2,15 +2,15 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 2G is complete. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 2H is complete. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `2G Shared Current-home Resolver` complete
+- Phase: `2H Household Profile Settings` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
-- Mutations: room, asset, maintenance task, warranty, receipt, document, service provider and asset category metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
+- Mutations: room, asset, maintenance task, warranty, receipt, document, service provider, asset category and household profile metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and Vercel-build-safe without live database access
 - Home: fallback-safe household snapshot for maintenance, warranties, inventory, receipts and documents
@@ -104,7 +104,7 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/receipts/new/document`
 - `/receipts/[recordId]`
 - `/receipts/[recordId]/edit`
-- `/settings`
+- `/settings` (household profile and privacy settings)
 
 ## Vercel Notes
 

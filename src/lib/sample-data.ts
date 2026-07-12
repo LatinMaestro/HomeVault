@@ -1,5 +1,15 @@
 export type DataSource = "database" | "sample";
 
+export type HomeProfile = {
+  id: string;
+  name: string;
+  addressLine: string | null;
+  suburb: string | null;
+  state: string | null;
+  postcode: string | null;
+  country: string;
+};
+
 export type RoomSummary = {
   id: string;
   name: string;
@@ -135,9 +145,14 @@ export type RecordDetail = RecordSummary & {
   issuedAtInput?: string | null;
 };
 
-export const sampleHome = {
+export const sampleHome: HomeProfile & { location: string } = {
   id: "sample-home",
   name: "Taylor Family Home",
+  addressLine: null,
+  suburb: "Carindale",
+  state: "QLD",
+  postcode: "4152",
+  country: "Australia",
   location: "Carindale, QLD",
 };
 

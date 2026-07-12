@@ -292,3 +292,11 @@
 - Changing household display metadata cannot break resolution by name.
 - Missing-home behavior remains non-destructive and fallback-safe.
 - No production auth, multi-home selection or build-time database query is added.
+
+## Phase 2H Acceptance
+
+- Settings renders database or sample household profile data without build-time database access.
+- Household name is required; state and postcode values receive Australian validation.
+- Saving is guarded by `DATABASE_URL` and missing-home states are non-destructive.
+- Renaming the household does not break subsequent current-home reads.
+- No auth, multi-home, member or role workflow is added.

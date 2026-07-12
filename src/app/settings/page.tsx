@@ -1,20 +1,27 @@
 import type { Metadata } from "next";
 import { Database, LockKeyhole, ShieldCheck } from "lucide-react";
 
+import { updateHouseholdProfileAction } from "@/app/settings/actions";
 import { AppShell } from "@/components/app-shell";
+import { DataSourceNote } from "@/components/data-source-note";
+import { HouseholdProfileForm } from "@/components/household-profile-form";
 import { PageHeader } from "@/components/page-header";
+import { getHomeProfile } from "@/lib/home-data";
+import { getHouseholdProfileFields } from "@/lib/household-profile-fields";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
   title: "Settings",
-  description: "Review HomeVault preview settings, privacy posture and current product guardrails.",
+  description: "Manage the current household profile and review HomeVault privacy guardrails.",
 };
+
+export const dynamic = "force-dynamic";
 
 const readinessCards = [
   {
     title: "Privacy posture",
-    description: "HomeVault keeps Phase 1 practical and private. No analytics, AI, OCR, email ingestion or external product integrations are connected.",
+    description: "HomeVault keeps the current MVP practical and private. No analytics, AI, OCR, email ingestion or external product integrations are connected.",
     badge: "Privacy-first",
     icon: ShieldCheck,
   },
@@ -41,14 +48,21 @@ const unavailableItems = [
   "Delete actions",
 ];
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const home = await getHomeProfile();
   return (
     <AppShell activeSection="Settings">
       <section className="space-y-5">
         <PageHeader
           eyebrow="Settings"
-          title="Preview settings and project readiness"
-          description="Settings remain read-only while account, storage and integration decisions stay separate from the working household record flows."
+          title="Household settings and privacy"
+          description="Maintain the current home profile while account, storage and integration decisions remain separate."
+        />
+        <DataSourceNote source={home.source} />
+        <HouseholdProfileForm
+          fields={getHouseholdProfileFields(home.data)}
+          action={updateHouseholdProfileAction}
+          databaseConfigured={Boolean(process.env.DATABASE_URL)}
         />
 
         <div className="grid gap-4 lg:grid-cols-3">
