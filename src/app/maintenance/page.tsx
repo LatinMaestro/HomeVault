@@ -41,6 +41,7 @@ export default async function MaintenancePage({
       task.status,
       getDisplayLabel(task.status),
       task.assetName,
+      task.serviceProviderName,
     ]),
   );
 
@@ -116,6 +117,7 @@ export default async function MaintenancePage({
                     </span>
                     <span>{getDisplayLabel(task.frequency)}</span>
                     {task.assetName ? <span>{task.assetName}</span> : null}
+                    {task.serviceProviderName ? <span>{task.serviceProviderName}</span> : null}
                   </CardContent>
                 </Card>
               </Link>
