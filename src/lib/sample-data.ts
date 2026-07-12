@@ -3,10 +3,10 @@ export type DataSource = "database" | "sample";
 export type HomeProfile = {
   id: string;
   name: string;
-  addressLine?: string | null;
-  suburb?: string | null;
-  state?: string | null;
-  postcode?: string | null;
+  addressLine: string | null;
+  suburb: string | null;
+  state: string | null;
+  postcode: string | null;
   country: string;
 };
 
