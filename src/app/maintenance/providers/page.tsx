@@ -10,7 +10,6 @@ import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getDisplayLabel } from "@/lib/display-labels";
 import { getServiceProviders } from "@/lib/home-data";
 import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
