@@ -103,3 +103,7 @@ Validate optional receipt totals against the existing signed 32-bit integer-cent
 ## 2026-07-12: Match room uniqueness to relationship lookup
 
 Treat current-home room names as duplicates regardless of letter case because asset relationship resolution already matches room names case-insensitively.
+
+## 2026-07-12: Revalidate both sides of asset relationship changes
+
+When an existing linked record changes assets, invalidate both the previous and new asset detail routes so each relationship section reflects the completed mutation.
