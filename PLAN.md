@@ -219,6 +219,12 @@ Phase 2E adds guarded create/edit persistence for current-home service provider 
 
 Deletes, booking, messaging, ratings, payments and external integrations remain out of scope. Vercel visual review remains deferred. See `docs/PHASE_2E_PLAN.md`.
 
+## Phase 2F: Asset Category Management - Complete
+
+Phase 2F adds guarded list, create and edit workflows for the existing current-home AssetCategory model and refreshes the Vault hub's stale persistence copy.
+
+Deletes and nested category taxonomies remain out of scope. Vercel visual review remains deferred. See `docs/PHASE_2F_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
