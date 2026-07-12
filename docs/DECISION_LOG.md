@@ -91,3 +91,7 @@ Reject completion dates after the current Australia/Brisbane date before databas
 ## 2026-07-12: Guard historical record dates
 
 Reject future asset purchase, receipt purchase and document issue dates using the Australia/Brisbane calendar before database access, while keeping each date optional.
+
+## 2026-07-12: Parse form dates strictly
+
+Use one UTC-based YYYY-MM-DD parser for all persisted form actions so invalid calendar dates cannot silently roll into a different month.
