@@ -225,6 +225,12 @@ Phase 2F adds guarded list, create and edit workflows for the existing current-h
 
 Deletes and nested category taxonomies remain out of scope. Vercel visual review remains deferred. See `docs/PHASE_2F_PLAN.md`.
 
+## Phase 2G: Shared Current-home Resolver - Complete
+
+Phase 2G replaces repeated name-based home lookup with one lazy earliest-home resolver across runtime reads and writes. This removes the household-name coupling while preserving the explicitly temporary single-home model.
+
+Production authentication and household isolation remain separate decision gates. Vercel visual review remains deferred. See `docs/PHASE_2G_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
