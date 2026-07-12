@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getCurrentHomeId } from "@/lib/current-home";
 import { getDb } from "@/lib/db";
-import { sampleHome } from "@/lib/sample-data";
 
 export type ServiceProviderActionState = {
   status: "idle" | "success" | "error";
@@ -53,15 +53,6 @@ function invalidProviderState(
   }
 
   return null;
-}
-
-async function getCurrentHomeId() {
-  const home = await getDb().home.findFirst({
-    where: { name: sampleHome.name },
-    select: { id: true },
-  });
-
-  return home?.id ?? null;
 }
 
 function unavailableState(): ServiceProviderActionState {
