@@ -58,6 +58,15 @@ export type ServiceProviderSummary = {
   notes?: string | null;
 };
 
+export type ServiceProviderDetail = ServiceProviderSummary & {
+  tasks: Array<{
+    id: string;
+    title: string;
+    status: string;
+    nextDueDate?: string | null;
+  }>;
+};
+
 export type MaintenanceTaskSummary = {
   id: string;
   title: string;
@@ -73,6 +82,7 @@ export type MaintenanceTaskSummary = {
 
 export type MaintenanceTaskDetail = MaintenanceTaskSummary & {
   serviceProviderName?: string | null;
+  serviceProviderId?: string | null;
   completions: Array<{
     id: string;
     completedAt: string;
@@ -201,19 +211,28 @@ export const sampleAssets: AssetDetail[] = [
   },
 ];
 
-export const sampleServiceProviders: ServiceProviderSummary[] = [
+export const sampleServiceProviders: ServiceProviderDetail[] = [
   {
     id: "provider-brisbane-home-electrical",
     name: "Brisbane Home Electrical",
     trade: "Electrician",
     phone: "07 3000 0000",
     notes: "Sample local service provider for seed data.",
+    tasks: [
+      {
+        id: "task-aircon-filters",
+        title: "Clean air conditioner filters",
+        status: "ACTIVE",
+        nextDueDate: "1 Sep 2026",
+      },
+    ],
   },
   {
     id: "provider-southside-appliance-care",
     name: "Southside Appliance Care",
     trade: "Appliance repair",
     phone: "07 3000 1111",
+    tasks: [],
   },
 ];
 
@@ -227,6 +246,7 @@ export const sampleMaintenanceTasks: MaintenanceTaskDetail[] = [
     nextDueDateInput: "2026-09-01",
     status: "ACTIVE",
     serviceProviderName: "Brisbane Home Electrical",
+    serviceProviderId: "provider-brisbane-home-electrical",
     completions: [],
   },
   {

@@ -212,3 +212,11 @@
 - No recurrence calculation, reminders, jobs, queues, schema changes, dependencies or environment variables were added.
 - Vercel visual review remains deferred until client access is available.
 - No auth, deletes, uploads, storage, OCR, AI, payments, analytics or native app work was added.
+
+## Phase 1W Acceptance
+
+- Existing providers are searchable by name, trade, contact metadata and linked task.
+- Provider details show contact metadata and navigable linked tasks.
+- Linked maintenance tasks can navigate to their provider.
+- All provider screens remain useful without `DATABASE_URL`.
+- No provider mutation or external integration is introduced.
