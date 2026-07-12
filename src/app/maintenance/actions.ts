@@ -167,7 +167,6 @@ export async function createMaintenanceTaskAction(
         frequency,
         nextDueDate: values.nextDueDate,
         status,
-        status,
       },
     });
 
@@ -236,6 +235,7 @@ export async function updateMaintenanceTaskAction(
         description: values.description || null,
         frequency,
         nextDueDate: values.nextDueDate,
+        status,
       },
     });
 
