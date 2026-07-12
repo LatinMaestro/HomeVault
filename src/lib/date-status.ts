@@ -53,7 +53,7 @@ export function getDateStatus(
 ): DateStatus {
   if (!value) {
     return {
-      label: context === "maintenance" ? "No due date" : "No expiry date",
+      label: context === "warranty" ? "No expiry date" : "No due date",
       tone: "missing",
     };
   }
