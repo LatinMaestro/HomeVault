@@ -171,6 +171,12 @@ Phase 1W exposed existing service provider records as a searchable, read-only ma
 
 It did not add provider CRUD, external integrations, authentication, notifications or new data models. Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1W_PLAN.md` for the completion record.
 
+## Phase 1X: Warranty Date Consistency - Complete
+
+Phase 1X prevents warranty create/edit actions from accepting an expiry date earlier than the coverage start date. Validation runs before database access and leaves existing fallback behavior unchanged.
+
+Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1X_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.

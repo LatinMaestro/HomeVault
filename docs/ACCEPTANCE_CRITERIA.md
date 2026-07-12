@@ -220,3 +220,10 @@
 - Linked maintenance tasks can navigate to their provider.
 - All provider screens remain useful without `DATABASE_URL`.
 - No provider mutation or external integration is introduced.
+
+## Phase 1X Acceptance
+
+- Warranty create and edit reject an expiry date earlier than the start date.
+- The error explains that nothing was changed.
+- Optional dates and valid date ordering retain existing behavior.
+- Validation does not require `DATABASE_URL`.
