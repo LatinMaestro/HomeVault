@@ -2,9 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getCurrentHomeId } from "@/lib/current-home";
 import { getDb } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
-import { sampleHome } from "@/lib/sample-data";
 
 export type WarrantyActionState = {
   status: "idle" | "success" | "error";
@@ -14,16 +14,6 @@ export type WarrantyActionState = {
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
-}
-
-async function getCurrentHomeId() {
-  const db = getDb();
-  const home = await db.home.findFirst({
-    where: { name: sampleHome.name },
-    select: { id: true },
-  });
-
-  return home?.id ?? null;
 }
 
 async function getAssetId(homeId: string, assetName: string) {

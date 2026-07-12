@@ -3,9 +3,9 @@
 import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
+import { getCurrentHomeId } from "@/lib/current-home";
 import { getDb } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
-import { sampleHome } from "@/lib/sample-data";
 
 export type RecordActionState = {
   status: "idle" | "success" | "error";
@@ -37,15 +37,6 @@ function getAmountCents(value: string) {
   return Number.isSafeInteger(amountCents) && amountCents <= maxReceiptAmountCents
     ? amountCents
     : undefined;
-}
-
-async function getCurrentHomeId() {
-  const home = await getDb().home.findFirst({
-    where: { name: sampleHome.name },
-    select: { id: true },
-  });
-
-  return home?.id ?? null;
 }
 
 async function getAssetId(homeId: string, assetName: string) {
