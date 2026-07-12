@@ -213,6 +213,12 @@ Phase 2D invalidates both previous and new asset detail routes when existing tas
 
 No data model or mutation capability changed. Vercel visual review remains deferred. See `docs/PHASE_2D_PLAN.md`.
 
+## Phase 2E: Service Provider Persistence - Complete
+
+Phase 2E adds guarded create/edit persistence for current-home service provider contact metadata and connects those actions to the existing maintenance directory.
+
+Deletes, booking, messaging, ratings, payments and external integrations remain out of scope. Vercel visual review remains deferred. See `docs/PHASE_2E_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
