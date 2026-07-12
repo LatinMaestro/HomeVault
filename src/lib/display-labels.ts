@@ -36,3 +36,14 @@ export function getDisplayLabel(value?: string | null) {
   if (!value) return null;
   return displayLabels[value] ?? value;
 }
+
+export function getMaintenanceFrequencyLabel(
+  value?: string | null,
+  customIntervalDays?: number | null,
+) {
+  if (value === "CUSTOM" && customIntervalDays) {
+    return `Every ${customIntervalDays} ${customIntervalDays === 1 ? "day" : "days"}`;
+  }
+
+  return getDisplayLabel(value);
+}
