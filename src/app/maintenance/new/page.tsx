@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { MaintenanceTaskForm } from "@/components/maintenance-form";
 import { PageHeader } from "@/components/page-header";
-import { getAssets } from "@/lib/home-data";
+import { getAssets, getServiceProviders } from "@/lib/home-data";
 import { maintenanceTaskShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
@@ -16,12 +16,18 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function NewMaintenanceTaskPage() {
-  const assets = await getAssets();
-  const fields = withFieldOptions(
+  const [assets, providers] = await Promise.all([getAssets(), getServiceProviders()]);
+  const assetFields = withFieldOptions(
     maintenanceTaskShellFields,
     "assetName",
     assets.data.map((asset) => asset.name),
     "No linked asset",
+  );
+  const fields = withFieldOptions(
+    assetFields,
+    "serviceProviderName",
+    providers.data.map((provider) => provider.name),
+    "No linked service provider",
   );
   return (
     <AppShell activeSection="Maintenance">
