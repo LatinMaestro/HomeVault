@@ -16,7 +16,7 @@ Make the existing Custom maintenance frequency complete and understandable witho
 - Rejects invalid submitted interval values.
 - Persists the existing MaintenanceTask.customIntervalDays field.
 - Clears custom interval metadata when another frequency is selected.
-- Displays Custom frequency as natural language such as “Every 45 days.”
+- Displays Custom frequency as natural language such as "Every 45 days."
 - Includes the custom interval in maintenance search.
 - Preserves database-unavailable non-destructive behavior.
 
