@@ -201,6 +201,12 @@ Phase 2B validates optional receipt totals against the PostgreSQL/Prisma integer
 
 Receipt totals remain archival metadata only; no budgeting or financial analysis was introduced. Vercel visual review remains deferred. See `docs/PHASE_2B_PLAN.md`.
 
+## Phase 2C: Room Name Consistency - Complete
+
+Phase 2C makes room duplicate checks case-insensitive, matching the existing case-insensitive room relationship resolver.
+
+No schema or room workflow changes were introduced. Vercel visual review remains deferred. See `docs/PHASE_2C_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
