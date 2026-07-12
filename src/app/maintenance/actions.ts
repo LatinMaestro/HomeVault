@@ -42,6 +42,15 @@ function getDateValue(value: string) {
   return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
+function getOptionalPositiveInteger(value: string) {
+  if (!value) return null;
+
+  const parsedValue = Number(value);
+  return Number.isInteger(parsedValue) && parsedValue >= 1 && parsedValue <= 3650
+    ? parsedValue
+    : undefined;
+}
+
 function getFrequencyValue(value: string): MaintenanceFrequencyValue | null {
   const normalisedValue = value.trim().toUpperCase().replace(/\s+/g, "_");
   return frequencyValues.find((frequency) => frequency === normalisedValue) ?? null;
@@ -126,6 +135,7 @@ function getTaskValues(formData: FormData) {
     title: getFieldValue(formData, "title"),
     description: getFieldValue(formData, "description"),
     frequency: getFrequencyValue(getFieldValue(formData, "frequency")),
+    customIntervalDays: getOptionalPositiveInteger(getFieldValue(formData, "customIntervalDays")),
     nextDueDate: getDateValue(getFieldValue(formData, "nextDueDate")),
     status: getStatusValue(getFieldValue(formData, "status")),
     assetName: getFieldValue(formData, "assetName"),
@@ -142,6 +152,20 @@ function invalidTaskState(values: ReturnType<typeof getTaskValues>): Maintenance
     return {
       status: "error",
       message: "Choose a recognised frequency such as MONTHLY, QUARTERLY, SIX_MONTHLY or YEARLY.",
+    };
+  }
+
+  if (values.customIntervalDays === undefined) {
+    return {
+      status: "error",
+      message: "Use a whole custom interval from 1 to 3650 days. Nothing was changed.",
+    };
+  }
+
+  if (values.frequency === "CUSTOM" && values.customIntervalDays === null) {
+    return {
+      status: "error",
+      message: "Add a custom interval in days when frequency is Custom.",
     };
   }
 
@@ -208,6 +232,7 @@ export async function createMaintenanceTaskAction(
         title: values.title,
         description: values.description || null,
         frequency,
+        customIntervalDays: frequency === "CUSTOM" ? values.customIntervalDays : null,
         nextDueDate: values.nextDueDate,
         status,
       },
@@ -287,6 +312,7 @@ export async function updateMaintenanceTaskAction(
         title: values.title,
         description: values.description || null,
         frequency,
+        customIntervalDays: frequency === "CUSTOM" ? values.customIntervalDays : null,
         nextDueDate: values.nextDueDate,
         status,
       },
