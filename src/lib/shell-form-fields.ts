@@ -232,6 +232,12 @@ export const maintenanceTaskShellFields: ShellField[] = [
     placeholder: "Battery lawn mower",
     helperText: "Optional. Choose an existing asset to link this task.",
   },
+  {
+    label: "Service provider",
+    name: "serviceProviderName",
+    placeholder: "Brisbane Home Electrical",
+    helperText: "Optional. Choose an existing provider responsible for this task.",
+  },
 ];
 
 export function getMaintenanceTaskEditShellFields(task?: {
@@ -242,6 +248,7 @@ export function getMaintenanceTaskEditShellFields(task?: {
   nextDueDateInput?: string | null;
   status?: string | null;
   assetName?: string | null;
+  serviceProviderName?: string | null;
 } | null): ShellField[] {
   return maintenanceTaskShellFields.map((field) => ({
     ...field,
@@ -257,8 +264,10 @@ export function getMaintenanceTaskEditShellFields(task?: {
               : field.name === "status"
                 ? task?.status ?? "ACTIVE"
                 : field.name === "assetName"
-                ? task?.assetName ?? ""
-                : field.defaultValue,
+                  ? task?.assetName ?? ""
+                  : field.name === "serviceProviderName"
+                    ? task?.serviceProviderName ?? ""
+                    : field.defaultValue,
   }));
 }
 
