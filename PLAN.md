@@ -165,6 +165,12 @@ Phase 1V completed the existing Custom maintenance frequency with validated day-
 
 Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1V_PLAN.md` for the completion record.
 
+## Phase 1W: Read-only Service Provider Directory - Complete
+
+Phase 1W exposed existing service provider records as a searchable, read-only maintenance directory with contact details and linked task navigation.
+
+It did not add provider CRUD, external integrations, authentication, notifications or new data models. Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1W_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.
