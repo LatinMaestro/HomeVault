@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getDb } from "@/lib/db";
+import { getOptionalDateValue } from "@/lib/form-values";
 import { sampleHome } from "@/lib/sample-data";
 
 const frequencyValues = [
@@ -30,17 +31,6 @@ export type MaintenanceActionState = {
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
-}
-
-function getDateValue(value: string) {
-  if (!value) return null;
-
-  const normalisedValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ? `${value}T00:00:00`
-    : value;
-  const date = new Date(normalisedValue);
-
-  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 function getOptionalPositiveInteger(value: string) {
@@ -137,7 +127,7 @@ function getTaskValues(formData: FormData) {
     description: getFieldValue(formData, "description"),
     frequency: getFrequencyValue(getFieldValue(formData, "frequency")),
     customIntervalDays: getOptionalPositiveInteger(getFieldValue(formData, "customIntervalDays")),
-    nextDueDate: getDateValue(getFieldValue(formData, "nextDueDate")),
+    nextDueDate: getOptionalDateValue(getFieldValue(formData, "nextDueDate")),
     status: getStatusValue(getFieldValue(formData, "status")),
     assetName: getFieldValue(formData, "assetName"),
     serviceProviderName: getFieldValue(formData, "serviceProviderName"),
@@ -343,7 +333,7 @@ export async function completeMaintenanceTaskAction(
   _previousState: MaintenanceActionState,
   formData: FormData,
 ): Promise<MaintenanceActionState> {
-  const completedAt = getDateValue(getFieldValue(formData, "completedAt"));
+  const completedAt = getOptionalDateValue(getFieldValue(formData, "completedAt"));
   const completedBy = getFieldValue(formData, "completedBy");
   const notes = getFieldValue(formData, "notes");
 
