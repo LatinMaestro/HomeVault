@@ -195,6 +195,12 @@ Phase 2A centralised form date parsing and rejects impossible or non-calendar va
 
 All existing optional date fields keep their current behavior. Vercel visual review remains deferred. See `docs/PHASE_2A_PLAN.md`.
 
+## Phase 2B: Receipt Amount Boundary - Complete
+
+Phase 2B validates optional receipt totals against the PostgreSQL/Prisma integer-cent storage boundary before database access.
+
+Receipt totals remain archival metadata only; no budgeting or financial analysis was introduced. Vercel visual review remains deferred. See `docs/PHASE_2B_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.
