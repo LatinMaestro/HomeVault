@@ -95,3 +95,7 @@ Reject future asset purchase, receipt purchase and document issue dates using th
 ## 2026-07-12: Parse form dates strictly
 
 Use one UTC-based YYYY-MM-DD parser for all persisted form actions so invalid calendar dates cannot silently roll into a different month.
+
+## 2026-07-12: Bound receipt totals to storage capacity
+
+Validate optional receipt totals against the existing signed 32-bit integer-cent field before database access, while retaining receipt amounts as archival metadata only.
