@@ -72,6 +72,13 @@ export default async function MaintenanceTaskPage({
               <Link href={`/vault/assets/${task.data.assetId}`}>View linked asset</Link>
             </Button>
           ) : null}
+          {task.data.serviceProviderId ? (
+            <Button asChild variant="outline">
+              <Link href={`/maintenance/providers/${task.data.serviceProviderId}`}>
+                View service provider
+              </Link>
+            </Button>
+          ) : null}
         </div>
 
         <Card>
