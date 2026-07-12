@@ -42,6 +42,10 @@ function getDateSerial(value: string) {
   return serial;
 }
 
+export function isAfterBrisbaneToday(value: Date, now = new Date()) {
+  return getBrisbaneDateSerial(value) > getBrisbaneDateSerial(now);
+}
+
 export function getDateStatus(
   value: string | null | undefined,
   context: DateStatusContext,
