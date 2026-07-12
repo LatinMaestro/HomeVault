@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
 const readinessCards = [
   {
     title: "Privacy posture",
-    description: "HomeVault keeps Phase 1 practical and private. No analytics, AI, OCR, email ingestion or external product integrations are connected.",
+    description: "HomeVault keeps the current MVP practical and private. No analytics, AI, OCR, email ingestion or external product integrations are connected.",
     badge: "Privacy-first",
     icon: ShieldCheck,
   },
