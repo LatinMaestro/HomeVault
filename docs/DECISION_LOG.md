@@ -111,3 +111,7 @@ When an existing linked record changes assets, invalidate both the previous and 
 ## 2026-07-12: Complete service provider contact management
 
 Allow guarded current-home provider create/edit because the model, seed data, maintenance links and read-only directory are established. Keep deletes and external service interactions out of scope.
+
+## 2026-07-12: Complete simple asset category management
+
+Allow guarded current-home category list/create/edit because asset forms already depend on seeded categories. Keep the taxonomy flat and preserve delete as out of scope.
