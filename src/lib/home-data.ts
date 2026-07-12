@@ -12,6 +12,7 @@ import {
   type AssetCategorySummary,
   type AssetDetail,
   type DataSource,
+  type HomeProfile,
   type MaintenanceTaskDetail,
   type RecordDetail,
   type RoomSummary,
@@ -89,6 +90,26 @@ async function getCurrentHomeId() {
   }
 
   return homeId;
+}
+
+export async function getHomeProfile(): Promise<Result<HomeProfile>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    const home = await getDb().home.findUnique({
+      where: { id: homeId },
+      select: {
+        id: true,
+        name: true,
+        addressLine: true,
+        suburb: true,
+        state: true,
+        postcode: true,
+        country: true,
+      },
+    });
+    if (!home) throw new Error("Current HomeVault home was not found");
+    return home;
+  }, sampleHome);
 }
 
 export async function getRooms(): Promise<Result<RoomSummary[]>> {
