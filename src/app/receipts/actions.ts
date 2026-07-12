@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getDb } from "@/lib/db";
+import { getOptionalDateValue } from "@/lib/form-values";
 import { sampleHome } from "@/lib/sample-data";
 
 export type RecordActionState = {
@@ -24,17 +25,6 @@ const documentTypes = [
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
-}
-
-function getDateValue(value: string) {
-  if (!value) return null;
-
-  const normalisedValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ? `${value}T00:00:00`
-    : value;
-  const date = new Date(normalisedValue);
-
-  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 function getAmountCents(value: string) {
@@ -117,7 +107,7 @@ function revalidateRecordPaths(recordId?: string, assetId?: string | null) {
 function getReceiptValues(formData: FormData) {
   return {
     merchant: getFieldValue(formData, "merchant"),
-    purchaseDate: getDateValue(getFieldValue(formData, "purchaseDate")),
+    purchaseDate: getOptionalDateValue(getFieldValue(formData, "purchaseDate")),
     totalAmountCents: getAmountCents(getFieldValue(formData, "totalAmount")),
     receiptNumber: getFieldValue(formData, "receiptNumber"),
     assetName: getFieldValue(formData, "assetName"),
@@ -224,7 +214,7 @@ function getDocumentValues(formData: FormData) {
   return {
     title: getFieldValue(formData, "title"),
     type: documentTypes.find((documentType) => documentType === type),
-    issuedAt: getDateValue(getFieldValue(formData, "issuedAt")),
+    issuedAt: getOptionalDateValue(getFieldValue(formData, "issuedAt")),
     assetName: getFieldValue(formData, "assetName"),
     notes: getFieldValue(formData, "notes"),
   };
