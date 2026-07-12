@@ -277,3 +277,11 @@
 - Optional email and website values receive basic validation.
 - Missing database and sample-record edits remain non-destructive.
 - No delete or external provider interaction is added.
+
+## Phase 2F Acceptance
+
+- Categories can be searched, created and edited with a configured database.
+- Category names are required and case-insensitive duplicates are rejected per home.
+- New and renamed categories remain available to existing asset forms.
+- Fallback data remains useful without `DATABASE_URL`.
+- No delete or nested category hierarchy is added.
