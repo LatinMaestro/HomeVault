@@ -12,6 +12,8 @@ export type RecordActionState = {
   message: string;
 };
 
+const maxReceiptAmountCents = 2_147_483_647;
+
 const documentTypes = [
   "MANUAL",
   "WARRANTY",
@@ -31,8 +33,10 @@ function getAmountCents(value: string) {
   if (!value) return null;
   if (!/^\d+(?:\.\d{1,2})?$/.test(value)) return undefined;
 
-  const amount = Number(value);
-  return Number.isFinite(amount) ? Math.round(amount * 100) : undefined;
+  const amountCents = Math.round(Number(value) * 100);
+  return Number.isSafeInteger(amountCents) && amountCents <= maxReceiptAmountCents
+    ? amountCents
+    : undefined;
 }
 
 async function getCurrentHomeId() {
@@ -126,7 +130,7 @@ function invalidReceiptState(values: ReturnType<typeof getReceiptValues>): Recor
     return { status: "error", message: "A receipt purchase date cannot be in the future. Nothing was changed." };
   }
   if (values.totalAmountCents === undefined) {
-    return { status: "error", message: "Use a purchase total such as 2899.00, or leave it blank. Nothing was changed." };
+    return { status: "error", message: "Use a purchase total from 0.00 to 21474836.47, or leave it blank. Nothing was changed." };
   }
   return null;
 }
