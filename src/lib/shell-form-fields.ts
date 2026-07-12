@@ -91,6 +91,12 @@ export const assetShellFields: ShellField[] = [
     helperText: "Choose an existing room, or leave the asset unlinked.",
   },
   {
+    label: "Category",
+    name: "category",
+    placeholder: "Appliances",
+    helperText: "Choose an existing household category, or leave the asset uncategorised.",
+  },
+  {
     label: "Purchase date",
     name: "purchaseDate",
     placeholder: "2024-03-14",
@@ -133,6 +139,7 @@ export function getAssetEditShellFields(asset?: {
   model?: string | null;
   serialNumber?: string | null;
   roomName?: string | null;
+  categoryName?: string | null;
   purchaseDateInput?: string | null;
   purchasePlace?: string | null;
   status?: string | null;
@@ -151,7 +158,9 @@ export function getAssetEditShellFields(asset?: {
               ? asset?.serialNumber ?? ""
               : field.name === "room"
                 ? asset?.roomName ?? ""
-                : field.name === "purchaseDate"
+                : field.name === "category"
+                  ? asset?.categoryName ?? ""
+                  : field.name === "purchaseDate"
                   ? asset?.purchaseDateInput ?? ""
                   : field.name === "purchasePlace"
                     ? asset?.purchasePlace ?? ""
