@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { AssetForm } from "@/components/asset-form";
 import { BackLinkButton } from "@/components/back-link-button";
 import { PageHeader } from "@/components/page-header";
-import { getAsset, getRooms } from "@/lib/home-data";
+import { getAsset, getAssetCategories, getRooms } from "@/lib/home-data";
 import { getAssetEditShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
@@ -21,12 +21,22 @@ export default async function EditAssetPage({
   params: Promise<{ assetId: string }>;
 }) {
   const { assetId } = await params;
-  const [asset, rooms] = await Promise.all([getAsset(assetId), getRooms()]);
-  const fields = withFieldOptions(
+  const [asset, rooms, categories] = await Promise.all([
+    getAsset(assetId),
+    getRooms(),
+    getAssetCategories(),
+  ]);
+  const roomFields = withFieldOptions(
     getAssetEditShellFields(asset.data),
     "room",
     rooms.data.map((room) => room.name),
     "No linked room",
+  );
+  const fields = withFieldOptions(
+    roomFields,
+    "category",
+    categories.data.map((category) => category.name),
+    "No linked category",
   );
   const updateAction = updateAssetAction.bind(null, assetId);
 
