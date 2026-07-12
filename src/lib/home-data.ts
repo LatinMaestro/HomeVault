@@ -231,6 +231,7 @@ export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetai
       title: task.title,
       description: task.description,
       frequency: task.frequency,
+      customIntervalDays: task.customIntervalDays,
       nextDueDate: formatDate(task.nextDueDate),
       nextDueDateInput: formatDateInput(task.nextDueDate),
       status: task.status,
