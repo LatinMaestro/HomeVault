@@ -177,6 +177,12 @@ Phase 1X prevents warranty create/edit actions from accepting an expiry date ear
 
 Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1X_PLAN.md` for the completion record.
 
+## Phase 1Y: Maintenance Completion Date Guard - Complete
+
+Phase 1Y prevents additive maintenance history from accepting completion dates after the current Australia/Brisbane calendar date.
+
+Validation runs before database access and does not add scheduling, recurrence automation or notifications. Vercel visual review remains deferred. See `docs/PHASE_1Y_PLAN.md`.
+
 ## Later Phases
 
 - Production authentication.

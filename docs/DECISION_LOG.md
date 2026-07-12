@@ -83,3 +83,7 @@ Expose existing current-home ServiceProvider records through maintenance before 
 ## 2026-07-12: Validate warranty date order
 
 Reject warranty expiry dates earlier than their start dates before database access so create and edit share the same non-destructive record-quality rule.
+
+## 2026-07-12: Guard maintenance completion dates
+
+Reject completion dates after the current Australia/Brisbane date before database access so historical service records cannot represent work that has not happened.

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getDb } from "@/lib/db";
 import { sampleHome } from "@/lib/sample-data";
 
@@ -350,6 +351,13 @@ export async function completeMaintenanceTaskAction(
     return {
       status: "error",
       message: "Use a readable completion date, such as 2026-09-01. Nothing was changed.",
+    };
+  }
+
+  if (completedAt && isAfterBrisbaneToday(completedAt)) {
+    return {
+      status: "error",
+      message: "A completion date cannot be in the future. Nothing was changed.",
     };
   }
 
