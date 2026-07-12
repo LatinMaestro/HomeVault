@@ -159,6 +159,12 @@ Phase 1U connected maintenance create/edit to existing current-home ServiceProvi
 
 Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1U_PLAN.md` for the completion record.
 
+## Phase 1V: Custom Maintenance Interval Metadata - Complete
+
+Phase 1V completed the existing Custom maintenance frequency with validated day-interval metadata and readable display, without adding recurrence automation.
+
+Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1V_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.
