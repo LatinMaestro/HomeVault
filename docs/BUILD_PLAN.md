@@ -158,6 +158,10 @@ Added guarded lifecycle status selection and persistence to existing maintenance
 
 Connected guarded maintenance create/edit to existing ServiceProvider records with database/sample fallback choices, list visibility and search. Provider management remains out of scope and Vercel visual review is deferred.
 
+## Phase 1V: Custom Maintenance Interval Metadata - Complete
+
+Completed the existing Custom frequency with validated day-interval metadata, persistence, readable display and search. Recurrence automation remains out of scope and Vercel visual review is deferred.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.
