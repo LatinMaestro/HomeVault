@@ -2,8 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 
+import { getCurrentHomeId } from "@/lib/current-home";
 import { getDb } from "@/lib/db";
-import { sampleHome } from "@/lib/sample-data";
 
 export type AssetCategoryActionState = {
   status: "idle" | "success" | "error";
@@ -13,14 +13,6 @@ export type AssetCategoryActionState = {
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
-}
-
-async function getCurrentHomeId() {
-  const home = await getDb().home.findFirst({
-    where: { name: sampleHome.name },
-    select: { id: true },
-  });
-  return home?.id ?? null;
 }
 
 function unavailableState(): AssetCategoryActionState {
