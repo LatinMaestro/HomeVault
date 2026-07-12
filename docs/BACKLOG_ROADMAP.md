@@ -20,6 +20,7 @@
 - Phase 1P maintenance due and warranty expiry awareness.
 - Phase 1Q navigation between existing linked household records.
 - Phase 1R complete identifying, purchase and lifecycle asset metadata.
+- Phase 1S optional asset category linking.
 - Online-first development workflow.
 
 ## Near Term
