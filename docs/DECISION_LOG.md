@@ -119,3 +119,7 @@ Allow guarded current-home category list/create/edit because asset forms already
 ## 2026-07-12: Centralise temporary current-home resolution
 
 Resolve the earliest Home record lazily through one server helper instead of matching the editable sample-home name. Retain this only for the explicitly temporary single-home mode until production auth and tenant isolation are approved.
+
+## 2026-07-12: Allow current household profile editing
+
+Expose guarded name and Australian address metadata editing after removing name-based current-home resolution. Keep multi-home behavior, members and roles behind the production authentication decision gate.
