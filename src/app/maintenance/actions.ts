@@ -155,18 +155,20 @@ function invalidTaskState(values: ReturnType<typeof getTaskValues>): Maintenance
     };
   }
 
-  if (values.customIntervalDays === undefined) {
-    return {
-      status: "error",
-      message: "Use a whole custom interval from 1 to 3650 days. Nothing was changed.",
-    };
-  }
+  if (values.frequency === "CUSTOM") {
+    if (values.customIntervalDays === undefined) {
+      return {
+        status: "error",
+        message: "Use a whole custom interval from 1 to 3650 days. Nothing was changed.",
+      };
+    }
 
-  if (values.frequency === "CUSTOM" && values.customIntervalDays === null) {
-    return {
-      status: "error",
-      message: "Add a custom interval in days when frequency is Custom.",
-    };
+    if (values.customIntervalDays === null) {
+      return {
+        status: "error",
+        message: "Add a custom interval in days when frequency is Custom.",
+      };
+    }
   }
 
   if (!values.status) {
