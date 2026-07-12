@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
@@ -9,6 +10,7 @@ import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getServiceProviders } from "@/lib/home-data";
 import { getQueryParam, matchesQuery } from "@/lib/list-filter";
@@ -50,7 +52,17 @@ export default async function ServiceProvidersPage({
           eyebrow="Maintenance"
           title="Service providers"
           description="Keep trusted contact details close to the maintenance work they support."
-          action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
+          action={
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>
+              <Button asChild>
+                <Link href="/maintenance/providers/new">
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  Add provider
+                </Link>
+              </Button>
+            </div>
+          }
         />
         <DataSourceNote source={providers.source} />
         <ReviewSummary
@@ -107,10 +119,16 @@ export default async function ServiceProvidersPage({
             description={
               query
                 ? "Try a provider name, trade or linked maintenance task."
-                : "Provider creation is not part of this phase. Existing provider records will appear here."
+                : "Add a trusted service contact to link with maintenance work."
             }
             action={
-              query ? <BackLinkButton href="/maintenance/providers">Clear search</BackLinkButton> : undefined
+              query ? (
+                <BackLinkButton href="/maintenance/providers">Clear search</BackLinkButton>
+              ) : (
+                <Button asChild>
+                  <Link href="/maintenance/providers/new">Add provider</Link>
+                </Button>
+              )
             }
           />
         )}

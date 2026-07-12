@@ -107,3 +107,7 @@ Treat current-home room names as duplicates regardless of letter case because as
 ## 2026-07-12: Revalidate both sides of asset relationship changes
 
 When an existing linked record changes assets, invalidate both the previous and new asset detail routes so each relationship section reflects the completed mutation.
+
+## 2026-07-12: Complete service provider contact management
+
+Allow guarded current-home provider create/edit because the model, seed data, maintenance links and read-only directory are established. Keep deletes and external service interactions out of scope.

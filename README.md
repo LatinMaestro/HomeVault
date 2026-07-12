@@ -2,15 +2,15 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 2D is complete. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 2E is complete. HomeVault supports guarded room, asset, maintenance, warranty, receipt and document metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `2D Linked Asset Revalidation` complete
+- Phase: `2E Service Provider Persistence` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise
-- Mutations: room, asset, maintenance task, warranty, receipt and document metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
+- Mutations: room, asset, maintenance task, warranty, receipt, document and service provider metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and Vercel-build-safe without live database access
 - Home: fallback-safe household snapshot for maintenance, warranties, inventory, receipts and documents
@@ -86,7 +86,9 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/maintenance`
 - `/maintenance/new`
 - `/maintenance/providers`
+- `/maintenance/providers/new`
 - `/maintenance/providers/[providerId]`
+- `/maintenance/providers/[providerId]/edit`
 - `/maintenance/[taskId]`
 - `/maintenance/[taskId]/edit`
 - `/warranties`
