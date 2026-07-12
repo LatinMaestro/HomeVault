@@ -23,6 +23,7 @@
 - Phase 1S optional asset category linking.
 - Phase 1T maintenance lifecycle status control.
 - Phase 1U optional maintenance service-provider linking.
+- Phase 1V custom maintenance interval metadata.
 - Online-first development workflow.
 
 ## Near Term

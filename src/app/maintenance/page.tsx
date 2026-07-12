@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
-import { getDisplayLabel } from "@/lib/display-labels";
+import { getDisplayLabel, getMaintenanceFrequencyLabel } from "@/lib/display-labels";
 import { getMaintenanceTasks } from "@/lib/home-data";
 import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
@@ -36,7 +36,8 @@ export default async function MaintenancePage({
       task.title,
       task.description,
       task.frequency,
-      getDisplayLabel(task.frequency),
+      task.customIntervalDays,
+      getMaintenanceFrequencyLabel(task.frequency, task.customIntervalDays),
       task.nextDueDate,
       task.status,
       getDisplayLabel(task.status),
@@ -115,7 +116,7 @@ export default async function MaintenancePage({
                       <CalendarClock className="h-4 w-4" aria-hidden="true" />
                       {task.nextDueDate || "No due date"}
                     </span>
-                    <span>{getDisplayLabel(task.frequency)}</span>
+                    <span>{getMaintenanceFrequencyLabel(task.frequency, task.customIntervalDays)}</span>
                     {task.assetName ? <span>{task.assetName}</span> : null}
                     {task.serviceProviderName ? <span>{task.serviceProviderName}</span> : null}
                   </CardContent>

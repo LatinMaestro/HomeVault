@@ -74,3 +74,4 @@
 | 2026-07-12 | Add maintenance lifecycle status without delete behavior. | Pausing, completing and archiving tasks preserves useful household history while delete remains out of scope. | Accepted |
 | 2026-07-12 | Keep completion records independent from task lifecycle. | Recording work should not silently archive a task or calculate recurrence before those product rules are approved. | Accepted |
 | 2026-07-12 | Link maintenance tasks only to existing current-home service providers. | Seeded provider records can improve service history now without prematurely adding contact management or provider CRUD. | Accepted |
+| 2026-07-12 | Require explicit day metadata for Custom maintenance frequency. | A Custom label without an interval is ambiguous, while storing the interval remains useful without approving recurrence automation. | Accepted |

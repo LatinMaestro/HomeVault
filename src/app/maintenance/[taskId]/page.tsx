@@ -13,7 +13,7 @@ import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
-import { getDisplayLabel } from "@/lib/display-labels";
+import { getDisplayLabel, getMaintenanceFrequencyLabel } from "@/lib/display-labels";
 import { getMaintenanceTask } from "@/lib/home-data";
 
 export const metadata: Metadata = {
@@ -84,7 +84,7 @@ export default async function MaintenanceTaskPage({
           <CardContent>
             <FieldList
               fields={[
-                { label: "Frequency", value: getDisplayLabel(task.data.frequency) },
+                { label: "Frequency", value: getMaintenanceFrequencyLabel(task.data.frequency, task.data.customIntervalDays) },
                 { label: "Next due", value: task.data.nextDueDate },
                 { label: "Status", value: getDisplayLabel(task.data.status) },
                 { label: "Asset", value: task.data.assetName },
