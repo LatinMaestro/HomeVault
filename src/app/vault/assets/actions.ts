@@ -3,9 +3,9 @@
 import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
+import { getCurrentHomeId } from "@/lib/current-home";
 import { getDb } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
-import { sampleHome } from "@/lib/sample-data";
 
 const assetStatusValues = [
   "ACTIVE",
@@ -29,16 +29,6 @@ function getFieldValue(formData: FormData, field: string) {
 
 function getStatusValue(value: string): AssetStatusValue | null {
   return assetStatusValues.find((status) => status === value.trim().toUpperCase()) ?? null;
-}
-
-async function getCurrentHomeId() {
-  const db = getDb();
-  const home = await db.home.findFirst({
-    where: { name: sampleHome.name },
-    select: { id: true },
-  });
-
-  return home?.id ?? null;
 }
 
 async function getRoomId(homeId: string, roomName: string) {
