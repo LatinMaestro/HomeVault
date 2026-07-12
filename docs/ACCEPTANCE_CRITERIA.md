@@ -269,3 +269,11 @@
 - Both previous and new asset detail routes are revalidated after a successful reassignment.
 - Existing mutation validation and ownership checks remain unchanged.
 - No schema or route additions are required.
+
+## Phase 2E Acceptance
+
+- Providers can be created and edited only when `DATABASE_URL` is configured.
+- Provider names are required and case-insensitive duplicates are rejected per home.
+- Optional email and website values receive basic validation.
+- Missing database and sample-record edits remain non-destructive.
+- No delete or external provider interaction is added.
