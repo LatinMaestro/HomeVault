@@ -255,3 +255,10 @@
 - Totals above 21474836.47 or unsafe numeric conversions are rejected.
 - The validation message confirms nothing was changed.
 - No budgeting or financial analysis is introduced.
+
+## Phase 2C Acceptance
+
+- Room create rejects a current-home name that differs only by case.
+- Room edit excludes itself but rejects another case-insensitive match.
+- Existing room persistence and fallback behavior remain unchanged.
+- No schema migration is required.

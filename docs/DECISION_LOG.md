@@ -99,3 +99,7 @@ Use one UTC-based YYYY-MM-DD parser for all persisted form actions so invalid ca
 ## 2026-07-12: Bound receipt totals to storage capacity
 
 Validate optional receipt totals against the existing signed 32-bit integer-cent field before database access, while retaining receipt amounts as archival metadata only.
+
+## 2026-07-12: Match room uniqueness to relationship lookup
+
+Treat current-home room names as duplicates regardless of letter case because asset relationship resolution already matches room names case-insensitively.
