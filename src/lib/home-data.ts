@@ -14,7 +14,7 @@ import {
   type MaintenanceTaskDetail,
   type RecordDetail,
   type RoomSummary,
-  type ServiceProviderSummary,
+  type ServiceProviderDetail,
   type WarrantyDetail,
 } from "@/lib/sample-data";
 
@@ -190,13 +190,19 @@ export async function getAsset(id: string): Promise<Result<AssetDetail | null>> 
   };
 }
 
-export async function getServiceProviders(): Promise<Result<ServiceProviderSummary[]>> {
+export async function getServiceProviders(): Promise<Result<ServiceProviderDetail[]>> {
   return withDatabase(async () => {
     const homeId = await getCurrentHomeId();
 
     const providers = await getDb().serviceProvider.findMany({
       where: { homeId },
       orderBy: { name: "asc" },
+      include: {
+        maintenanceTasks: {
+          orderBy: [{ nextDueDate: "asc" }, { title: "asc" }],
+          select: { id: true, title: true, status: true, nextDueDate: true },
+        },
+      },
     });
 
     return providers.map((provider) => ({
@@ -207,8 +213,22 @@ export async function getServiceProviders(): Promise<Result<ServiceProviderSumma
       email: provider.email,
       website: provider.website,
       notes: provider.notes,
+      tasks: provider.maintenanceTasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        status: task.status,
+        nextDueDate: formatDate(task.nextDueDate),
+      })),
     }));
   }, sampleServiceProviders);
+}
+
+export async function getServiceProvider(id: string): Promise<Result<ServiceProviderDetail | null>> {
+  const providers = await getServiceProviders();
+  return {
+    data: providers.data.find((provider) => provider.id === id) ?? null,
+    source: providers.source,
+  };
 }
 
 export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetail[]>> {
@@ -238,6 +258,7 @@ export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetai
       assetName: task.asset?.name,
       assetId: task.asset?.id,
       serviceProviderName: task.serviceProvider?.name,
+      serviceProviderId: task.serviceProvider?.id,
       completions: task.completions.map((completion) => ({
         id: completion.id,
         completedAt: formatDate(completion.completedAt) ?? "Unknown date",
