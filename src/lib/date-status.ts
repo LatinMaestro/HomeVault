@@ -3,7 +3,7 @@ export type DateStatus = {
   tone: "critical" | "attention" | "normal" | "missing";
 };
 
-type DateStatusContext = "maintenance" | "warranty";
+type DateStatusContext = "maintenance" | "warranty" | "reminder";
 
 const brisbaneDateFormatter = new Intl.DateTimeFormat("en-AU", {
   timeZone: "Australia/Brisbane",
