@@ -165,3 +165,14 @@
 - Home, asset and room views revalidate after asset saving.
 - No schema, migrations, dependencies or environment variables were added.
 - No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1S - Complete
+
+- Asset create/edit offers existing current-home or sample category choices.
+- Category selection remains optional.
+- Guarded saving persists the existing Asset.categoryId relationship.
+- Category resolution is scoped to the temporary current home.
+- Missing or unmatched category states are non-destructive and clearly messaged.
+- Vercel visual review is recorded as deferred until client access is available.
+- No schema, migration, route, category CRUD, dependency or environment variable was added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
