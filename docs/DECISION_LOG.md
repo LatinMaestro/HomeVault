@@ -115,3 +115,7 @@ Allow guarded current-home provider create/edit because the model, seed data, ma
 ## 2026-07-12: Complete simple asset category management
 
 Allow guarded current-home category list/create/edit because asset forms already depend on seeded categories. Keep the taxonomy flat and preserve delete as out of scope.
+
+## 2026-07-12: Centralise temporary current-home resolution
+
+Resolve the earliest Home record lazily through one server helper instead of matching the editable sample-home name. Retain this only for the explicitly temporary single-home mode until production auth and tenant isolation are approved.
