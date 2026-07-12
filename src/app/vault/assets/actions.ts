@@ -64,6 +64,38 @@ async function getRoomId(homeId: string, roomName: string) {
   return room?.id ?? null;
 }
 
+async function getCategoryId(homeId: string, categoryName: string) {
+  if (!categoryName) return null;
+
+  const category = await getDb().assetCategory.findFirst({
+    where: {
+      homeId,
+      name: { equals: categoryName, mode: "insensitive" },
+    },
+    select: { id: true },
+  });
+
+  return category?.id ?? null;
+}
+
+function getLinkWarning(
+  roomName: string,
+  roomId: string | null,
+  categoryName: string,
+  categoryId: string | null,
+) {
+  const missingLinks = [
+    roomName && !roomId ? "room" : null,
+    categoryName && !categoryId ? "category" : null,
+  ].filter((value): value is string => Boolean(value));
+
+  if (missingLinks.length === 0) return null;
+
+  return `The selected ${missingLinks.join(" and ")} could not be matched, so ${
+    missingLinks.length === 1 ? "it was" : "they were"
+  } left unlinked.`;
+}
+
 function unavailableState(): AssetActionState {
   return {
     status: "error",
@@ -85,6 +117,7 @@ function getAssetValues(formData: FormData) {
     model: getFieldValue(formData, "model"),
     serialNumber: getFieldValue(formData, "serialNumber"),
     roomName: getFieldValue(formData, "room"),
+    categoryName: getFieldValue(formData, "category"),
     purchaseDate: getDateValue(getFieldValue(formData, "purchaseDate")),
     purchasePlace: getFieldValue(formData, "purchasePlace"),
     status: getStatusValue(getFieldValue(formData, "status")),
@@ -137,12 +170,22 @@ export async function createAssetAction(
       };
     }
 
-    const roomId = await getRoomId(homeId, values.roomName);
+    const [roomId, categoryId] = await Promise.all([
+      getRoomId(homeId, values.roomName),
+      getCategoryId(homeId, values.categoryName),
+    ]);
+    const linkWarning = getLinkWarning(
+      values.roomName,
+      roomId,
+      values.categoryName,
+      categoryId,
+    );
 
     await db.asset.create({
       data: {
         homeId,
         roomId,
+        categoryId,
         name: values.name,
         brand: values.brand || null,
         model: values.model || null,
@@ -161,8 +204,8 @@ export async function createAssetAction(
 
     return {
       status: "success",
-      message: values.roomName && !roomId
-        ? "Asset saved. The room name did not match an existing room, so it was left unlinked."
+      message: linkWarning
+        ? `Asset saved. ${linkWarning}`
         : "Asset saved. You can now find it in the assets list.",
     };
   } catch {
@@ -209,12 +252,22 @@ export async function updateAssetAction(
       };
     }
 
-    const roomId = await getRoomId(homeId, values.roomName);
+    const [roomId, categoryId] = await Promise.all([
+      getRoomId(homeId, values.roomName),
+      getCategoryId(homeId, values.categoryName),
+    ]);
+    const linkWarning = getLinkWarning(
+      values.roomName,
+      roomId,
+      values.categoryName,
+      categoryId,
+    );
 
     await db.asset.update({
       where: { id: assetId },
       data: {
         roomId,
+        categoryId,
         name: values.name,
         brand: values.brand || null,
         model: values.model || null,
@@ -235,8 +288,8 @@ export async function updateAssetAction(
 
     return {
       status: "success",
-      message: values.roomName && !roomId
-        ? "Asset updated. The room name did not match an existing room, so it was left unlinked."
+      message: linkWarning
+        ? `Asset updated. ${linkWarning}`
         : "Asset updated. The assets list now reflects this change.",
     };
   } catch {

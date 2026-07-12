@@ -141,6 +141,12 @@ Phase 1R completed the existing asset metadata workflow with serial number, purc
 
 See `docs/PHASE_1R_PLAN.md` for the completion record.
 
+## Phase 1S: Asset Category Linking - Complete
+
+Phase 1S connected asset create/edit to the existing optional AssetCategory relationship using current-home database choices and canonical sample fallback choices.
+
+Vercel visual review is deferred until client access is restored. See `docs/PHASE_1S_PLAN.md` for the completion and review record.
+
 ## Later Phases
 
 - Production authentication.

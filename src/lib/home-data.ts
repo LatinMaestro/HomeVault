@@ -1,11 +1,13 @@
 import { getDb } from "@/lib/db";
 import {
+  sampleAssetCategories,
   sampleAssets,
   sampleHome,
   sampleMaintenanceTasks,
   sampleRecords,
   sampleRooms,
   sampleWarranties,
+  type AssetCategorySummary,
   type AssetDetail,
   type DataSource,
   type MaintenanceTaskDetail,
@@ -109,6 +111,23 @@ export async function getRooms(): Promise<Result<RoomSummary[]>> {
       assetCount: room._count.assets,
     }));
   }, sampleRooms);
+}
+
+export async function getAssetCategories(): Promise<Result<AssetCategorySummary[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+
+    const categories = await getDb().assetCategory.findMany({
+      where: { homeId },
+      orderBy: { name: "asc" },
+    });
+
+    return categories.map((category) => ({
+      id: category.id,
+      name: category.name,
+      description: category.description,
+    }));
+  }, sampleAssetCategories);
 }
 
 export async function getAssets(): Promise<Result<AssetDetail[]>> {

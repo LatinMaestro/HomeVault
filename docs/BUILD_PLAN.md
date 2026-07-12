@@ -146,6 +146,10 @@ Connected existing room, asset, task, warranty, receipt and document relationshi
 
 Completed guarded asset metadata persistence for serial number, purchase date, purchase place and lifecycle status using existing schema fields and Server Actions.
 
+## Phase 1S: Asset Category Linking - Complete
+
+Connected guarded asset create/edit to existing seeded AssetCategory records with database/sample fallback choices and no schema or category-management expansion. Vercel visual review is deferred until client access is restored.
+
 ## Future Phases
 
 Add production auth, approved storage, reminders, sharing and native app exploration only after explicit decisions.

@@ -69,3 +69,5 @@
 | 2026-07-11 | Expose existing related-record IDs in presentation shapes. | Relationship navigation should use stable route identifiers already loaded by Prisma rather than name matching or extra queries. | Accepted |
 | 2026-07-11 | Complete asset identifying and purchase metadata before adding new workflows. | The existing detail screen exposed fields that create/edit could not maintain, creating a practical record-quality gap. | Accepted |
 | 2026-07-11 | Use lifecycle status instead of delete for normal asset transitions. | Stored, repair, retired and disposed states preserve household history while delete remains out of scope. | Accepted |
+| 2026-07-12 | Link assets only to existing current-home categories. | The current schema and seed data support useful categorisation without prematurely adding category management. | Accepted |
+| 2026-07-12 | Defer Vercel visual review while client access is unavailable. | GitHub Actions can safely gate this bounded form/data change, and visual review can be completed later without repeated deployment activity. | Accepted |
