@@ -50,3 +50,7 @@
 - Budgeting or financial features.
 - Paid integrations.
 - Native iOS app.
+
+## Phase 1W Complete
+
+Added searchable provider list/detail routes and linked-task navigation. Provider mutations and external service integrations remain deferred.
