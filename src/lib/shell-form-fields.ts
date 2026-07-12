@@ -206,6 +206,15 @@ export const maintenanceTaskShellFields: ShellField[] = [
     helperText: "Choose how often this task is normally due. Automation is not enabled yet.",
   },
   {
+    label: "Custom interval (days)",
+    name: "customIntervalDays",
+    placeholder: "45",
+    inputType: "number",
+    min: "1",
+    step: "1",
+    helperText: "Required only when frequency is Custom. This records the interval but does not automate scheduling.",
+  },
+  {
     label: "Next due date",
     name: "nextDueDate",
     placeholder: "2026-09-01",
@@ -244,6 +253,7 @@ export function getMaintenanceTaskEditShellFields(task?: {
   title?: string | null;
   description?: string | null;
   frequency?: string | null;
+  customIntervalDays?: number | null;
   nextDueDate?: string | null;
   nextDueDateInput?: string | null;
   status?: string | null;
@@ -259,7 +269,9 @@ export function getMaintenanceTaskEditShellFields(task?: {
           ? task?.description ?? ""
           : field.name === "frequency"
             ? task?.frequency ?? ""
-            : field.name === "nextDueDate"
+            : field.name === "customIntervalDays"
+              ? task?.customIntervalDays?.toString() ?? ""
+              : field.name === "nextDueDate"
               ? task?.nextDueDateInput ?? ""
               : field.name === "status"
                 ? task?.status ?? "ACTIVE"
