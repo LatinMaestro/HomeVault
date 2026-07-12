@@ -41,6 +41,7 @@ export default async function MaintenancePage({
       task.status,
       getDisplayLabel(task.status),
       task.assetName,
+      task.serviceProviderName,
     ]),
   );
 
@@ -85,7 +86,7 @@ export default async function MaintenancePage({
           action="/maintenance"
           defaultValue={query}
           label="Search maintenance tasks"
-          placeholder="Search tasks, assets or frequencies"
+          placeholder="Search tasks, assets or providers"
           resultCount={visibleTasks.length}
           resultNoun="task"
         />
@@ -116,6 +117,7 @@ export default async function MaintenancePage({
                     </span>
                     <span>{getDisplayLabel(task.frequency)}</span>
                     {task.assetName ? <span>{task.assetName}</span> : null}
+                    {task.serviceProviderName ? <span>{task.serviceProviderName}</span> : null}
                   </CardContent>
                 </Card>
               </Link>

@@ -188,3 +188,15 @@
 - Vercel visual review is recorded as deferred until client access is available.
 - No schema, migration, reminder automation, notification, dependency or environment variable was added.
 - No auth, deletes, uploads, storage, OCR, AI, payments, analytics or native app work was added.
+
+## Phase 1U - Complete
+
+- Maintenance create/edit offers existing current-home or sample service-provider choices.
+- Provider selection remains optional.
+- Guarded saving persists MaintenanceTask.serviceProviderId.
+- Provider resolution is scoped to the temporary current home.
+- Provider names appear in maintenance list, search and detail views.
+- Missing or unmatched provider states remain non-destructive and clearly messaged.
+- Vercel visual review remains deferred until client access is available.
+- No schema, migration, route, provider CRUD, dependency or environment variable was added.
+- No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.

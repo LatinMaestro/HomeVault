@@ -75,6 +75,38 @@ async function getAssetId(homeId: string, assetName: string) {
   return asset?.id ?? null;
 }
 
+async function getServiceProviderId(homeId: string, providerName: string) {
+  if (!providerName) return null;
+
+  const provider = await getDb().serviceProvider.findFirst({
+    where: {
+      homeId,
+      name: { equals: providerName, mode: "insensitive" },
+    },
+    select: { id: true },
+  });
+
+  return provider?.id ?? null;
+}
+
+function getLinkWarning(
+  assetName: string,
+  assetId: string | null,
+  providerName: string,
+  serviceProviderId: string | null,
+) {
+  const missingLinks = [
+    assetName && !assetId ? "asset" : null,
+    providerName && !serviceProviderId ? "service provider" : null,
+  ].filter((value): value is string => Boolean(value));
+
+  if (missingLinks.length === 0) return null;
+
+  return `The selected ${missingLinks.join(" and ")} could not be matched, so ${
+    missingLinks.length === 1 ? "it was" : "they were"
+  } left unlinked.`;
+}
+
 function unavailableState(): MaintenanceActionState {
   return {
     status: "error",
@@ -97,6 +129,7 @@ function getTaskValues(formData: FormData) {
     nextDueDate: getDateValue(getFieldValue(formData, "nextDueDate")),
     status: getStatusValue(getFieldValue(formData, "status")),
     assetName: getFieldValue(formData, "assetName"),
+    serviceProviderName: getFieldValue(formData, "serviceProviderName"),
   };
 }
 
@@ -156,12 +189,22 @@ export async function createMaintenanceTaskAction(
       };
     }
 
-    const assetId = await getAssetId(homeId, values.assetName);
+    const [assetId, serviceProviderId] = await Promise.all([
+      getAssetId(homeId, values.assetName),
+      getServiceProviderId(homeId, values.serviceProviderName),
+    ]);
+    const linkWarning = getLinkWarning(
+      values.assetName,
+      assetId,
+      values.serviceProviderName,
+      serviceProviderId,
+    );
 
     await db.maintenanceTask.create({
       data: {
         homeId,
         assetId,
+        serviceProviderId,
         title: values.title,
         description: values.description || null,
         frequency,
@@ -176,8 +219,8 @@ export async function createMaintenanceTaskAction(
 
     return {
       status: "success",
-      message: values.assetName && !assetId
-        ? "Maintenance task saved. The asset name did not match an existing asset, so it was left unlinked."
+      message: linkWarning
+        ? `Maintenance task saved. ${linkWarning}`
         : "Maintenance task saved. You can now find it in the maintenance list.",
     };
   } catch {
@@ -225,12 +268,22 @@ export async function updateMaintenanceTaskAction(
       };
     }
 
-    const assetId = await getAssetId(homeId, values.assetName);
+    const [assetId, serviceProviderId] = await Promise.all([
+      getAssetId(homeId, values.assetName),
+      getServiceProviderId(homeId, values.serviceProviderName),
+    ]);
+    const linkWarning = getLinkWarning(
+      values.assetName,
+      assetId,
+      values.serviceProviderName,
+      serviceProviderId,
+    );
 
     await db.maintenanceTask.update({
       where: { id: taskId },
       data: {
         assetId,
+        serviceProviderId,
         title: values.title,
         description: values.description || null,
         frequency,
@@ -247,8 +300,8 @@ export async function updateMaintenanceTaskAction(
 
     return {
       status: "success",
-      message: values.assetName && !assetId
-        ? "Maintenance task updated. The asset name did not match an existing asset, so it was left unlinked."
+      message: linkWarning
+        ? `Maintenance task updated. ${linkWarning}`
         : "Maintenance task updated. The maintenance list now reflects this change.",
     };
   } catch {

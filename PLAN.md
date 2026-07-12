@@ -153,6 +153,12 @@ Phase 1T added guarded Active, Paused, Completed and Archived lifecycle control 
 
 Vercel visual review is deferred until client access is restored. See `docs/PHASE_1T_PLAN.md` for the completion record.
 
+## Phase 1U: Maintenance Service Provider Linking - Complete
+
+Phase 1U connected maintenance create/edit to existing current-home ServiceProvider records with canonical sample fallback choices, list visibility and search.
+
+Vercel visual review remains deferred until client access is restored. See `docs/PHASE_1U_PLAN.md` for the completion record.
+
 ## Later Phases
 
 - Production authentication.

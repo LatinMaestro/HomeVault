@@ -6,6 +6,7 @@ import {
   sampleMaintenanceTasks,
   sampleRecords,
   sampleRooms,
+  sampleServiceProviders,
   sampleWarranties,
   type AssetCategorySummary,
   type AssetDetail,
@@ -13,6 +14,7 @@ import {
   type MaintenanceTaskDetail,
   type RecordDetail,
   type RoomSummary,
+  type ServiceProviderSummary,
   type WarrantyDetail,
 } from "@/lib/sample-data";
 
@@ -186,6 +188,27 @@ export async function getAsset(id: string): Promise<Result<AssetDetail | null>> 
     data: assets.data.find((asset) => asset.id === id) ?? null,
     source: assets.source,
   };
+}
+
+export async function getServiceProviders(): Promise<Result<ServiceProviderSummary[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+
+    const providers = await getDb().serviceProvider.findMany({
+      where: { homeId },
+      orderBy: { name: "asc" },
+    });
+
+    return providers.map((provider) => ({
+      id: provider.id,
+      name: provider.name,
+      trade: provider.trade,
+      phone: provider.phone,
+      email: provider.email,
+      website: provider.website,
+      notes: provider.notes,
+    }));
+  }, sampleServiceProviders);
 }
 
 export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetail[]>> {

@@ -5,7 +5,7 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { MaintenanceTaskForm } from "@/components/maintenance-form";
 import { PageHeader } from "@/components/page-header";
-import { getAssets, getMaintenanceTask } from "@/lib/home-data";
+import { getAssets, getMaintenanceTask, getServiceProviders } from "@/lib/home-data";
 import { getMaintenanceTaskEditShellFields, withFieldOptions } from "@/lib/shell-form-fields";
 
 export const metadata: Metadata = {
@@ -21,12 +21,22 @@ export default async function EditMaintenanceTaskPage({
   params: Promise<{ taskId: string }>;
 }) {
   const { taskId } = await params;
-  const [task, assets] = await Promise.all([getMaintenanceTask(taskId), getAssets()]);
-  const fields = withFieldOptions(
+  const [task, assets, providers] = await Promise.all([
+    getMaintenanceTask(taskId),
+    getAssets(),
+    getServiceProviders(),
+  ]);
+  const assetFields = withFieldOptions(
     getMaintenanceTaskEditShellFields(task.data),
     "assetName",
     assets.data.map((asset) => asset.name),
     "No linked asset",
+  );
+  const fields = withFieldOptions(
+    assetFields,
+    "serviceProviderName",
+    providers.data.map((provider) => provider.name),
+    "No linked service provider",
   );
   const updateAction = updateMaintenanceTaskAction.bind(null, taskId);
 
