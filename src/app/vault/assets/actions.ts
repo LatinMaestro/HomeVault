@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getDb } from "@/lib/db";
 import { sampleHome } from "@/lib/sample-data";
 
@@ -138,6 +139,13 @@ function invalidAssetState(values: ReturnType<typeof getAssetValues>): AssetActi
     return {
       status: "error",
       message: "Use a readable purchase date, such as 2024-03-14. Nothing was changed.",
+    };
+  }
+
+  if (values.purchaseDate && isAfterBrisbaneToday(values.purchaseDate)) {
+    return {
+      status: "error",
+      message: "An asset purchase date cannot be in the future. Nothing was changed.",
     };
   }
 

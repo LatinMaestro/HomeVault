@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getDb } from "@/lib/db";
 import { sampleHome } from "@/lib/sample-data";
 
@@ -131,6 +132,9 @@ function invalidReceiptState(values: ReturnType<typeof getReceiptValues>): Recor
   if (values.purchaseDate === undefined) {
     return { status: "error", message: "Use a readable purchase date such as 2026-09-01. Nothing was changed." };
   }
+  if (values.purchaseDate && isAfterBrisbaneToday(values.purchaseDate)) {
+    return { status: "error", message: "A receipt purchase date cannot be in the future. Nothing was changed." };
+  }
   if (values.totalAmountCents === undefined) {
     return { status: "error", message: "Use a purchase total such as 2899.00, or leave it blank. Nothing was changed." };
   }
@@ -235,6 +239,9 @@ function invalidDocumentState(values: ReturnType<typeof getDocumentValues>): Rec
   }
   if (values.issuedAt === undefined) {
     return { status: "error", message: "Use a readable issue date such as 2026-09-01. Nothing was changed." };
+  }
+  if (values.issuedAt && isAfterBrisbaneToday(values.issuedAt)) {
+    return { status: "error", message: "A document issue date cannot be in the future. Nothing was changed." };
   }
   return null;
 }

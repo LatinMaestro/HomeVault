@@ -234,3 +234,10 @@
 - Today and past dates retain existing behavior.
 - The message confirms nothing was changed.
 - Validation does not require `DATABASE_URL`.
+
+## Phase 1Z Acceptance
+
+- Future asset purchase, receipt purchase and document issue dates are rejected.
+- Today, past and blank dates retain existing behavior.
+- Validation uses the Brisbane calendar and confirms nothing was changed.
+- Validation does not require `DATABASE_URL`.
