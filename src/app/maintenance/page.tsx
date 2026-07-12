@@ -86,7 +86,7 @@ export default async function MaintenancePage({
           action="/maintenance"
           defaultValue={query}
           label="Search maintenance tasks"
-          placeholder="Search tasks, assets or frequencies"
+          placeholder="Search tasks, assets or providers"
           resultCount={visibleTasks.length}
           resultNoun="task"
         />
