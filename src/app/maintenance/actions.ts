@@ -233,7 +233,6 @@ export async function createMaintenanceTaskAction(
 
     revalidatePath("/");
     revalidatePath("/maintenance");
-    if (task.assetId) revalidatePath(`/vault/assets/${task.assetId}`);
     if (assetId) revalidatePath(`/vault/assets/${assetId}`);
 
     return {
@@ -316,6 +315,7 @@ export async function updateMaintenanceTaskAction(
     revalidatePath("/maintenance");
     revalidatePath(`/maintenance/${taskId}`);
     revalidatePath(`/maintenance/${taskId}/edit`);
+    if (task.assetId) revalidatePath(`/vault/assets/${task.assetId}`);
     if (assetId) revalidatePath(`/vault/assets/${assetId}`);
 
     return {
