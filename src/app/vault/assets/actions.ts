@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getDb } from "@/lib/db";
+import { getOptionalDateValue } from "@/lib/form-values";
 import { sampleHome } from "@/lib/sample-data";
 
 const assetStatusValues = [
@@ -24,17 +25,6 @@ export type AssetActionState = {
 function getFieldValue(formData: FormData, field: string) {
   const value = formData.get(field);
   return typeof value === "string" ? value.trim() : "";
-}
-
-function getDateValue(value: string) {
-  if (!value) return null;
-
-  const normalisedValue = /^\d{4}-\d{2}-\d{2}$/.test(value)
-    ? `${value}T00:00:00`
-    : value;
-  const date = new Date(normalisedValue);
-
-  return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
 function getStatusValue(value: string): AssetStatusValue | null {
@@ -119,7 +109,7 @@ function getAssetValues(formData: FormData) {
     serialNumber: getFieldValue(formData, "serialNumber"),
     roomName: getFieldValue(formData, "room"),
     categoryName: getFieldValue(formData, "category"),
-    purchaseDate: getDateValue(getFieldValue(formData, "purchaseDate")),
+    purchaseDate: getOptionalDateValue(getFieldValue(formData, "purchaseDate")),
     purchasePlace: getFieldValue(formData, "purchasePlace"),
     status: getStatusValue(getFieldValue(formData, "status")),
     notes: getFieldValue(formData, "notes"),
