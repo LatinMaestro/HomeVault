@@ -285,3 +285,10 @@
 - New and renamed categories remain available to existing asset forms.
 - Fallback data remains useful without `DATABASE_URL`.
 - No delete or nested category hierarchy is added.
+
+## Phase 2G Acceptance
+
+- Runtime reads and all existing mutations use one lazy current-home resolver.
+- Changing household display metadata cannot break resolution by name.
+- Missing-home behavior remains non-destructive and fallback-safe.
+- No production auth, multi-home selection or build-time database query is added.
