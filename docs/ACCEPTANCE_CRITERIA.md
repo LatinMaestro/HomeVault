@@ -262,3 +262,10 @@
 - Room edit excludes itself but rejects another case-insensitive match.
 - Existing room persistence and fallback behavior remain unchanged.
 - No schema migration is required.
+
+## Phase 2D Acceptance
+
+- Task, warranty, receipt and document edits retain the previous asset ID before updating.
+- Both previous and new asset detail routes are revalidated after a successful reassignment.
+- Existing mutation validation and ownership checks remain unchanged.
+- No schema or route additions are required.
