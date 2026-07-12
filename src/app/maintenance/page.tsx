@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarClock, Plus } from "lucide-react";
+import { CalendarClock, Contact, Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -54,12 +54,20 @@ export default async function MaintenancePage({
           title="Track recurring home upkeep before it becomes stressful."
           description="Review maintenance tasks, save task changes when a database is configured, and record simple completion notes."
           action={
-            <Button asChild>
-              <Link href="/maintenance/new">
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                Add task
-              </Link>
-            </Button>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button asChild variant="outline">
+                <Link href="/maintenance/providers">
+                  <Contact className="h-4 w-4" aria-hidden="true" />
+                  Providers
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/maintenance/new">
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  Add task
+                </Link>
+              </Button>
+            </div>
           }
         />
         <DataSourceNote source={tasks.source} />
