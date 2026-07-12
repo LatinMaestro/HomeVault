@@ -71,3 +71,5 @@
 | 2026-07-11 | Use lifecycle status instead of delete for normal asset transitions. | Stored, repair, retired and disposed states preserve household history while delete remains out of scope. | Accepted |
 | 2026-07-12 | Link assets only to existing current-home categories. | The current schema and seed data support useful categorisation without prematurely adding category management. | Accepted |
 | 2026-07-12 | Defer Vercel visual review while client access is unavailable. | GitHub Actions can safely gate this bounded form/data change, and visual review can be completed later without repeated deployment activity. | Accepted |
+| 2026-07-12 | Add maintenance lifecycle status without delete behavior. | Pausing, completing and archiving tasks preserves useful household history while delete remains out of scope. | Accepted |
+| 2026-07-12 | Keep completion records independent from task lifecycle. | Recording work should not silently archive a task or calculate recurrence before those product rules are approved. | Accepted |

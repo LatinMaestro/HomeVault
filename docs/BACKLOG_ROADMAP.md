@@ -21,6 +21,7 @@
 - Phase 1Q navigation between existing linked household records.
 - Phase 1R complete identifying, purchase and lifecycle asset metadata.
 - Phase 1S optional asset category linking.
+- Phase 1T maintenance lifecycle status control.
 - Online-first development workflow.
 
 ## Near Term

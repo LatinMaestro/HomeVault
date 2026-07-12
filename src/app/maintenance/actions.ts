@@ -18,6 +18,9 @@ const frequencyValues = [
 
 type MaintenanceFrequencyValue = (typeof frequencyValues)[number];
 
+const maintenanceStatusValues = ["ACTIVE", "PAUSED", "COMPLETED", "ARCHIVED"] as const;
+type MaintenanceStatusValue = (typeof maintenanceStatusValues)[number];
+
 export type MaintenanceActionState = {
   status: "idle" | "success" | "error";
   message: string;
@@ -42,6 +45,10 @@ function getDateValue(value: string) {
 function getFrequencyValue(value: string): MaintenanceFrequencyValue | null {
   const normalisedValue = value.trim().toUpperCase().replace(/\s+/g, "_");
   return frequencyValues.find((frequency) => frequency === normalisedValue) ?? null;
+}
+
+function getStatusValue(value: string): MaintenanceStatusValue | null {
+  return maintenanceStatusValues.find((status) => status === value.trim().toUpperCase()) ?? null;
 }
 
 async function getCurrentHomeId() {
@@ -88,6 +95,7 @@ function getTaskValues(formData: FormData) {
     description: getFieldValue(formData, "description"),
     frequency: getFrequencyValue(getFieldValue(formData, "frequency")),
     nextDueDate: getDateValue(getFieldValue(formData, "nextDueDate")),
+    status: getStatusValue(getFieldValue(formData, "status")),
     assetName: getFieldValue(formData, "assetName"),
   };
 }
@@ -101,6 +109,13 @@ function invalidTaskState(values: ReturnType<typeof getTaskValues>): Maintenance
     return {
       status: "error",
       message: "Choose a recognised frequency such as MONTHLY, QUARTERLY, SIX_MONTHLY or YEARLY.",
+    };
+  }
+
+  if (!values.status) {
+    return {
+      status: "error",
+      message: "Choose a recognised task status before saving.",
     };
   }
 
@@ -123,7 +138,8 @@ export async function createMaintenanceTaskAction(
   if (invalidState) return invalidState;
 
   const frequency = values.frequency;
-  if (!frequency) return invalidTaskState(values) ?? unknownFailureState();
+  const status = values.status;
+  if (!frequency || !status) return invalidTaskState(values) ?? unknownFailureState();
 
   if (!process.env.DATABASE_URL) {
     return unavailableState();
@@ -150,6 +166,7 @@ export async function createMaintenanceTaskAction(
         description: values.description || null,
         frequency,
         nextDueDate: values.nextDueDate,
+        status,
       },
     });
 
@@ -178,7 +195,8 @@ export async function updateMaintenanceTaskAction(
   if (invalidState) return invalidState;
 
   const frequency = values.frequency;
-  if (!frequency) return invalidTaskState(values) ?? unknownFailureState();
+  const status = values.status;
+  if (!frequency || !status) return invalidTaskState(values) ?? unknownFailureState();
 
   if (!process.env.DATABASE_URL) {
     return unavailableState();
@@ -217,6 +235,7 @@ export async function updateMaintenanceTaskAction(
         description: values.description || null,
         frequency,
         nextDueDate: values.nextDueDate,
+        status,
       },
     });
 

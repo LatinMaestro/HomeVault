@@ -176,3 +176,15 @@
 - Vercel visual review is recorded as deferred until client access is available.
 - No schema, migration, route, category CRUD, dependency or environment variable was added.
 - No auth, deletes, uploads, storage, OCR, AI, notifications, payments, analytics or native app work was added.
+
+## Phase 1T - Complete
+
+- Maintenance create/edit offers Active, Paused, Completed and Archived status choices.
+- Submitted status is validated against existing Prisma values.
+- New tasks default to Active and edits preserve the current value.
+- Guarded saving persists MaintenanceTask.status.
+- Completion records remain additive and do not silently change task status.
+- Missing database access remains non-destructive.
+- Vercel visual review is recorded as deferred until client access is available.
+- No schema, migration, reminder automation, notification, dependency or environment variable was added.
+- No auth, deletes, uploads, storage, OCR, AI, payments, analytics or native app work was added.

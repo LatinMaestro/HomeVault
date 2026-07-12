@@ -213,6 +213,20 @@ export const maintenanceTaskShellFields: ShellField[] = [
     helperText: "Optional. Choose the next date this task is due.",
   },
   {
+    label: "Task status",
+    name: "status",
+    recommended: true,
+    defaultValue: "ACTIVE",
+    options: [
+      { label: "Active", value: "ACTIVE" },
+      { label: "Paused", value: "PAUSED" },
+      { label: "Completed", value: "COMPLETED" },
+      { label: "Archived", value: "ARCHIVED" },
+    ],
+    emptyOptionLabel: "Choose a task status",
+    helperText: "Pause or archive tasks without deleting their history.",
+  },
+  {
     label: "Linked asset",
     name: "assetName",
     placeholder: "Battery lawn mower",
@@ -226,6 +240,7 @@ export function getMaintenanceTaskEditShellFields(task?: {
   frequency?: string | null;
   nextDueDate?: string | null;
   nextDueDateInput?: string | null;
+  status?: string | null;
   assetName?: string | null;
 } | null): ShellField[] {
   return maintenanceTaskShellFields.map((field) => ({
@@ -239,7 +254,9 @@ export function getMaintenanceTaskEditShellFields(task?: {
             ? task?.frequency ?? ""
             : field.name === "nextDueDate"
               ? task?.nextDueDateInput ?? ""
-              : field.name === "assetName"
+              : field.name === "status"
+                ? task?.status ?? "ACTIVE"
+                : field.name === "assetName"
                 ? task?.assetName ?? ""
                 : field.defaultValue,
   }));
