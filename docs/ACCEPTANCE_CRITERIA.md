@@ -308,3 +308,13 @@
 - Due status uses the Australia/Brisbane calendar.
 - Related asset, warranty and maintenance routes are navigable.
 - No reminder mutation or notification delivery is added.
+
+## Phase 2J Acceptance
+
+- Reminders can be created and edited only when `DATABASE_URL` and the current home are available.
+- Title, strict due date and recognised lifecycle status are required.
+- Optional asset, warranty and maintenance links are restricted to the current home.
+- Missing database access and sample-record edits remain non-destructive and clearly messaged.
+- Successful saves revalidate reminder and related household routes.
+- No notification is scheduled or sent, and no delivery credentials or background automation are added.
+- No delete, production auth, upload, OCR, AI, payment, analytics or native app capability is introduced.
