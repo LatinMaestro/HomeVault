@@ -127,3 +127,17 @@ Expose guarded name and Australian address metadata editing after removing name-
 ## 2026-07-12: Separate reminder visibility from delivery
 
 Expose existing reminder metadata and relationships now, while keeping record mutations, scheduling automation and notification channels behind later approval gates.
+
+## 2026-07-17 - Reminder Persistence Remains Metadata-only
+
+**Decision:** Allow guarded reminder create and edit persistence using the existing Prisma model, current-home resolver and fallback-safe mutation pattern.
+
+**Rationale:** Homeowners benefit from recording due dates and linked household context before HomeVault introduces any delivery infrastructure. Keeping persistence separate from delivery makes the privacy and product boundary explicit.
+
+**Consequences:**
+
+- `DATABASE_URL` is used only for runtime reminder reads and writes.
+- Missing database access remains non-destructive and sample data remains useful.
+- Linked assets, warranties and maintenance tasks must belong to the current home.
+- No email, push, SMS, in-app delivery, background job, queue or delivery credential is introduced.
+- Deletes and production authentication remain outside this phase.
