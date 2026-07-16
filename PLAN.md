@@ -250,3 +250,11 @@ No reminder create/edit, scheduling automation or notification delivery was intr
 - Reminder delivery.
 - Multi-home or family sharing if validated.
 - Native app only if the web app proves the need.
+
+## Phase 2J: Reminder Metadata Persistence - Complete
+
+Phase 2J extends the reminder centre with guarded metadata create and edit workflows. Reminder title, due date, lifecycle status, notes and optional links can persist when `DATABASE_URL` is configured, while curated sample data and clear unavailable-database feedback keep previews useful without a live database.
+
+This phase does not schedule or send notifications. It adds no delivery channel, background job, queue, delete action, production auth, upload, OCR, AI, payment, analytics or native app capability.
+
+See `docs/PHASE_2J_PLAN.md` for the completion summary.

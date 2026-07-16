@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
@@ -10,6 +11,7 @@ import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
 import { getDisplayLabel } from "@/lib/display-labels";
@@ -51,7 +53,17 @@ export default async function RemindersPage({
           eyebrow="Maintenance"
           title="Reminders"
           description="Review due dates and linked household records. Notification delivery is not connected."
-          action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
+          action={
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>
+              <Button asChild>
+                <Link href="/maintenance/reminders/new">
+                  <Plus className="h-4 w-4" aria-hidden="true" />
+                  Add reminder
+                </Link>
+              </Button>
+            </div>
+          }
         />
         <DataSourceNote source={reminders.source} />
         <ReviewSummary
@@ -112,10 +124,16 @@ export default async function RemindersPage({
             description={
               query
                 ? "Try a reminder title, status or linked record."
-                : "Reminder creation and notification delivery are not enabled in this phase."
+                : "Add reminder metadata for a household due date. Delivery remains switched off."
             }
             action={
-              query ? <BackLinkButton href="/maintenance/reminders">Clear search</BackLinkButton> : undefined
+              query ? (
+                <BackLinkButton href="/maintenance/reminders">Clear search</BackLinkButton>
+              ) : (
+                <Button asChild>
+                  <Link href="/maintenance/reminders/new">Add reminder</Link>
+                </Button>
+              )
             }
           />
         )}

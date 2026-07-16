@@ -60,6 +60,10 @@ export default async function ReminderDetailPage({
         />
         <DataSourceNote source={reminder.source} />
 
+        <Button asChild variant="secondary">
+          <Link href={`/maintenance/reminders/${reminder.data.id}/edit`}>Edit reminder</Link>
+        </Button>
+
         <Card>
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
