@@ -465,3 +465,13 @@
 - Unknown template identifiers open a normal blank task form.
 - Templates do not create records automatically or send notifications.
 - Template and prefilled-form routes render without live database access.
+
+
+## Printable Household Summary
+
+- Settings links to a printable household summary.
+- The summary combines household identity, assets, active maintenance, warranties, providers and record metadata.
+- The route renders useful canonical sample content without live database access.
+- Browser print and save-to-PDF are available without storing a generated report.
+- The screen warns users that copies may contain serial numbers and contact details.
+- File attachments, valuations, budgeting and insurance claim automation are excluded.

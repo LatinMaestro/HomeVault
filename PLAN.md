@@ -438,3 +438,10 @@ The CSV neutralises formula-like user input. Exports include metadata only and a
 Phase 3F adds eight editable Australian household maintenance starting points and connects them to the existing guarded task form. Templates improve beginner onboarding without automatically creating records or presenting generic intervals as universal safety advice.
 
 No schema, notification delivery, external service, dependency, AI, OCR, storage or native project is added.
+
+
+## Phase 3G: Printable Household Summary - Complete
+
+Phase 3G combines existing home, asset, maintenance, warranty, provider and record metadata in a privacy-aware printable handover view. Users can print or save a personal PDF through the browser; HomeVault does not retain a generated report.
+
+The report is not an insurance claim, valuation or financial product. No schema, storage, external destination, dependency, upload, AI, OCR, notification or native project is added.

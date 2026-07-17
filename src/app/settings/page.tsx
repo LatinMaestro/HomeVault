@@ -1,7 +1,8 @@
 import { isPreviewDatabaseEnabled } from "@/lib/db";
 
 import type { Metadata } from "next";
-import { Database, FileJson, LockKeyhole, Sheet, ShieldCheck } from "lucide-react";
+import Link from "next/link";
+import { Database, FileJson, LockKeyhole, Printer, Sheet, ShieldCheck } from "lucide-react";
 
 import { updateHouseholdProfileAction } from "@/app/settings/actions";
 import { AppShell } from "@/components/app-shell";
@@ -76,7 +77,7 @@ export default async function SettingsPage() {
               Keep a structured backup of visible metadata or open the asset inventory in a spreadsheet. File attachments are not included.
             </CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 sm:flex-row">
+          <CardContent className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild>
               <a href="/api/export/household.json" download>
                 <FileJson className="h-4 w-4" aria-hidden="true" />
@@ -88,6 +89,12 @@ export default async function SettingsPage() {
                 <Sheet className="h-4 w-4" aria-hidden="true" />
                 Asset inventory
               </a>
+            </Button>
+            <Button asChild variant="outline">
+              <Link href="/home-report">
+                <Printer className="h-4 w-4" aria-hidden="true" />
+                Household summary
+              </Link>
             </Button>
           </CardContent>
         </Card>
