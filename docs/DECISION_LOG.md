@@ -221,3 +221,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Database health requires a separately approved authenticated operational mechanism.
 - The response exposes no version, secret, environment or household metadata.
 - Route smoke continuously verifies the endpoint without `DATABASE_URL`.
+
+## 2026-07-17 - Attention Is Derived At Read Time
+
+**Decision:** Assemble candidate household dates in the dashboard data response and derive urgency with existing Brisbane-calendar status rules during rendering.
+
+**Rationale:** The MVP can provide a useful attention view without storing duplicate status fields or adding scheduled processing.
+
+**Consequences:**
+
+- Active tasks, pending reminders and warranties share one presentation.
+- Urgency stays consistent with existing list and detail badges.
+- No background job, notification delivery or schema field is required.
+- The queue remains useful with database or curated sample data.
