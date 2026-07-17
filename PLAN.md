@@ -521,3 +521,9 @@ The export is generated on request and retained nowhere. No schema, mutation, st
 Phase 3T adds guarded call, email and website actions to existing provider metadata for practical mobile use.
 
 Contact actions are user-initiated and reject malformed or unsafe values. No messaging, booking, payment, analytics, schema, dependency or external API is added. See `docs/PHASE_3T_PLAN.md`.
+
+## Phase 3U: Read-only Household Access Summary - Complete
+
+Phase 3U surfaces the existing current household membership records in Settings and the portable household export using names, optional nicknames and roles only.
+
+The feature is read-only and fallback-safe. It does not expose member email addresses or add invitations, role changes, production authentication, authorisation, schema changes, dependencies or external services. See `docs/PHASE_3U_PLAN.md`.

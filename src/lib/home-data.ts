@@ -4,6 +4,7 @@ import {
   sampleAssetCategories,
   sampleAssets,
   sampleHome,
+  sampleHouseholdMembers,
   sampleMaintenanceTasks,
   sampleRecords,
   sampleReminders,
@@ -15,6 +16,7 @@ import {
   type AssetDetail,
   type DataSource,
   type HomeProfile,
+  type HouseholdMemberSummary,
   type MaintenanceTaskDetail,
   type RecordDetail,
   type ReminderDetail,
@@ -130,6 +132,28 @@ export async function getHomeProfile(): Promise<Result<HomeProfile>> {
     if (!home) throw new Error("Current HomeVault home was not found");
     return home;
   }, sampleHome);
+}
+
+export async function getHouseholdMembers(): Promise<Result<HouseholdMemberSummary[]>> {
+  return withDatabase(async () => {
+    const homeId = await getCurrentHomeId();
+    const members = await getDb().householdMember.findMany({
+      where: { homeId },
+      orderBy: { createdAt: "asc" },
+      include: {
+        user: {
+          select: { name: true },
+        },
+      },
+    });
+
+    return members.map((member) => ({
+      id: member.id,
+      name: member.user.name,
+      nickname: member.nickname,
+      role: member.role,
+    }));
+  }, sampleHouseholdMembers);
 }
 
 export async function getRooms(): Promise<Result<RoomSummary[]>> {

@@ -10,6 +10,13 @@ export type HomeProfile = {
   country: string;
 };
 
+export type HouseholdMemberSummary = {
+  id: string;
+  name: string;
+  nickname?: string | null;
+  role: string;
+};
+
 export type RoomSummary = {
   id: string;
   name: string;
@@ -237,6 +244,15 @@ export const sampleHome: HomeProfile & { location: string } = {
   country: "Australia",
   location: "Carindale, QLD",
 };
+
+export const sampleHouseholdMembers: HouseholdMemberSummary[] = [
+  {
+    id: "member-sam",
+    name: "Sam Taylor",
+    nickname: "Sam",
+    role: "OWNER",
+  },
+];
 
 export const sampleRooms: RoomSummary[] = [
   { id: "room-kitchen", name: "Kitchen", floor: "Ground", assetCount: 1 },
