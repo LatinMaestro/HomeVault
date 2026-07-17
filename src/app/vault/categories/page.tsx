@@ -4,10 +4,11 @@ import { Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
+import { CategoryFilters } from "@/components/category-filters";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAssetCategories } from "@/lib/home-data";
@@ -23,13 +24,21 @@ export const dynamic = "force-dynamic";
 export default async function AssetCategoriesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    usage?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const usage = getQueryParam(params.usage);
   const categories = await getAssetCategories();
-  const visibleCategories = categories.data.filter((category) =>
-    matchesQuery(query, [category.name, category.description]),
+  const visibleCategories = categories.data.filter(
+    (category) =>
+      matchesQuery(query, [category.name, category.description]) &&
+      (!usage || (usage === "used" ? category.assetCount > 0 : category.assetCount === 0)),
   );
+  const hasFilters = Boolean(query || usage);
 
   return (
     <AppShell activeSection="Vault">
@@ -51,14 +60,10 @@ export default async function AssetCategoriesPage({
           }
         />
         <DataSourceNote source={categories.source} />
-        <ListSearch
-          action="/vault/categories"
-          defaultValue={query}
-          label="Search asset categories"
-          placeholder="Search category names or descriptions"
+        <CategoryFilters
+          query={query}
+          usage={usage}
           resultCount={visibleCategories.length}
-          resultNoun="category"
-          resultNounPlural="categories"
         />
 
         {visibleCategories.length ? (
@@ -67,7 +72,12 @@ export default async function AssetCategoriesPage({
               <Link key={category.id} href={`/vault/categories/${category.id}`}>
                 <Card className="h-full transition-colors hover:bg-accent">
                   <CardHeader>
-                    <CardTitle>{category.name}</CardTitle>
+                    <div className="flex items-start justify-between gap-3">
+                      <CardTitle>{category.name}</CardTitle>
+                      <Badge variant="secondary">
+                        {category.assetCount} {category.assetCount === 1 ? "asset" : "assets"}
+                      </Badge>
+                    </div>
                   </CardHeader>
                   <CardContent className="text-sm text-muted-foreground">
                     {category.description || "No description recorded yet"}
@@ -78,15 +88,15 @@ export default async function AssetCategoriesPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No categories match this search" : "No asset categories yet"}
+            title={hasFilters ? "No categories match these filters" : "No asset categories yet"}
             description={
-              query
-                ? "Try a broader category name or description."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Add a broad category to make assets easier to organise."
             }
             action={
-              query ? (
-                <BackLinkButton href="/vault/categories">Clear search</BackLinkButton>
+              hasFilters ? (
+                <BackLinkButton href="/vault/categories">Clear filters</BackLinkButton>
               ) : (
                 <Button asChild>
                   <Link href="/vault/categories/new">Add category</Link>
