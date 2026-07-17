@@ -11,7 +11,8 @@ The repository now provides:
 - theme colour, portrait orientation and safe-area support;
 - database-free production route smoke coverage;
 - privacy-first preview controls;
-- no production tracking, advertising or unnecessary device permissions.
+- no production tracking, advertising or unnecessary device permissions;
+- a privacy-safe offline fallback that does not cache household records.
 
 This is an installable foundation, not a store-submission build.
 
