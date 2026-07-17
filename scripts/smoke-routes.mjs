@@ -24,6 +24,7 @@ const routes = [
   "/vault/rooms/room-kitchen/edit",
   "/vault/categories",
   "/vault/categories/new",
+  "/vault/categories/category-appliances",
   "/vault/categories/category-appliances/edit",
   "/vault/assets",
   "/vault/assets/new",
