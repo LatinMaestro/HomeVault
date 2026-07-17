@@ -684,3 +684,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Filter options come from already-loaded current-household records.
 - No due state is persisted and no notification is scheduled.
 - Changing the shared date rule intentionally changes both badges and filtering.
+
+## 2026-07-17 - Warranty Filters Follow Visible Coverage State
+
+**Decision:** Derive warranty review filters from the shared Australia/Brisbane coverage-status calculation and explicit stored relationships.
+
+**Rationale:** Coverage filtering should agree with the status shown on every warranty card and should never infer a provider or asset association.
+
+**Consequences:**
+
+- Expired, next-30-day, current and no-expiry groups match visible badges.
+- Asset and provider choices come from current loaded records.
+- Missing provider metadata remains intentionally discoverable.
+- No reminder is scheduled and no claim or financial behavior is added.
+- Filter state is URL-only and retained nowhere.
