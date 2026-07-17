@@ -782,3 +782,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Records are not copied, moved or independently indexed.
 - No permanent deletion or restore mutation is introduced.
 - Search and filter state is URL-only and retained nowhere.
+
+## 2026-07-17 - Production Uses Self-hosted Better Auth And Private Blob
+
+**Decision:** Use self-hosted Better Auth with Prisma/PostgreSQL for production identity and Vercel Private Blob for household attachments.
+
+**Rationale:** Neon Managed Better Auth remains Beta, while self-hosted Better Auth uses the established database boundary. Vercel Private Blob reached general availability and provides authenticated private access, signed delivery and OIDC support.
+
+**Consequences:**
+
+- Initial authentication is verified email/password with no social provider.
+- HomeVault server code owns every household authorisation decision.
+- Live signup stays disabled until transactional email is connected.
+- Attachments remain unavailable until identity, lifecycle and a private Blob store are ready.
+- Neon Auth and Neon Object Storage are not production dependencies.
+- Public naming, legal identity, email domain, Blob provisioning and store signing remain client-controlled gates.
