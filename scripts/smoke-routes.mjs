@@ -9,6 +9,7 @@ const routes = [
   "/sw.js",
   "/offline",
   "/calendar",
+  "/home-report",
   "/privacy",
   "/support",
   "/",
