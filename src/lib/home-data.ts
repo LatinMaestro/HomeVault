@@ -462,12 +462,17 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
       db.receipt.findMany({
         where: { homeId },
         orderBy: { purchaseDate: "desc" },
-        include: { asset: true },
+        include: { asset: true, documents: true },
       }),
       db.document.findMany({
         where: { homeId },
         orderBy: { createdAt: "desc" },
-        include: { asset: true },
+        include: {
+          asset: true,
+          warranty: { include: { asset: true } },
+          receipt: true,
+          maintenanceTask: true,
+        },
       }),
     ]);
 
@@ -487,6 +492,11 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         purchaseDateInput: formatDateInput(receipt.purchaseDate),
         totalAmountCents: receipt.totalAmountCents,
         currency: receipt.currency,
+        relatedDocuments: receipt.documents.map((document) => ({
+          id: document.id,
+          title: document.title,
+          type: document.type,
+        })),
       })),
       ...documents.map((document) => ({
         id: document.id,
@@ -500,6 +510,14 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         notes: document.notes,
         documentType: document.type,
         issuedAtInput: formatDateInput(document.issuedAt),
+        linkedWarranty: document.warranty
+          ? `${document.warranty.asset.name} warranty`
+          : null,
+        linkedWarrantyId: document.warranty?.id,
+        linkedReceipt: document.receipt?.merchant,
+        linkedReceiptId: document.receipt?.id,
+        linkedMaintenanceTask: document.maintenanceTask?.title,
+        linkedMaintenanceTaskId: document.maintenanceTask?.id,
       })),
     ];
   }, sampleRecords);
