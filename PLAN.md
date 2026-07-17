@@ -354,3 +354,24 @@ Phase 2V drafts accurate Apple and Google listing copy, screenshot storytelling,
 Current store research shows multiple existing HomeVault listings, including overlapping home-inventory products. The repository codename remains unchanged, while final public naming and legal clearance are now explicit submission gates.
 
 See `docs/PHASE_2V_PLAN.md` and `docs/STORE_LISTING_DRAFT.md`.
+
+
+## Phase 2W: Privacy And Support Surfaces - Complete
+
+Phase 2W adds public, static privacy and support routes, links them throughout the application shell and includes them in the database-free route gate. The copy explains the current preview honestly without inventing a legal entity, support mailbox or completed account controls.
+
+See `docs/PHASE_2W_PLAN.md`.
+
+## Remaining Release Plan
+
+The shared HomeVault product surface is substantially complete. Remaining work is organised around production safety and mobile distribution:
+
+1. **Release architecture:** approve the production identity, authentication and storage boundaries; define production, preview and test environments.
+2. **Authentication and household authorisation:** replace the temporary earliest-home resolver with signed-in ownership checks on every server read and mutation.
+3. **Account lifecycle:** add onboarding, profile management, data export, in-app account deletion and the public deletion path required for mobile distribution.
+4. **Document storage:** add approved private file storage, access control, retention, deletion and malware-safe handling. OCR and AI remain separate future decisions.
+5. **Production data operations:** use reviewed migrations, backups, restore evidence, environment separation and database-backed workflow tests.
+6. **Native mobile delivery:** add iOS and Android projects after the production privacy boundary is complete, with meaningful native utility rather than a minimal web wrapper.
+7. **Release validation:** complete accessibility, physical-device, TestFlight and Play internal testing; finalise the public name, legal/privacy text, support channel, screenshots, signing and store forms.
+
+The first five items can proceed in scoped pull requests once their provider and policy gates are approved. Store account ownership, legal identity, final public naming, signing and submission remain client-controlled release actions.
