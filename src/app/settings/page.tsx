@@ -1,7 +1,7 @@
 import { isPreviewDatabaseEnabled } from "@/lib/db";
 
 import type { Metadata } from "next";
-import { Database, LockKeyhole, ShieldCheck } from "lucide-react";
+import { Database, FileJson, LockKeyhole, Sheet, ShieldCheck } from "lucide-react";
 
 import { updateHouseholdProfileAction } from "@/app/settings/actions";
 import { AppShell } from "@/components/app-shell";
@@ -11,6 +11,7 @@ import { PageHeader } from "@/components/page-header";
 import { getHomeProfile } from "@/lib/home-data";
 import { getHouseholdProfileFields } from "@/lib/household-profile-fields";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const metadata: Metadata = {
@@ -66,6 +67,30 @@ export default async function SettingsPage() {
           action={updateHouseholdProfileAction}
           databaseConfigured={isPreviewDatabaseEnabled()}
         />
+
+        <Card>
+          <CardHeader>
+            <CardDescription>Portable copies</CardDescription>
+            <CardTitle>Export household records</CardTitle>
+            <CardDescription className="leading-6">
+              Keep a structured backup of visible metadata or open the asset inventory in a spreadsheet. File attachments are not included.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild>
+              <a href="/api/export/household.json" download>
+                <FileJson className="h-4 w-4" aria-hidden="true" />
+                Household records
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href="/api/export/inventory.csv" download>
+                <Sheet className="h-4 w-4" aria-hidden="true" />
+                Asset inventory
+              </a>
+            </Button>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-4 lg:grid-cols-3">
           {readinessCards.map((card) => {
