@@ -79,3 +79,8 @@ Prepared dual-store listing copy and screenshot/reviewer inputs. Final public na
 - Home inventory print and household handover summary without claim automation. Complete in Phase 3G.
 - Maintenance templates for common Australian household equipment. Complete in Phase 3F.
 - Archive and recovery workflows before destructive deletion is introduced. Complete in Phase 3H.
+
+
+## Phase 3I Complete
+
+Added a derived beginner setup guide across the existing household profile, room, asset, maintenance, warranty and record workflows. No onboarding state or analytics is stored.
