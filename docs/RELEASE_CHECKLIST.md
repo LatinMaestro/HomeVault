@@ -42,11 +42,11 @@
 
 ## Neon Preview Checklist
 
-- [x] Dedicated HomeVault Neon project exists.
+- [x] HomeVault's canonical Vercel-managed Neon project is identified.
 - [x] Child preview branch contains the Prisma schema.
 - [x] Canonical synthetic seed counts are verified.
-- [x] Default production branch contains no application tables.
-- [x] Neon Auth and Data API remain unprovisioned.
+- [x] Managed default branch contains zero HomeVault application tables.
+- [x] Provider-managed Neon Auth tables are not used as HomeVault production authentication, and Data API use remains unapproved.
 - [ ] Add preview-branch `DATABASE_URL` to Vercel Preview only.
 - [ ] Add `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` to Vercel Preview only.
 - [ ] Redeploy and verify database-backed read/write workflows.
