@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 export type WarrantyActionState = {
@@ -33,7 +33,7 @@ async function getAssetId(homeId: string, assetName: string) {
 function unavailableState(): WarrantyActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no warranty was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no warranty was changed.",
   };
 }
 
@@ -85,7 +85,7 @@ export async function createWarrantyAction(
   const invalidState = invalidWarrantyState(values);
   if (invalidState) return invalidState;
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
@@ -140,7 +140,7 @@ export async function updateWarrantyAction(
   const invalidState = invalidWarrantyState(values);
   if (invalidState) return invalidState;
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
