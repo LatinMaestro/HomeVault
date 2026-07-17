@@ -38,3 +38,16 @@
 - [ ] No UI implies records were saved when they were not.
 - [ ] No unapproved auth, uploads, OCR, AI, notifications, payments, analytics, native iOS or persistent mutations appear.
 
+
+
+## Neon Preview Checklist
+
+- [x] Dedicated HomeVault Neon project exists.
+- [x] Child preview branch contains the Prisma schema.
+- [x] Canonical synthetic seed counts are verified.
+- [x] Default production branch contains no application tables.
+- [x] Neon Auth and Data API remain unprovisioned.
+- [ ] Add preview-branch `DATABASE_URL` to Vercel Preview only.
+- [ ] Add `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` to Vercel Preview only.
+- [ ] Redeploy and verify database-backed read/write workflows.
+- [ ] Keep all production database variables unset until authentication and authorisation are complete.
