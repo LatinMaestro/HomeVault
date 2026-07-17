@@ -615,3 +615,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Document and reminder detail routes remain authoritative.
 - Completion and recurrence behavior is unchanged.
 - No notification delivery, schema, inferred association or mutation is introduced.
+
+## 2026-07-17 - Maintenance History Export Is Completion-based
+
+**Decision:** Export one row per recorded maintenance completion rather than one row per task.
+
+**Rationale:** A history file should represent work that actually occurred. Including tasks without completions would blur future plans with evidence of completed upkeep.
+
+**Consequences:**
+
+- Task, asset, completion, frequency, status and next-due context travel together.
+- Tasks without history produce no false completion row.
+- Formula-like cells are neutralised for spreadsheet safety.
+- The response is private, no-store and not retained.
+- No cost tracking, valuation, schema, storage or external destination is introduced.
