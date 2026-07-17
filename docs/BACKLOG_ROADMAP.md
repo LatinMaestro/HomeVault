@@ -149,3 +149,7 @@ Added lifecycle, due-state and linked-record filters to reminder metadata review
 ## Phase 4A Complete
 
 Added trade, linked-task and contact-detail filters to the provider directory, including explicit data-gap views. Booking, messaging, payments and external provider services remain out of scope.
+
+## Phase 4B Complete
+
+Added floor/zone and linked-asset filters to Rooms, including missing-floor and empty-room records. Floor plans and occupancy tracking remain outside HomeVault's practical record scope.
