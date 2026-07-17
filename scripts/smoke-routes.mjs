@@ -8,6 +8,8 @@ const routes = [
   "/icons/homevault.svg",
   "/sw.js",
   "/offline",
+  "/privacy",
+  "/support",
   "/",
   "/search?q=fridge",
   "/vault",
