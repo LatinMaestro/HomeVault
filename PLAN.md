@@ -417,3 +417,10 @@ The database-free deployment smoke asserts every new header. No route, dependenc
 Phase 3C turns existing recurrence metadata into useful behavior. Recording a completion advances weekly, fortnightly, monthly, quarterly, six-monthly, yearly and valid custom schedules in the same transaction as completion history. One-off tasks close automatically.
 
 The calculator preserves future cadence, recovers overdue schedules from the actual work date and handles month-end and leap-year boundaries. No notification delivery, queue, external service, schema or dependency is added.
+
+
+## Phase 3D: Household Calendar And Portable Export - Complete
+
+Phase 3D combines active maintenance dates, pending or snoozed reminders and warranty expiries in one fallback-safe timeline. A no-store `.ics` endpoint lets households import those dates into Apple Calendar, Google Calendar, Outlook or another standards-compatible app.
+
+The export is user-controlled and one-way. No external calendar account, OAuth connection, background sync, notification delivery, dependency, schema or paid integration is added.
