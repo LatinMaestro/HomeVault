@@ -3,6 +3,7 @@ import { spawn } from "node:child_process";
 const port = 3210;
 const baseUrl = `http://127.0.0.1:${port}`;
 const routes = [
+  "/api/health",
   "/",
   "/search?q=fridge",
   "/vault",
