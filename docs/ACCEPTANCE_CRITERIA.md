@@ -335,3 +335,12 @@
 - Empty reminder data links to the reminder centre without misleading delivery claims.
 - Database and sample modes remain useful without build-time database access.
 - No notification delivery, schema, mutation, analytics or external service is added.
+
+## Phase 2M Acceptance
+
+- All routes receive CSP, anti-framing, MIME-sniffing, referrer and permissions-policy headers.
+- Production builds do not allow eval in the script policy.
+- Search-engine indexing and following are disabled.
+- Optional development mode remains compatible with the Next.js toolchain.
+- Documentation states that unauthenticated deployments must not expose real household data.
+- No auth, schema, dependency, storage or external service is added.
