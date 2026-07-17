@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 2O is complete. HomeVault adds fallback-safe household-wide search across existing records and supports guarded room, asset, maintenance, warranty, receipt, document and reminder metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 2P is complete. HomeVault adds fallback-safe household-wide search across existing records and supports guarded room, asset, maintenance, warranty, receipt, document and reminder metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `2O Online Route Smoke Gate` complete
+- Phase: `2P Operational Health Surface` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS and shadcn-compatible components
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
 - Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise; canonical demo seeding is repeat-safe
@@ -76,6 +76,7 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 ## Core Routes
 
 - `/`
+- `/api/health` (data-independent deployment liveness)
 - `/search`
 - `/vault`
 - `/vault/rooms`
