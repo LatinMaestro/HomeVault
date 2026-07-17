@@ -261,3 +261,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Household pages, RSC payloads, API data and form submissions are not cached.
 - No background sync or offline mutation queue exists.
 - Rich offline access remains a future security and product decision.
+
+## 2026-07-17 - Frequent Mobile Controls Use 44 Pixel Targets
+
+**Decision:** Set the shared minimum height for buttons, form controls and primary navigation actions to 44 CSS pixels.
+
+**Rationale:** HomeVault is intended for repeated phone use and both mobile stores. Consistent touch targets improve usability without adding platform-specific UI branches.
+
+**Consequences:**
+
+- Shared primitives enforce the target across existing workflows.
+- Compact button variants retain compact horizontal padding but not a smaller tap height.
+- Desktop layouts inherit slightly more comfortable control sizing.
+- Physical-device review remains necessary before store submission.
