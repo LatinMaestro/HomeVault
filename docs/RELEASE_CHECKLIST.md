@@ -20,6 +20,8 @@
 - [ ] Vercel build does not require a live database connection.
 - [ ] Runtime pages remain useful when `DATABASE_URL` is absent or unavailable.
 - [ ] Security headers are present on deployed routes.
+- [ ] `/api/health` responds successfully without database access.
+- [ ] `/robots.txt` disallows crawling until production auth is approved.
 - [ ] Unauthenticated deployments use sample or controlled non-sensitive data only.
 - [ ] Search indexing remains disabled until the production access model is approved.
 
