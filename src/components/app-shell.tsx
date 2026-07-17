@@ -65,7 +65,7 @@ export function AppShell({
       <div className="mx-auto flex max-w-7xl flex-col lg:flex-row">
         <nav
           aria-label="Primary"
-          className="border-b bg-background px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:min-h-[calc(100vh-73px)] lg:w-64 lg:border-b-0 lg:border-r lg:p-4"
+          className="border-b bg-background px-2 py-2 lg:min-h-[calc(100vh-73px)] lg:w-64 lg:border-b-0 lg:border-r lg:p-4"
         >
           <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
             {navigation.map((item) => {
