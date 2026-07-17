@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   checks:
-    name: Prisma, lint, typecheck and build
+    name: Prisma, lint, typecheck, build and route smoke
     runs-on: ubuntu-latest
     env:
       CI: true
@@ -49,3 +49,6 @@ jobs:
 
       - name: Build
         run: pnpm run build
+
+      - name: Smoke routes without database
+        run: pnpm run smoke:routes
