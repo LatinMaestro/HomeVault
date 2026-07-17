@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
+import { RoomFilters } from "@/components/room-filters";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Button } from "@/components/ui/button";
@@ -22,13 +22,33 @@ export const dynamic = "force-dynamic";
 export default async function RoomsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    floor?: string | string[];
+    usage?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const floor = getQueryParam(params.floor);
+  const usage = getQueryParam(params.usage);
   const rooms = await getRooms();
-  const visibleRooms = rooms.data.filter((room) =>
-    matchesQuery(query, [room.name, room.floor, room.notes]),
+  const visibleRooms = rooms.data.filter(
+    (room) =>
+      matchesQuery(query, [room.name, room.floor, room.notes]) &&
+      (!floor || (floor === "unassigned" ? !room.floor : room.floor === floor)) &&
+      (!usage || (usage === "used" ? room.assetCount > 0 : room.assetCount === 0)),
   );
+  const floorOptions = Array.from(
+    new Set(
+      rooms.data
+        .map((room) => room.floor)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  )
+    .map((value) => ({ value, label: value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || floor || usage);
   const linkedAssetCount = rooms.data.reduce((total, room) => total + room.assetCount, 0);
 
   return (
@@ -65,13 +85,12 @@ export default async function RoomsPage({
           ]}
         />
 
-        <ListSearch
-          action="/vault/rooms"
-          defaultValue={query}
-          label="Search rooms"
-          placeholder="Search rooms or zones"
+        <RoomFilters
+          query={query}
+          floor={floor}
+          usage={usage}
+          floorOptions={floorOptions}
           resultCount={visibleRooms.length}
-          resultNoun="room"
         />
 
         {visibleRooms.length > 0 ? (
@@ -98,16 +117,16 @@ export default async function RoomsPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No matching rooms" : "No rooms yet"}
+            title={hasFilters ? "No matching rooms" : "No rooms yet"}
             description={
-              query
-                ? "Try another room name or clear the current search."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Rooms help group assets by kitchen, laundry, garage, outdoor areas and other home zones. Add the first room when database saving is configured."
             }
             action={
               <Button asChild variant="outline">
-                <Link href={query ? "/vault/rooms" : "/vault/rooms/new"}>
-                  {query ? "Clear search" : "Add room"}
+                <Link href={hasFilters ? "/vault/rooms" : "/vault/rooms/new"}>
+                  {hasFilters ? "Clear filters" : "Add room"}
                 </Link>
               </Button>
             }
