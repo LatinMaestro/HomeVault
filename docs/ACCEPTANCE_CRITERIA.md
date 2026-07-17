@@ -360,3 +360,11 @@
 - Dynamic fallback routes use canonical sample identifiers.
 - The server is stopped after success or failure.
 - The smoke runner adds no dependency, secret, live database or local client requirement.
+
+## Phase 2P Acceptance
+
+- `GET /api/health` returns successful stable JSON with no-store caching.
+- The health route does not access Prisma, `DATABASE_URL` or household data.
+- The database-free route smoke verifies the endpoint.
+- Generated robots rules disallow crawling of all preview routes.
+- No monitoring service, dependency, schema, secret or environment variable is added.
