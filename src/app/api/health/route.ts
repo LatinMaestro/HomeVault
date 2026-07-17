@@ -4,7 +4,7 @@ export async function GET() {
   return Response.json(
     {
       status: "ok",
-      service: "homevault",
+      service: "HomeVault",
       dataAccess: "not-checked",
     },
     {
