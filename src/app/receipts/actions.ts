@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 export type RecordActionState = {
@@ -56,7 +56,7 @@ async function getAssetId(homeId: string, assetName: string) {
 function unavailableState(recordType: "receipt" | "document"): RecordActionState {
   return {
     status: "error",
-    message: `Saving needs a configured database. The page is still safe to review, but no ${recordType} was changed.`,
+    message: `Saving is not enabled for this preview. The page is still safe to review, but no ${recordType} was changed.`,
   };
 }
 
@@ -133,7 +133,7 @@ export async function createReceiptAction(
   const values = getReceiptValues(formData);
   const invalidState = invalidReceiptState(values);
   if (invalidState) return invalidState;
-  if (!process.env.DATABASE_URL) return unavailableState("receipt");
+  if (!isPreviewDatabaseEnabled()) return unavailableState("receipt");
 
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
@@ -169,7 +169,7 @@ export async function updateReceiptAction(
   const values = getReceiptValues(formData);
   const invalidState = invalidReceiptState(values);
   if (invalidState) return invalidState;
-  if (!process.env.DATABASE_URL) return unavailableState("receipt");
+  if (!isPreviewDatabaseEnabled()) return unavailableState("receipt");
 
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
@@ -239,7 +239,7 @@ export async function createDocumentAction(
   const values = getDocumentValues(formData);
   const invalidState = invalidDocumentState(values);
   if (invalidState || !values.type) return invalidState ?? unknownFailureState("document");
-  if (!process.env.DATABASE_URL) return unavailableState("document");
+  if (!isPreviewDatabaseEnabled()) return unavailableState("document");
 
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
@@ -273,7 +273,7 @@ export async function updateDocumentAction(
   const values = getDocumentValues(formData);
   const invalidState = invalidDocumentState(values);
   if (invalidState || !values.type) return invalidState ?? unknownFailureState("document");
-  if (!process.env.DATABASE_URL) return unavailableState("document");
+  if (!isPreviewDatabaseEnabled()) return unavailableState("document");
 
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);

@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { updateRoomAction } from "@/app/vault/rooms/actions";
@@ -39,7 +41,7 @@ export default async function EditRoomPage({
           description="Room saving is now enabled when this room exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
           fields={getRoomEditShellFields(room)}
           action={updateAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

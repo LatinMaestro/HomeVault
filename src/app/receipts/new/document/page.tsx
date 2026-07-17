@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createDocumentAction } from "@/app/receipts/actions";
@@ -38,7 +40,7 @@ export default async function NewDocumentPage() {
           description="Add a clear title and supported document type. File handling remains disabled."
           fields={fields}
           action={createDocumentAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

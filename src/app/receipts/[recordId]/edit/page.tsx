@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { updateDocumentAction, updateReceiptAction } from "@/app/receipts/actions";
@@ -80,7 +82,7 @@ export default async function EditRecordPage({
           }
           fields={fields}
           action={action}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

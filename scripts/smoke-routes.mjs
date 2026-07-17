@@ -49,7 +49,8 @@ const routes = [
 ];
 
 const serverEnvironment = { ...process.env };
-delete serverEnvironment.DATABASE_URL;
+serverEnvironment.DATABASE_URL = "postgresql://preview-lock:preview-lock@127.0.0.1:1/homevault";
+delete serverEnvironment.HOMEVAULT_PREVIEW_DATABASE_ACCESS;
 
 const server = spawn(
   process.execPath,
@@ -154,7 +155,7 @@ async function verifyDeploymentContracts() {
     "Service worker must be explicitly allowed at root scope.",
   );
 
-  console.log("Verified deployment security, health, install and offline contracts.");
+  console.log("Verified deployment security, health, install, offline and fail-closed preview contracts.");
 }
 
 try {
@@ -175,7 +176,7 @@ try {
   }
 
   await verifyDeploymentContracts();
-  console.log(`Verified ${routes.length} routes without DATABASE_URL.`);
+  console.log(`Verified ${routes.length} routes without live database access.`);
 } finally {
   await stopServer();
 }

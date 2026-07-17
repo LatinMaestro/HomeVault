@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 import { Database, LockKeyhole, ShieldCheck } from "lucide-react";
 
@@ -62,7 +64,7 @@ export default async function SettingsPage() {
         <HouseholdProfileForm
           fields={getHouseholdProfileFields(home.data)}
           action={updateHouseholdProfileAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
 
         <div className="grid gap-4 lg:grid-cols-3">

@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { updateWarrantyAction } from "@/app/warranties/actions";
@@ -44,7 +46,7 @@ export default async function EditWarrantyPage({
           description="Warranty saving is enabled when this warranty exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
           fields={fields}
           action={updateAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

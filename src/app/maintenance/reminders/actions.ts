@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 const reminderStatuses = ["PENDING", "DONE", "SNOOZED", "CANCELLED"] as const;
@@ -82,7 +82,7 @@ async function resolveLinks(
 function unavailableState(): ReminderActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no reminder was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no reminder was changed.",
   };
 }
 
@@ -109,7 +109,7 @@ export async function createReminderAction(
   const values = getValues(formData);
   const invalid = invalidState(values);
   if (invalid || !values.dueAt || !values.status) return invalid ?? unavailableState();
-  if (!process.env.DATABASE_URL) return unavailableState();
+  if (!isPreviewDatabaseEnabled()) return unavailableState();
 
   try {
     const homeId = await getCurrentHomeId();
@@ -158,7 +158,7 @@ export async function updateReminderAction(
   const values = getValues(formData);
   const invalid = invalidState(values);
   if (invalid || !values.dueAt || !values.status) return invalid ?? unavailableState();
-  if (!process.env.DATABASE_URL) return unavailableState();
+  if (!isPreviewDatabaseEnabled()) return unavailableState();
 
   try {
     const homeId = await getCurrentHomeId();

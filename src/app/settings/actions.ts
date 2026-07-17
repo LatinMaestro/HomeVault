@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 
 const australianStates = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"] as const;
 
@@ -34,10 +34,10 @@ export async function updateHouseholdProfileAction(
   if (postcode && !/^\d{4}$/.test(postcode)) {
     return { status: "error", message: "Use a four-digit Australian postcode or leave it blank. Nothing was changed." };
   }
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return {
       status: "error",
-      message: "Saving needs a configured database. The page is still safe to review, but no household details were changed.",
+      message: "Saving is not enabled for this preview. The page is still safe to review, but no household details were changed.",
     };
   }
 

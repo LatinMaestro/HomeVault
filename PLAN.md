@@ -375,3 +375,10 @@ The shared HomeVault product surface is substantially complete. Remaining work i
 7. **Release validation:** complete accessibility, physical-device, TestFlight and Play internal testing; finalise the public name, legal/privacy text, support channel, screenshots, signing and store forms.
 
 The first five items can proceed in scoped pull requests once their provider and policy gates are approved. Store account ownership, legal identity, final public naming, signing and submission remain client-controlled release actions.
+
+
+## Phase 2X: Preview Database Safety Lock - Complete
+
+Phase 2X makes the temporary unauthenticated database mode fail closed. `DATABASE_URL` alone no longer enables household reads or writes; controlled non-sensitive preview access requires the separate `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` switch.
+
+All forms use the shared gate, database reads fall back to sample data, and the database helper enforces the boundary even if a caller forgets an earlier check. This is not authentication and must be removed in favour of signed-in household authorisation before production use.

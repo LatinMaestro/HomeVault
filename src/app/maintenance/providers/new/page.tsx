@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createServiceProviderAction } from "@/app/maintenance/providers/actions";
@@ -27,7 +29,7 @@ export default function NewServiceProviderPage() {
           description="Add practical contact metadata that can be linked to maintenance tasks."
           fields={serviceProviderFields}
           action={createServiceProviderAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

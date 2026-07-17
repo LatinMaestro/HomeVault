@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createWarrantyAction } from "@/app/warranties/actions";
@@ -37,7 +39,7 @@ export default async function NewWarrantyPage() {
           description="Warranty saving is enabled when the database is configured and the asset name matches an existing asset."
           fields={fields}
           action={createWarrantyAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

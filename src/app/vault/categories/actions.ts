@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 
 export type AssetCategoryActionState = {
   status: "idle" | "success" | "error";
@@ -18,7 +18,7 @@ function getFieldValue(formData: FormData, field: string) {
 function unavailableState(): AssetCategoryActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no category was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no category was changed.",
   };
 }
 
@@ -43,7 +43,7 @@ export async function createAssetCategoryAction(
   const name = getFieldValue(formData, "name");
   const description = getFieldValue(formData, "description");
   if (!name) return { status: "error", message: "Add a category name before saving." };
-  if (!process.env.DATABASE_URL) return unavailableState();
+  if (!isPreviewDatabaseEnabled()) return unavailableState();
 
   try {
     const db = getDb();
@@ -83,7 +83,7 @@ export async function updateAssetCategoryAction(
   const name = getFieldValue(formData, "name");
   const description = getFieldValue(formData, "description");
   if (!name) return { status: "error", message: "Add a category name before saving." };
-  if (!process.env.DATABASE_URL) return unavailableState();
+  if (!isPreviewDatabaseEnabled()) return unavailableState();
 
   try {
     const db = getDb();

@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createMaintenanceTaskAction } from "@/app/maintenance/actions";
@@ -43,7 +45,7 @@ export default async function NewMaintenanceTaskPage() {
           description="Maintenance task saving is enabled when the database is configured. If the database is unavailable, HomeVault will explain that nothing changed."
           fields={fields}
           action={createMaintenanceTaskAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

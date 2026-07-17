@@ -314,3 +314,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Preview users are warned to use sample or controlled non-sensitive data.
 - Final legal policy, accountable entity, support contact and deletion workflow remain required before public release.
 - Both routes participate in the online database-free smoke gate.
+
+
+## 2026-07-17 - Database Credentials Do Not Imply Household Access
+
+**Decision:** Require an explicit `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` switch in addition to `DATABASE_URL` for every temporary unauthenticated runtime read and write.
+
+**Rationale:** Deployment integrations can inject database credentials automatically. Credentials alone must not turn a public preview into an unauthenticated household editor.
+
+**Consequences:**
+
+- Runtime database access fails closed by default.
+- Reads render curated sample data when preview access is disabled.
+- Forms show saving as unavailable and actions reject writes.
+- The database helper enforces the gate as defence in depth.
+- The switch is limited to controlled non-sensitive preview data and is not a substitute for production authentication or authorisation.

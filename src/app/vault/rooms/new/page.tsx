@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createRoomAction } from "@/app/vault/rooms/actions";
@@ -27,7 +29,7 @@ export default function NewRoomPage() {
           description="Room saving is now enabled when the database is configured. If the database is unavailable, HomeVault will explain that nothing changed."
           fields={roomShellFields}
           action={createRoomAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

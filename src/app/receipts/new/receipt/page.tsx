@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createReceiptAction } from "@/app/receipts/actions";
@@ -38,7 +40,7 @@ export default async function NewReceiptPage() {
           description="The merchant is required. Purchase total is optional archival metadata in Australian dollars."
           fields={fields}
           action={createReceiptAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>

@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 const assetStatusValues = [
@@ -80,7 +80,7 @@ function getLinkWarning(
 function unavailableState(): AssetActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no asset was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no asset was changed.",
   };
 }
 
@@ -143,7 +143,7 @@ export async function createAssetAction(
   const status = values.status;
   if (!status) return unknownFailureState();
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
@@ -213,7 +213,7 @@ export async function updateAssetAction(
   const status = values.status;
   if (!status) return unknownFailureState();
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
