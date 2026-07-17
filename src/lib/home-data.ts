@@ -1,5 +1,5 @@
 import { getCurrentHomeId as resolveCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import {
   sampleAssetCategories,
   sampleAssets,
@@ -90,7 +90,7 @@ function formatCurrency(cents?: number | null) {
 }
 
 async function withDatabase<T>(query: () => Promise<T>, fallback: T): Promise<Result<T>> {
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return { data: fallback, source: "sample" };
   }
 
