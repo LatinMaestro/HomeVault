@@ -20,6 +20,7 @@ const routes = [
   "/vault",
   "/vault/rooms",
   "/vault/rooms/new",
+  "/vault/rooms/room-kitchen",
   "/vault/rooms/room-kitchen/edit",
   "/vault/categories",
   "/vault/categories/new",

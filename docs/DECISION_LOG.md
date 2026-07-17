@@ -537,3 +537,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Production HomeVault authentication is still unimplemented; existing provider tables do not approve or enable it.
 - Vercel Preview access still requires both the preview branch connection and `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled`.
 - The separately created standalone HomeVault project remains untouched until an explicit cleanup decision.
+
+## 2026-07-17 - Room Context Reuses Existing Relationships
+
+**Decision:** Build room detail by composing existing room, asset and maintenance reads, with maintenance included only when its linked asset belongs to the room.
+
+**Rationale:** Rooms are a natural household navigation point, and the existing relationships already provide useful context without duplicating data or adding another persistence path.
+
+**Consequences:**
+
+- Room cards navigate to a dedicated detail route.
+- Assigned assets and their maintenance tasks remain linked to existing detail workflows.
+- Empty and unknown rooms retain useful fallback states.
+- No schema, mutation, stored room dashboard or inferred unlinked maintenance relationship is introduced.

@@ -89,3 +89,7 @@ Added a derived beginner setup guide across the existing household profile, room
 ## Phase 3J Complete
 
 Added a global mobile-first Quick Add hub over all existing guarded creation workflows. No mutation capability changed.
+
+## Phase 3M Complete
+
+Added fallback-safe room detail pages with assigned asset and linked maintenance navigation. No schema or mutation capability changed.

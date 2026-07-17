@@ -473,3 +473,9 @@ Quick Add only improves navigation. It introduces no action, mutation, schema, d
 Phase 3K provisions an isolated child `preview` branch in the Vercel-managed Neon project connected to HomeVault. It contains the repository Prisma schema and canonical synthetic Taylor Family Home data, with connector-verified tables, indexes and record counts.
 
 The managed default branch retains provider-owned Neon Auth tables but contains zero HomeVault application tables. Production HomeVault authentication, Data API use and production household data access remain unapproved.
+
+## Phase 3M: Room Detail - Complete
+
+Phase 3M adds a fallback-safe detail page for every room, showing its household metadata, assigned assets and maintenance linked through those assets.
+
+The page reuses existing reads and routes. No schema, mutation, delete action, dependency or external service is added. See `docs/PHASE_3M_PLAN.md`.
