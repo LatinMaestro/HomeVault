@@ -93,6 +93,14 @@ export function AppShell({
 
         <main id="main-content" tabIndex={-1} className="flex-1 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8">
           {children}
+          <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t pt-5 text-sm text-muted-foreground">
+            <Link className="min-h-11 py-3 hover:text-foreground" href="/privacy">
+              Privacy
+            </Link>
+            <Link className="min-h-11 py-3 hover:text-foreground" href="/support">
+              Support
+            </Link>
+          </footer>
         </main>
       </div>
     </div>
