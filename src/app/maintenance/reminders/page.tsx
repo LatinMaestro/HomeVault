@@ -7,7 +7,7 @@ import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
+import { ReminderFilters } from "@/components/reminder-filters";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -28,22 +28,46 @@ export const dynamic = "force-dynamic";
 export default async function RemindersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+    due?: string | string[];
+    link?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const status = getQueryParam(params.status);
+  const due = getQueryParam(params.due);
+  const link = getQueryParam(params.link);
   const reminders = await getReminders();
-  const visibleReminders = reminders.data.filter((reminder) =>
-    matchesQuery(query, [
-      reminder.title,
-      reminder.dueAt,
-      reminder.status,
-      getDisplayLabel(reminder.status),
-      reminder.assetName,
-      reminder.warrantyName,
-      reminder.taskTitle,
-      reminder.notes,
-    ]),
+  const visibleReminders = reminders.data.filter(
+    (reminder) =>
+      matchesQuery(query, [
+        reminder.title,
+        reminder.dueAt,
+        reminder.status,
+        getDisplayLabel(reminder.status),
+        reminder.assetName,
+        reminder.warrantyName,
+        reminder.taskTitle,
+        reminder.notes,
+      ]) &&
+      (!status || reminder.status === status) &&
+      (!due || getDateStatus(reminder.dueAtInput, "reminder").tone === due) &&
+      (!link ||
+        (link === "asset" && Boolean(reminder.assetId)) ||
+        (link === "warranty" && Boolean(reminder.warrantyId)) ||
+        (link === "task" && Boolean(reminder.taskId)) ||
+        (link === "unassigned" &&
+          !reminder.assetId &&
+          !reminder.warrantyId &&
+          !reminder.taskId)),
   );
+  const statusOptions = Array.from(new Set(reminders.data.map((reminder) => reminder.status)))
+    .map((value) => ({ value, label: getDisplayLabel(value) ?? value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || status || due || link);
   const pendingCount = reminders.data.filter((reminder) => reminder.status === "PENDING").length;
 
   return (
@@ -85,13 +109,13 @@ export default async function RemindersPage({
             },
           ]}
         />
-        <ListSearch
-          action="/maintenance/reminders"
-          defaultValue={query}
-          label="Search reminders"
-          placeholder="Search reminders or linked records"
+        <ReminderFilters
+          query={query}
+          status={status}
+          due={due}
+          link={link}
+          statusOptions={statusOptions}
           resultCount={visibleReminders.length}
-          resultNoun="reminder"
         />
 
         {visibleReminders.length ? (
@@ -120,15 +144,15 @@ export default async function RemindersPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No reminders match this search" : "No reminders yet"}
+            title={hasFilters ? "No reminders match these filters" : "No reminders yet"}
             description={
-              query
-                ? "Try a reminder title, status or linked record."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Add reminder metadata for a household due date. Delivery remains switched off."
             }
             action={
-              query ? (
-                <BackLinkButton href="/maintenance/reminders">Clear search</BackLinkButton>
+              hasFilters ? (
+                <BackLinkButton href="/maintenance/reminders">Clear filters</BackLinkButton>
               ) : (
                 <Button asChild>
                   <Link href="/maintenance/reminders/new">Add reminder</Link>
