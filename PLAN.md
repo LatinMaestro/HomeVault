@@ -551,3 +551,9 @@ No query, persistence, notification delivery, claim automation, schema, dependen
 Phase 3Y adds server-rendered record-type, linked-asset and document-type filters to the combined receipt and document metadata list.
 
 Filtering reuses already-loaded fallback-safe records. No file access, storage, query, persistence, schema, dependency or analytics is introduced. See `docs/PHASE_3Y_PLAN.md`.
+
+## Phase 3Z: Reminder Triage Filters - Complete
+
+Phase 3Z adds server-rendered lifecycle, Brisbane due-state and linked-record filters to the reminder centre.
+
+The feature reuses existing reminder metadata and date rules. It sends and schedules nothing, and introduces no query, persistence, schema, dependency or analytics. See `docs/PHASE_3Z_PLAN.md`.
