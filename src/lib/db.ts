@@ -5,6 +5,10 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
+export function isDatabaseConfigured() {
+  return Boolean(process.env.DATABASE_URL);
+}
+
 export function isPreviewDatabaseEnabled() {
   return (
     Boolean(process.env.DATABASE_URL) &&
