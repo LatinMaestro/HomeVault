@@ -1,0 +1,86 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { CloudOff, Database, LifeBuoy, ShieldCheck } from "lucide-react";
+
+import { AppShell } from "@/components/app-shell";
+import { PageHeader } from "@/components/page-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Support",
+  description: "HomeVault preview help, troubleshooting and release support information.",
+};
+
+const helpItems = [
+  {
+    title: "A sample record is missing",
+    description:
+      "Return to the relevant list and choose one of the Taylor Family Home sample records. Unknown record links show a safe not-found state.",
+    icon: LifeBuoy,
+    href: "/vault",
+    action: "Open the vault",
+  },
+  {
+    title: "Saving is unavailable",
+    description:
+      "Database-backed saving works only when the preview has a configured database. Without one, HomeVault stays useful in read-only sample mode.",
+    icon: Database,
+    href: "/settings",
+    action: "Check data mode",
+  },
+  {
+    title: "The app is offline",
+    description:
+      "Reconnect and reload the page. HomeVault caches only a minimal offline shell and does not cache household records or pending changes.",
+    icon: CloudOff,
+    href: "/offline",
+    action: "View offline help",
+  },
+  {
+    title: "Privacy or account help",
+    description:
+      "The current preview has no production accounts. Public support contact details and an account-deletion path are required before store release.",
+    icon: ShieldCheck,
+    href: "/privacy",
+    action: "Read privacy information",
+  },
+];
+
+export default function SupportPage() {
+  return (
+    <AppShell activeSection="">
+      <section className="space-y-5">
+        <PageHeader
+          eyebrow="Support"
+          title="Help with the HomeVault preview"
+          description="Practical guidance for the current review build. A public support contact and response process will be added before store submission."
+        />
+
+        <div className="grid gap-4 md:grid-cols-2">
+          {helpItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <Card key={item.title}>
+                <CardHeader className="space-y-4">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-md bg-secondary text-secondary-foreground">
+                    <Icon className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <CardTitle>{item.title}</CardTitle>
+                    <CardDescription className="mt-2 leading-6">
+                      {item.description}
+                    </CardDescription>
+                  </div>
+                  <Button asChild variant="outline" className="w-fit">
+                    <Link href={item.href}>{item.action}</Link>
+                  </Button>
+                </CardHeader>
+              </Card>
+            );
+          })}
+        </div>
+      </section>
+    </AppShell>
+  );
+}
