@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 
 export type ServiceProviderActionState = {
   status: "idle" | "success" | "error";
@@ -58,7 +58,7 @@ function invalidProviderState(
 function unavailableState(): ServiceProviderActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no provider was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no provider was changed.",
   };
 }
 
@@ -85,7 +85,7 @@ export async function createServiceProviderAction(
   const values = getProviderValues(formData);
   const invalidState = invalidProviderState(values);
   if (invalidState) return invalidState;
-  if (!process.env.DATABASE_URL) return unavailableState();
+  if (!isPreviewDatabaseEnabled()) return unavailableState();
 
   try {
     const db = getDb();
@@ -136,7 +136,7 @@ export async function updateServiceProviderAction(
   const values = getProviderValues(formData);
   const invalidState = invalidProviderState(values);
   if (invalidState) return invalidState;
-  if (!process.env.DATABASE_URL) return unavailableState();
+  if (!isPreviewDatabaseEnabled()) return unavailableState();
 
   try {
     const db = getDb();
