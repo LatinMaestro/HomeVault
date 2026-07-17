@@ -18,7 +18,7 @@
 - Email forwarding.
 - Push, SMS or email notifications.
 - Payment or subscription billing.
-- Native iOS or Android apps.
+- Native iOS or Android packaging during the current shared-app phase. Dual-store distribution is an approved later delivery requirement.
 - Analytics and paid third-party integrations.
 - Financial budgeting or spending tools.
 

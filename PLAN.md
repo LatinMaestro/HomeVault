@@ -314,3 +314,11 @@ Phase 2Q brings overdue and near-term active maintenance, pending reminders and 
 The queue is read-only and fallback-safe. No notification delivery, scheduling, mutation, schema, dependency or external service is added.
 
 See `docs/PHASE_2Q_PLAN.md`.
+
+## Phase 2R: Store Distribution Foundation - Complete
+
+Phase 2R records Apple App Store and Google Play as approved distribution targets and adds the shared installable-web foundation: branded icon, manifest, standalone metadata, safe-area support and install-asset smoke coverage.
+
+The recommended later path is a Capacitor shell only after production auth, authorization, deletion, privacy and storage gates, with meaningful native utility before submission. No native project, signing credential, store account, device permission, dependency or external service is added yet.
+
+See `docs/PHASE_2R_PLAN.md` and `docs/APP_STORE_READINESS.md`.

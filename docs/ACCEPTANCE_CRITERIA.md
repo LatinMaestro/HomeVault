@@ -377,3 +377,12 @@
 - Normal future and missing-date records do not appear as urgent.
 - Database and sample modes remain useful without build-time database access.
 - No notification, scheduler, mutation, schema or external service is added.
+
+## Phase 2R Acceptance
+
+- HomeVault exposes a valid manifest with standalone display, theme, orientation and branded icon metadata.
+- Mobile viewport metadata enables safe-area layout.
+- The shared shell respects top and bottom safe-area insets without changing desktop behavior.
+- CI smoke verifies the manifest and install icon without `DATABASE_URL`.
+- Documentation defines Apple and Google policy, privacy, deletion, signing and asset gates.
+- No native project, device permission, dependency, store credential or external service is added.

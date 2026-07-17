@@ -4,6 +4,8 @@ const port = 3210;
 const baseUrl = `http://127.0.0.1:${port}`;
 const routes = [
   "/api/health",
+  "/manifest.webmanifest",
+  "/icons/homevault.svg",
   "/",
   "/search?q=fridge",
   "/vault",

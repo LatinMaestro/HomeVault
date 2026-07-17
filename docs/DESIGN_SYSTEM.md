@@ -26,3 +26,11 @@ HomeVault should feel calm, practical and trustworthy. The interface should suit
 - Preserve keyboard navigation.
 - Use descriptive labels and page titles.
 
+## Installed Mobile Experience
+
+- Respect iOS and Android display cutouts using safe-area insets.
+- Keep primary controls at least 44 CSS pixels high where practical.
+- Avoid hover-only interactions.
+- Preserve readable content with browser and OS text scaling.
+- Treat standalone display mode as a first-class viewport.
+- Final native shells must use platform-appropriate back behavior, launch treatment and accessibility semantics.
