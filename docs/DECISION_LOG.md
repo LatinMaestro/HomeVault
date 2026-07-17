@@ -329,3 +329,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Forms show saving as unavailable and actions reject writes.
 - The database helper enforces the gate as defence in depth.
 - The switch is limited to controlled non-sensitive preview data and is not a substitute for production authentication or authorisation.
+
+
+## 2026-07-17 - Prefer Branch-compatible Auth Without Delegating Authorisation
+
+**Decision:** Prefer Neon Managed Better Auth once production-appropriate, retain self-hosted Better Auth as the fallback, and keep all HomeVault household authorisation in server-owned application logic.
+
+**Rationale:** Neon auth aligns with the existing Postgres and preview-branch direction, but it is currently Beta and no dedicated HomeVault Neon project exists. Authentication identifies a user; it does not prove access to a household record.
+
+**Consequences:**
+
+- No auth service is provisioned during architecture planning.
+- General availability or explicit beta-risk acceptance is required before using managed Neon auth for production.
+- Every read and mutation must check signed-in household membership.
+- Email is not used as the durable authorisation key.
+- The temporary earliest-home resolver and preview database switch are removed from production paths.
+- Self-hosted Better Auth remains the documented fallback.
