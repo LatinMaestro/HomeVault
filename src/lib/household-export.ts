@@ -2,6 +2,7 @@ import {
   getAssetCategories,
   getAssets,
   getHomeProfile,
+  getHouseholdMembers,
   getMaintenanceTasks,
   getRecords,
   getReminders,
@@ -13,6 +14,7 @@ import {
 export async function getHouseholdExport() {
   const [
     home,
+    householdMembers,
     rooms,
     categories,
     assets,
@@ -23,6 +25,7 @@ export async function getHouseholdExport() {
     serviceProviders,
   ] = await Promise.all([
     getHomeProfile(),
+    getHouseholdMembers(),
     getRooms(),
     getAssetCategories(),
     getAssets(),
@@ -35,6 +38,7 @@ export async function getHouseholdExport() {
 
   const results = [
     home,
+    householdMembers,
     rooms,
     categories,
     assets,
@@ -53,6 +57,7 @@ export async function getHouseholdExport() {
       ? "database"
       : "sample",
     household: home.data,
+    householdMembers: householdMembers.data,
     rooms: rooms.data,
     assetCategories: categories.data,
     assets: assets.data,
