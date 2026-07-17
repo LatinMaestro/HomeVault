@@ -223,6 +223,30 @@ async function verifyDeploymentContracts() {
     "Inventory export must contain its header and sample assets.",
   );
 
+  const maintenanceExportResponse = await fetch(
+    `${baseUrl}/api/export/maintenance.csv`,
+  );
+  const maintenanceExport = await maintenanceExportResponse.text();
+  assertContract(
+    (maintenanceExportResponse.headers.get("content-type") ?? "").startsWith("text/csv"),
+    "Maintenance history export must use the text/csv content type.",
+  );
+  assertContract(
+    (maintenanceExportResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Maintenance history export must not be cached.",
+  );
+  assertContract(
+    (maintenanceExportResponse.headers.get("content-disposition") ?? "").includes(
+      'filename="homevault-maintenance-history.csv"',
+    ),
+    "Maintenance history export must provide a stable download filename.",
+  );
+  assertContract(
+    maintenanceExport.startsWith('"Task","Asset","Completed date"') &&
+      maintenanceExport.split("\\r\\n").length > 2,
+    "Maintenance history export must contain its header and sample completion.",
+  );
+
   const manifestResponse = await fetch(`${baseUrl}/manifest.webmanifest`);
   const manifest = await manifestResponse.json();
   assertContract(manifest.name === "HomeVault", "Manifest name is incorrect.");
