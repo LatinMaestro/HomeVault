@@ -12,6 +12,23 @@ export function isPreviewDatabaseEnabled() {
   );
 }
 
+function getConfiguredDb() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("Database access is not configured.");
+  }
+
+  if (!globalForPrisma.prisma) {
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+    globalForPrisma.prisma = new PrismaClient({ adapter });
+  }
+
+  return globalForPrisma.prisma;
+}
+
+export function getAuthDb() {
+  return getConfiguredDb();
+}
+
 export function getDb() {
   if (!isPreviewDatabaseEnabled()) {
     throw new Error(
@@ -19,10 +36,5 @@ export function getDb() {
     );
   }
 
-  if (!globalForPrisma.prisma) {
-    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-    globalForPrisma.prisma = new PrismaClient({ adapter });
-  }
-
-  return globalForPrisma.prisma;
+  return getConfiguredDb();
 }
