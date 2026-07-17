@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } from "lucide-react";
+import { ArrowRight, CalendarClock, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -25,11 +25,13 @@ export default async function HomePage() {
     documentCount,
     nextTask,
     nextWarranty,
+    nextReminder,
     receiptCount,
     roomCount,
   } = dashboard.data;
   const nextTaskStatus = getDateStatus(nextTask?.nextDueDateInput, "maintenance");
   const nextWarrantyStatus = getDateStatus(nextWarranty?.expiresAtInput, "warranty");
+  const nextReminderStatus = getDateStatus(nextReminder?.dueAtInput, "reminder");
 
   const dashboardCards = [
     {
@@ -39,6 +41,18 @@ export default async function HomePage() {
       dateStatus: nextTask ? nextTaskStatus : null,
       href: nextTask ? `/maintenance/${nextTask.id}` : "/maintenance",
       icon: Wrench,
+    },
+    {
+      title: "Next reminder",
+      value: nextReminder?.title ?? "No reminders yet",
+      detail:
+        nextReminder?.dueAt ??
+        "Add reminder metadata when the household has an important date to remember.",
+      dateStatus: nextReminder ? nextReminderStatus : null,
+      href: nextReminder
+        ? `/maintenance/reminders/${nextReminder.id}`
+        : "/maintenance/reminders",
+      icon: CalendarClock,
     },
     {
       title: "Warranty coverage",
@@ -87,7 +101,7 @@ export default async function HomePage() {
 
         <DataSourceNote source={dashboard.source} />
 
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {dashboardCards.map((card) => {
             const Icon = card.icon;
             return (
