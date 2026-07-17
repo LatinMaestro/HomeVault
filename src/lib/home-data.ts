@@ -17,6 +17,7 @@ import {
   type MaintenanceTaskDetail,
   type RecordDetail,
   type ReminderDetail,
+  type RoomDetail,
   type RoomSummary,
   type ServiceProviderDetail,
   type WarrantyDetail,
@@ -151,6 +152,48 @@ export async function getRooms(): Promise<Result<RoomSummary[]>> {
   }, sampleRooms);
 }
 
+export async function getRoom(id: string): Promise<Result<RoomDetail | null>> {
+  const [rooms, assets, tasks] = await Promise.all([
+    getRooms(),
+    getAssets(),
+    getMaintenanceTasks(),
+  ]);
+  const room = rooms.data.find((item) => item.id === id);
+
+  if (!room) {
+    return { data: null, source: rooms.source };
+  }
+
+  const roomAssets = assets.data.filter((asset) => asset.roomId === room.id);
+  const assetIds = new Set(roomAssets.map((asset) => asset.id));
+
+  return {
+    data: {
+      ...room,
+      assets: roomAssets.map((asset) => ({
+        id: asset.id,
+        name: asset.name,
+        brand: asset.brand,
+        status: asset.status,
+      })),
+      maintenanceTasks: tasks.data
+        .filter((task) => task.assetId && assetIds.has(task.assetId))
+        .map((task) => ({
+          id: task.id,
+          title: task.title,
+          status: task.status,
+          nextDueDate: task.nextDueDate,
+        })),
+    },
+    source:
+      rooms.source === "database" &&
+      assets.source === "database" &&
+      tasks.source === "database"
+        ? "database"
+        : "sample",
+  };
+}
+
 export async function getAssetCategories(): Promise<Result<AssetCategorySummary[]>> {
   return withDatabase(async () => {
     const homeId = await getCurrentHomeId();
@@ -196,6 +239,7 @@ export async function getAssets(): Promise<Result<AssetDetail[]>> {
       purchasePlace: asset.purchasePlace,
       notes: asset.notes,
       status: asset.status,
+      roomId: asset.room?.id,
       roomName: asset.room?.name,
       categoryName: asset.category?.name,
       warranties: asset.warranties.map((warranty) => ({
