@@ -86,9 +86,7 @@ export default async function RoomsPage({
                   <p className="text-sm text-muted-foreground">{room.assetCount} linked assets</p>
                   <div className="flex flex-wrap gap-2">
                     <Button asChild variant="outline" size="sm">
-                      <Link href={`/vault/assets?q=${encodeURIComponent(room.name)}`}>
-                        View assets
-                      </Link>
+                      <Link href={`/vault/rooms/${room.id}`}>View room</Link>
                     </Button>
                     <Button asChild variant="outline" size="sm">
                       <Link href={`/vault/rooms/${room.id}/edit`}>Edit room</Link>
