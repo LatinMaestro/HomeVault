@@ -243,7 +243,7 @@ async function verifyDeploymentContracts() {
   );
   assertContract(
     maintenanceExport.startsWith('"Task","Asset","Completed date"') &&
-      maintenanceExport.split("\\r\\n").length > 2,
+      maintenanceExport.split("\r\n").length > 2,
     "Maintenance history export must contain its header and sample completion.",
   );
 
