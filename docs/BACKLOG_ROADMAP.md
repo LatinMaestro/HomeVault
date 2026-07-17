@@ -105,3 +105,7 @@ Added fallback-safe asset category detail pages and assigned-asset navigation. T
 ## Phase 3P Complete
 
 Surfaced existing reminder metadata on warranty detail without adding delivery, scheduling or persistence capability.
+
+## Phase 3Q Complete
+
+Exposed existing receipt and document relationships without adding storage, uploads, inferred links or new persistence.
