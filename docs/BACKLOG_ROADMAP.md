@@ -109,3 +109,7 @@ Surfaced existing reminder metadata on warranty detail without adding delivery, 
 ## Phase 3Q Complete
 
 Exposed existing receipt and document relationships without adding storage, uploads, inferred links or new persistence.
+
+## Phase 3R Complete
+
+Surfaced existing maintenance document and reminder relationships without changing persistence, scheduling or delivery.
