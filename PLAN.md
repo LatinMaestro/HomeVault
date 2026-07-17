@@ -539,3 +539,9 @@ All options are derived from already-loaded fallback-safe records. No new query,
 Phase 3W adds server-rendered task status, Brisbane due-state and linked-asset filters to the Maintenance list, with clear unassigned and empty-result behavior.
 
 The feature reuses existing loaded task records and date rules. No query, persistence, notification delivery, scheduling change, schema, dependency or analytics is introduced. See `docs/PHASE_3W_PLAN.md`.
+
+## Phase 3X: Warranty Review Filters - Complete
+
+Phase 3X adds server-rendered coverage-state, asset and provider filters to the Warranties list using the existing Brisbane date-status rules.
+
+No query, persistence, notification delivery, claim automation, schema, dependency or analytics is introduced. See `docs/PHASE_3X_PLAN.md`.
