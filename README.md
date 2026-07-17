@@ -77,6 +77,8 @@ If a developer explicitly chooses controlled preview database work, set `DATABAS
 
 Vercel builds do not require a live database connection. Runtime pages render sample data unless controlled preview database access is explicitly enabled and available. Room, asset, maintenance, warranty, receipt, document and reminder actions show clear unavailable-database messages when saving cannot run.
 
+A Neon `preview` branch now contains the Prisma schema and canonical synthetic seed household. The Neon production branch remains empty, and Vercel Production must not receive preview credentials. See `docs/NEON_PREVIEW_DATABASE.md`.
+
 ## Core Routes
 
 - `/`
