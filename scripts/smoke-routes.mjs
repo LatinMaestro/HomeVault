@@ -117,6 +117,24 @@ async function verifyDeploymentContracts() {
     homeResponse.headers.get("x-frame-options") === "DENY",
     "Home route is missing X-Frame-Options DENY.",
   );
+  const transportSecurity = homeResponse.headers.get("strict-transport-security") ?? "";
+  assertContract(
+    transportSecurity.includes("max-age=63072000") &&
+      transportSecurity.includes("includeSubDomains"),
+    "Home route is missing the HTTPS transport security policy.",
+  );
+  assertContract(
+    homeResponse.headers.get("cross-origin-resource-policy") === "same-origin",
+    "Home route is missing the same-origin resource policy.",
+  );
+  assertContract(
+    homeResponse.headers.get("x-dns-prefetch-control") === "off",
+    "Home route must keep speculative DNS prefetching disabled.",
+  );
+  assertContract(
+    homeResponse.headers.get("x-permitted-cross-domain-policies") === "none",
+    "Home route must reject legacy cross-domain policy files.",
+  );
   assertContract(
     (homeResponse.headers.get("permissions-policy") ?? "").includes("camera=()"),
     "Home route does not disable unnecessary camera permission.",
