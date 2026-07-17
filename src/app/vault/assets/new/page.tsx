@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createAssetAction } from "@/app/vault/assets/actions";
@@ -43,7 +45,7 @@ export default async function NewAssetPage() {
           description="Asset saving is now enabled when the database is configured. If the database is unavailable, HomeVault will explain that nothing changed."
           fields={fields}
           action={createAssetAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>
