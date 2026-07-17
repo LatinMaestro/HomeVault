@@ -290,3 +290,11 @@ Phase 2N prevents repeated canonical seed runs from creating duplicate Taylor Fa
 No database reset, delete, schema, migration, dependency, environment variable or product workflow is added.
 
 See `docs/PHASE_2N_PLAN.md` for the completion summary.
+
+## Phase 2O: Online Route Smoke Gate - Complete
+
+Phase 2O extends GitHub Actions beyond compilation: CI starts the production build without `DATABASE_URL` and requests the approved core and dynamic sample routes.
+
+The smoke runner uses Node.js platform APIs only. No dependency, secret, live database, local client command, Vercel deployment or app behavior change is required.
+
+See `docs/PHASE_2O_PLAN.md` and `docs/TESTING_PROTOCOL.md`.
