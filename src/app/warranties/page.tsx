@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
+import { WarrantyFilters } from "@/components/warranty-filters";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Button } from "@/components/ui/button";
@@ -25,18 +25,48 @@ export const dynamic = "force-dynamic";
 export default async function WarrantiesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    coverage?: string | string[];
+    asset?: string | string[];
+    provider?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const coverage = getQueryParam(params.coverage);
+  const asset = getQueryParam(params.asset);
+  const provider = getQueryParam(params.provider);
   const warranties = await getWarranties();
-  const visibleWarranties = warranties.data.filter((warranty) =>
-    matchesQuery(query, [
-      warranty.assetName,
-      warranty.provider,
-      warranty.policyNumber,
-      warranty.expiresAt,
-    ]),
+  const visibleWarranties = warranties.data.filter(
+    (warranty) =>
+      matchesQuery(query, [
+        warranty.assetName,
+        warranty.provider,
+        warranty.policyNumber,
+        warranty.expiresAt,
+      ]) &&
+      (!coverage || getDateStatus(warranty.expiresAtInput, "warranty").tone === coverage) &&
+      (!asset || warranty.assetId === asset) &&
+      (!provider ||
+        (provider === "unassigned" ? !warranty.provider : warranty.provider === provider)),
   );
+  const assetOptions = Array.from(
+    new Map(
+      warranties.data.map((warranty) => [warranty.assetId, warranty.assetName]),
+    ),
+    ([value, label]) => ({ value, label }),
+  ).sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const providerOptions = Array.from(
+    new Set(
+      warranties.data
+        .map((warranty) => warranty.provider)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  )
+    .map((value) => ({ value, label: value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || coverage || asset || provider);
 
   return (
     <AppShell activeSection="Warranties">
@@ -75,14 +105,14 @@ export default async function WarrantiesPage({
           ]}
         />
 
-        <ListSearch
-          action="/warranties"
-          defaultValue={query}
-          label="Search warranties"
-          placeholder="Search assets, providers or policies"
+        <WarrantyFilters
+          query={query}
+          coverage={coverage}
+          asset={asset}
+          provider={provider}
+          assetOptions={assetOptions}
+          providerOptions={providerOptions}
           resultCount={visibleWarranties.length}
-          resultNoun="warranty"
-          resultNounPlural="warranties"
         />
 
         {visibleWarranties.length > 0 ? (
@@ -109,16 +139,16 @@ export default async function WarrantiesPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No matching warranties" : "No warranties yet"}
+            title={hasFilters ? "No matching warranties" : "No warranties yet"}
             description={
-              query
-                ? "Try another asset, provider or policy number, or clear the current search."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Add warranty metadata when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
             }
             action={
               <Button asChild>
-                <Link href={query ? "/warranties" : "/warranties/new"}>
-                  {query ? "Clear search" : "Add first warranty"}
+                <Link href={hasFilters ? "/warranties" : "/warranties/new"}>
+                  {hasFilters ? "Clear filters" : "Add first warranty"}
                 </Link>
               </Button>
             }
