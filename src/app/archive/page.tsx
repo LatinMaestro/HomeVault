@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArchiveRestore, Bell, Package, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
+import { ArchiveFilters } from "@/components/archive-filters";
 import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getArchiveData } from "@/lib/archive-data";
 import { getDisplayLabel } from "@/lib/display-labels";
+import { getQueryParam, matchesQuery } from "@/lib/list-filter";
 
 export const metadata: Metadata = {
   title: "Archive",
@@ -20,9 +22,57 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default async function ArchivePage() {
+export default async function ArchivePage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    q?: string | string[];
+    type?: string | string[];
+  }>;
+}) {
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const recordType = getQueryParam(params.type);
   const archive = await getArchiveData();
   const total = archive.assets.length + archive.tasks.length + archive.reminders.length;
+  const visibleAssets =
+    !recordType || recordType === "assets"
+      ? archive.assets.filter((asset) =>
+          matchesQuery(query, [
+            asset.name,
+            asset.status,
+            getDisplayLabel(asset.status),
+            asset.roomName,
+            asset.brand,
+            asset.model,
+          ]),
+        )
+      : [];
+  const visibleTasks =
+    !recordType || recordType === "tasks"
+      ? archive.tasks.filter((task) =>
+          matchesQuery(query, [
+            task.title,
+            task.status,
+            getDisplayLabel(task.status),
+            task.nextDueDate,
+            task.assetName,
+          ]),
+        )
+      : [];
+  const visibleReminders =
+    !recordType || recordType === "reminders"
+      ? archive.reminders.filter((reminder) =>
+          matchesQuery(query, [
+            reminder.title,
+            reminder.status,
+            getDisplayLabel(reminder.status),
+            reminder.dueAt,
+          ]),
+        )
+      : [];
+  const visibleTotal = visibleAssets.length + visibleTasks.length + visibleReminders.length;
+  const hasFilters = Boolean(query || recordType);
 
   return (
     <AppShell activeSection="Settings">
@@ -47,6 +97,14 @@ export default async function ArchivePage() {
           </div>
         </div>
 
+        {total > 0 ? (
+          <ArchiveFilters
+            query={query}
+            recordType={recordType}
+            resultCount={visibleTotal}
+          />
+        ) : null}
+
         {total === 0 ? (
           <EmptyState
             title="Nothing is archived"
@@ -57,14 +115,21 @@ export default async function ArchivePage() {
               </Button>
             }
           />
+        ) : visibleTotal === 0 ? (
+          <EmptyState
+            title="No archived records match"
+            description="Try another search or record type, or clear the current filters."
+            action={<BackLinkButton href="/archive">Clear filters</BackLinkButton>}
+          />
         ) : (
           <div className="grid gap-4 lg:grid-cols-3">
+            {(!recordType || recordType === "assets") ? (
             <ArchiveGroup
               icon={Package}
               title="Assets"
               description="Retired or disposed inventory records."
               empty="No archived assets."
-              items={archive.assets.map((asset) => ({
+              items={visibleAssets.map((asset) => ({
                 id: asset.id,
                 title: asset.name,
                 detail: [asset.roomName, asset.brand, asset.model].filter(Boolean).join(" | "),
@@ -72,12 +137,14 @@ export default async function ArchivePage() {
                 href: `/vault/assets/${asset.id}/edit`,
               }))}
             />
+            ) : null}
+            {(!recordType || recordType === "tasks") ? (
             <ArchiveGroup
               icon={Wrench}
               title="Maintenance"
               description="Completed or archived upkeep schedules."
               empty="No closed maintenance tasks."
-              items={archive.tasks.map((task) => ({
+              items={visibleTasks.map((task) => ({
                 id: task.id,
                 title: task.title,
                 detail: task.nextDueDate || task.assetName || "No current due date",
@@ -85,12 +152,14 @@ export default async function ArchivePage() {
                 href: `/maintenance/${task.id}/edit`,
               }))}
             />
+            ) : null}
+            {(!recordType || recordType === "reminders") ? (
             <ArchiveGroup
               icon={Bell}
               title="Reminders"
               description="Done or cancelled reminder records."
               empty="No closed reminders."
-              items={archive.reminders.map((reminder) => ({
+              items={visibleReminders.map((reminder) => ({
                 id: reminder.id,
                 title: reminder.title,
                 detail: reminder.dueAt,
@@ -98,6 +167,7 @@ export default async function ArchivePage() {
                 href: `/maintenance/reminders/${reminder.id}/edit`,
               }))}
             />
+            ) : null}
           </div>
         )}
       </section>
