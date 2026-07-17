@@ -754,3 +754,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - No occupancy, room-purpose inference or floor-plan data is created.
 - Filter options come from current loaded records.
 - Filter state is URL-only and retained nowhere.
+
+## 2026-07-17 - Category Usage Is A Live Relationship Count
+
+**Decision:** Show category usage from Prisma's existing Asset relation count and equivalent canonical fallback values.
+
+**Rationale:** Users need to find empty categories, but storing a separate count would create synchronization risk for data that already exists relationally.
+
+**Consequences:**
+
+- Category cards show assigned asset counts.
+- Used and empty filters reflect current explicit assignments.
+- No aggregate column, background update or additional query is introduced.
+- The category taxonomy remains broad and flat.
+- Automatic classification and nested categories remain out of scope.

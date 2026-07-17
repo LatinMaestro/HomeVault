@@ -153,3 +153,7 @@ Added trade, linked-task and contact-detail filters to the provider directory, i
 ## Phase 4B Complete
 
 Added floor/zone and linked-asset filters to Rooms, including missing-floor and empty-room records. Floor plans and occupancy tracking remain outside HomeVault's practical record scope.
+
+## Phase 4C Complete
+
+Added assigned-asset counts and used-versus-empty filtering to asset categories. The taxonomy remains broad and flat, with no automatic classification or nested structure.

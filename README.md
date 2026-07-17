@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4B is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4C is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4B Room Organisation Filters` complete
+- Phase: `4C Category Usage Visibility` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only; household membership is visible as a privacy-safe read-only summary
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
@@ -19,7 +19,7 @@ Phase 4B is complete. HomeVault provides guarded household record workflows with
 - Date awareness: Brisbane-calendar maintenance, warranty and reminder states with focused urgency filters and strict guarded dates
 - Navigation: direct links between existing rooms, assets, tasks, warranties and records
 - Rooms: floor- and asset-link-filterable list, guarded create/edit and detail views with assigned assets and linked maintenance
-- Asset categories: searchable flat taxonomy with guarded create/edit and assigned-asset detail views
+- Asset categories: searchable flat taxonomy with assigned-asset counts, usage filters, guarded create/edit and detail views
 - Assets: guarded create/edit for identity, purchase, room, category and lifecycle metadata, with mobile-friendly room/category/status filters and linked care tasks, reminders, warranties and records
 - Maintenance: guarded lifecycle, status/due/asset work-queue filters, editable starter templates, custom intervals, filterable provider directory with safe contact actions, documents, reminders, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
 - Records: filterable receipt and document metadata with navigation to existing assets, warranties, source receipts and maintenance context
