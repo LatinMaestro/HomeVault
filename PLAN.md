@@ -410,3 +410,10 @@ The test does not connect to a database, add a package or alter runtime behavior
 Phase 3B extends the shared browser response baseline with HTTPS transport security, same-origin resource policy, disabled DNS prefetching and rejection of legacy cross-domain policies.
 
 The database-free deployment smoke asserts every new header. No route, dependency, data behavior, external service or Vercel-specific configuration is added.
+
+
+## Phase 3C: Maintenance Schedule Automation - Complete
+
+Phase 3C turns existing recurrence metadata into useful behavior. Recording a completion advances weekly, fortnightly, monthly, quarterly, six-monthly, yearly and valid custom schedules in the same transaction as completion history. One-off tasks close automatically.
+
+The calculator preserves future cadence, recovers overdue schedules from the actual work date and handles month-end and leap-year boundaries. No notification delivery, queue, external service, schema or dependency is added.

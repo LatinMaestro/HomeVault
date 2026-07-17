@@ -388,3 +388,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Cross-origin no-cors resource consumption is rejected.
 - DNS prefetching and legacy cross-domain policy discovery are disabled.
 - Future intentional cross-origin assets require an explicit reviewed policy change.
+
+
+## 2026-07-17 - Advance Maintenance Schedules Atomically
+
+**Decision:** Update a recurring task's next due date in the same transaction that records its completion, using the later of the existing due date and actual completion date as the scheduling anchor.
+
+**Rationale:** Early work should preserve an intentional calendar cadence, while overdue work should not immediately produce another overdue occurrence. History and schedule state must not diverge.
+
+**Consequences:**
+
+- Weekly and custom schedules use exact day intervals.
+- Calendar frequencies use UTC calendar arithmetic with month-end clamping.
+- One-off tasks become completed and clear their due date.
+- Invalid legacy custom intervals retain their current due date and still accept history.
+- Notification delivery remains separate and disabled.

@@ -95,3 +95,18 @@ Database-free production smoke verifies that the Home route returns:
 - disabled legacy cross-domain policy files.
 
 These checks run alongside the existing CSP, anti-framing, permissions, health, install, crawler and offline-worker contracts.
+
+
+## Maintenance Schedule Unit Contracts
+
+The unit suite covers schedule behavior after a maintenance completion:
+
+- one-off tasks close and clear their next due date;
+- overdue weekly tasks advance from the completion date;
+- early work preserves an existing future cadence;
+- monthly schedules clamp safely at month end;
+- yearly schedules handle leap day;
+- custom intervals advance by their validated day count;
+- invalid legacy custom intervals preserve the current schedule.
+
+The completion record and schedule update run in one database transaction when controlled preview persistence is enabled.
