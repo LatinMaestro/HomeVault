@@ -6,15 +6,16 @@ Provisioned and verified on 17 July 2026.
 
 ## Resource Boundary
 
-- Neon project: `HomeVault`.
-- Default `production` branch: intentionally empty.
-- Child `preview` branch: HomeVault schema plus canonical synthetic seed data.
+- Canonical Neon organisation: Vercel-managed `Vercel: latinmaestro's projects`.
+- Canonical Neon project: `neon-aero-forest`.
+- Default `main` branch: contains provider-managed Neon Auth tables but zero HomeVault application tables.
+- Child `preview` branch (`br-misty-lab-a7axo7am`): HomeVault schema plus canonical synthetic seed data.
 - Database: `neondb`.
-- Region: selected by the client for the HomeVault project.
-- Neon Auth: not provisioned.
-- Neon Data API: not provisioned.
+- Region: Sydney (`aws-ap-southeast-2`).
+- Neon Auth system tables were provisioned by the Vercel-managed resource, but production HomeVault authentication remains disabled and unimplemented.
+- Neon Data API is not part of the approved application architecture.
 
-The branch and project names are operational references, not credentials. Connection strings, role passwords and API keys must remain in provider-managed environment settings.
+The separately created standalone `HomeVault` Neon project is not canonical and remains untouched pending an explicit cleanup decision. The branch and project names are operational references, not credentials. Connection strings, role passwords and API keys must remain in provider-managed environment settings.
 
 ## Preview Contents
 
