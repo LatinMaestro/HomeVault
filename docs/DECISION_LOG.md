@@ -508,3 +508,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Quick Add never pre-creates an empty record.
 - Existing database and validation messages remain authoritative.
 - New record types must be deliberately added to the hub.
+
+
+## 2026-07-17 - Keep Neon Preview Data Isolated
+
+**Decision:** Place the current Prisma schema and canonical synthetic household on a child `preview` branch while leaving Neon's default production branch empty.
+
+**Rationale:** Database-backed workflow review is useful now, but the application has no production authentication or household authorisation. Preview capability must not be mistaken for production readiness.
+
+**Consequences:**
+
+- Only synthetic data is approved on the preview branch.
+- Vercel Preview requires both the pooled connection string and explicit fail-closed switch.
+- Vercel Production receives neither value at this stage.
+- Neon Auth and Data API remain unprovisioned.
+- Production migration, backup and retention operations remain release gates.
