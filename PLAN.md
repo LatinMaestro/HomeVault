@@ -266,3 +266,11 @@ Phase 2K adds one fallback-safe search surface across existing rooms, categories
 The search reuses lazy runtime reads, remains useful without `DATABASE_URL`, and does not store searches or introduce analytics. No schema, mutation, auth, storage, OCR, AI, notification, payment or native app capability is added.
 
 See `docs/PHASE_2K_PLAN.md` for the completion summary.
+
+## Phase 2L: Dashboard Reminder Visibility - Complete
+
+Phase 2L adds the next pending reminder to the fallback-safe household dashboard with a due-state badge and direct navigation. Reminder data now participates in the dashboard source assessment.
+
+This remains metadata presentation only. No notification delivery, scheduling automation, schema, mutation, analytics or external service is added.
+
+See `docs/PHASE_2L_PLAN.md` for the completion summary.
