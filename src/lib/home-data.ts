@@ -43,6 +43,12 @@ export type HomeDashboard = {
     expiresAt?: string | null;
     expiresAtInput?: string | null;
   } | null;
+  nextReminder: {
+    id: string;
+    title: string;
+    dueAt: string;
+    dueAtInput: string;
+  } | null;
   receiptCount: number;
   documentCount: number;
 };
@@ -438,16 +444,19 @@ export async function getRecord(id: string): Promise<Result<RecordDetail | null>
 }
 
 export async function getHomeDashboard(): Promise<Result<HomeDashboard>> {
-  const [rooms, assets, tasks, warranties, records] = await Promise.all([
+  const [rooms, assets, tasks, warranties, records, reminders] = await Promise.all([
     getRooms(),
     getAssets(),
     getMaintenanceTasks(),
     getWarranties(),
     getRecords(),
+    getReminders(),
   ]);
 
   const nextTask = tasks.data.find((task) => task.status === "ACTIVE") ?? tasks.data[0] ?? null;
   const nextWarranty = warranties.data[0] ?? null;
+  const nextReminder =
+    reminders.data.find((reminder) => reminder.status === "PENDING") ?? reminders.data[0] ?? null;
 
   return {
     data: {
@@ -470,11 +479,21 @@ export async function getHomeDashboard(): Promise<Result<HomeDashboard>> {
             expiresAtInput: nextWarranty.expiresAtInput,
           }
         : null,
+      nextReminder: nextReminder
+        ? {
+            id: nextReminder.id,
+            title: nextReminder.title,
+            dueAt: nextReminder.dueAt,
+            dueAtInput: nextReminder.dueAtInput,
+          }
+        : null,
       receiptCount: records.data.filter((record) => record.type === "Receipt").length,
       documentCount: records.data.filter((record) => record.type === "Document").length,
     },
     source:
-      [rooms, assets, tasks, warranties, records].every((result) => result.source === "database")
+      [rooms, assets, tasks, warranties, records, reminders].every(
+        (result) => result.source === "database",
+      )
         ? "database"
         : "sample",
   };
