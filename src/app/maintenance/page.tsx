@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Bell, CalendarClock, Contact, Plus } from "lucide-react";
+import { Bell, CalendarClock, CalendarDays, Contact, Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -52,9 +52,15 @@ export default async function MaintenancePage({
         <PageHeader
           eyebrow="Maintenance"
           title="Track recurring home upkeep before it becomes stressful."
-          description="Review maintenance tasks, save task changes when a database is configured, and record simple completion notes."
+          description="Review schedules, record completed work and keep household dates together."
           action={
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <Button asChild variant="outline">
+                <Link href="/calendar">
+                  <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                  Calendar
+                </Link>
+              </Button>
               <Button asChild variant="outline">
                 <Link href="/maintenance/reminders">
                   <Bell className="h-4 w-4" aria-hidden="true" />
@@ -87,7 +93,7 @@ export default async function MaintenancePage({
             {
               label: "Saving",
               value: "Tasks",
-              detail: "Task create/edit and completion records can save when the database is configured. Deletes and reminders are still off.",
+              detail: "Task changes and completion history can save with controlled preview access. Recurring dates advance automatically; notification delivery remains off.",
             },
             {
               label: "Data",
