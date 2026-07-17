@@ -602,3 +602,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Document detail can link to its asset, warranty, source receipt and maintenance task.
 - Unlinked records state that no connection is recorded.
 - No fuzzy matching, OCR, AI, schema or mutation is introduced.
+
+## 2026-07-17 - Maintenance Detail Collects Its Existing Context
+
+**Decision:** Present document metadata and reminders linked to a maintenance task alongside its instructions and completion history.
+
+**Rationale:** A practical care record should make supporting notes and planned follow-up easy to reach without duplicating their authoritative workflows.
+
+**Consequences:**
+
+- Maintenance reads include existing document and reminder relationships.
+- Document and reminder detail routes remain authoritative.
+- Completion and recurrence behavior is unchanged.
+- No notification delivery, schema, inferred association or mutation is introduced.
