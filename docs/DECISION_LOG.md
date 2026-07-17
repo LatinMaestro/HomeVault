@@ -234,3 +234,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Urgency stays consistent with existing list and detail badges.
 - No background job, notification delivery or schema field is required.
 - The queue remains useful with database or curated sample data.
+
+## 2026-07-17 - HomeVault Targets Both Mobile Stores
+
+**Decision:** Treat Apple App Store and Google Play distribution as product requirements while keeping Next.js as the shared foundation.
+
+**Rationale:** The app should reach homeowners through familiar mobile distribution without duplicating the product prematurely or submitting a low-value website wrapper.
+
+**Consequences:**
+
+- Installable web metadata and safe-area behavior are maintained now.
+- Capacitor is the preferred later packaging candidate.
+- Native submission waits for production auth, authorization, account deletion, privacy URLs and approved storage.
+- Store builds must add meaningful platform utility and pass platform review.
+- Developer accounts, legal identity, signing and store listing actions remain client-controlled.
