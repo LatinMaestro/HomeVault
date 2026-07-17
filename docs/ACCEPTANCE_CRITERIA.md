@@ -486,3 +486,14 @@
 - Recovery is performed by changing lifecycle status; the archive itself is read-only.
 - The route renders useful empty or sample states without live database access.
 - No permanent delete action or schema change is introduced.
+
+
+## Household Setup Guide
+
+- Home links to a mobile-friendly getting-started route.
+- The guide covers profile, rooms, assets, maintenance, warranties and receipt/document metadata.
+- Progress is derived from current household records.
+- Empty steps link to existing creation workflows.
+- Completed steps link to existing review workflows.
+- No separate onboarding status or analytics event is stored.
+- The route renders useful sample content without live database access.
