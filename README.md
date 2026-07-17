@@ -2,13 +2,13 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 3T is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 3U is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `3T Safe Provider Contact Actions` complete
+- Phase: `3U Read-only Household Access Summary` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
-- Auth: stubbed single-user mode with one shared earliest-home resolver only
+- Auth: stubbed single-user mode with one shared earliest-home resolver only; household membership is visible as a privacy-safe read-only summary
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
 - Mutations: room, asset, maintenance task, warranty, receipt, document, service provider, asset category, household profile and reminder metadata create/edit only when controlled preview database access is explicitly enabled; maintenance completion records are additive only
 - Storage: not implemented pending approval
@@ -133,7 +133,7 @@ A child `preview` branch in HomeVault's Vercel-managed Neon project contains the
 - `/receipts/new/document`
 - `/receipts/[recordId]`
 - `/receipts/[recordId]/edit`
-- `/settings` (household profile and privacy settings)
+- `/settings` (household profile, read-only members and privacy settings)
 
 ## Vercel Notes
 
