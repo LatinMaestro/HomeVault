@@ -563,3 +563,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Linked records keep their own authoritative detail and edit workflows.
 - Empty relationship states remain visible and non-prescriptive.
 - No notification delivery, new scheduling behavior, schema or mutation is introduced.
+
+## 2026-07-17 - Categories Navigate Before They Edit
+
+**Decision:** Route asset category cards to a read-only detail page that lists assigned assets, with editing available as a deliberate secondary action.
+
+**Rationale:** Opening an organisational record should first explain what it contains. Direct-to-edit navigation made accidental changes easier and hid the category's practical value.
+
+**Consequences:**
+
+- Category detail composes existing category and asset reads.
+- Assigned assets retain their existing authoritative detail routes.
+- The taxonomy remains flat and category persistence is unchanged.
+- No usage analytics, stored counts, schema or mutation is introduced.
