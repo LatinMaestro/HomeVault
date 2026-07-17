@@ -203,6 +203,17 @@ export type RecordDetail = RecordSummary & {
   currency?: string | null;
   documentType?: string | null;
   issuedAtInput?: string | null;
+  linkedWarranty?: string | null;
+  linkedWarrantyId?: string | null;
+  linkedReceipt?: string | null;
+  linkedReceiptId?: string | null;
+  linkedMaintenanceTask?: string | null;
+  linkedMaintenanceTaskId?: string | null;
+  relatedDocuments?: Array<{
+    id: string;
+    title: string;
+    type: string;
+  }>;
 };
 
 export const sampleHome: HomeProfile & { location: string } = {
@@ -440,6 +451,8 @@ export const sampleRecords: RecordDetail[] = [
     date: "1 Mar 2026",
     documentType: "SERVICE_RECORD",
     issuedAtInput: "2026-03-01",
+    linkedMaintenanceTask: "Clean air conditioner filters",
+    linkedMaintenanceTaskId: "task-aircon-filters",
     notes: "Sample service record metadata.",
   },
 ];

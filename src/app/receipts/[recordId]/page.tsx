@@ -8,7 +8,13 @@ import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getRecord } from "@/lib/home-data";
 
@@ -60,13 +66,6 @@ export default async function RecordPage({
               <Button asChild variant="outline">
                 <Link href={`/receipts/${record.data.id}/edit`}>Edit metadata</Link>
               </Button>
-              {record.data.linkedAssetId ? (
-                <Button asChild variant="outline">
-                  <Link href={`/vault/assets/${record.data.linkedAssetId}`}>
-                    View linked asset
-                  </Link>
-                </Button>
-              ) : null}
             </div>
           }
         />
@@ -88,6 +87,77 @@ export default async function RecordPage({
                 { label: "Notes", value: record.data.notes },
               ]}
             />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Connected records</CardTitle>
+            <CardDescription>
+              Existing HomeVault records linked to this metadata entry.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {record.data.linkedAssetId ||
+            record.data.linkedWarrantyId ||
+            record.data.linkedReceiptId ||
+            record.data.linkedMaintenanceTaskId ||
+            (record.data.relatedDocuments?.length ?? 0) > 0 ? (
+              <>
+                <div className="flex flex-wrap gap-2">
+                  {record.data.linkedAssetId ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/vault/assets/${record.data.linkedAssetId}`}>
+                        Asset: {record.data.linkedAsset}
+                      </Link>
+                    </Button>
+                  ) : null}
+                  {record.data.linkedWarrantyId ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/warranties/${record.data.linkedWarrantyId}`}>
+                        Warranty: {record.data.linkedWarranty}
+                      </Link>
+                    </Button>
+                  ) : null}
+                  {record.data.linkedReceiptId ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/receipts/${record.data.linkedReceiptId}`}>
+                        Receipt: {record.data.linkedReceipt}
+                      </Link>
+                    </Button>
+                  ) : null}
+                  {record.data.linkedMaintenanceTaskId ? (
+                    <Button asChild variant="outline" size="sm">
+                      <Link href={`/maintenance/${record.data.linkedMaintenanceTaskId}`}>
+                        Maintenance: {record.data.linkedMaintenanceTask}
+                      </Link>
+                    </Button>
+                  ) : null}
+                </div>
+
+                {record.data.relatedDocuments?.length ? (
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium text-foreground">Related documents</p>
+                    {record.data.relatedDocuments.map((document) => (
+                      <Link
+                        key={document.id}
+                        href={`/receipts/${document.id}`}
+                        className="block min-h-11 rounded-md border bg-background p-3 text-sm transition-colors hover:bg-accent"
+                      >
+                        <span className="block font-medium text-foreground">{document.title}</span>
+                        <span className="block text-muted-foreground">
+                          {getDisplayLabel(document.type)}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                This record is not linked to another HomeVault record yet.
+              </p>
+            )}
           </CardContent>
         </Card>
       </section>

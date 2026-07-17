@@ -54,6 +54,7 @@ const routes = [
   "/receipts/new/document",
   "/receipts/receipt-fridge",
   "/receipts/receipt-fridge/edit",
+  "/receipts/document-aircon-service",
   "/settings",
 ];
 
