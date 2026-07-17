@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AppShell } from "@/components/app-shell";
+import { AssetFilters } from "@/components/asset-filters";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -24,24 +24,58 @@ export const dynamic = "force-dynamic";
 export default async function AssetsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    room?: string | string[];
+    category?: string | string[];
+    status?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const room = getQueryParam(params.room);
+  const category = getQueryParam(params.category);
+  const status = getQueryParam(params.status);
   const assets = await getAssets();
-  const visibleAssets = assets.data.filter((asset) =>
-    matchesQuery(query, [
-      asset.name,
-      asset.brand,
-      asset.model,
-      asset.serialNumber,
-      asset.purchasePlace,
-      asset.status,
-      getDisplayLabel(asset.status),
-      asset.roomName,
-      asset.categoryName,
-      asset.purchaseDate,
-    ]),
+  const visibleAssets = assets.data.filter(
+    (asset) =>
+      matchesQuery(query, [
+        asset.name,
+        asset.brand,
+        asset.model,
+        asset.serialNumber,
+        asset.purchasePlace,
+        asset.status,
+        getDisplayLabel(asset.status),
+        asset.roomName,
+        asset.categoryName,
+        asset.purchaseDate,
+      ]) &&
+      (!room || (room === "unassigned" ? !asset.roomId : asset.roomId === room)) &&
+      (!category ||
+        (category === "unassigned" ? !asset.categoryId : asset.categoryId === category)) &&
+      (!status || asset.status === status),
   );
+  const roomOptions = Array.from(
+    new Map(
+      assets.data
+        .filter((asset) => asset.roomId && asset.roomName)
+        .map((asset) => [asset.roomId as string, asset.roomName as string]),
+    ),
+    ([value, label]) => ({ value, label }),
+  ).sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const categoryOptions = Array.from(
+    new Map(
+      assets.data
+        .filter((asset) => asset.categoryId && asset.categoryName)
+        .map((asset) => [asset.categoryId as string, asset.categoryName as string]),
+    ),
+    ([value, label]) => ({ value, label }),
+  ).sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const statusOptions = Array.from(new Set(assets.data.map((asset) => asset.status)))
+    .map((value) => ({ value, label: getDisplayLabel(value) ?? value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || room || category || status);
 
   return (
     <AppShell activeSection="Vault">
@@ -77,13 +111,15 @@ export default async function AssetsPage({
           ]}
         />
 
-        <ListSearch
-          action="/vault/assets"
-          defaultValue={query}
-          label="Search assets"
-          placeholder="Search assets, serials, rooms or brands"
+        <AssetFilters
+          query={query}
+          room={room}
+          category={category}
+          status={status}
+          roomOptions={roomOptions}
+          categoryOptions={categoryOptions}
+          statusOptions={statusOptions}
           resultCount={visibleAssets.length}
-          resultNoun="asset"
         />
 
         {visibleAssets.length > 0 ? (
@@ -112,16 +148,16 @@ export default async function AssetsPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No matching assets" : "No assets yet"}
+            title={hasFilters ? "No matching assets" : "No assets yet"}
             description={
-              query
-                ? "Try another asset, brand or room, or clear the current search."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Assets hold appliances, tools and equipment details. Add the first asset when database saving is configured."
             }
             action={
               <Button asChild variant="outline">
-                <Link href={query ? "/vault/assets" : "/vault/assets/new"}>
-                  {query ? "Clear search" : "Add asset"}
+                <Link href={hasFilters ? "/vault/assets" : "/vault/assets/new"}>
+                  {hasFilters ? "Clear filters" : "Add asset"}
                 </Link>
               </Button>
             }

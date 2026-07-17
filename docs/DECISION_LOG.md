@@ -656,3 +656,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - No invitation, removal, role change or sharing workflow is introduced.
 - The existing preview database gate and sample fallback remain authoritative.
 - Production authentication and household-scoped authorisation remain release gates.
+
+## 2026-07-17 - Inventory Filters Are URL State
+
+**Decision:** Filter the asset inventory with server-rendered query parameters over the existing loaded record set.
+
+**Rationale:** URL state is shareable, transparent and resilient without adding client storage, a preference model, analytics or another database query.
+
+**Consequences:**
+
+- Search, room, category and lifecycle filters can be combined.
+- Unassigned room and category records remain intentionally discoverable.
+- Filter options reflect the records available from the current database or sample source.
+- Clearing filters returns to the canonical Assets route.
+- No filter history or household preference is retained.
