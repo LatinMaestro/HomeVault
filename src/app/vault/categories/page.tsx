@@ -64,7 +64,7 @@ export default async function AssetCategoriesPage({
         {visibleCategories.length ? (
           <div className="grid gap-4 sm:grid-cols-2">
             {visibleCategories.map((category) => (
-              <Link key={category.id} href={`/vault/categories/${category.id}/edit`}>
+              <Link key={category.id} href={`/vault/categories/${category.id}`}>
                 <Card className="h-full transition-colors hover:bg-accent">
                   <CardHeader>
                     <CardTitle>{category.name}</CardTitle>

@@ -97,3 +97,7 @@ Added fallback-safe room detail pages with assigned asset and linked maintenance
 ## Phase 3N Complete
 
 Connected asset detail to existing maintenance and reminder records. No schema, scheduling or notification capability changed.
+
+## Phase 3O Complete
+
+Added fallback-safe asset category detail pages and assigned-asset navigation. The taxonomy and persistence model remain unchanged.

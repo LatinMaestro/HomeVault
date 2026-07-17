@@ -485,3 +485,9 @@ The page reuses existing reads and routes. No schema, mutation, delete action, d
 Phase 3N surfaces existing maintenance tasks and reminders on asset detail, with direct links to their established workflows and clear empty states.
 
 The feature reuses existing relationships and fallback-safe reads. No schema, mutation, notification delivery, dependency or external service is added. See `docs/PHASE_3N_PLAN.md`.
+
+## Phase 3O: Asset Category Detail - Complete
+
+Phase 3O turns asset categories into fallback-safe navigation destinations, showing assigned assets with status, brand and room context before users enter editing.
+
+The detail is composed from existing reads and relationships. No schema, mutation, taxonomy expansion, dependency or external service is added. See `docs/PHASE_3O_PLAN.md`.

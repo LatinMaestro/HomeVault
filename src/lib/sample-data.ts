@@ -39,6 +39,16 @@ export type AssetCategorySummary = {
   description?: string | null;
 };
 
+export type AssetCategoryDetail = AssetCategorySummary & {
+  assets: Array<{
+    id: string;
+    name: string;
+    brand?: string | null;
+    status: string;
+    roomName?: string | null;
+  }>;
+};
+
 export type AssetSummary = {
   id: string;
   name: string;
@@ -47,6 +57,7 @@ export type AssetSummary = {
   status: string;
   roomId?: string | null;
   roomName?: string | null;
+  categoryId?: string | null;
   categoryName?: string | null;
   purchaseDate?: string | null;
   purchaseDateInput?: string | null;
@@ -229,6 +240,7 @@ export const sampleAssets: AssetDetail[] = [
     status: "ACTIVE",
     roomId: "room-kitchen",
     roomName: "Kitchen",
+    categoryId: "category-appliances",
     categoryName: "Appliances",
     purchaseDate: "14 Mar 2024",
     purchaseDateInput: "2024-03-14",
@@ -262,6 +274,7 @@ export const sampleAssets: AssetDetail[] = [
     status: "ACTIVE",
     roomId: "room-garage",
     roomName: "Garage",
+    categoryId: "category-outdoor-equipment",
     categoryName: "Outdoor Equipment",
     purchaseDate: "2 Sep 2023",
     purchaseDateInput: "2023-09-02",
