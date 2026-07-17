@@ -576,3 +576,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Assigned assets retain their existing authoritative detail routes.
 - The taxonomy remains flat and category persistence is unchanged.
 - No usage analytics, stored counts, schema or mutation is introduced.
+
+## 2026-07-17 - Warranty Follow-up Stays With Coverage
+
+**Decision:** Present reminder metadata linked to a warranty on the warranty detail screen alongside supporting document metadata.
+
+**Rationale:** Coverage dates and planned follow-up belong in the same review context, while reminder delivery remains a separate product and privacy boundary.
+
+**Consequences:**
+
+- Warranty reads include their existing reminder relationship.
+- Reminder detail remains the authoritative workflow.
+- Empty follow-up and document states are explicit.
+- No notification channel, background scheduling, schema or mutation is introduced.
