@@ -274,3 +274,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Compact button variants retain compact horizontal padding but not a smaller tap height.
 - Desktop layouts inherit slightly more comfortable control sizing.
 - Physical-device review remains necessary before store submission.
+
+## 2026-07-17 - Deployment Readiness Claims Are Executable Contracts
+
+**Decision:** Assert security headers, health semantics, no-crawl behavior, install metadata and offline-worker caching in the existing production smoke.
+
+**Rationale:** Store and deployment readiness documentation can drift. Lightweight response-level checks catch accidental regressions in properties that compilation cannot verify.
+
+**Consequences:**
+
+- Pull requests fail when key privacy or install contracts disappear.
+- Checks remain database-free and Vercel-independent.
+- Visual and physical-device review remain separate release gates.
+- Native signing and store policy checks are added only when native projects exist.
