@@ -346,3 +346,11 @@ Phase 2U extends the database-free production smoke from route availability to e
 The checks use built-in Node.js APIs and require no live database, secret, Vercel deployment, dependency or client machine.
 
 See `docs/PHASE_2U_PLAN.md`.
+
+## Phase 2V: Store Listing Readiness - Complete
+
+Phase 2V drafts accurate Apple and Google listing copy, screenshot storytelling, review notes, privacy inputs and submission ownership.
+
+Current store research shows multiple existing HomeVault listings, including overlapping home-inventory products. The repository codename remains unchanged, while final public naming and legal clearance are now explicit submission gates.
+
+See `docs/PHASE_2V_PLAN.md` and `docs/STORE_LISTING_DRAFT.md`.

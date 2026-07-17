@@ -413,3 +413,12 @@
 - CI verifies no-crawl robots rules and service-worker refresh/scope headers.
 - All checks run against the production build without `DATABASE_URL`.
 - No dependency, secret, route behavior or native capability is added.
+
+## Phase 2V Acceptance
+
+- Draft Apple and Google listing copy reflects implemented HomeVault capabilities.
+- Screenshot storyboards use synthetic data and exclude preview/placeholder states.
+- Privacy and reviewer notes identify unresolved production inputs.
+- Client-controlled and engineering-controlled submission items are separated.
+- Final public naming is explicitly subject to legal and store-availability clearance.
+- No app behavior, dependency, schema, credential or store account is added.

@@ -91,6 +91,8 @@ Engineering requirements:
 - Account deletion behavior and external deletion URL.
 - Pre-launch report review and policy remediation.
 
+See `docs/STORE_LISTING_DRAFT.md` for working listing copy, screenshot captions, reviewer notes and submission ownership.
+
 ## Store Asset Register
 
 Required before submission:

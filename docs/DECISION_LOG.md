@@ -287,3 +287,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Checks remain database-free and Vercel-independent.
 - Visual and physical-device review remain separate release gates.
 - Native signing and store policy checks are added only when native projects exist.
+
+## 2026-07-17 - Store Name Requires Clearance Before Reservation
+
+**Decision:** Keep HomeVault as the repository/product codename but do not assume the unqualified name is available or defensible for public store distribution.
+
+**Rationale:** Current Apple and Google listings already use HomeVault or Home Vault, including directly overlapping home-inventory products.
+
+**Consequences:**
+
+- HomeVault Home Care is a working listing candidate only.
+- Final name, trademark review and store availability are client/legal gates.
+- Bundle and application IDs wait for the cleared public identity.
+- Listing claims remain limited to implemented functionality.
