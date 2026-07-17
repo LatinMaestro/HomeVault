@@ -503,3 +503,9 @@ No schema, mutation, reminder delivery, dependency or external service is added.
 Phase 3Q exposes existing receipt and document relationships to assets, warranties, source receipts, maintenance tasks and related document metadata.
 
 The feature presents only established links. No schema, mutation, storage, upload, OCR, AI, email ingestion, dependency or external service is added. See `docs/PHASE_3Q_PLAN.md`.
+
+## Phase 3R: Maintenance Record Context - Complete
+
+Phase 3R surfaces existing linked document metadata and reminders on maintenance task detail alongside task instructions and completion history.
+
+No schema, mutation, notification delivery, scheduling change, storage, dependency or external service is added. See `docs/PHASE_3R_PLAN.md`.
