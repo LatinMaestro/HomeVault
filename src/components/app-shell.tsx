@@ -38,7 +38,7 @@ export function AppShell({
         Skip to main content
       </a>
 
-      <header className="border-b bg-card/85 backdrop-blur">
+      <header className="border-b bg-card/85 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-3" aria-label="HomeVault dashboard">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
@@ -65,7 +65,7 @@ export function AppShell({
       <div className="mx-auto flex max-w-7xl flex-col lg:flex-row">
         <nav
           aria-label="Primary"
-          className="border-b bg-background px-2 py-2 lg:min-h-[calc(100vh-73px)] lg:w-64 lg:border-b-0 lg:border-r lg:p-4"
+          className="border-b bg-background px-2 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] lg:min-h-[calc(100vh-73px)] lg:w-64 lg:border-b-0 lg:border-r lg:p-4"
         >
           <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
             {navigation.map((item) => {
@@ -91,7 +91,7 @@ export function AppShell({
           </div>
         </nav>
 
-        <main id="main-content" tabIndex={-1} className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
+        <main id="main-content" tabIndex={-1} className="flex-1 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8">
           {children}
         </main>
       </div>
