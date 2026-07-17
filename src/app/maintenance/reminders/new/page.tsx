@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createReminderAction } from "@/app/maintenance/reminders/actions";
@@ -38,7 +40,7 @@ export default async function NewReminderPage() {
             tasks: tasks.data,
           })}
           action={createReminderAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>
