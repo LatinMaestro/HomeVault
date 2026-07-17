@@ -491,3 +491,9 @@ The feature reuses existing relationships and fallback-safe reads. No schema, mu
 Phase 3O turns asset categories into fallback-safe navigation destinations, showing assigned assets with status, brand and room context before users enter editing.
 
 The detail is composed from existing reads and relationships. No schema, mutation, taxonomy expansion, dependency or external service is added. See `docs/PHASE_3O_PLAN.md`.
+
+## Phase 3P: Warranty Follow-up Context - Complete
+
+Phase 3P surfaces existing linked reminders beside warranty coverage and document metadata, with direct navigation and honest empty states.
+
+No schema, mutation, reminder delivery, dependency or external service is added. See `docs/PHASE_3P_PLAN.md`.
