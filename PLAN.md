@@ -466,3 +466,10 @@ No onboarding profile, analytics, schema, mutation, dependency, account service,
 Phase 3J adds one mobile-first hub and header shortcut for all existing room, category, asset, maintenance, reminder, provider, warranty, receipt and document creation workflows.
 
 Quick Add only improves navigation. It introduces no action, mutation, schema, dependency, analytics, storage, external service or native project.
+
+
+## Phase 3K: Neon Preview Database Foundation - Complete
+
+Phase 3K provisions an isolated Neon preview branch with the repository Prisma schema and canonical synthetic Taylor Family Home data. Connector verification confirms the expected tables, indexes and record counts.
+
+The Neon production branch remains empty. Auth, Data API and Vercel Production credentials remain unprovisioned.
