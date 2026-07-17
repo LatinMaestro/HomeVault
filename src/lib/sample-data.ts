@@ -44,6 +44,7 @@ export type AssetCategorySummary = {
   id: string;
   name: string;
   description?: string | null;
+  assetCount: number;
 };
 
 export type AssetCategoryDetail = AssetCategorySummary & {
@@ -266,11 +267,13 @@ export const sampleAssetCategories: AssetCategorySummary[] = [
     id: "category-appliances",
     name: "Appliances",
     description: "Kitchen and laundry appliances",
+    assetCount: 1,
   },
   {
     id: "category-outdoor-equipment",
     name: "Outdoor Equipment",
     description: "Garden and backyard equipment",
+    assetCount: 1,
   },
 ];
 
