@@ -306,3 +306,11 @@ Phase 2P adds a no-store `/api/health` liveness response that does not touch hou
 A generated `robots.txt` also reinforces the no-index preview posture. No monitoring integration, dependency, schema or environment variable is added.
 
 See `docs/PHASE_2P_PLAN.md`.
+
+## Phase 2Q: Household Attention Queue - Complete
+
+Phase 2Q brings overdue and near-term active maintenance, pending reminders and warranty expiries into one compact dashboard panel using the existing Brisbane date rules.
+
+The queue is read-only and fallback-safe. No notification delivery, scheduling, mutation, schema, dependency or external service is added.
+
+See `docs/PHASE_2Q_PLAN.md`.
