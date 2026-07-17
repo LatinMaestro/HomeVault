@@ -515,3 +515,9 @@ No schema, mutation, notification delivery, scheduling change, storage, dependen
 Phase 3S adds a no-store, spreadsheet-safe CSV download for completed maintenance history using existing fallback-safe records.
 
 The export is generated on request and retained nowhere. No schema, mutation, storage, financial analysis, dependency or external service is added. See `docs/PHASE_3S_PLAN.md`.
+
+## Phase 3T: Safe Provider Contact Actions - Complete
+
+Phase 3T adds guarded call, email and website actions to existing provider metadata for practical mobile use.
+
+Contact actions are user-initiated and reject malformed or unsafe values. No messaging, booking, payment, analytics, schema, dependency or external API is added. See `docs/PHASE_3T_PLAN.md`.
