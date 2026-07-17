@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
+import { ProviderFilters } from "@/components/provider-filters";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -25,21 +25,48 @@ export const dynamic = "force-dynamic";
 export default async function ServiceProvidersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    trade?: string | string[];
+    workload?: string | string[];
+    contact?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const trade = getQueryParam(params.trade);
+  const workload = getQueryParam(params.workload);
+  const contact = getQueryParam(params.contact);
   const providers = await getServiceProviders();
-  const visibleProviders = providers.data.filter((provider) =>
-    matchesQuery(query, [
-      provider.name,
-      provider.trade,
-      provider.phone,
-      provider.email,
-      provider.website,
-      provider.notes,
-      ...provider.tasks.map((task) => task.title),
-    ]),
+  const visibleProviders = providers.data.filter(
+    (provider) =>
+      matchesQuery(query, [
+        provider.name,
+        provider.trade,
+        provider.phone,
+        provider.email,
+        provider.website,
+        provider.notes,
+        ...provider.tasks.map((task) => task.title),
+      ]) &&
+      (!trade || (trade === "unassigned" ? !provider.trade : provider.trade === trade)) &&
+      (!workload ||
+        (workload === "linked" ? provider.tasks.length > 0 : provider.tasks.length === 0)) &&
+      (!contact ||
+        (contact === "available"
+          ? Boolean(provider.phone || provider.email || provider.website)
+          : !provider.phone && !provider.email && !provider.website)),
   );
+  const tradeOptions = Array.from(
+    new Set(
+      providers.data
+        .map((provider) => provider.trade)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  )
+    .map((value) => ({ value, label: value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || trade || workload || contact);
   const linkedTaskCount = providers.data.reduce(
     (total, provider) => total + provider.tasks.length,
     0,
@@ -85,13 +112,13 @@ export default async function ServiceProvidersPage({
           ]}
         />
 
-        <ListSearch
-          action="/maintenance/providers"
-          defaultValue={query}
-          label="Search service providers"
-          placeholder="Search providers, trades or tasks"
+        <ProviderFilters
+          query={query}
+          trade={trade}
+          workload={workload}
+          contact={contact}
+          tradeOptions={tradeOptions}
           resultCount={visibleProviders.length}
-          resultNoun="provider"
         />
 
         {visibleProviders.length ? (
@@ -115,15 +142,15 @@ export default async function ServiceProvidersPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No providers match this search" : "No service providers yet"}
+            title={hasFilters ? "No providers match these filters" : "No service providers yet"}
             description={
-              query
-                ? "Try a provider name, trade or linked maintenance task."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Add a trusted service contact to link with maintenance work."
             }
             action={
-              query ? (
-                <BackLinkButton href="/maintenance/providers">Clear search</BackLinkButton>
+              hasFilters ? (
+                <BackLinkButton href="/maintenance/providers">Clear filters</BackLinkButton>
               ) : (
                 <Button asChild>
                   <Link href="/maintenance/providers/new">Add provider</Link>
