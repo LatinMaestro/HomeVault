@@ -117,3 +117,7 @@ Surfaced existing maintenance document and reminder relationships without changi
 ## Phase 3S Complete
 
 Added a generated, spreadsheet-safe maintenance completion export with no storage, external destination or financial behavior.
+
+## Phase 3T Complete
+
+Added safe, user-initiated call, email and website actions for provider metadata without messaging, booking or external APIs.

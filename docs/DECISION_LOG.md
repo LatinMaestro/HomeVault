@@ -629,3 +629,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Formula-like cells are neutralised for spreadsheet safety.
 - The response is private, no-store and not retained.
 - No cost tracking, valuation, schema, storage or external destination is introduced.
+
+## 2026-07-17 - Provider Contact Actions Are User-initiated Links
+
+**Decision:** Convert valid provider phone, email and website metadata into standard device links after protocol and value validation.
+
+**Rationale:** Mobile users should be able to act on records they saved, while HomeVault should not send messages, place calls or contact third parties itself.
+
+**Consequences:**
+
+- Phone values are reduced to dial-safe characters.
+- Email values with header-injection characters are rejected.
+- Websites are limited to HTTP(S).
+- No action analytics, booking, messaging, payment, credential or external API is introduced.
