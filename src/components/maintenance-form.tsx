@@ -70,7 +70,7 @@ export function MaintenanceTaskForm({
                 <p className="text-sm leading-6 text-muted-foreground">
                   {databaseConfigured
                     ? "Maintenance task changes can save to the configured database."
-                    : "Saving will show a safe message until DATABASE_URL is configured."}
+                    : "Saving stays unavailable until controlled preview database access is enabled."}
                 </p>
               </div>
             </div>
@@ -81,7 +81,7 @@ export function MaintenanceTaskForm({
               <div className="space-y-1">
                 <p className="text-sm font-medium">Maintenance only</p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  This phase saves maintenance tasks and completion records only. Deletes and reminders are still off.
+                  Task details and completion history can be saved. Deletes and notification delivery remain off.
                 </p>
               </div>
             </div>
@@ -92,7 +92,7 @@ export function MaintenanceTaskForm({
           <PersistentFormFields fields={fields} />
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending || taskClosed}>
               {isPending ? "Saving..." : "Save task"}
             </Button>
             <p className="text-sm text-muted-foreground">
@@ -110,18 +110,21 @@ export function MaintenanceTaskForm({
 export function MaintenanceCompletionForm({
   action,
   databaseConfigured,
+  taskStatus,
 }: {
   action: (state: MaintenanceActionState, formData: FormData) => Promise<MaintenanceActionState>;
   databaseConfigured: boolean;
+  taskStatus: string;
 }) {
   const [state, formAction, isPending] = useActionState(action, initialState);
+  const taskClosed = taskStatus === "COMPLETED" || taskStatus === "ARCHIVED";
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Record completion</CardTitle>
         <CardDescription>
-          Add a simple service note when this task has been completed. This does not create reminders or automate recurrence.
+          Add a service note when work is completed. Recurring tasks advance their next due date, while one-off tasks close.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -130,12 +133,18 @@ export function MaintenanceCompletionForm({
             <ClipboardCheck className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
             <div className="space-y-1">
               <p className="text-sm font-medium">
-                {databaseConfigured ? "Completion saving" : "Database needed"}
+                {taskClosed
+                  ? "Task closed"
+                  : databaseConfigured
+                    ? "Completion saving"
+                    : "Database needed"}
               </p>
               <p className="text-sm leading-6 text-muted-foreground">
-                {databaseConfigured
-                  ? "Completion records are added to task history without deleting or rewriting older records."
-                  : "Completion saving will show a safe message until DATABASE_URL is configured."}
+                {taskClosed
+                  ? "Reactivate this task before recording another completion."
+                  : databaseConfigured
+                    ? "History remains additive, and the next due date advances without sending a notification."
+                    : "Completion saving stays unavailable until controlled preview database access is enabled."}
               </p>
             </div>
           </div>
