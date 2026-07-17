@@ -403,3 +403,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - One-off tasks become completed and clear their due date.
 - Invalid legacy custom intervals retain their current due date and still accept history.
 - Notification delivery remains separate and disabled.
+
+
+## 2026-07-17 - Calendar Portability Before Calendar Integration
+
+**Decision:** Provide a standard one-way iCalendar download instead of connecting HomeVault to external calendar accounts.
+
+**Rationale:** Portable export gives households immediate utility across major calendar apps without OAuth scopes, stored third-party tokens, background synchronization, integration cost or a new privacy boundary.
+
+**Consequences:**
+
+- HomeVault combines existing due metadata in one timeline.
+- Exports use all-day events and no-store responses.
+- Imported events do not update automatically.
+- External calendar write access and two-way sync remain separate future decisions.
