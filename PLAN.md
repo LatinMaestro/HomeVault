@@ -396,3 +396,10 @@ The phase also refreshes database-source copy and store readiness documentation 
 Phase 2Z adds a dependency-free source contract that prevents application code from bypassing the fail-closed database helper. GitHub Actions now rejects direct credential access, Prisma construction outside the approved server module and database imports from client components.
 
 The gate also verifies the explicit controlled-preview switch remains present. It adds no runtime feature, package, secret, schema or external service.
+
+
+## Phase 3A: Preview Lock Unit Contracts - Complete
+
+Phase 3A adds an executable unit contract for the two-part controlled-preview database gate. CI proves credentials alone, the switch alone and lookalike switch values all fail closed before the app build proceeds.
+
+The test does not connect to a database, add a package or alter runtime behavior.

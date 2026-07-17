@@ -360,3 +360,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Prisma seed and command configuration stay outside the application-runtime scan.
 - The check uses Node platform APIs and adds no dependency.
 - Authenticated household authorisation tests are still required later.
+
+
+## 2026-07-17 - Test Both Sides Of The Preview Database Gate
+
+**Decision:** Unit-test every meaningful environment-variable combination for temporary preview database access.
+
+**Rationale:** The source boundary prevents bypasses, while a runtime contract proves the shared gate itself still fails closed under realistic deployment configuration states.
+
+**Consequences:**
+
+- Database credentials alone are covered by an explicit regression test.
+- The enablement value remains exact and intentional.
+- Tests use no live service or secret.
+- Production authentication and household authorisation remain separate requirements.
