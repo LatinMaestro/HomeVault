@@ -475,3 +475,14 @@
 - Browser print and save-to-PDF are available without storing a generated report.
 - The screen warns users that copies may contain serial numbers and contact details.
 - File attachments, valuations, budgeting and insurance claim automation are excluded.
+
+
+## Archive And Recovery Centre
+
+- Settings links to one archive view.
+- Retired/disposed assets, completed/archived maintenance tasks and done/cancelled reminders appear in the correct group.
+- Active and snoozed records do not appear.
+- Each archived record links to its existing guarded edit screen.
+- Recovery is performed by changing lifecycle status; the archive itself is read-only.
+- The route renders useful empty or sample states without live database access.
+- No permanent delete action or schema change is introduced.

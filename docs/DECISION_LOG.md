@@ -463,3 +463,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Privacy copy warns that serial numbers and contact details may appear.
 - Production authentication must authorise the route before real household data is released.
 - The report does not provide valuation or insurance claim automation.
+
+
+## 2026-07-17 - Recovery Uses Existing Lifecycle States
+
+**Decision:** Build the archive as a derived view over existing inactive status values and recover records through their existing guarded edit screens.
+
+**Rationale:** A visible recovery path reduces pressure for destructive deletion and preserves maintenance and household history without introducing another data model.
+
+**Consequences:**
+
+- The archive does not move or duplicate data.
+- Retired and disposed assets remain available as historical inventory.
+- Completed and archived tasks retain completion history.
+- Done and cancelled reminders remain reviewable.
+- Permanent deletion remains a later account-lifecycle and retention-policy decision.

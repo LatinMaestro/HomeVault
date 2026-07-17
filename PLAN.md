@@ -445,3 +445,10 @@ No schema, notification delivery, external service, dependency, AI, OCR, storage
 Phase 3G combines existing home, asset, maintenance, warranty, provider and record metadata in a privacy-aware printable handover view. Users can print or save a personal PDF through the browser; HomeVault does not retain a generated report.
 
 The report is not an insurance claim, valuation or financial product. No schema, storage, external destination, dependency, upload, AI, OCR, notification or native project is added.
+
+
+## Phase 3H: Archive And Recovery Centre - Complete
+
+Phase 3H gathers existing inactive lifecycle states in one fallback-safe archive and links each record back to its guarded edit flow. Households can recover a record by changing its status without losing history.
+
+The view is derived and read-only. No delete action, undo log, schema, migration, dependency, storage, external service or native project is added.

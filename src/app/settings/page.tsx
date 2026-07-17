@@ -2,7 +2,7 @@ import { isPreviewDatabaseEnabled } from "@/lib/db";
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Database, FileJson, LockKeyhole, Printer, Sheet, ShieldCheck } from "lucide-react";
+import { ArchiveRestore, Database, FileJson, LockKeyhole, Printer, Sheet, ShieldCheck } from "lucide-react";
 
 import { updateHouseholdProfileAction } from "@/app/settings/actions";
 import { AppShell } from "@/components/app-shell";
@@ -94,6 +94,24 @@ export default async function SettingsPage() {
               <Link href="/home-report">
                 <Printer className="h-4 w-4" aria-hidden="true" />
                 Household summary
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardDescription>Record lifecycle</CardDescription>
+            <CardTitle>Archive and recovery</CardTitle>
+            <CardDescription className="leading-6">
+              Find inactive assets, closed maintenance tasks and finished reminders without permanently deleting their history.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="outline">
+              <Link href="/archive">
+                <ArchiveRestore className="h-4 w-4" aria-hidden="true" />
+                Review archive
               </Link>
             </Button>
           </CardContent>

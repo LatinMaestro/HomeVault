@@ -78,4 +78,4 @@ Prepared dual-store listing copy and screenshot/reviewer inputs. Final public na
 - Household data export in portable structured formats.
 - Home inventory print and household handover summary without claim automation. Complete in Phase 3G.
 - Maintenance templates for common Australian household equipment. Complete in Phase 3F.
-- Archive and recovery workflows before destructive deletion is introduced.
+- Archive and recovery workflows before destructive deletion is introduced. Complete in Phase 3H.
