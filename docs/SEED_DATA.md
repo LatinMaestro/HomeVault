@@ -1,6 +1,6 @@
 # Seed Data
 
-Phase 1B adds a Prisma seed script for local development.
+HomeVault includes a canonical Prisma seed for approved development and preview databases.
 
 ## Sample Records
 
@@ -13,11 +13,20 @@ Phase 1B adds a Prisma seed script for local development.
 - Sample Brisbane service providers.
 - Reminder records for maintenance and warranty review.
 
-Run with:
+## Repeat-safe Behaviour
+
+The seed first upserts the synthetic Sam Taylor user, then checks whether that user already owns a Taylor Family Home. If it exists, seeding exits successfully without creating another household or duplicating its records.
+
+The seed intentionally does not overwrite an existing demo household. This protects review changes made after the first seed.
+
+## Running The Seed
+
+Normal MVP development uses an approved Codex/cloud or connected Neon environment. With `DATABASE_URL` configured in that approved environment:
 
 ```bash
 npm run db:seed
 ```
 
-Requires a local `DATABASE_URL`.
+Local use is optional developer reference only. Never commit a database URL or ask the client to configure a local database for normal review.
 
+Use only synthetic or non-sensitive data until production authentication and server-side authorization are approved.

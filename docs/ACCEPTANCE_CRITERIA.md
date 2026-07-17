@@ -344,3 +344,11 @@
 - Optional development mode remains compatible with the Next.js toolchain.
 - Documentation states that unauthenticated deployments must not expose real household data.
 - No auth, schema, dependency, storage or external service is added.
+
+## Phase 2N Acceptance
+
+- The first seed run creates the canonical synthetic household.
+- A later run for the same synthetic owner exits successfully without another home.
+- Existing seeded records are not overwritten or deleted.
+- Build and Prisma checks remain independent of a live database.
+- No schema, migration, dependency, production database or product workflow is added.

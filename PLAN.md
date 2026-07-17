@@ -282,3 +282,11 @@ Phase 2M adds a conservative browser security-header baseline and excludes the u
 These controls do not replace production authentication or authorization. No auth, schema, dependency, environment variable, storage, OCR, AI, notification, payment, analytics or external integration is added.
 
 See `docs/PHASE_2M_PLAN.md` for the completion summary.
+
+## Phase 2N: Repeat-safe Demo Seeding - Complete
+
+Phase 2N prevents repeated canonical seed runs from creating duplicate Taylor Family Home records. Existing demo data is preserved rather than overwritten.
+
+No database reset, delete, schema, migration, dependency, environment variable or product workflow is added.
+
+See `docs/PHASE_2N_PLAN.md` for the completion summary.
