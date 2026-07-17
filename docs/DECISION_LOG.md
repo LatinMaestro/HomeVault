@@ -208,3 +208,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Dynamic routes use stable canonical sample IDs.
 - The check requires no secret, database, Vercel deployment or client machine.
 - Database-backed and visual review remain separate gates.
+
+## 2026-07-17 - Health Checks Do Not Probe Household Data
+
+**Decision:** Provide a process-liveness endpoint that returns a stable no-store response without checking the database or environment configuration.
+
+**Rationale:** Deployment health should remain available during database outages and must not disclose sensitive operational details.
+
+**Consequences:**
+
+- `/api/health` confirms only that the application can serve a request.
+- Database health requires a separately approved authenticated operational mechanism.
+- The response exposes no version, secret, environment or household metadata.
+- Route smoke continuously verifies the endpoint without `DATABASE_URL`.
