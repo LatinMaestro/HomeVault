@@ -330,3 +330,11 @@ Phase 2S adds network-first navigation with a calm offline fallback for installe
 No offline household store, background sync, push delivery, dependency, schema or native project is added.
 
 See `docs/PHASE_2S_PLAN.md`.
+
+## Phase 2T: Mobile Touch Target Hardening - Complete
+
+Phase 2T standardizes frequent buttons, icon actions, inputs, selects and primary navigation at a 44 CSS pixel minimum target for reliable phone use.
+
+The change preserves existing semantics, keyboard focus and visual language. No route, data, dependency, schema or native project is added.
+
+See `docs/PHASE_2T_PLAN.md`.
