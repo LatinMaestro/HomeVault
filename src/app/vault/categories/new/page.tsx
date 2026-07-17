@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { createAssetCategoryAction } from "@/app/vault/categories/actions";
@@ -25,7 +27,7 @@ export default function NewAssetCategoryPage() {
         <AssetCategoryForm
           fields={getAssetCategoryFields()}
           action={createAssetCategoryAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>
