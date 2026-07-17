@@ -298,3 +298,11 @@ Phase 2O extends GitHub Actions beyond compilation: CI starts the production bui
 The smoke runner uses Node.js platform APIs only. No dependency, secret, live database, local client command, Vercel deployment or app behavior change is required.
 
 See `docs/PHASE_2O_PLAN.md` and `docs/TESTING_PROTOCOL.md`.
+
+## Phase 2P: Operational Health Surface - Complete
+
+Phase 2P adds a no-store `/api/health` liveness response that does not touch household data, inspect database configuration or require a secret. The endpoint is included in database-free route smoke coverage.
+
+A generated `robots.txt` also reinforces the no-index preview posture. No monitoring integration, dependency, schema or environment variable is added.
+
+See `docs/PHASE_2P_PLAN.md`.
