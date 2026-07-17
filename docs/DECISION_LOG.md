@@ -698,3 +698,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Missing provider metadata remains intentionally discoverable.
 - No reminder is scheduled and no claim or financial behavior is added.
 - Filter state is URL-only and retained nowhere.
+
+## 2026-07-17 - Record Filters Use Explicit Metadata Only
+
+**Decision:** Filter receipts and documents by their stored record type, document type and explicit asset relationship.
+
+**Rationale:** Household filing should be easy to review, but HomeVault must not infer relationships or inspect unavailable file contents.
+
+**Consequences:**
+
+- Receipts and documents remain one collection with focused views.
+- Unlinked records are intentionally discoverable.
+- Document-type options come from current metadata.
+- No file is opened, parsed or classified.
+- Filter state is URL-only and retained nowhere.

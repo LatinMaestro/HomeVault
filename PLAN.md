@@ -545,3 +545,9 @@ The feature reuses existing loaded task records and date rules. No query, persis
 Phase 3X adds server-rendered coverage-state, asset and provider filters to the Warranties list using the existing Brisbane date-status rules.
 
 No query, persistence, notification delivery, claim automation, schema, dependency or analytics is introduced. See `docs/PHASE_3X_PLAN.md`.
+
+## Phase 3Y: Household Record Filters - Complete
+
+Phase 3Y adds server-rendered record-type, linked-asset and document-type filters to the combined receipt and document metadata list.
+
+Filtering reuses already-loaded fallback-safe records. No file access, storage, query, persistence, schema, dependency or analytics is introduced. See `docs/PHASE_3Y_PLAN.md`.
