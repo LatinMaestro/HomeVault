@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 
 import { updateAssetCategoryAction } from "@/app/vault/categories/actions";
@@ -37,7 +39,7 @@ export default async function EditAssetCategoryPage({
         <AssetCategoryForm
           fields={getAssetCategoryFields(category)}
           action={updateAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
       </section>
     </AppShell>
