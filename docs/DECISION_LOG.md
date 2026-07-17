@@ -726,3 +726,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Unlinked reminder metadata remains discoverable.
 - No queue, worker, delivery credential or background job is introduced.
 - Filter state is URL-only and retained nowhere.
+
+## 2026-07-17 - Provider Gaps Are Filterable, Not Inferred
+
+**Decision:** Let households filter providers by stored trade, explicit maintenance links and the presence of a recorded phone, email or website.
+
+**Rationale:** A useful directory should expose missing details and unused contacts without rating providers, inferring services or contacting anyone.
+
+**Consequences:**
+
+- Missing trade, no-task and no-contact records remain discoverable.
+- A contact method means metadata is present, not that HomeVault verified it.
+- Maintenance workload reflects explicit linked tasks only.
+- Existing validated device links remain user-initiated.
+- No booking, messaging, payment or external provider integration is added.
