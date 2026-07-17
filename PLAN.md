@@ -563,3 +563,9 @@ The feature reuses existing reminder metadata and date rules. It sends and sched
 Phase 4A adds server-rendered trade, maintenance-link and contact-state filters to the service provider directory.
 
 Filtering uses already-loaded fallback-safe records and existing explicit task relationships. No contact, booking, query, persistence, schema, dependency or analytics is introduced. See `docs/PHASE_4A_PLAN.md`.
+
+## Phase 4B: Room Organisation Filters - Complete
+
+Phase 4B adds server-rendered floor/zone and asset-link filters to Rooms, including explicit missing-floor and empty-room views.
+
+Filtering uses the existing fallback-safe room read and asset counts. No query, persistence, schema, dependency, occupancy tracking or analytics is introduced. See `docs/PHASE_4B_PLAN.md`.
