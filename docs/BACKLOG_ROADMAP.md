@@ -121,3 +121,7 @@ Added a generated, spreadsheet-safe maintenance completion export with no storag
 ## Phase 3T Complete
 
 Added safe, user-initiated call, email and website actions for provider metadata without messaging, booking or external APIs.
+
+## Phase 3U Complete
+
+Added a privacy-safe, read-only summary of current household members in Settings and the portable household export. Invitations, role changes and real household sharing remain gated on production authentication and server-side household authorisation.
