@@ -226,12 +226,14 @@ export async function getAssetCategories(): Promise<Result<AssetCategorySummary[
     const categories = await getDb().assetCategory.findMany({
       where: { homeId },
       orderBy: { name: "asc" },
+      include: { _count: { select: { assets: true } } },
     });
 
     return categories.map((category) => ({
       id: category.id,
       name: category.name,
       description: category.description,
+      assetCount: category._count.assets,
     }));
   }, sampleAssetCategories);
 }
