@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
+    "check:data-boundary": "node scripts/check-data-boundary.mjs",
     "smoke:routes": "node scripts/smoke-routes.mjs",
     "start": "next start",
     "lint": "eslint .",
