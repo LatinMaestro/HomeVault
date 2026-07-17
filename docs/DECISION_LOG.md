@@ -155,3 +155,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Missing database access yields sample results rather than a broken page.
 - Search terms are not persisted and no analytics are introduced.
 - A dedicated search service or index can be reconsidered only if future scale proves it necessary.
+
+## 2026-07-17 - Dashboard Surfaces the Next Pending Reminder
+
+**Decision:** Include the first due pending reminder in the existing household dashboard response and presentation.
+
+**Rationale:** Reminder metadata is most useful when the next household action is visible at a glance alongside maintenance and warranty dates.
+
+**Consequences:**
+
+- Dashboard reads remain lazy and fallback-safe.
+- The reminder card links to existing reminder routes.
+- Reminder data contributes to the dashboard data-source note.
+- No delivery, scheduling, analytics or new persistence behaviour is introduced.
