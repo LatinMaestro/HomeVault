@@ -4,11 +4,13 @@ import {
   ClipboardList,
   Home,
   ReceiptText,
+  Search,
   Settings,
   ShieldCheck,
   Wrench,
 } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -47,8 +49,15 @@ export function AppShell({
               <p className="text-xs text-muted-foreground">Home records, simplified</p>
             </div>
           </Link>
-          <div className="hidden rounded-md border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground sm:block">
-            Single-user preview
+          <div className="flex items-center gap-2">
+            <Button asChild size="icon" variant="outline">
+              <Link href="/search" aria-label="Search HomeVault" title="Search HomeVault">
+                <Search className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
+            <div className="hidden rounded-md border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground sm:block">
+              Single-user preview
+            </div>
           </div>
         </div>
       </header>
