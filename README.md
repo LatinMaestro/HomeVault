@@ -23,6 +23,7 @@ Phase 3C is complete. HomeVault provides guarded household record workflows with
 - Portability: one-way household calendar, structured metadata, spreadsheet-safe inventory downloads and a printable household summary
 - Recovery: one archive view for inactive assets, closed maintenance tasks and finished reminders
 - Onboarding: a derived six-step household setup guide with no tracking profile
+- Navigation: a global Quick Add hub for every existing creation workflow
 - Distribution: Apple App Store and Google Play are approved targets; native packaging follows production auth, deletion, privacy and storage gates
 
 ## Default Development Workflow
@@ -88,6 +89,7 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/api/export/inventory.csv` (spreadsheet-safe asset inventory)
 - `/api/health` (data-independent deployment liveness)
 - `/archive` (inactive-record recovery centre)
+- `/add` (global creation-workflow hub)
 - `/search`
 - `/vault`
 - `/vault/rooms`

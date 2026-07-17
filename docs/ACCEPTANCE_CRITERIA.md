@@ -497,3 +497,13 @@
 - Completed steps link to existing review workflows.
 - No separate onboarding status or analytics event is stored.
 - The route renders useful sample content without live database access.
+
+
+## Global Quick Add
+
+- The application header includes an accessible add-record shortcut.
+- The Quick Add route groups inventory, maintenance and record workflows.
+- Rooms, categories, assets, tasks, reminders, providers, warranties, receipts and documents link to their existing forms.
+- Quick Add does not pre-create a record or bypass existing validation.
+- The route renders without live database access.
+- The header remains usable at mobile widths.
