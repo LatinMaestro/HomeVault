@@ -141,3 +141,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Linked assets, warranties and maintenance tasks must belong to the current home.
 - No email, push, SMS, in-app delivery, background job, queue or delivery credential is introduced.
 - Deletes and production authentication remain outside this phase.
+
+## 2026-07-17 - Household Search Reuses Existing Runtime Reads
+
+**Decision:** Add household-wide search as a server-rendered aggregation over the existing current-home data functions and curated fallbacks.
+
+**Rationale:** A unified search materially improves findability without requiring a search service, index, new dependency or schema change at the current product scale.
+
+**Consequences:**
+
+- Search covers existing record metadata and links to existing routes.
+- No query runs at build time or module import.
+- Missing database access yields sample results rather than a broken page.
+- Search terms are not persisted and no analytics are introduced.
+- A dedicated search service or index can be reconsidered only if future scale proves it necessary.
