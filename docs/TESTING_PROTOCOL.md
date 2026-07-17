@@ -68,3 +68,18 @@ The dependency-free check scans `src` and fails when:
 - the database helper no longer requires the explicit controlled-preview switch.
 
 Prisma command and seed configuration remain allowed outside `src` because they are developer/automation entry points, not application runtime modules. This static contract complements runtime route smoke; it does not replace future authenticated authorisation tests.
+
+
+## Preview Database Unit Contract
+
+After Prisma client generation, CI runs `pnpm run test:unit`.
+
+The current unit contract verifies that:
+
+- no database configuration keeps preview access closed;
+- `DATABASE_URL` alone keeps access closed;
+- the preview switch alone keeps access closed;
+- lookalike switch values remain closed;
+- only `DATABASE_URL` plus the exact documented `enabled` switch opens controlled preview access.
+
+The test uses a non-resolving example URL and never creates a database connection.
