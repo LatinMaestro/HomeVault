@@ -173,6 +173,47 @@ async function verifyDeploymentContracts() {
     "Calendar export must contain at least one valid sample event.",
   );
 
+  const householdExportResponse = await fetch(`${baseUrl}/api/export/household.json`);
+  const householdExport = await householdExportResponse.json();
+  assertContract(
+    (householdExportResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Household export must not be cached.",
+  );
+  assertContract(
+    (householdExportResponse.headers.get("content-disposition") ?? "").includes(
+      'filename="homevault-household.json"',
+    ),
+    "Household export must provide a stable download filename.",
+  );
+  assertContract(
+    householdExport.format === "homevault-household-export" &&
+      householdExport.formatVersion === 1 &&
+      householdExport.household?.name,
+    "Household export contract is incomplete.",
+  );
+
+  const inventoryExportResponse = await fetch(`${baseUrl}/api/export/inventory.csv`);
+  const inventoryExport = await inventoryExportResponse.text();
+  assertContract(
+    (inventoryExportResponse.headers.get("content-type") ?? "").startsWith("text/csv"),
+    "Inventory export must use the text/csv content type.",
+  );
+  assertContract(
+    (inventoryExportResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Inventory export must not be cached.",
+  );
+  assertContract(
+    (inventoryExportResponse.headers.get("content-disposition") ?? "").includes(
+      'filename="homevault-inventory.csv"',
+    ),
+    "Inventory export must provide a stable download filename.",
+  );
+  assertContract(
+    inventoryExport.startsWith('"Asset","Category","Room"') &&
+      inventoryExport.split("\r\n").length > 2,
+    "Inventory export must contain its header and sample assets.",
+  );
+
   const manifestResponse = await fetch(`${baseUrl}/manifest.webmanifest`);
   const manifest = await manifestResponse.json();
   assertContract(manifest.name === "HomeVault", "Manifest name is incorrect.");
