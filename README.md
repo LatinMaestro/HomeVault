@@ -2,15 +2,15 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 2V is complete. HomeVault adds fallback-safe household-wide search across existing records and supports guarded room, asset, maintenance, warranty, receipt, document and reminder metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 2X is complete. HomeVault adds fallback-safe household-wide search across existing records and supports guarded room, asset, maintenance, warranty, receipt, document and reminder metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `2V Store Listing Readiness` complete
+- Phase: `2X Preview Database Safety Lock` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
-- Data: Prisma runtime reads when `DATABASE_URL` is configured, curated sample fallback otherwise; canonical demo seeding is repeat-safe
-- Mutations: room, asset, maintenance task, warranty, receipt, document, service provider, asset category, household profile and reminder metadata create/edit only when `DATABASE_URL` is configured; maintenance completion records are additive only
+- Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
+- Mutations: room, asset, maintenance task, warranty, receipt, document, service provider, asset category, household profile and reminder metadata create/edit only when controlled preview database access is explicitly enabled; maintenance completion records are additive only
 - Storage: not implemented pending approval
 - Current review posture: fallback-safe and contract-tested online for routes, security headers, health, install metadata, crawler rules and the non-sensitive offline shell
 - Home: fallback-safe household snapshot and attention queue for maintenance, reminders, warranties, inventory, receipts and documents
@@ -69,9 +69,9 @@ npm run db:seed
 
 Local database setup is optional developer reference only. Normal MVP development should not require local secrets, local databases or local dependency installs.
 
-If a developer explicitly chooses local database work, set `DATABASE_URL` in `.env` before running database commands. See `docs/PRISMA_LOCAL_SETUP.md`.
+If a developer explicitly chooses controlled preview database work, set `DATABASE_URL` and `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` before exercising runtime reads or writes. See `docs/PRISMA_LOCAL_SETUP.md`.
 
-Vercel builds do not require a live database connection. Runtime pages render sample data if `DATABASE_URL` is absent or unavailable. Room, asset, maintenance, warranty, receipt, document and reminder actions show clear unavailable-database messages when saving cannot run.
+Vercel builds do not require a live database connection. Runtime pages render sample data unless controlled preview database access is explicitly enabled and available. Room, asset, maintenance, warranty, receipt, document and reminder actions show clear unavailable-database messages when saving cannot run.
 
 ## Core Routes
 
@@ -119,3 +119,10 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 Connect the GitHub repository to Vercel and choose the Next.js preset. No production database connection is required for current builds. Authentication, file storage and paid integrations must not be configured until their approaches are approved.
 
 When Vercel usage is capped, batch app changes into fewer PRs and use GitHub Actions as the primary automated build evidence. Avoid extra Vercel inspection unless diagnosing a Vercel-specific problem.
+
+
+## Preview Database Safety
+
+HomeVault does not have production authentication yet. To prevent an attached database from becoming a public shared household, `DATABASE_URL` alone does not enable runtime reads or writes. Controlled non-sensitive preview access additionally requires `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled`.
+
+Do not enable this switch for real household data or treat it as authentication. Production release must replace the temporary current-home resolver with signed-in, server-authorised household access.
