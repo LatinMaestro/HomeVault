@@ -447,3 +447,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Due dates, linked assets and providers remain user choices.
 - Existing controlled database access protects saving.
 - Updating template guidance requires product review but no schema migration.
+
+
+## 2026-07-17 - Printable Reports Are Rendered On Demand
+
+**Decision:** Render the household summary as a server page and use the browser's print or save-to-PDF capability instead of generating or storing a report file.
+
+**Rationale:** Households need a practical handover view, but generated-file storage would add retention, access-control and deletion obligations before production identity and storage are approved.
+
+**Consequences:**
+
+- The summary works with database or canonical sample records.
+- HomeVault retains no generated copy.
+- File attachments are excluded.
+- Privacy copy warns that serial numbers and contact details may appear.
+- Production authentication must authorise the route before real household data is released.
+- The report does not provide valuation or insurance claim automation.
