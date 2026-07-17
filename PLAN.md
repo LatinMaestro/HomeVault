@@ -338,3 +338,11 @@ Phase 2T standardizes frequent buttons, icon actions, inputs, selects and primar
 The change preserves existing semantics, keyboard focus and visual language. No route, data, dependency, schema or native project is added.
 
 See `docs/PHASE_2T_PLAN.md`.
+
+## Phase 2U: Deployment Contract Smoke - Complete
+
+Phase 2U extends the database-free production smoke from route availability to executable security, health, crawler, install-manifest and service-worker header contracts.
+
+The checks use built-in Node.js APIs and require no live database, secret, Vercel deployment, dependency or client machine.
+
+See `docs/PHASE_2U_PLAN.md`.
