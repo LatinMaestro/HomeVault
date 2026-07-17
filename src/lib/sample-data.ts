@@ -72,6 +72,18 @@ export type AssetDetail = AssetSummary & {
     title: string;
     type: string;
   }>;
+  maintenanceTasks: Array<{
+    id: string;
+    title: string;
+    status: string;
+    nextDueDate?: string | null;
+  }>;
+  reminders: Array<{
+    id: string;
+    title: string;
+    status: string;
+    dueAt: string;
+  }>;
 };
 
 export type ServiceProviderSummary = {
@@ -232,6 +244,15 @@ export const sampleAssets: AssetDetail[] = [
       },
     ],
     documents: [{ id: "document-fridge-manual", title: "Fridge manual", type: "MANUAL" }],
+    maintenanceTasks: [],
+    reminders: [
+      {
+        id: "reminder-fridge-warranty",
+        title: "Review fridge warranty",
+        status: "PENDING",
+        dueAt: "14 Feb 2026",
+      },
+    ],
   },
   {
     id: "asset-mower",
@@ -256,6 +277,15 @@ export const sampleAssets: AssetDetail[] = [
       },
     ],
     documents: [],
+    maintenanceTasks: [
+      {
+        id: "task-mower-service",
+        title: "Service lawn mower",
+        status: "ACTIVE",
+        nextDueDate: "15 Oct 2026",
+      },
+    ],
+    reminders: [],
   },
 ];
 

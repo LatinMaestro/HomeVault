@@ -93,3 +93,7 @@ Added a global mobile-first Quick Add hub over all existing guarded creation wor
 ## Phase 3M Complete
 
 Added fallback-safe room detail pages with assigned asset and linked maintenance navigation. No schema or mutation capability changed.
+
+## Phase 3N Complete
+
+Connected asset detail to existing maintenance and reminder records. No schema, scheduling or notification capability changed.

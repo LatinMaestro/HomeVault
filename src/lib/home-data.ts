@@ -225,6 +225,8 @@ export async function getAssets(): Promise<Result<AssetDetail[]>> {
         warranties: true,
         receipts: true,
         documents: true,
+        maintenanceTasks: { orderBy: [{ nextDueDate: "asc" }, { title: "asc" }] },
+        reminders: { orderBy: [{ dueAt: "asc" }, { title: "asc" }] },
       },
     });
 
@@ -257,6 +259,18 @@ export async function getAssets(): Promise<Result<AssetDetail[]>> {
         id: document.id,
         title: document.title,
         type: document.type,
+      })),
+      maintenanceTasks: asset.maintenanceTasks.map((task) => ({
+        id: task.id,
+        title: task.title,
+        status: task.status,
+        nextDueDate: formatDate(task.nextDueDate),
+      })),
+      reminders: asset.reminders.map((reminder) => ({
+        id: reminder.id,
+        title: reminder.title,
+        status: reminder.status,
+        dueAt: formatDate(reminder.dueAt) ?? "Unknown date",
       })),
     }));
   }, sampleAssets);

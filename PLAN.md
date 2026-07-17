@@ -479,3 +479,9 @@ The managed default branch retains provider-owned Neon Auth tables but contains 
 Phase 3M adds a fallback-safe detail page for every room, showing its household metadata, assigned assets and maintenance linked through those assets.
 
 The page reuses existing reads and routes. No schema, mutation, delete action, dependency or external service is added. See `docs/PHASE_3M_PLAN.md`.
+
+## Phase 3N: Asset Care Context - Complete
+
+Phase 3N surfaces existing maintenance tasks and reminders on asset detail, with direct links to their established workflows and clear empty states.
+
+The feature reuses existing relationships and fallback-safe reads. No schema, mutation, notification delivery, dependency or external service is added. See `docs/PHASE_3N_PLAN.md`.

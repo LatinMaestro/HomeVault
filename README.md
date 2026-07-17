@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 3M is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 3N is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `3M Room Detail` complete
+- Phase: `3N Asset Care Context` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
@@ -19,7 +19,7 @@ Phase 3M is complete. HomeVault provides guarded household record workflows with
 - Date awareness: Brisbane-calendar maintenance due and warranty coverage states, plus strict guarded warranty and historical record dates
 - Navigation: direct links between existing rooms, assets, tasks, warranties and records
 - Rooms: searchable list, guarded create/edit and detail views with assigned assets and linked maintenance
-- Assets: guarded create/edit for identity, purchase, room, category and lifecycle metadata
+- Assets: guarded create/edit for identity, purchase, room, category and lifecycle metadata, with linked care tasks, reminders, warranties and records
 - Maintenance: guarded lifecycle, editable starter templates, custom intervals, provider links, reminder metadata, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
 - Portability: one-way household calendar, structured metadata, spreadsheet-safe inventory downloads and a printable household summary
 - Recovery: one archive view for inactive assets, closed maintenance tasks and finished reminders
