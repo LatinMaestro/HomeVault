@@ -83,3 +83,15 @@ The current unit contract verifies that:
 - only `DATABASE_URL` plus the exact documented `enabled` switch opens controlled preview access.
 
 The test uses a non-resolving example URL and never creates a database connection.
+
+
+## Transport And Resource Header Contracts
+
+Database-free production smoke verifies that the Home route returns:
+
+- two-year HTTPS transport security with subdomain coverage;
+- `Cross-Origin-Resource-Policy: same-origin`;
+- disabled DNS prefetching;
+- disabled legacy cross-domain policy files.
+
+These checks run alongside the existing CSP, anti-framing, permissions, health, install, crawler and offline-worker contracts.

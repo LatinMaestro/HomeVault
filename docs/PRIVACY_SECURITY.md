@@ -73,3 +73,15 @@ It does not cache household pages, server-component data, API responses or submi
 Until production authentication and household authorisation exist, runtime database access requires two independent configuration values: a database connection and an explicit controlled-preview enablement switch. A database integration or credential alone does not expose household records.
 
 The switch is suitable only for canonical demo or controlled non-sensitive review data. It must not be enabled for real household records, and it must be retired when session-bound household authorisation is implemented.
+
+
+## Browser Transport And Resource Isolation
+
+All HomeVault responses carry a shared browser security baseline that:
+
+- instructs capable browsers to use HTTPS for two years, including subdomains;
+- limits no-cors resource use to the same origin;
+- disables speculative DNS prefetching;
+- rejects legacy cross-domain policy files.
+
+These headers complement the existing content security, anti-framing, referrer, MIME-sniffing and permissions policies. GitHub route smoke executes the contract on every pull request.

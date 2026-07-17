@@ -374,3 +374,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - The enablement value remains exact and intentional.
 - Tests use no live service or secret.
 - Production authentication and household authorisation remain separate requirements.
+
+
+## 2026-07-17 - Assert HTTPS And Same-origin Resource Policies
+
+**Decision:** Apply transport security and same-origin resource controls through the shared Next.js header configuration and test them as deployment contracts.
+
+**Rationale:** Household software should not depend only on hosting defaults for HTTPS persistence or cross-origin resource isolation, and documented controls can drift without response-level evidence.
+
+**Consequences:**
+
+- Capable browsers remember HTTPS-only access for two years.
+- Cross-origin no-cors resource consumption is rejected.
+- DNS prefetching and legacy cross-domain policy discovery are disabled.
+- Future intentional cross-origin assets require an explicit reviewed policy change.
