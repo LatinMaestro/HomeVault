@@ -41,7 +41,7 @@
 - Reminder delivery.
 - Household sharing.
 - Multi-property support.
-- Native app exploration only if the web app proves the need.
+- Capacitor-based iOS and Android packaging after auth, deletion, privacy and storage gates.
 
 ## Not Planned For Phase 1
 
@@ -49,7 +49,7 @@
 - AI extraction.
 - Budgeting or financial features.
 - Paid integrations.
-- Native iOS app.
+- Native packaging during the current shared-app phase; dual-store distribution remains the approved later target.
 
 ## Phase 1W Complete
 
