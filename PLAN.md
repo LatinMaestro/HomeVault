@@ -575,3 +575,9 @@ Filtering uses the existing fallback-safe room read and asset counts. No query, 
 Phase 4C exposes existing Asset relationship counts on category summaries and adds server-rendered used-versus-empty filtering.
 
 The count is returned with the existing Prisma category query and canonical fallback data. No stored aggregate, extra request, mutation, schema, dependency, classification or analytics is introduced. See `docs/PHASE_4C_PLAN.md`.
+
+## Phase 4D: Archive Search And Filters - Complete
+
+Phase 4D adds server-rendered search and record-type filtering to the derived archive while preserving grouped recovery links to existing edit workflows.
+
+No record is moved, copied, deleted or independently indexed. The feature adds no mutation, schema, dependency, search history or analytics. See `docs/PHASE_4D_PLAN.md`.
