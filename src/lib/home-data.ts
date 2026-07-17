@@ -411,7 +411,11 @@ export async function getWarranties(): Promise<Result<WarrantyDetail[]>> {
     const warranties = await getDb().warranty.findMany({
       where: { homeId },
       orderBy: { expiresAt: "asc" },
-      include: { asset: true, documents: true },
+      include: {
+        asset: true,
+        documents: true,
+        reminders: { orderBy: [{ dueAt: "asc" }, { title: "asc" }] },
+      },
     });
 
     return warranties.map((warranty) => ({
@@ -429,6 +433,12 @@ export async function getWarranties(): Promise<Result<WarrantyDetail[]>> {
         id: document.id,
         title: document.title,
         type: document.type,
+      })),
+      reminders: warranty.reminders.map((reminder) => ({
+        id: reminder.id,
+        title: reminder.title,
+        status: reminder.status,
+        dueAt: formatDate(reminder.dueAt) ?? "Unknown date",
       })),
     }));
   }, sampleWarranties);
