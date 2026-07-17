@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 
 export type RoomActionState = {
   status: "idle" | "success" | "error";
@@ -18,7 +18,7 @@ function getFieldValue(formData: FormData, field: string) {
 function unavailableState(): RoomActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no room was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no room was changed.",
   };
 }
 
@@ -41,7 +41,7 @@ export async function createRoomAction(
     return { status: "error", message: "Add a room name before saving." };
   }
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
@@ -96,7 +96,7 @@ export async function updateRoomAction(
     return { status: "error", message: "Add a room name before saving." };
   }
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
