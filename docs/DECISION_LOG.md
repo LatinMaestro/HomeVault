@@ -195,3 +195,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Existing demo records are not overwritten or deleted.
 - Refreshing the entire demo dataset remains an explicit future maintenance operation.
 - CI continues to validate and build without requiring a live database.
+
+## 2026-07-17 - Database-free Route Smoke Is A Merge Gate
+
+**Decision:** Start the built production server in GitHub Actions with `DATABASE_URL` removed and request every approved route family.
+
+**Rationale:** A successful build does not prove that runtime fallback pages render. Route smoke provides inexpensive evidence for the project's central database-optional contract.
+
+**Consequences:**
+
+- App-code PRs verify production startup and fallback rendering online.
+- Dynamic routes use stable canonical sample IDs.
+- The check requires no secret, database, Vercel deployment or client machine.
+- Database-backed and visual review remain separate gates.
