@@ -569,3 +569,9 @@ Filtering uses already-loaded fallback-safe records and existing explicit task r
 Phase 4B adds server-rendered floor/zone and asset-link filters to Rooms, including explicit missing-floor and empty-room views.
 
 Filtering uses the existing fallback-safe room read and asset counts. No query, persistence, schema, dependency, occupancy tracking or analytics is introduced. See `docs/PHASE_4B_PLAN.md`.
+
+## Phase 4C: Category Usage Visibility - Complete
+
+Phase 4C exposes existing Asset relationship counts on category summaries and adds server-rendered used-versus-empty filtering.
+
+The count is returned with the existing Prisma category query and canonical fallback data. No stored aggregate, extra request, mutation, schema, dependency, classification or analytics is introduced. See `docs/PHASE_4C_PLAN.md`.
