@@ -1,3 +1,5 @@
+import { isPreviewDatabaseEnabled } from "@/lib/db";
+
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -103,7 +105,7 @@ export default async function MaintenanceTaskPage({
 
         <MaintenanceCompletionForm
           action={completionAction}
-          databaseConfigured={Boolean(process.env.DATABASE_URL)}
+          databaseConfigured={isPreviewDatabaseEnabled()}
         />
 
         <Card>
