@@ -18,6 +18,9 @@
 - [ ] Prisma validation/generation passes when Prisma or database access changes.
 - [ ] Vercel build does not require a live database connection.
 - [ ] Runtime pages remain useful when `DATABASE_URL` is absent or unavailable.
+- [ ] Security headers are present on deployed routes.
+- [ ] Unauthenticated deployments use sample or controlled non-sensitive data only.
+- [ ] Search indexing remains disabled until the production access model is approved.
 
 ## Phase 1D Review Checklist
 

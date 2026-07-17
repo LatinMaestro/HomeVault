@@ -168,3 +168,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - The reminder card links to existing reminder routes.
 - Reminder data contributes to the dashboard data-source note.
 - No delivery, scheduling, analytics or new persistence behaviour is introduced.
+
+## 2026-07-17 - Unauthenticated Deployments Are No-index Review Surfaces
+
+**Decision:** Apply a conservative browser security-header baseline and prevent indexing while HomeVault remains an unauthenticated single-user preview.
+
+**Rationale:** Review deployments should reduce accidental exposure and must not be mistaken for a production security boundary.
+
+**Consequences:**
+
+- All routes deny framing and unnecessary browser permissions.
+- Application resources use a same-origin Content Security Policy.
+- Search engines are instructed not to index or follow the app.
+- Only synthetic or non-sensitive data is appropriate before production auth and authorization.
+- Indexing can be reconsidered only with the future production access model.

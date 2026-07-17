@@ -274,3 +274,11 @@ Phase 2L adds the next pending reminder to the fallback-safe household dashboard
 This remains metadata presentation only. No notification delivery, scheduling automation, schema, mutation, analytics or external service is added.
 
 See `docs/PHASE_2L_PLAN.md` for the completion summary.
+
+## Phase 2M: Preview Security Hardening - Complete
+
+Phase 2M adds a conservative browser security-header baseline and excludes the unauthenticated preview from search indexing. It also makes the boundary explicit: current deployments are suitable for curated sample or controlled non-sensitive review data only.
+
+These controls do not replace production authentication or authorization. No auth, schema, dependency, environment variable, storage, OCR, AI, notification, payment, analytics or external integration is added.
+
+See `docs/PHASE_2M_PLAN.md` for the completion summary.
