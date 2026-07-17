@@ -23,7 +23,7 @@ export function DataSourceNote({ source }: { source: DataSource }) {
           <p className="leading-6">
             {isDatabase
               ? "Showing records from the configured HomeVault database."
-              : "Showing built-in sample records because a live database is not connected for this view."}
+              : "Showing built-in sample records because controlled preview database access is unavailable for this view."}
           </p>
         </div>
       </div>

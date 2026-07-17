@@ -382,3 +382,10 @@ The first five items can proceed in scoped pull requests once their provider and
 Phase 2X makes the temporary unauthenticated database mode fail closed. `DATABASE_URL` alone no longer enables household reads or writes; controlled non-sensitive preview access requires the separate `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` switch.
 
 All forms use the shared gate, database reads fall back to sample data, and the database helper enforces the boundary even if a caller forgets an earlier check. This is not authentication and must be removed in favour of signed-in household authorisation before production use.
+
+
+## Phase 2Y: Production Identity Architecture - Complete
+
+Phase 2Y records the production identity boundary without provisioning a service or changing account behavior. Neon Managed Better Auth is the preferred candidate after general availability, with self-hosted Better Auth as the fallback if the managed service remains Beta or cannot meet release requirements.
+
+The phase also refreshes database-source copy and store readiness documentation to match the fail-closed preview behavior. No auth package, secret, schema migration, account route or external project is added.
