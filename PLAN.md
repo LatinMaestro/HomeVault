@@ -459,3 +459,10 @@ The view is derived and read-only. No delete action, undo log, schema, migration
 Phase 3I adds a six-step beginner setup guide covering the home profile, rooms, assets, maintenance, warranties and household records. Progress is derived from existing records and links directly to current creation or review workflows.
 
 No onboarding profile, analytics, schema, mutation, dependency, account service, notification, upload, storage or native project is added.
+
+
+## Phase 3J: Global Quick Add - Complete
+
+Phase 3J adds one mobile-first hub and header shortcut for all existing room, category, asset, maintenance, reminder, provider, warranty, receipt and document creation workflows.
+
+Quick Add only improves navigation. It introduces no action, mutation, schema, dependency, analytics, storage, external service or native project.
