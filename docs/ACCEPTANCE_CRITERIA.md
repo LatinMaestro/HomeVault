@@ -422,3 +422,13 @@
 - Client-controlled and engineering-controlled submission items are separated.
 - Final public naming is explicitly subject to legal and store-availability clearance.
 - No app behavior, dependency, schema, credential or store account is added.
+
+
+## Maintenance Scheduling
+
+- Recording an active or paused recurring task completion adds immutable history and advances the next due date atomically.
+- Early completion preserves a future cadence; overdue completion schedules from the work date.
+- Calendar-month frequencies clamp safely at month end and across leap years.
+- One-off task completion clears its due date and marks it complete.
+- Completed or archived tasks reject additional completion records until reactivated.
+- Schedule automation does not send notifications.
