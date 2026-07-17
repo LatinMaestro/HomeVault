@@ -581,3 +581,9 @@ The count is returned with the existing Prisma category query and canonical fall
 Phase 4D adds server-rendered search and record-type filtering to the derived archive while preserving grouped recovery links to existing edit workflows.
 
 No record is moved, copied, deleted or independently indexed. The feature adds no mutation, schema, dependency, search history or analytics. See `docs/PHASE_4D_PLAN.md`.
+
+## Phase 4E: Release Architecture Lock - Complete
+
+Phase 4E selects self-hosted Better Auth with Prisma/PostgreSQL for production identity and Vercel Private Blob for household attachments. Managed Neon Auth remains off the critical path while it is Beta.
+
+Verified email/password is the initial account method; HomeVault retains server-owned household authorisation. Live email delivery, Blob provisioning, public naming, legal identity and store signing remain client-owned setup gates. See `docs/PHASE_4E_RELEASE_ARCHITECTURE.md`, `docs/AUTHENTICATION_ARCHITECTURE.md` and `docs/STORAGE_ARCHITECTURE.md`.
