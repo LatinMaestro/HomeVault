@@ -452,3 +452,10 @@ The report is not an insurance claim, valuation or financial product. No schema,
 Phase 3H gathers existing inactive lifecycle states in one fallback-safe archive and links each record back to its guarded edit flow. Households can recover a record by changing its status without losing history.
 
 The view is derived and read-only. No delete action, undo log, schema, migration, dependency, storage, external service or native project is added.
+
+
+## Phase 3I: Household Setup Guide - Complete
+
+Phase 3I adds a six-step beginner setup guide covering the home profile, rooms, assets, maintenance, warranties and household records. Progress is derived from existing records and links directly to current creation or review workflows.
+
+No onboarding profile, analytics, schema, mutation, dependency, account service, notification, upload, storage or native project is added.

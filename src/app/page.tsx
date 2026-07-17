@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, CalendarClock, CircleAlert, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } from "lucide-react";
+import { ArrowRight, CalendarClock, CircleAlert, ClipboardCheck, Home, ReceiptText, ShieldCheck, Sparkles, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { DateStatusBadge } from "@/components/date-status-badge";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
 import { getHomeDashboard } from "@/lib/home-data";
@@ -104,6 +105,12 @@ export default async function HomePage() {
               HomeVault gives families a calm place to organise household assets,
               maintenance, warranties, receipts and practical home documents.
             </p>
+            <Button asChild variant="outline">
+              <Link href="/getting-started">
+                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                Getting started
+              </Link>
+            </Button>
           </div>
         </div>
 

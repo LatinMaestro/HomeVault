@@ -478,3 +478,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Completed and archived tasks retain completion history.
 - Done and cancelled reminders remain reviewable.
 - Permanent deletion remains a later account-lifecycle and retention-policy decision.
+
+
+## 2026-07-17 - Onboarding Progress Is Derived
+
+**Decision:** Calculate setup progress from current household records instead of storing onboarding flags or a separate checklist profile.
+
+**Rationale:** Existing records are the reliable evidence that a setup step is useful and complete. Separate state could become stale, add tracking concerns and require another mutation surface.
+
+**Consequences:**
+
+- Empty households receive direct creation links.
+- Established households receive review links.
+- Progress works with database and canonical sample records.
+- Users can complete steps in any order.
+- HomeVault stores no onboarding completion data or analytics event.

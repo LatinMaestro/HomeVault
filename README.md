@@ -22,6 +22,7 @@ Phase 3C is complete. HomeVault provides guarded household record workflows with
 - Maintenance: guarded lifecycle, editable starter templates, custom intervals, provider links, reminder metadata, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
 - Portability: one-way household calendar, structured metadata, spreadsheet-safe inventory downloads and a printable household summary
 - Recovery: one archive view for inactive assets, closed maintenance tasks and finished reminders
+- Onboarding: a derived six-step household setup guide with no tracking profile
 - Distribution: Apple App Store and Google Play are approved targets; native packaging follows production auth, deletion, privacy and storage gates
 
 ## Default Development Workflow
@@ -81,6 +82,7 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/offline` (privacy-safe connectivity fallback)
 - `/calendar` (combined household dates and portable calendar download)
 - `/home-report` (printable household handover summary)
+- `/getting-started` (beginner household setup guide)
 - `/api/calendar.ics` (no-store standard calendar export)
 - `/api/export/household.json` (portable household metadata)
 - `/api/export/inventory.csv` (spreadsheet-safe asset inventory)
