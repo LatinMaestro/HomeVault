@@ -10,6 +10,7 @@ import {
   sampleRooms,
   sampleServiceProviders,
   sampleWarranties,
+  type AssetCategoryDetail,
   type AssetCategorySummary,
   type AssetDetail,
   type DataSource,
@@ -211,6 +212,36 @@ export async function getAssetCategories(): Promise<Result<AssetCategorySummary[
   }, sampleAssetCategories);
 }
 
+export async function getAssetCategory(
+  id: string,
+): Promise<Result<AssetCategoryDetail | null>> {
+  const [categories, assets] = await Promise.all([getAssetCategories(), getAssets()]);
+  const category = categories.data.find((item) => item.id === id);
+
+  if (!category) {
+    return { data: null, source: categories.source };
+  }
+
+  return {
+    data: {
+      ...category,
+      assets: assets.data
+        .filter((asset) => asset.categoryId === category.id)
+        .map((asset) => ({
+          id: asset.id,
+          name: asset.name,
+          brand: asset.brand,
+          status: asset.status,
+          roomName: asset.roomName,
+        })),
+    },
+    source:
+      categories.source === "database" && assets.source === "database"
+        ? "database"
+        : "sample",
+  };
+}
+
 export async function getAssets(): Promise<Result<AssetDetail[]>> {
   return withDatabase(async () => {
     const homeId = await getCurrentHomeId();
@@ -243,6 +274,7 @@ export async function getAssets(): Promise<Result<AssetDetail[]>> {
       status: asset.status,
       roomId: asset.room?.id,
       roomName: asset.room?.name,
+      categoryId: asset.category?.id,
       categoryName: asset.category?.name,
       warranties: asset.warranties.map((warranty) => ({
         id: warranty.id,
