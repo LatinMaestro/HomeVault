@@ -424,3 +424,10 @@ The calculator preserves future cadence, recovers overdue schedules from the act
 Phase 3D combines active maintenance dates, pending or snoozed reminders and warranty expiries in one fallback-safe timeline. A no-store `.ics` endpoint lets households import those dates into Apple Calendar, Google Calendar, Outlook or another standards-compatible app.
 
 The export is user-controlled and one-way. No external calendar account, OAuth connection, background sync, notification delivery, dependency, schema or paid integration is added.
+
+
+## Phase 3E: Household Data And Inventory Exports - Complete
+
+Phase 3E adds user-controlled downloads from Settings: a versioned JSON copy of visible household metadata and a spreadsheet-safe CSV inventory. Both are generated on request, returned as no-store attachments and remain useful with canonical sample data.
+
+The CSV neutralises formula-like user input. Exports include metadata only and add no storage, external destination, financial analysis, insurance claim automation, dependency or schema.
