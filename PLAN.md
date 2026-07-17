@@ -557,3 +557,9 @@ Filtering reuses already-loaded fallback-safe records. No file access, storage, 
 Phase 3Z adds server-rendered lifecycle, Brisbane due-state and linked-record filters to the reminder centre.
 
 The feature reuses existing reminder metadata and date rules. It sends and schedules nothing, and introduces no query, persistence, schema, dependency or analytics. See `docs/PHASE_3Z_PLAN.md`.
+
+## Phase 4A: Provider Directory Filters - Complete
+
+Phase 4A adds server-rendered trade, maintenance-link and contact-state filters to the service provider directory.
+
+Filtering uses already-loaded fallback-safe records and existing explicit task relationships. No contact, booking, query, persistence, schema, dependency or analytics is introduced. See `docs/PHASE_4A_PLAN.md`.
