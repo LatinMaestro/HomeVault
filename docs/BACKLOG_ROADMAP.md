@@ -66,3 +66,16 @@ Added household-wide, fallback-safe search across existing household record type
 ## Phase 2V Complete
 
 Prepared dual-store listing copy and screenshot/reviewer inputs. Final public naming, trademark clearance, legal identity, support details and store-account setup remain client-controlled submission gates.
+
+
+## Completed Product Expansion
+
+- Phase 3C automatic maintenance schedule advancement after completion.
+
+## Independent Next Candidates
+
+- Read-only calendar feeds and portable calendar export for due maintenance, reminders and warranties.
+- Household data export in portable structured formats.
+- Home inventory print and insurance-preparation summary without claim automation.
+- Maintenance templates for common Australian household equipment.
+- Archive and recovery workflows before destructive deletion is introduced.
