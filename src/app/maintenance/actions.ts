@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb } from "@/lib/db";
+import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 const frequencyValues = [
@@ -100,7 +100,7 @@ function getLinkWarning(
 function unavailableState(): MaintenanceActionState {
   return {
     status: "error",
-    message: "Saving needs a configured database. The page is still safe to review, but no maintenance task was changed.",
+    message: "Saving is not enabled for this preview. The page is still safe to review, but no maintenance task was changed.",
   };
 }
 
@@ -181,7 +181,7 @@ export async function createMaintenanceTaskAction(
   const status = values.status;
   if (!frequency || !status) return invalidTaskState(values) ?? unknownFailureState();
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
@@ -249,7 +249,7 @@ export async function updateMaintenanceTaskAction(
   const status = values.status;
   if (!frequency || !status) return invalidTaskState(values) ?? unknownFailureState();
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return unavailableState();
   }
 
@@ -342,10 +342,10 @@ export async function completeMaintenanceTaskAction(
     };
   }
 
-  if (!process.env.DATABASE_URL) {
+  if (!isPreviewDatabaseEnabled()) {
     return {
       status: "error",
-      message: "Completion saving needs a configured database. Nothing was changed.",
+      message: "Completion saving is not enabled for this preview. Nothing was changed.",
     };
   }
 
