@@ -89,6 +89,62 @@ export default async function AssetDetailPage({
           </CardContent>
         </Card>
 
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Maintenance</CardTitle>
+              <CardDescription>Care tasks linked to this asset.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {asset.data.maintenanceTasks.length ? (
+                asset.data.maintenanceTasks.map((task) => (
+                  <Link
+                    key={task.id}
+                    href={`/maintenance/${task.id}`}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
+                    <span>
+                      <span className="block font-medium text-foreground">{task.title}</span>
+                      <span className="block text-muted-foreground">
+                        {task.nextDueDate ? `Due ${task.nextDueDate}` : "No due date recorded"}
+                      </span>
+                    </span>
+                    <Badge variant="secondary">{getDisplayLabel(task.status)}</Badge>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-muted-foreground">No maintenance tasks are linked yet.</p>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Reminders</CardTitle>
+              <CardDescription>Recorded follow-ups linked to this asset.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {asset.data.reminders.length ? (
+                asset.data.reminders.map((reminder) => (
+                  <Link
+                    key={reminder.id}
+                    href={`/maintenance/reminders/${reminder.id}`}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
+                    <span>
+                      <span className="block font-medium text-foreground">{reminder.title}</span>
+                      <span className="block text-muted-foreground">Due {reminder.dueAt}</span>
+                    </span>
+                    <Badge variant="secondary">{getDisplayLabel(reminder.status)}</Badge>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-muted-foreground">No reminders are linked yet.</p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
         <div className="grid gap-4 lg:grid-cols-3">
           <Card>
             <CardHeader>
