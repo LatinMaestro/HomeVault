@@ -417,3 +417,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Exports use all-day events and no-store responses.
 - Imported events do not update automatically.
 - External calendar write access and two-way sync remain separate future decisions.
+
+
+## 2026-07-17 - Portable Exports Are Generated, Not Stored
+
+**Decision:** Generate versioned household JSON and spreadsheet-safe asset CSV on request, return them as no-store attachments and retain no export copy.
+
+**Rationale:** Households should be able to take their records with them without creating a new storage surface or sending data to a third party. CSV input must be safe to open in common spreadsheet software.
+
+**Consequences:**
+
+- Export format versioning begins at 1.
+- File attachments are excluded until storage is approved.
+- Formula-like CSV values receive a protective text prefix.
+- Production auth must protect both routes before real household data is allowed.
+- Insurance preparation remains a record summary, not claim automation.

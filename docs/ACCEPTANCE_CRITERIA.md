@@ -443,3 +443,14 @@
 - Calendar text is safely escaped and impossible dates are omitted.
 - Calendar responses are not cached.
 - Export does not connect to, modify or monitor an external calendar account.
+
+
+## Household Exports
+
+- Settings offers a structured household metadata download and asset inventory CSV.
+- Structured export includes the current home, rooms, categories, assets, maintenance, warranties, records, reminders and service providers.
+- Inventory CSV contains practical asset identity, location, purchase and linked-record counts.
+- CSV cells are quoted and formula-like user input is neutralised.
+- Both responses use stable filenames and private no-store caching.
+- Exports contain metadata only and work with canonical sample data.
+- Production release requires signed-in household authorisation around both routes.
