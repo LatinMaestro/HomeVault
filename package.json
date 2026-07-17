@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:unit": "tsx --test tests/db-access.test.ts",
+    "test:unit": "tsx --test tests/db-access.test.ts tests/maintenance-schedule.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:format": "prisma format",
