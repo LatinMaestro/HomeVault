@@ -670,3 +670,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Filter options reflect the records available from the current database or sample source.
 - Clearing filters returns to the canonical Assets route.
 - No filter history or household preference is retained.
+
+## 2026-07-17 - Maintenance Urgency Reuses One Date Rule
+
+**Decision:** Derive Maintenance list due-state filters from the same Australia/Brisbane status function used by task badges.
+
+**Rationale:** Filtering and visible urgency labels must not disagree about whether work is overdue, near-term, scheduled later or missing a date.
+
+**Consequences:**
+
+- Overdue, next-30-day, later and no-date filters match the existing badge tones.
+- Status and linked-asset filters can be combined with due state and search.
+- Filter options come from already-loaded current-household records.
+- No due state is persisted and no notification is scheduled.
+- Changing the shared date rule intentionally changes both badges and filtering.

@@ -6,7 +6,7 @@ import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
+import { MaintenanceFilters } from "@/components/maintenance-filters";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -27,24 +27,49 @@ export const dynamic = "force-dynamic";
 export default async function MaintenancePage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    status?: string | string[];
+    due?: string | string[];
+    asset?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const status = getQueryParam(params.status);
+  const due = getQueryParam(params.due);
+  const asset = getQueryParam(params.asset);
   const tasks = await getMaintenanceTasks();
-  const visibleTasks = tasks.data.filter((task) =>
-    matchesQuery(query, [
-      task.title,
-      task.description,
-      task.frequency,
-      task.customIntervalDays,
-      getMaintenanceFrequencyLabel(task.frequency, task.customIntervalDays),
-      task.nextDueDate,
-      task.status,
-      getDisplayLabel(task.status),
-      task.assetName,
-      task.serviceProviderName,
-    ]),
+  const visibleTasks = tasks.data.filter(
+    (task) =>
+      matchesQuery(query, [
+        task.title,
+        task.description,
+        task.frequency,
+        task.customIntervalDays,
+        getMaintenanceFrequencyLabel(task.frequency, task.customIntervalDays),
+        task.nextDueDate,
+        task.status,
+        getDisplayLabel(task.status),
+        task.assetName,
+        task.serviceProviderName,
+      ]) &&
+      (!status || task.status === status) &&
+      (!due || getDateStatus(task.nextDueDateInput, "maintenance").tone === due) &&
+      (!asset || (asset === "unassigned" ? !task.assetId : task.assetId === asset)),
   );
+  const statusOptions = Array.from(new Set(tasks.data.map((task) => task.status)))
+    .map((value) => ({ value, label: getDisplayLabel(value) ?? value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const assetOptions = Array.from(
+    new Map(
+      tasks.data
+        .filter((task) => task.assetId && task.assetName)
+        .map((task) => [task.assetId as string, task.assetName as string]),
+    ),
+    ([value, label]) => ({ value, label }),
+  ).sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || status || due || asset);
 
   return (
     <AppShell activeSection="Maintenance">
@@ -109,13 +134,14 @@ export default async function MaintenancePage({
           ]}
         />
 
-        <ListSearch
-          action="/maintenance"
-          defaultValue={query}
-          label="Search maintenance tasks"
-          placeholder="Search tasks, assets or providers"
+        <MaintenanceFilters
+          query={query}
+          status={status}
+          due={due}
+          asset={asset}
+          statusOptions={statusOptions}
+          assetOptions={assetOptions}
           resultCount={visibleTasks.length}
-          resultNoun="task"
         />
 
         {visibleTasks.length > 0 ? (
@@ -152,16 +178,16 @@ export default async function MaintenancePage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No matching tasks" : "No maintenance tasks yet"}
+            title={hasFilters ? "No matching tasks" : "No maintenance tasks yet"}
             description={
-              query
-                ? "Try another task, asset or frequency, or clear the current search."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Add a maintenance task when database saving is configured, or keep reviewing the built-in sample flow when a database is unavailable."
             }
             action={
               <Button asChild>
-                <Link href={query ? "/maintenance" : "/maintenance/new"}>
-                  {query ? "Clear search" : "Add first task"}
+                <Link href={hasFilters ? "/maintenance" : "/maintenance/new"}>
+                  {hasFilters ? "Clear filters" : "Add first task"}
                 </Link>
               </Button>
             }

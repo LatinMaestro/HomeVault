@@ -129,3 +129,7 @@ Added a privacy-safe, read-only summary of current household members in Settings
 ## Phase 3V Complete
 
 Added mobile-friendly room, category and lifecycle filters to the existing asset inventory. Filtering uses URL query parameters and already-loaded records only; no preference or search history is stored.
+
+## Phase 3W Complete
+
+Added status, Brisbane due-state and linked-asset filters to the maintenance work queue. Filter state remains transparent URL state and creates no notification, schedule or persistence behavior.
