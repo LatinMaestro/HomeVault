@@ -509,3 +509,9 @@ The feature presents only established links. No schema, mutation, storage, uploa
 Phase 3R surfaces existing linked document metadata and reminders on maintenance task detail alongside task instructions and completion history.
 
 No schema, mutation, notification delivery, scheduling change, storage, dependency or external service is added. See `docs/PHASE_3R_PLAN.md`.
+
+## Phase 3S: Maintenance History Export - Complete
+
+Phase 3S adds a no-store, spreadsheet-safe CSV download for completed maintenance history using existing fallback-safe records.
+
+The export is generated on request and retained nowhere. No schema, mutation, storage, financial analysis, dependency or external service is added. See `docs/PHASE_3S_PLAN.md`.
