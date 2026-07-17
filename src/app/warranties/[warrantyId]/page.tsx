@@ -8,6 +8,7 @@ import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDateStatus } from "@/lib/date-status";
@@ -55,7 +56,7 @@ export default async function WarrantyPage({
         <PageHeader
           eyebrow="Warranties"
           title={warranty.data.assetName}
-          description="Warranty detail with database-backed editing when persistence is configured. Document uploads and reminders are not enabled yet."
+          description="Review coverage, linked document metadata and recorded follow-ups for this asset."
           action={<BackLinkButton href="/warranties">Back to warranties</BackLinkButton>}
         />
         <DataSourceNote source={warranty.source} />
@@ -89,26 +90,60 @@ export default async function WarrantyPage({
           </CardContent>
         </Card>
 
-        {warranty.data.documents.length > 0 ? (
+        <div className="grid gap-4 lg:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle>Related documents</CardTitle>
               <CardDescription>Document metadata linked to this warranty.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {warranty.data.documents.map((document) => (
-                <Link
-                  key={document.id}
-                  href={`/receipts/${document.id}`}
-                  className="block rounded-md border bg-background p-3 transition-colors hover:bg-accent"
-                >
-                  <p className="font-medium text-foreground">{document.title}</p>
-                  <p className="text-muted-foreground">{getDisplayLabel(document.type)}</p>
-                </Link>
-              ))}
+              {warranty.data.documents.length > 0 ? (
+                warranty.data.documents.map((document) => (
+                  <Link
+                    key={document.id}
+                    href={`/receipts/${document.id}`}
+                    className="block min-h-11 rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
+                    <p className="font-medium text-foreground">{document.title}</p>
+                    <p className="text-muted-foreground">{getDisplayLabel(document.type)}</p>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-muted-foreground">
+                  No document metadata is linked to this warranty yet.
+                </p>
+              )}
             </CardContent>
           </Card>
-        ) : null}
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Follow-up reminders</CardTitle>
+              <CardDescription>Recorded dates linked to this warranty.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {warranty.data.reminders.length > 0 ? (
+                warranty.data.reminders.map((reminder) => (
+                  <Link
+                    key={reminder.id}
+                    href={`/maintenance/reminders/${reminder.id}`}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-md border bg-background p-3 transition-colors hover:bg-accent"
+                  >
+                    <span>
+                      <span className="block font-medium text-foreground">{reminder.title}</span>
+                      <span className="block text-muted-foreground">Due {reminder.dueAt}</span>
+                    </span>
+                    <Badge variant="secondary">{getDisplayLabel(reminder.status)}</Badge>
+                  </Link>
+                ))
+              ) : (
+                <p className="text-muted-foreground">
+                  No reminders are linked to this warranty yet.
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </section>
     </AppShell>
   );
