@@ -403,3 +403,10 @@ The gate also verifies the explicit controlled-preview switch remains present. I
 Phase 3A adds an executable unit contract for the two-part controlled-preview database gate. CI proves credentials alone, the switch alone and lookalike switch values all fail closed before the app build proceeds.
 
 The test does not connect to a database, add a package or alter runtime behavior.
+
+
+## Phase 3B: Transport And Resource Header Hardening - Complete
+
+Phase 3B extends the shared browser response baseline with HTTPS transport security, same-origin resource policy, disabled DNS prefetching and rejection of legacy cross-domain policies.
+
+The database-free deployment smoke asserts every new header. No route, dependency, data behavior, external service or Vercel-specific configuration is added.
