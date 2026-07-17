@@ -2,7 +2,7 @@ import { isPreviewDatabaseEnabled } from "@/lib/db";
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArchiveRestore, Database, FileJson, LockKeyhole, Printer, Sheet, ShieldCheck } from "lucide-react";
+import { ArchiveRestore, Database, FileJson, History, LockKeyhole, Printer, Sheet, ShieldCheck } from "lucide-react";
 
 import { updateHouseholdProfileAction } from "@/app/settings/actions";
 import { AppShell } from "@/components/app-shell";
@@ -74,7 +74,7 @@ export default async function SettingsPage() {
             <CardDescription>Portable copies</CardDescription>
             <CardTitle>Export household records</CardTitle>
             <CardDescription className="leading-6">
-              Keep a structured backup of visible metadata or open the asset inventory in a spreadsheet. File attachments are not included.
+              Keep a structured backup of visible metadata, open inventory in a spreadsheet or retain completed maintenance history. File attachments are not included.
             </CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
@@ -88,6 +88,12 @@ export default async function SettingsPage() {
               <a href="/api/export/inventory.csv" download>
                 <Sheet className="h-4 w-4" aria-hidden="true" />
                 Asset inventory
+              </a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href="/api/export/maintenance.csv" download>
+                <History className="h-4 w-4" aria-hidden="true" />
+                Maintenance history
               </a>
             </Button>
             <Button asChild variant="outline">
