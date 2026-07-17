@@ -137,3 +137,7 @@ Added status, Brisbane due-state and linked-asset filters to the maintenance wor
 ## Phase 3X Complete
 
 Added coverage-state, asset and provider filters to warranty review, including missing-expiry and missing-provider records. No reminder delivery or claim automation was introduced.
+
+## Phase 3Y Complete
+
+Added record-type, linked-asset and document-type filters to receipt and document metadata review, including unlinked records. File storage and uploads remain separate release gates.
