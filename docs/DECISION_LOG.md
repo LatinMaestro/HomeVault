@@ -300,3 +300,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Final name, trademark review and store availability are client/legal gates.
 - Bundle and application IDs wait for the cleared public identity.
 - Listing claims remain limited to implemented functionality.
+
+
+## 2026-07-17 - Public Privacy Copy Must Match Implemented Controls
+
+**Decision:** Provide public privacy and support surfaces during preview, while labeling production authentication, deletion, storage, legal ownership and staffed support as release gates.
+
+**Rationale:** Privacy information should be easy to find early, but an app must not imply that operational or legal controls exist before they are implemented and owned.
+
+**Consequences:**
+
+- Privacy and support routes remain static and database-independent.
+- Preview users are warned to use sample or controlled non-sensitive data.
+- Final legal policy, accountable entity, support contact and deletion workflow remain required before public release.
+- Both routes participate in the online database-free smoke gate.
