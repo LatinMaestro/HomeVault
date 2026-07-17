@@ -94,6 +94,67 @@ async function stopServer() {
   ]);
 }
 
+
+function assertContract(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+async function verifyDeploymentContracts() {
+  const homeResponse = await fetch(baseUrl);
+  const contentSecurityPolicy = homeResponse.headers.get("content-security-policy") ?? "";
+  assertContract(
+    contentSecurityPolicy.includes("frame-ancestors 'none'"),
+    "Home route is missing the anti-framing content security policy.",
+  );
+  assertContract(
+    contentSecurityPolicy.includes("worker-src 'self'"),
+    "Home route does not allow the same-origin offline worker.",
+  );
+  assertContract(
+    homeResponse.headers.get("x-frame-options") === "DENY",
+    "Home route is missing X-Frame-Options DENY.",
+  );
+  assertContract(
+    (homeResponse.headers.get("permissions-policy") ?? "").includes("camera=()"),
+    "Home route does not disable unnecessary camera permission.",
+  );
+
+  const healthResponse = await fetch(`${baseUrl}/api/health`);
+  const health = await healthResponse.json();
+  assertContract(health.status === "ok", "Health response status is not ok.");
+  assertContract(health.service === "HomeVault", "Health response service name is incorrect.");
+  assertContract(
+    (healthResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Health response must not be cached.",
+  );
+
+  const manifestResponse = await fetch(`${baseUrl}/manifest.webmanifest`);
+  const manifest = await manifestResponse.json();
+  assertContract(manifest.name === "HomeVault", "Manifest name is incorrect.");
+  assertContract(manifest.display === "standalone", "Manifest must use standalone display.");
+  assertContract(manifest.start_url === "/", "Manifest start URL is incorrect.");
+  assertContract(
+    Array.isArray(manifest.icons) && manifest.icons.some((icon) => icon.src === "/icons/homevault.svg"),
+    "Manifest does not include the HomeVault install icon.",
+  );
+
+  const robotsResponse = await fetch(`${baseUrl}/robots.txt`);
+  const robots = await robotsResponse.text();
+  assertContract(robots.includes("Disallow: /"), "Preview robots rules must disallow crawling.");
+
+  const workerResponse = await fetch(`${baseUrl}/sw.js`);
+  assertContract(
+    (workerResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Service worker script must use refresh-safe cache headers.",
+  );
+  assertContract(
+    workerResponse.headers.get("service-worker-allowed") === "/",
+    "Service worker must be explicitly allowed at root scope.",
+  );
+
+  console.log("Verified deployment security, health, install and offline contracts.");
+}
+
 try {
   await waitForServer();
 
@@ -111,6 +172,7 @@ try {
     console.log(`OK ${response.status} ${route}`);
   }
 
+  await verifyDeploymentContracts();
   console.log(`Verified ${routes.length} routes without DATABASE_URL.`);
 } finally {
   await stopServer();

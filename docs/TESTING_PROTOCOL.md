@@ -21,6 +21,8 @@ The client is not expected to run these checks locally.
 
 Dynamic routes use canonical sample IDs. This proves that fallback data and route rendering remain useful without a live database.
 
+The same smoke run asserts security headers, health response semantics, manifest identity, no-crawl robots rules and service-worker cache/scope policy.
+
 ## Database-backed Review
 
 Database-backed runtime behavior is reviewed only in an approved Codex/cloud or Neon preview environment with synthetic data.

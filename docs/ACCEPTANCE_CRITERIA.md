@@ -404,3 +404,12 @@
 - Existing focus rings, labels, disabled states and component variants remain intact.
 - CI build and database-free route smoke pass.
 - No route, data, schema, dependency or native capability is added.
+
+## Phase 2U Acceptance
+
+- CI verifies anti-framing, worker CSP and disabled unnecessary permission headers.
+- CI verifies stable no-store health JSON.
+- CI verifies standalone manifest identity, start URL and install icon.
+- CI verifies no-crawl robots rules and service-worker refresh/scope headers.
+- All checks run against the production build without `DATABASE_URL`.
+- No dependency, secret, route behavior or native capability is added.
