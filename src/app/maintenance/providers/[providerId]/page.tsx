@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ExternalLink, Mail, Phone } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
@@ -12,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getServiceProvider } from "@/lib/home-data";
+import { getProviderContactLinks } from "@/lib/provider-contact-links";
 
 export const metadata: Metadata = {
   title: "Service Provider Detail",
@@ -50,6 +52,8 @@ export default async function ServiceProviderPage({
     );
   }
 
+  const contactLinks = getProviderContactLinks(provider.data);
+
   return (
     <AppShell activeSection="Maintenance">
       <section className="space-y-5">
@@ -70,7 +74,7 @@ export default async function ServiceProviderPage({
             <CardTitle>Contact details</CardTitle>
             <CardDescription>Provider information for the current home.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
             <FieldList
               fields={[
                 { label: "Trade", value: provider.data.trade },
@@ -80,6 +84,34 @@ export default async function ServiceProviderPage({
                 { label: "Notes", value: provider.data.notes },
               ]}
             />
+            {contactLinks.phone || contactLinks.email || contactLinks.website ? (
+              <div className="flex flex-wrap gap-2">
+                {contactLinks.phone ? (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={contactLinks.phone}>
+                      <Phone className="h-4 w-4" aria-hidden="true" />
+                      Call
+                    </a>
+                  </Button>
+                ) : null}
+                {contactLinks.email ? (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={contactLinks.email}>
+                      <Mail className="h-4 w-4" aria-hidden="true" />
+                      Email
+                    </a>
+                  </Button>
+                ) : null}
+                {contactLinks.website ? (
+                  <Button asChild variant="outline" size="sm">
+                    <a href={contactLinks.website} target="_blank" rel="noreferrer">
+                      <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                      Website
+                    </a>
+                  </Button>
+                ) : null}
+              </div>
+            ) : null}
           </CardContent>
         </Card>
 
