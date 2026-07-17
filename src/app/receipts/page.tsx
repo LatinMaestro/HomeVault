@@ -5,7 +5,7 @@ import { Plus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
-import { ListSearch } from "@/components/list-search";
+import { RecordFilters } from "@/components/record-filters";
 import { PageHeader } from "@/components/page-header";
 import { ReviewSummary } from "@/components/review-summary";
 import { Badge } from "@/components/ui/badge";
@@ -25,21 +25,55 @@ export const dynamic = "force-dynamic";
 export default async function ReceiptsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string | string[] }>;
+  searchParams: Promise<{
+    q?: string | string[];
+    type?: string | string[];
+    asset?: string | string[];
+    documentType?: string | string[];
+  }>;
 }) {
-  const query = getQueryParam((await searchParams).q);
+  const params = await searchParams;
+  const query = getQueryParam(params.q);
+  const recordType = getQueryParam(params.type);
+  const asset = getQueryParam(params.asset);
+  const documentType = getQueryParam(params.documentType);
   const records = await getRecords();
-  const visibleRecords = records.data.filter((record) =>
-    matchesQuery(query, [
-      record.title,
-      record.type,
-      record.secondary,
-      getDisplayLabel(record.secondary),
-      record.date,
-      record.linkedAsset,
-      record.amount,
-    ]),
+  const visibleRecords = records.data.filter(
+    (record) =>
+      matchesQuery(query, [
+        record.title,
+        record.type,
+        record.secondary,
+        getDisplayLabel(record.secondary),
+        record.date,
+        record.linkedAsset,
+        record.amount,
+      ]) &&
+      (!recordType || record.type === recordType) &&
+      (!asset ||
+        (asset === "unassigned" ? !record.linkedAssetId : record.linkedAssetId === asset)) &&
+      (!documentType ||
+        (record.type === "Document" && record.documentType === documentType)),
   );
+  const assetOptions = Array.from(
+    new Map(
+      records.data
+        .filter((record) => record.linkedAssetId && record.linkedAsset)
+        .map((record) => [record.linkedAssetId as string, record.linkedAsset as string]),
+    ),
+    ([value, label]) => ({ value, label }),
+  ).sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const documentTypeOptions = Array.from(
+    new Set(
+      records.data
+        .filter((record) => record.type === "Document")
+        .map((record) => record.documentType)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  )
+    .map((value) => ({ value, label: getDisplayLabel(value) ?? value }))
+    .sort((a, b) => a.label.localeCompare(b.label, "en-AU"));
+  const hasFilters = Boolean(query || recordType || asset || documentType);
 
   return (
     <AppShell activeSection="Receipts">
@@ -78,13 +112,14 @@ export default async function ReceiptsPage({
           ]}
         />
 
-        <ListSearch
-          action="/receipts"
-          defaultValue={query}
-          label="Search receipts and documents"
-          placeholder="Search records, assets or document types"
+        <RecordFilters
+          query={query}
+          recordType={recordType}
+          asset={asset}
+          documentType={documentType}
+          assetOptions={assetOptions}
+          documentTypeOptions={documentTypeOptions}
           resultCount={visibleRecords.length}
-          resultNoun="record"
         />
 
         {visibleRecords.length > 0 ? (
@@ -112,16 +147,16 @@ export default async function ReceiptsPage({
           </div>
         ) : (
           <EmptyState
-            title={query ? "No matching records" : "No receipt or document records yet"}
+            title={hasFilters ? "No matching records" : "No receipt or document records yet"}
             description={
-              query
-                ? "Try another merchant, asset or document type, or clear the current search."
+              hasFilters
+                ? "Try another search or filter combination, or clear the current filters."
                 : "Add receipt or document metadata when database saving is configured. File uploads and storage remain out of scope."
             }
             action={
               <Button asChild>
-                <Link href={query ? "/receipts" : "/receipts/new"}>
-                  {query ? "Clear search" : "Add first record"}
+                <Link href={hasFilters ? "/receipts" : "/receipts/new"}>
+                  {hasFilters ? "Clear filters" : "Add first record"}
                 </Link>
               </Button>
             }
