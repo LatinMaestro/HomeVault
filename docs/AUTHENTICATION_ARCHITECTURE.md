@@ -2,105 +2,96 @@
 
 ## Status
 
-Preferred direction recorded. No production authentication is provisioned or implemented.
+Production direction locked. Implementation follows in scoped phases.
 
 ## Decision
 
-HomeVault should prefer Neon Managed Better Auth when it is production-appropriate. Neon documents the service as Beta today and targets general availability, so the implementation gate is either:
+HomeVault will use **self-hosted Better Auth** with the existing Next.js App Router, Prisma and PostgreSQL stack.
 
-- Managed Better Auth reaches general availability; or
-- beta use is explicitly accepted after reviewing its production checklist and current roadmap.
+Neon Managed Better Auth remains Beta as of 17 July 2026. HomeVault will not place a public household-data release on that beta dependency. The self-hosted path uses Better Auth's supported Next.js integration and Prisma adapter while keeping identity records in HomeVault's controlled PostgreSQL boundary.
 
-If that gate is not met, use self-hosted Better Auth with the existing Next.js, Prisma and PostgreSQL stack.
+Initial production methods:
+
+- email and password;
+- verified email before household access;
+- password reset with session revocation;
+- no social providers in the first release;
+- no anonymous or shared household account.
 
 Official references:
 
-- [Neon Managed Better Auth overview](https://neon.com/docs/auth/overview)
-- [Next.js integration](https://neon.com/docs/auth/quick-start/nextjs-api-only)
-- [Production checklist](https://neon.com/docs/auth/production-checklist)
-- [Current roadmap](https://neon.com/docs/auth/roadmap)
-- [Branching authentication](https://neon.com/docs/auth/branching-authentication)
+- [Better Auth installation](https://better-auth.com/docs/installation)
 - [Better Auth Next.js integration](https://better-auth.com/docs/integrations/next)
 - [Better Auth Prisma adapter](https://better-auth.com/docs/adapters/prisma)
+- [Better Auth email verification and reset](https://better-auth.com/docs/concepts/email)
+- [Neon Auth status and overview](https://neon.com/docs/auth/overview)
 
-## Why This Direction
+## Identity And Application Models
 
-- It fits the existing Next.js App Router and Neon/PostgreSQL direction.
-- Managed auth state can follow isolated Neon branches, which suits GitHub PR and preview testing.
-- It avoids introducing an unrelated identity data store by default.
-- The fallback keeps the same underlying Better Auth concepts while trading managed convenience for greater operational control.
+Better Auth owns authentication accounts, sessions and verification tokens. HomeVault owns household profiles and authorisation.
+
+- One immutable Better Auth user ID maps to one HomeVault application user.
+- Email is profile/contact data, never the household authorisation key.
+- A HomeVault user may access a home only through an active `HouseholdMember` relationship.
+- The first verified account creates its Home, application User and OWNER membership in one transaction.
+- Social account linking, invitations and advanced roles are deferred until the core boundary is proven.
 
 ## Non-negotiable Authorisation Boundary
 
-Authentication answers who is signed in. HomeVault must separately answer which homes that person can access.
+Every protected server read and mutation must:
 
-Every server read and mutation must:
+1. Validate the Better Auth session on the server.
+2. Resolve the HomeVault application user from the immutable auth user ID.
+3. Verify an active HouseholdMember relationship for the requested home.
+4. Scope the database operation by that authorised home ID.
+5. reject missing or cross-household access without revealing record existence.
 
-1. Validate the server session.
-2. Resolve the HomeVault user from the immutable auth subject.
-3. Verify an active `HouseholdMember` relationship for the requested home.
-4. Scope the database query by that authorised home ID.
-5. Reject missing, inactive or cross-household access without revealing record existence.
+A proxy redirect or cookie-existence check may improve navigation, but is never the data security control.
 
-Route protection or a session cookie check may support navigation, but neither is an authorisation control on its own.
+## Environment Strategy
 
-## Proposed Identity Mapping
+- Production, Preview and Test use separate database/auth state.
+- Production secrets exist only in managed Vercel environment settings.
+- Preview uses synthetic accounts and household data.
+- Trusted origins are explicit; localhost is optional developer reference only.
+- `BETTER_AUTH_SECRET` is a high-entropy managed secret.
+- `BETTER_AUTH_URL` is environment-specific.
+- Authentication email credentials remain unset until a client-owned sender/domain is connected.
+- Builds and static public routes remain safe when auth secrets or a live database are unavailable.
 
-- Keep the HomeVault `User` model as the application profile.
-- Add a durable provider subject mapping during the auth schema phase.
-- Do not use email as a foreign key or ownership proof.
-- Keep household membership and future roles in HomeVault-owned tables.
-- Create the first home and owner membership in one reviewed onboarding transaction.
+## Email Boundary
 
-Exact schema changes will be designed with the selected provider and migration plan. No speculative auth fields are added in this phase.
+Production verification and recovery require a transactional email provider and client-controlled sending domain. Code will depend on a small internal email interface so provider setup can occur late without changing authentication or authorisation semantics.
+
+Until that provider is connected:
+
+- production signup stays disabled;
+- no verification or reset flow claims successful delivery;
+- synthetic automated tests use a non-delivery adapter;
+- no secret is committed.
 
 ## Account Lifecycle Scope
 
-The production identity phase includes:
+Production identity includes:
 
 - sign-up, sign-in, sign-out and recovery;
-- email verification appropriate to the selected method;
+- verified email;
 - first-home onboarding;
 - session and profile management;
-- data export;
+- household export;
 - in-app account deletion;
-- public deletion instructions/request route;
-- deletion retention and exception rules;
-- synthetic review credentials for store testing.
-
-Social sign-in, advanced roles, household invitations and multi-home switching are not required for the first production release.
-
-## Environment And Preview Strategy
-
-- Production, preview and test auth environments must be isolated.
-- Secrets remain in managed environment settings.
-- Trusted redirect domains must be explicit.
-- Preview branches use synthetic users and non-sensitive household data.
-- Auth tests must cover unauthenticated, authorised and cross-household-denied cases.
-- The current `HOMEVAULT_PREVIEW_DATABASE_ACCESS` switch is removed from authenticated production paths.
-
-## Provisioning Gate
-
-No dedicated HomeVault Neon project currently exists in the connected account. Do not reuse another application's project.
-
-Provisioning requires:
-
-- a dedicated HomeVault project in the approved Australian region where available;
-- acceptance of the provider's current production status and terms;
-- managed Auth URL and cookie secret configuration;
-- trusted Vercel domains;
-- an email verification/recovery delivery decision;
-- reviewed schema and migration changes.
+- a public deletion information/request route;
+- documented retention and exception rules;
+- synthetic store-review credentials.
 
 ## Exit Criteria
 
 Production identity is complete only when:
 
 - all protected routes validate server sessions;
-- all reads and mutations enforce household membership;
-- cross-household access tests pass;
-- onboarding creates a consistent user, home and owner membership;
-- export and deletion work end to end;
-- recovery and verification flows are tested;
-- privacy/support/deletion documentation matches actual behavior;
-- the preview database bypass is absent from production paths.
+- every read and mutation enforces household membership;
+- unauthenticated and cross-household tests pass;
+- onboarding creates consistent ownership;
+- verification, recovery, export and deletion work end to end;
+- production signup is fail-closed without email delivery;
+- the preview bypass is absent from production data paths.
