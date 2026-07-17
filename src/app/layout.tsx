@@ -20,6 +20,14 @@ export const metadata: Metadata = {
   },
   description:
     "A privacy-first home records vault for maintenance, warranties, receipts, documents and household assets.",
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 };
 
 export default function RootLayout({
