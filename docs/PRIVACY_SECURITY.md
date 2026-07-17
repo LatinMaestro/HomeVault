@@ -85,3 +85,12 @@ All HomeVault responses carry a shared browser security baseline that:
 - rejects legacy cross-domain policy files.
 
 These headers complement the existing content security, anti-framing, referrer, MIME-sniffing and permissions policies. GitHub route smoke executes the contract on every pull request.
+
+
+## User-controlled Data Exports
+
+Settings provides on-request downloads for visible household metadata and asset inventory. Export responses use private, no-store caching instructions and are not retained by HomeVault after delivery.
+
+The inventory CSV quotes every cell and neutralises values that spreadsheet software could interpret as formulas. Exports contain metadata only because file storage is not implemented.
+
+Before production release, these routes must move behind signed-in household authorisation and become part of the tested account export and deletion lifecycle.
