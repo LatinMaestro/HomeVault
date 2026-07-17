@@ -124,3 +124,18 @@ Database-free production smoke verifies:
 - the fallback export contains a complete calendar and at least one event.
 
 The export never connects to an external calendar service.
+
+
+## Household Export Contracts
+
+Unit tests verify inventory CSV quoting, record counts, line endings and spreadsheet-formula neutralisation.
+
+Database-free production smoke verifies:
+
+- structured household JSON format name and version;
+- stable attachment filenames;
+- no-store response headers;
+- CSV content type and expected inventory columns;
+- useful canonical sample records without live database access.
+
+Production authentication must later add authorised and cross-household-denied export tests.
