@@ -6,6 +6,7 @@ import { isAfterBrisbaneToday } from "@/lib/date-status";
 import { getCurrentHomeId } from "@/lib/current-home";
 import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 import { getOptionalDateValue } from "@/lib/form-values";
+import { getMaintenanceScheduleAfterCompletion } from "@/lib/maintenance-schedule";
 
 const frequencyValues = [
   "ONCE",
@@ -362,7 +363,14 @@ export async function completeMaintenanceTaskAction(
 
     const task = await db.maintenanceTask.findFirst({
       where: { id: taskId, homeId },
-      select: { id: true, assetId: true },
+      select: {
+        id: true,
+        assetId: true,
+        frequency: true,
+        customIntervalDays: true,
+        nextDueDate: true,
+        status: true,
+      },
     });
 
     if (!task) {
@@ -372,14 +380,41 @@ export async function completeMaintenanceTaskAction(
       };
     }
 
-    await db.maintenanceCompletion.create({
-      data: {
-        taskId: task.id,
-        assetId: task.assetId,
-        completedAt: completedAt ?? new Date(),
-        completedBy: completedBy || null,
-        notes: notes || null,
-      },
+    if (task.status === "ARCHIVED" || task.status === "COMPLETED") {
+      return {
+        status: "error",
+        message: "Reactivate this task before recording another completion. Nothing was changed.",
+      };
+    }
+
+    const recordedAt = completedAt ?? new Date();
+    const schedule = getMaintenanceScheduleAfterCompletion({
+      frequency: task.frequency,
+      customIntervalDays: task.customIntervalDays,
+      completedAt: recordedAt,
+      nextDueDate: task.nextDueDate,
+    });
+
+    await db.$transaction(async (transaction) => {
+      await transaction.maintenanceCompletion.create({
+        data: {
+          taskId: task.id,
+          assetId: task.assetId,
+          completedAt: recordedAt,
+          completedBy: completedBy || null,
+          notes: notes || null,
+        },
+      });
+
+      if (schedule.kind !== "unchanged") {
+        await transaction.maintenanceTask.update({
+          where: { id: task.id },
+          data: {
+            nextDueDate: schedule.nextDueDate,
+            ...(schedule.status ? { status: schedule.status } : {}),
+          },
+        });
+      }
     });
 
     revalidatePath("/");
@@ -387,7 +422,24 @@ export async function completeMaintenanceTaskAction(
     revalidatePath(`/maintenance/${taskId}`);
     if (task.assetId) revalidatePath(`/vault/assets/${task.assetId}`);
 
-    return { status: "success", message: "Completion recorded. The task history now includes this service note." };
+    if (schedule.kind === "completed") {
+      return {
+        status: "success",
+        message: "Completion recorded. This one-off task is now complete.",
+      };
+    }
+
+    if (schedule.kind === "advanced") {
+      return {
+        status: "success",
+        message: "Completion recorded. The next due date was advanced automatically.",
+      };
+    }
+
+    return {
+      status: "success",
+      message: "Completion recorded. Add a valid custom interval to advance the next due date automatically.",
+    };
   } catch {
     return unknownFailureState();
   }
