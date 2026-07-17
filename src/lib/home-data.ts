@@ -369,6 +369,8 @@ export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetai
         asset: true,
         serviceProvider: true,
         completions: { orderBy: { completedAt: "desc" } },
+        documents: { orderBy: { createdAt: "desc" } },
+        reminders: { orderBy: [{ dueAt: "asc" }, { title: "asc" }] },
       },
     });
 
@@ -390,6 +392,17 @@ export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetai
         completedAt: formatDate(completion.completedAt) ?? "Unknown date",
         completedBy: completion.completedBy,
         notes: completion.notes,
+      })),
+      documents: task.documents.map((document) => ({
+        id: document.id,
+        title: document.title,
+        type: document.type,
+      })),
+      reminders: task.reminders.map((reminder) => ({
+        id: reminder.id,
+        title: reminder.title,
+        status: reminder.status,
+        dueAt: formatDate(reminder.dueAt) ?? "Unknown date",
       })),
     }));
   }, sampleMaintenanceTasks);
