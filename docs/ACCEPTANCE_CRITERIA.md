@@ -318,3 +318,12 @@
 - Successful saves revalidate reminder and related household routes.
 - No notification is scheduled or sent, and no delivery credentials or background automation are added.
 - No delete, production auth, upload, OCR, AI, payment, analytics or native app capability is introduced.
+
+## Phase 2K Acceptance
+
+- Search is available from the app header and works on mobile and desktop layouts.
+- One query can match rooms, categories, assets, tasks, warranties, reminders, providers, receipts and documents.
+- Results are grouped and navigate to useful existing record routes.
+- A configured database returns current-home records; missing database access returns curated sample results.
+- Blank and unmatched searches have clear, non-destructive states.
+- No search term is persisted and no analytics, schema, mutation or external search service is added.
