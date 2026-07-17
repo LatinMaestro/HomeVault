@@ -642,3 +642,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Email values with header-injection characters are rejected.
 - Websites are limited to HTTP(S).
 - No action analytics, booking, messaging, payment, credential or external API is introduced.
+
+## 2026-07-17 - Household Membership Is Visible Before It Is Editable
+
+**Decision:** Show current household member names, optional nicknames and roles as read-only context, while omitting email addresses and withholding every membership mutation.
+
+**Rationale:** Households benefit from understanding who a home record represents, but invitations and role administration are security-sensitive workflows that require production identity and server-side household authorisation.
+
+**Consequences:**
+
+- Settings and portable JSON can include the privacy-safe member summary.
+- Member email addresses are not selected, rendered or exported by this feature.
+- No invitation, removal, role change or sharing workflow is introduced.
+- The existing preview database gate and sample fallback remain authoritative.
+- Production authentication and household-scoped authorisation remain release gates.
