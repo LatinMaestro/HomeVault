@@ -395,3 +395,12 @@
 - The worker script is served with refresh-safe no-store headers and root scope.
 - CI smoke verifies the worker and offline route without `DATABASE_URL`.
 - No background sync, push, offline data store, dependency or native project is added.
+
+## Phase 2T Acceptance
+
+- Default, compact and icon buttons have at least a 44 pixel target.
+- Text inputs, selects and primary navigation links have at least a 44 pixel target.
+- Brand navigation has a reliable mobile tap area.
+- Existing focus rings, labels, disabled states and component variants remain intact.
+- CI build and database-free route smoke pass.
+- No route, data, schema, dependency or native capability is added.
