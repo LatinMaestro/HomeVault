@@ -92,7 +92,7 @@ export function MaintenanceTaskForm({
           <PersistentFormFields fields={fields} />
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button type="submit" disabled={isPending || taskClosed}>
+            <Button type="submit" disabled={isPending}>
               {isPending ? "Saving..." : "Save task"}
             </Button>
             <p className="text-sm text-muted-foreground">
@@ -168,7 +168,7 @@ export function MaintenanceCompletionForm({
           </label>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            <Button type="submit" disabled={isPending}>
+            <Button type="submit" disabled={isPending || taskClosed}>
               {isPending ? "Recording..." : "Record completion"}
             </Button>
             <p className="text-sm text-muted-foreground">
