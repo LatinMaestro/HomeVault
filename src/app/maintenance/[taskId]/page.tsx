@@ -106,6 +106,7 @@ export default async function MaintenanceTaskPage({
         <MaintenanceCompletionForm
           action={completionAction}
           databaseConfigured={isPreviewDatabaseEnabled()}
+          taskStatus={task.data.status}
         />
 
         <Card>
