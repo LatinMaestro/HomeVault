@@ -258,3 +258,11 @@ Phase 2J extends the reminder centre with guarded metadata create and edit workf
 This phase does not schedule or send notifications. It adds no delivery channel, background job, queue, delete action, production auth, upload, OCR, AI, payment, analytics or native app capability.
 
 See `docs/PHASE_2J_PLAN.md` for the completion summary.
+
+## Phase 2K: Household-wide Search - Complete
+
+Phase 2K adds one fallback-safe search surface across existing rooms, categories, assets, maintenance tasks, warranties, reminders, service providers, receipts and documents. Results are grouped and link into existing HomeVault routes.
+
+The search reuses lazy runtime reads, remains useful without `DATABASE_URL`, and does not store searches or introduce analytics. No schema, mutation, auth, storage, OCR, AI, notification, payment or native app capability is added.
+
+See `docs/PHASE_2K_PLAN.md` for the completion summary.

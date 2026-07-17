@@ -58,3 +58,7 @@ Added searchable provider list/detail routes and linked-task navigation. Provide
 ## Phase 1X Complete
 
 Added warranty start/expiry consistency validation without adding automation, reminders or schema changes.
+
+## Phase 2K Complete
+
+Added household-wide, fallback-safe search across existing household record types with grouped navigation. Search persistence, analytics and external search services remain out of scope.
