@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 2X is complete. HomeVault adds fallback-safe household-wide search across existing records and supports guarded room, asset, maintenance, warranty, receipt, document and reminder metadata create/edit persistence when `DATABASE_URL` is configured, while preserving useful fallback behavior when a database is unavailable. The app does not include production authentication, deletes, document uploads/storage, OCR, AI, notifications, billing, analytics or external integrations.
+Phase 3C is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `2X Preview Database Safety Lock` complete
+- Phase: `3C Maintenance Schedule Automation` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
@@ -19,7 +19,7 @@ Phase 2X is complete. HomeVault adds fallback-safe household-wide search across 
 - Date awareness: Brisbane-calendar maintenance due and warranty coverage states, plus strict guarded warranty and historical record dates
 - Navigation: direct links between existing rooms, assets, tasks, warranties and records
 - Assets: guarded create/edit for identity, purchase, room, category and lifecycle metadata
-- Maintenance: guarded lifecycle, custom interval metadata, provider directory links, reminder metadata and guarded additive completion history; notification delivery remains off
+- Maintenance: guarded lifecycle, custom intervals, provider links, reminder metadata, additive completion history and automatic next-due advancement; notification delivery remains off
 - Distribution: Apple App Store and Google Play are approved targets; native packaging follows production auth, deletion, privacy and storage gates
 
 ## Default Development Workflow
