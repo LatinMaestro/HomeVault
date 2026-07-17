@@ -327,3 +327,11 @@
 - A configured database returns current-home records; missing database access returns curated sample results.
 - Blank and unmatched searches have clear, non-destructive states.
 - No search term is persisted and no analytics, schema, mutation or external search service is added.
+
+## Phase 2L Acceptance
+
+- The home dashboard shows the next pending reminder when one exists.
+- The reminder card shows a readable due state and links to reminder detail.
+- Empty reminder data links to the reminder centre without misleading delivery claims.
+- Database and sample modes remain useful without build-time database access.
+- No notification delivery, schema, mutation, analytics or external service is added.
