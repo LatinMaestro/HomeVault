@@ -110,3 +110,17 @@ The unit suite covers schedule behavior after a maintenance completion:
 - invalid legacy custom intervals preserve the current schedule.
 
 The completion record and schedule update run in one database transaction when controlled preview persistence is enabled.
+
+
+## Household Calendar Contracts
+
+Unit tests verify calendar text escaping, all-day date formatting, stable identifiers, CRLF line endings and rejection of impossible dates.
+
+Database-free production smoke verifies:
+
+- the `/calendar` timeline renders with fallback records;
+- `/api/calendar.ics` returns `text/calendar`;
+- the response is a no-store attachment with a stable filename;
+- the fallback export contains a complete calendar and at least one event.
+
+The export never connects to an external calendar service.
