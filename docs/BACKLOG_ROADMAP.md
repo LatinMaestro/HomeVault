@@ -145,3 +145,7 @@ Added record-type, linked-asset and document-type filters to receipt and documen
 ## Phase 3Z Complete
 
 Added lifecycle, due-state and linked-record filters to reminder metadata review. Notification delivery, queues and background scheduling remain unimplemented.
+
+## Phase 4A Complete
+
+Added trade, linked-task and contact-detail filters to the provider directory, including explicit data-gap views. Booking, messaging, payments and external provider services remain out of scope.
