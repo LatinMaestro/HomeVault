@@ -493,3 +493,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Progress works with database and canonical sample records.
 - Users can complete steps in any order.
 - HomeVault stores no onboarding completion data or analytics event.
+
+
+## 2026-07-17 - Quick Add Routes To Existing Forms
+
+**Decision:** Provide one global creation hub that links to existing guarded forms instead of introducing a universal record mutation.
+
+**Rationale:** Mobile users need predictable low-friction access, while each record type still needs its own validation, relationship choices and database boundary.
+
+**Consequences:**
+
+- The header has a familiar plus-icon shortcut with an accessible name.
+- Record-specific Server Actions remain unchanged.
+- Quick Add never pre-creates an empty record.
+- Existing database and validation messages remain authoritative.
+- New record types must be deliberately added to the hub.
