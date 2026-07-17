@@ -138,6 +138,17 @@ export type MaintenanceTaskDetail = MaintenanceTaskSummary & {
     completedBy?: string | null;
     notes?: string | null;
   }>;
+  documents: Array<{
+    id: string;
+    title: string;
+    type: string;
+  }>;
+  reminders: Array<{
+    id: string;
+    title: string;
+    status: string;
+    dueAt: string;
+  }>;
 };
 
 export type ReminderDetail = {
@@ -356,6 +367,21 @@ export const sampleMaintenanceTasks: MaintenanceTaskDetail[] = [
     serviceProviderName: "Brisbane Home Electrical",
     serviceProviderId: "provider-brisbane-home-electrical",
     completions: [],
+    documents: [
+      {
+        id: "document-aircon-service",
+        title: "Air conditioner service note",
+        type: "SERVICE_RECORD",
+      },
+    ],
+    reminders: [
+      {
+        id: "reminder-aircon-filters",
+        title: "Air conditioner filter clean due",
+        status: "PENDING",
+        dueAt: "1 Sep 2026",
+      },
+    ],
   },
   {
     id: "task-mower-service",
@@ -375,6 +401,8 @@ export const sampleMaintenanceTasks: MaintenanceTaskDetail[] = [
         notes: "Cleaned deck and checked blade condition.",
       },
     ],
+    documents: [],
+    reminders: [],
   },
 ];
 
