@@ -3,6 +3,7 @@ import {
   Archive,
   ClipboardList,
   Home,
+  Plus,
   ReceiptText,
   Search,
   Settings,
@@ -50,6 +51,11 @@ export function AppShell({
             </div>
           </Link>
           <div className="flex items-center gap-2">
+            <Button asChild size="icon">
+              <Link href="/add" aria-label="Add a HomeVault record" title="Add a record">
+                <Plus className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </Button>
             <Button asChild size="icon" variant="outline">
               <Link href="/search" aria-label="Search HomeVault" title="Search HomeVault">
                 <Search className="h-4 w-4" aria-hidden="true" />
