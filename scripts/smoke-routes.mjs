@@ -8,6 +8,7 @@ const routes = [
   "/icons/homevault.svg",
   "/sw.js",
   "/offline",
+  "/calendar",
   "/privacy",
   "/support",
   "/",
@@ -147,6 +148,29 @@ async function verifyDeploymentContracts() {
   assertContract(
     (healthResponse.headers.get("cache-control") ?? "").includes("no-store"),
     "Health response must not be cached.",
+  );
+
+  const calendarResponse = await fetch(`${baseUrl}/api/calendar.ics`);
+  const calendarBody = await calendarResponse.text();
+  assertContract(
+    (calendarResponse.headers.get("content-type") ?? "").startsWith("text/calendar"),
+    "Calendar export must use the text/calendar content type.",
+  );
+  assertContract(
+    (calendarResponse.headers.get("content-disposition") ?? "").includes(
+      'filename="homevault-calendar.ics"',
+    ),
+    "Calendar export must provide a stable download filename.",
+  );
+  assertContract(
+    (calendarResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Calendar export must not be cached.",
+  );
+  assertContract(
+    calendarBody.includes("BEGIN:VCALENDAR") &&
+      calendarBody.includes("BEGIN:VEVENT") &&
+      calendarBody.includes("END:VCALENDAR"),
+    "Calendar export must contain at least one valid sample event.",
   );
 
   const manifestResponse = await fetch(`${baseUrl}/manifest.webmanifest`);

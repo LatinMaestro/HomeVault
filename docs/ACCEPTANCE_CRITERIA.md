@@ -432,3 +432,14 @@
 - One-off task completion clears its due date and marks it complete.
 - Completed or archived tasks reject additional completion records until reactivated.
 - Schedule automation does not send notifications.
+
+
+## Household Calendar
+
+- Active maintenance due dates, Pending/Snoozed reminders and warranty expiries appear in one sorted timeline.
+- Every timeline item links to its existing HomeVault detail record.
+- The calendar remains useful with curated sample data and no live database.
+- Download returns a standards-based all-day `.ics` calendar attachment.
+- Calendar text is safely escaped and impossible dates are omitted.
+- Calendar responses are not cached.
+- Export does not connect to, modify or monitor an external calendar account.
