@@ -41,7 +41,7 @@ export default async function ArchivePage() {
             <div>
               <p className="font-medium">Recovery before deletion</p>
               <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                HomeVault keeps historical records intact. Use an item's edit screen to change its status; permanent deletion is not enabled.
+                HomeVault keeps historical records intact. Use the record edit screen to change its status; permanent deletion is not enabled.
               </p>
             </div>
           </div>
