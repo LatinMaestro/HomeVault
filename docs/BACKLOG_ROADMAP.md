@@ -84,3 +84,8 @@ Prepared dual-store listing copy and screenshot/reviewer inputs. Final public na
 ## Phase 3I Complete
 
 Added a derived beginner setup guide across the existing household profile, room, asset, maintenance, warranty and record workflows. No onboarding state or analytics is stored.
+
+
+## Phase 3J Complete
+
+Added a global mobile-first Quick Add hub over all existing guarded creation workflows. No mutation capability changed.
