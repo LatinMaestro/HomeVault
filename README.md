@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 3R is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 3S is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `3R Maintenance Record Context` complete
+- Phase: `3S Maintenance History Export` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
@@ -23,7 +23,7 @@ Phase 3R is complete. HomeVault provides guarded household record workflows with
 - Assets: guarded create/edit for identity, purchase, room, category and lifecycle metadata, with linked care tasks, reminders, warranties and records
 - Maintenance: guarded lifecycle, editable starter templates, custom intervals, provider links, documents, reminders, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
 - Records: receipt and document metadata with navigation to existing assets, warranties, source receipts and maintenance context
-- Portability: one-way household calendar, structured metadata, spreadsheet-safe inventory downloads and a printable household summary
+- Portability: one-way household calendar, structured metadata, spreadsheet-safe inventory and maintenance-history downloads, and a printable household summary
 - Recovery: one archive view for inactive assets, closed maintenance tasks and finished reminders
 - Onboarding: a derived six-step household setup guide with no tracking profile
 - Navigation: a global Quick Add hub for every existing creation workflow
@@ -92,6 +92,7 @@ A child `preview` branch in HomeVault's Vercel-managed Neon project contains the
 - `/api/calendar.ics` (no-store standard calendar export)
 - `/api/export/household.json` (portable household metadata)
 - `/api/export/inventory.csv` (spreadsheet-safe asset inventory)
+- `/api/export/maintenance.csv` (spreadsheet-safe completion history)
 - `/api/health` (data-independent deployment liveness)
 - `/archive` (inactive-record recovery centre)
 - `/add` (global creation-workflow hub)
