@@ -72,7 +72,6 @@ export default async function ArchivePage({
         )
       : [];
   const visibleTotal = visibleAssets.length + visibleTasks.length + visibleReminders.length;
-  const hasFilters = Boolean(query || recordType);
 
   return (
     <AppShell activeSection="Settings">
