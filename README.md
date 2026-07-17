@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4C is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4D is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4C Category Usage Visibility` complete
+- Phase: `4D Archive Search And Filters` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only; household membership is visible as a privacy-safe read-only summary
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
@@ -24,7 +24,7 @@ Phase 4C is complete. HomeVault provides guarded household record workflows with
 - Maintenance: guarded lifecycle, status/due/asset work-queue filters, editable starter templates, custom intervals, filterable provider directory with safe contact actions, documents, reminders, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
 - Records: filterable receipt and document metadata with navigation to existing assets, warranties, source receipts and maintenance context
 - Portability: one-way household calendar, structured metadata, spreadsheet-safe inventory and maintenance-history downloads, and a printable household summary
-- Recovery: one archive view for inactive assets, closed maintenance tasks and finished reminders
+- Recovery: searchable, type-filterable archive view for inactive assets, closed maintenance tasks and finished reminders
 - Onboarding: a derived six-step household setup guide with no tracking profile
 - Navigation: a global Quick Add hub for every existing creation workflow
 - Distribution: Apple App Store and Google Play are approved targets; native packaging follows production auth, deletion, privacy and storage gates

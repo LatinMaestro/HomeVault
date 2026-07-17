@@ -768,3 +768,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - No aggregate column, background update or additional query is introduced.
 - The category taxonomy remains broad and flat.
 - Automatic classification and nested categories remain out of scope.
+
+## 2026-07-17 - Archive Search Stays Derived
+
+**Decision:** Search and filter inactive records from their existing lifecycle-derived archive data without creating a separate index or archive store.
+
+**Rationale:** Recovery should remain simple and preserve one authoritative record while still scaling beyond a short list.
+
+**Consequences:**
+
+- Assets, maintenance tasks and reminders can be searched together or by type.
+- Existing edit routes remain the only recovery path.
+- Records are not copied, moved or independently indexed.
+- No permanent deletion or restore mutation is introduced.
+- Search and filter state is URL-only and retained nowhere.

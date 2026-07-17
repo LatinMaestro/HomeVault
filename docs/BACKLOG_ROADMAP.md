@@ -157,3 +157,7 @@ Added floor/zone and linked-asset filters to Rooms, including missing-floor and 
 ## Phase 4C Complete
 
 Added assigned-asset counts and used-versus-empty filtering to asset categories. The taxonomy remains broad and flat, with no automatic classification or nested structure.
+
+## Phase 4D Complete
+
+Added search and record-type filters to the derived archive. Permanent deletion and account-lifecycle retention remain production identity and policy gates.
