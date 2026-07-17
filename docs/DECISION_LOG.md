@@ -740,3 +740,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Maintenance workload reflects explicit linked tasks only.
 - Existing validated device links remain user-initiated.
 - No booking, messaging, payment or external provider integration is added.
+
+## 2026-07-17 - Room Usage Means Explicit Asset Links
+
+**Decision:** Filter rooms by stored floor labels and existing asset counts only.
+
+**Rationale:** Room organisation benefits from showing empty and populated zones, while occupancy, floor-plan and inferred usage concepts would add unrelated complexity and privacy concerns.
+
+**Consequences:**
+
+- Missing floor labels and rooms with no linked assets are discoverable.
+- A populated room means at least one explicit Asset relationship exists.
+- No occupancy, room-purpose inference or floor-plan data is created.
+- Filter options come from current loaded records.
+- Filter state is URL-only and retained nowhere.
