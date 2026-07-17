@@ -345,3 +345,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Email is not used as the durable authorisation key.
 - The temporary earliest-home resolver and preview database switch are removed from production paths.
 - Self-hosted Better Auth remains the documented fallback.
+
+
+## 2026-07-17 - Enforce The Data Boundary In CI
+
+**Decision:** Scan every application source file in GitHub Actions and reject direct database credentials or Prisma construction outside the approved server module.
+
+**Rationale:** A fail-closed helper only protects the product while future code continues to use it. An executable source contract catches accidental bypasses before merge.
+
+**Consequences:**
+
+- Client components cannot import the database layer.
+- Runtime credential checks remain centralised.
+- Prisma seed and command configuration stay outside the application-runtime scan.
+- The check uses Node platform APIs and adds no dependency.
+- Authenticated household authorisation tests are still required later.

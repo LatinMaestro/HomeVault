@@ -389,3 +389,10 @@ All forms use the shared gate, database reads fall back to sample data, and the 
 Phase 2Y records the production identity boundary without provisioning a service or changing account behavior. Neon Managed Better Auth is the preferred candidate after general availability, with self-hosted Better Auth as the fallback if the managed service remains Beta or cannot meet release requirements.
 
 The phase also refreshes database-source copy and store readiness documentation to match the fail-closed preview behavior. No auth package, secret, schema migration, account route or external project is added.
+
+
+## Phase 2Z: Data Boundary Contract - Complete
+
+Phase 2Z adds a dependency-free source contract that prevents application code from bypassing the fail-closed database helper. GitHub Actions now rejects direct credential access, Prisma construction outside the approved server module and database imports from client components.
+
+The gate also verifies the explicit controlled-preview switch remains present. It adds no runtime feature, package, secret, schema or external service.

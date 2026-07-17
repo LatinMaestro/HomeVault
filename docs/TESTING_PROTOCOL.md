@@ -54,3 +54,17 @@ Production household-data launch still requires:
 - automated accessibility checks;
 - data export and deletion tests;
 - security review against the final deployment configuration.
+
+
+## Data Boundary Contract
+
+Every pull request runs `pnpm run check:data-boundary` before compilation.
+
+The dependency-free check scans `src` and fails when:
+
+- runtime database environment variables are inspected outside `src/lib/db.ts`;
+- Prisma client or adapter construction appears outside the approved database module;
+- a client component imports database modules, Prisma Client or database credentials;
+- the database helper no longer requires the explicit controlled-preview switch.
+
+Prisma command and seed configuration remain allowed outside `src` because they are developer/automation entry points, not application runtime modules. This static contract complements runtime route smoke; it does not replace future authenticated authorisation tests.
