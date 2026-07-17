@@ -141,3 +141,7 @@ Added coverage-state, asset and provider filters to warranty review, including m
 ## Phase 3Y Complete
 
 Added record-type, linked-asset and document-type filters to receipt and document metadata review, including unlinked records. File storage and uploads remain separate release gates.
+
+## Phase 3Z Complete
+
+Added lifecycle, due-state and linked-record filters to reminder metadata review. Notification delivery, queues and background scheduling remain unimplemented.
