@@ -797,3 +797,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Attachments remain unavailable until identity, lifecycle and a private Blob store are ready.
 - Neon Auth and Neon Object Storage are not production dependencies.
 - Public naming, legal identity, email domain, Blob provisioning and store signing remain client-controlled gates.
+
+## 2026-07-17 - Authentication Loads Only When Runtime Configuration Is Complete
+
+**Decision:** Dynamically load Better Auth only when database, secret and base URL are configured, and require separate email configuration plus an explicit switch for signup.
+
+**Rationale:** Builds, public documentation and sample review must remain safe without secrets, while partially configured environments must not create unusable accounts.
+
+**Consequences:**
+
+- Missing auth configuration returns a private no-store 503.
+- Signup cannot turn on from a database connection alone.
+- Email verification and reset callbacks fail closed until delivery exists.
+- Better Auth core models share the existing HomeVault User identity.
+- No credential or synthetic password is committed.
+- Dependency lock generation remains an online GitHub Actions operation.
