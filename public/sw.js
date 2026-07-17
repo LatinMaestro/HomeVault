@@ -1,3 +1,4 @@
+// HomeVault privacy-safe offline shell.
 const SHELL_CACHE = "homevault-shell-v1";
 const SHELL_URLS = ["/offline", "/icons/homevault.svg"];
 
