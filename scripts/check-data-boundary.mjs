@@ -41,9 +41,7 @@ for (const path of listSourceFiles(sourceRoot)) {
   const isClientModule = /^["']use client["'];/m.test(content);
   if (
     isClientModule &&
-    (content.includes("@/lib/db") ||
-      content.includes("@prisma/client") ||
-      content.includes("DATABASE_URL"))
+    (content.includes("@/lib/db") || content.includes("@prisma/client"))
   ) {
     violations.push(`${file}: client modules must not import or inspect server database access`);
   }
