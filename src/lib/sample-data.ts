@@ -174,6 +174,12 @@ export type WarrantyDetail = WarrantySummary & {
     title: string;
     type: string;
   }>;
+  reminders: Array<{
+    id: string;
+    title: string;
+    status: string;
+    dueAt: string;
+  }>;
 };
 
 export type RecordSummary = {
@@ -373,6 +379,14 @@ export const sampleWarranties: WarrantyDetail[] = [
     expiresAtInput: "2026-03-14",
     notes: "Sample manufacturer warranty.",
     documents: [],
+    reminders: [
+      {
+        id: "reminder-fridge-warranty",
+        title: "Review fridge warranty",
+        status: "PENDING",
+        dueAt: "14 Feb 2026",
+      },
+    ],
   },
 ];
 
