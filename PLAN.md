@@ -533,3 +533,9 @@ The feature is read-only and fallback-safe. It does not expose member email addr
 Phase 3V adds server-rendered room, category and lifecycle filters to the existing Assets screen, including explicit unassigned choices and clear combined-filter empty states.
 
 All options are derived from already-loaded fallback-safe records. No new query, persistence, schema, dependency, analytics or external service is introduced. See `docs/PHASE_3V_PLAN.md`.
+
+## Phase 3W: Maintenance Work Queue Filters - Complete
+
+Phase 3W adds server-rendered task status, Brisbane due-state and linked-asset filters to the Maintenance list, with clear unassigned and empty-result behavior.
+
+The feature reuses existing loaded task records and date rules. No query, persistence, notification delivery, scheduling change, schema, dependency or analytics is introduced. See `docs/PHASE_3W_PLAN.md`.
