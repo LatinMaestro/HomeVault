@@ -15,6 +15,7 @@
 - [ ] Lint passes where available.
 - [ ] Typecheck passes where available.
 - [ ] Build passes where available.
+- [ ] Database-free production route smoke passes.
 - [ ] Prisma validation/generation passes when Prisma or database access changes.
 - [ ] Vercel build does not require a live database connection.
 - [ ] Runtime pages remain useful when `DATABASE_URL` is absent or unavailable.

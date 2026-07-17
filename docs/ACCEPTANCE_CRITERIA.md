@@ -352,3 +352,11 @@
 - Existing seeded records are not overwritten or deleted.
 - Build and Prisma checks remain independent of a live database.
 - No schema, migration, dependency, production database or product workflow is added.
+
+## Phase 2O Acceptance
+
+- CI builds and starts the production app without `DATABASE_URL`.
+- Every approved route family returns a successful response containing the HomeVault shell.
+- Dynamic fallback routes use canonical sample identifiers.
+- The server is stopped after success or failure.
+- The smoke runner adds no dependency, secret, live database or local client requirement.

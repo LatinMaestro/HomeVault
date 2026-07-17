@@ -1,39 +1,54 @@
 # Testing Protocol
 
-## Phase 1A Checks
+## Default Online Gate
 
-- `npm run lint`
-- `npm run typecheck`
-- `npm run build`
-- Manual responsive review on mobile and desktop widths.
-- Vercel Preview visual review.
+Every app-code pull request runs the GitHub Actions CI workflow in a clean Node.js environment:
 
-## Phase 1B Checks
+1. Install the locked dependency graph.
+2. Validate the Prisma schema.
+3. Generate the Prisma client.
+4. Run ESLint.
+5. Run TypeScript checking without emit.
+6. Build the production Next.js application.
+7. Start the production server without `DATABASE_URL`.
+8. Request the approved core routes and require a successful HomeVault response.
 
-- `npm run prisma:validate`
-- `npm run prisma:generate`
-- `npm run lint`
-- `npm run typecheck`
-- `npm run build`
+The client is not expected to run these checks locally.
 
-Local seed verification additionally requires a configured PostgreSQL `DATABASE_URL`.
+## Database-free Route Smoke
 
-## Phase 1C Checks
+`npm run smoke:routes` is an optional developer command and the automated post-build CI check. It removes `DATABASE_URL` from the server process, starts the built app, and verifies the dashboard, search, vault, room, category, asset, maintenance, reminder, provider, warranty, receipt/document and settings routes.
 
-- `npm run prisma:validate`
-- `npm run prisma:generate`
-- `npm run lint`
-- `npm run typecheck`
-- `npm run build`
-- Vercel Preview review without `DATABASE_URL` configured.
-- Optional Vercel Preview review with `DATABASE_URL` configured to a seeded Neon database.
+Dynamic routes use canonical sample IDs. This proves that fallback data and route rendering remain useful without a live database.
 
-Phase 1C pages must render useful sample data if `DATABASE_URL` is missing or unavailable.
+## Database-backed Review
 
-## Future Checks
+Database-backed runtime behavior is reviewed only in an approved Codex/cloud or Neon preview environment with synthetic data.
 
-- Unit tests for data utilities.
-- Component tests for core workflows.
-- End-to-end tests for asset, warranty, receipt and maintenance flows.
-- Accessibility checks before release.
+- Prisma schema changes require validation and generation.
+- Seed checks require an approved `DATABASE_URL`.
+- Build and database-free route checks must never require that variable.
+- Real household data must not be used before production authentication and authorization.
 
+## Visual Review
+
+Vercel previews are the preferred visual gate when a UI review is scheduled and usage allows. Until final review, GitHub diffs, CI and focused browser verification provide implementation evidence.
+
+Before release, visually review:
+
+- mobile and desktop navigation;
+- dashboard and household search;
+- create/edit feedback;
+- empty, missing and error states;
+- long labels and narrow layouts;
+- browser console and runtime failures.
+
+## Future Production Gates
+
+Production household-data launch still requires:
+
+- authenticated end-to-end authorization tests;
+- approved storage access tests if uploads are introduced;
+- automated accessibility checks;
+- data export and deletion tests;
+- security review against the final deployment configuration.
