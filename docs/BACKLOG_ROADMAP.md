@@ -161,3 +161,7 @@ Added assigned-asset counts and used-versus-empty filtering to asset categories.
 ## Phase 4D Complete
 
 Added search and record-type filters to the derived archive. Permanent deletion and account-lifecycle retention remain production identity and policy gates.
+
+## Phase 4E Complete
+
+Locked self-hosted Better Auth, verified email/password, HomeVault-owned household authorisation and Vercel Private Blob as the production release architecture. Implementation proceeds before client-owned email, storage, legal and store-account gates.

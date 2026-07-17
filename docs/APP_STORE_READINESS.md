@@ -135,8 +135,8 @@ These blockers do not prevent continued shared-app development. They do prevent 
 
 ## Production Identity Direction
 
-The preferred identity candidate is Neon Managed Better Auth because it is designed for Next.js and keeps auth state isolated with Neon branches. It is currently documented by Neon as Beta, so provisioning is deferred until either general availability or an explicit decision to accept beta risk.
+HomeVault has selected self-hosted Better Auth with the existing Next.js, Prisma and PostgreSQL stack because Neon Managed Better Auth remains Beta. Identity only establishes who is signed in; HomeVault server code must still verify household membership for every read and mutation.
 
-If Managed Better Auth is not production-appropriate at implementation time, self-hosted Better Auth with the existing Prisma/PostgreSQL stack is the fallback. In both cases, identity only establishes who is signed in; HomeVault server code must still verify household membership for every read and mutation.
+Vercel Private Blob is the selected production attachment store. Provisioning and uploads follow production identity and account-lifecycle controls.
 
 See `docs/AUTHENTICATION_ARCHITECTURE.md`.
