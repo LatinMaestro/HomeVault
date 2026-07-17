@@ -125,3 +125,7 @@ Added safe, user-initiated call, email and website actions for provider metadata
 ## Phase 3U Complete
 
 Added a privacy-safe, read-only summary of current household members in Settings and the portable household export. Invitations, role changes and real household sharing remain gated on production authentication and server-side household authorisation.
+
+## Phase 3V Complete
+
+Added mobile-friendly room, category and lifecycle filters to the existing asset inventory. Filtering uses URL query parameters and already-loaded records only; no preference or search history is stored.
