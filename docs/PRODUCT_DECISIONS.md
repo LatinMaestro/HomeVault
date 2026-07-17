@@ -9,6 +9,8 @@ This file records durable product and workflow decisions that affect future Home
 | 2026-07-08 | Use Vercel Preview Deployment URLs as the preferred UI review method. | Preview deployments give the client a browser-based review path without running the app locally. | Accepted |
 | 2026-07-08 | Use GitHub pull requests as the preferred code review method. | PRs keep scope, diffs, review comments and checks visible in the source-of-truth system. | Accepted |
 | 2026-07-08 | Do not bypass, allowlist or disable antivirus protections casually. | Security tooling warnings should be respected. Prefer online development alternatives instead of local workarounds. | Accepted |
+| 2026-07-17 | Target both Apple App Store and Google Play distribution. | HomeVault is intended to be a consumer mobile app as well as a responsive web experience. | Accepted |
+| 2026-07-17 | Keep Next.js as the shared foundation and plan a later Capacitor shell with meaningful native utility. | This preserves current investment while avoiding a low-value website wrapper that may fail store review. | Accepted |
 
 ## Notes
 
