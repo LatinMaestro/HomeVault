@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Bell, CalendarClock, CalendarDays, Contact, Plus } from "lucide-react";
+import { Bell, CalendarClock, CalendarDays, Contact, LibraryBig, Plus } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -65,6 +65,12 @@ export default async function MaintenancePage({
                 <Link href="/maintenance/reminders">
                   <Bell className="h-4 w-4" aria-hidden="true" />
                   Reminders
+                </Link>
+              </Button>
+              <Button asChild variant="outline">
+                <Link href="/maintenance/templates">
+                  <LibraryBig className="h-4 w-4" aria-hidden="true" />
+                  Templates
                 </Link>
               </Button>
               <Button asChild variant="outline">

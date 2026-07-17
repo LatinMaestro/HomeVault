@@ -431,3 +431,10 @@ The export is user-controlled and one-way. No external calendar account, OAuth c
 Phase 3E adds user-controlled downloads from Settings: a versioned JSON copy of visible household metadata and a spreadsheet-safe CSV inventory. Both are generated on request, returned as no-store attachments and remain useful with canonical sample data.
 
 The CSV neutralises formula-like user input. Exports include metadata only and add no storage, external destination, financial analysis, insurance claim automation, dependency or schema.
+
+
+## Phase 3F: Maintenance Starter Templates - Complete
+
+Phase 3F adds eight editable Australian household maintenance starting points and connects them to the existing guarded task form. Templates improve beginner onboarding without automatically creating records or presenting generic intervals as universal safety advice.
+
+No schema, notification delivery, external service, dependency, AI, OCR, storage or native project is added.

@@ -432,3 +432,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Formula-like CSV values receive a protective text prefix.
 - Production auth must protect both routes before real household data is allowed.
 - Insurance preparation remains a record summary, not claim automation.
+
+
+## 2026-07-17 - Maintenance Templates Remain Editable Guidance
+
+**Decision:** Offer curated maintenance starting points that prefill the existing task form, while requiring the household to review timing and details before saving.
+
+**Rationale:** Beginners benefit from practical examples, but maintenance needs vary by equipment, property, climate, regulation and manufacturer guidance.
+
+**Consequences:**
+
+- Templates never create or change records automatically.
+- Safety-sensitive copy points users to manuals, local guidance and qualified providers.
+- Due dates, linked assets and providers remain user choices.
+- Existing controlled database access protects saving.
+- Updating template guidance requires product review but no schema migration.

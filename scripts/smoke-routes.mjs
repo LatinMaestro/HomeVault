@@ -26,6 +26,8 @@ const routes = [
   "/vault/assets/asset-fridge/edit",
   "/maintenance",
   "/maintenance/new",
+  "/maintenance/new?template=air-conditioner-filters",
+  "/maintenance/templates",
   "/maintenance/task-aircon-filters",
   "/maintenance/task-aircon-filters/edit",
   "/maintenance/reminders",

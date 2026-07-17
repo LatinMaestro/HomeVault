@@ -19,7 +19,7 @@ Phase 3C is complete. HomeVault provides guarded household record workflows with
 - Date awareness: Brisbane-calendar maintenance due and warranty coverage states, plus strict guarded warranty and historical record dates
 - Navigation: direct links between existing rooms, assets, tasks, warranties and records
 - Assets: guarded create/edit for identity, purchase, room, category and lifecycle metadata
-- Maintenance: guarded lifecycle, custom intervals, provider links, reminder metadata, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
+- Maintenance: guarded lifecycle, editable starter templates, custom intervals, provider links, reminder metadata, additive completion history, automatic next-due advancement and portable household calendar export; notification delivery remains off
 - Portability: one-way household calendar, structured metadata and spreadsheet-safe inventory downloads
 - Distribution: Apple App Store and Google Play are approved targets; native packaging follows production auth, deletion, privacy and storage gates
 
@@ -97,6 +97,7 @@ Vercel builds do not require a live database connection. Runtime pages render sa
 - `/vault/assets/[assetId]/edit`
 - `/maintenance`
 - `/maintenance/new`
+- `/maintenance/templates`
 - `/maintenance/reminders`
 - `/maintenance/reminders/new`
 - `/maintenance/reminders/[reminderId]`

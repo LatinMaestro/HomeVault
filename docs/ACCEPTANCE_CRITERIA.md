@@ -454,3 +454,14 @@
 - Both responses use stable filenames and private no-store caching.
 - Exports contain metadata only and work with canonical sample data.
 - Production release requires signed-in household authorisation around both routes.
+
+
+## Maintenance Starter Templates
+
+- Maintenance links to a mobile-friendly starter template library.
+- Templates cover common Australian household upkeep without claiming universal schedules.
+- Selecting a template prefills the existing create-task form.
+- Prefilled title, description, frequency and status remain editable.
+- Unknown template identifiers open a normal blank task form.
+- Templates do not create records automatically or send notifications.
+- Template and prefilled-form routes render without live database access.
