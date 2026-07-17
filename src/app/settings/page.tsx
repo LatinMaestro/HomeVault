@@ -35,8 +35,8 @@ const readinessCards = [
   },
   {
     title: "Data mode",
-    description: "Runtime pages can read and save approved metadata with a configured database, while built-in sample data keeps review flows useful when database access is unavailable.",
-    badge: "Fallback-safe",
+    description: "Runtime pages use sample data by default. Approved metadata reads and saves require an explicit controlled-preview database switch until production accounts are ready.",
+    badge: "Fail-closed",
     icon: Database,
   },
 ];
