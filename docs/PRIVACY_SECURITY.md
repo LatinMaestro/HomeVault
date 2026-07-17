@@ -60,3 +60,9 @@ A real household-data launch requires explicit approval and implementation of:
 ## Deferred Capabilities
 
 The current app does not include uploads, OCR, AI, email ingestion, notification delivery, payments, analytics, external integrations or native apps.
+
+## Offline Storage Boundary
+
+HomeVault registers a minimal service worker for installed-mobile resilience. It caches only the offline page, brand icon and versioned static application assets.
+
+It does not cache household pages, server-component data, API responses or submitted forms. Household records still require a live connection. Any future offline household-data capability requires separate encryption, retention, conflict and device-loss decisions.
