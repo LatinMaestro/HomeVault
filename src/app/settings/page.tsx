@@ -2,14 +2,15 @@ import { isPreviewDatabaseEnabled } from "@/lib/db";
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArchiveRestore, Database, FileJson, History, LockKeyhole, Printer, Sheet, ShieldCheck } from "lucide-react";
+import { ArchiveRestore, Database, FileJson, History, LockKeyhole, Printer, Sheet, ShieldCheck, Users } from "lucide-react";
 
 import { updateHouseholdProfileAction } from "@/app/settings/actions";
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
 import { HouseholdProfileForm } from "@/components/household-profile-form";
 import { PageHeader } from "@/components/page-header";
-import { getHomeProfile } from "@/lib/home-data";
+import { getDisplayLabel } from "@/lib/display-labels";
+import { getHomeProfile, getHouseholdMembers } from "@/lib/home-data";
 import { getHouseholdProfileFields } from "@/lib/household-profile-fields";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -53,7 +54,15 @@ const unavailableItems = [
 ];
 
 export default async function SettingsPage() {
-  const home = await getHomeProfile();
+  const [home, householdMembers] = await Promise.all([
+    getHomeProfile(),
+    getHouseholdMembers(),
+  ]);
+  const dataSource =
+    home.source === "database" && householdMembers.source === "database"
+      ? "database"
+      : "sample";
+
   return (
     <AppShell activeSection="Settings">
       <section className="space-y-5">
@@ -62,12 +71,59 @@ export default async function SettingsPage() {
           title="Household settings and privacy"
           description="Maintain the current home profile while account, storage and integration decisions remain separate."
         />
-        <DataSourceNote source={home.source} />
+        <DataSourceNote source={dataSource} />
         <HouseholdProfileForm
           fields={getHouseholdProfileFields(home.data)}
           action={updateHouseholdProfileAction}
           databaseConfigured={isPreviewDatabaseEnabled()}
         />
+
+        <Card>
+          <CardHeader>
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-secondary text-secondary-foreground">
+                <Users className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <div>
+                <CardDescription>Current access</CardDescription>
+                <CardTitle>Household members</CardTitle>
+              </div>
+            </div>
+            <CardDescription className="leading-6">
+              Review the people already connected to this household. Invitations and role changes stay unavailable until production authentication and authorisation are approved.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {householdMembers.data.length > 0 ? (
+              <ul className="space-y-3">
+                {householdMembers.data.map((member) => (
+                  <li
+                    key={member.id}
+                    className="flex min-h-11 items-center justify-between gap-3 rounded-md border bg-background p-3"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">
+                        {member.name}
+                      </p>
+                      {member.nickname && member.nickname !== member.name ? (
+                        <p className="mt-1 text-sm text-muted-foreground">
+                          Known as {member.nickname}
+                        </p>
+                      ) : null}
+                    </div>
+                    <Badge variant="secondary">
+                      {getDisplayLabel(member.role)}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm leading-6 text-muted-foreground">
+                No household member records are available yet.
+              </p>
+            )}
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
