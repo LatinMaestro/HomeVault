@@ -22,6 +22,9 @@
 - [ ] Security headers are present on deployed routes.
 - [ ] `/api/health` responds successfully without database access.
 - [ ] `/robots.txt` disallows crawling until production auth is approved.
+- [ ] Manifest, install icon, theme colour and standalone metadata are valid.
+- [ ] Safe-area layout is reviewed on representative iOS and Android devices.
+- [ ] Store submission blockers in `docs/APP_STORE_READINESS.md` are resolved before native release.
 - [ ] Unauthenticated deployments use sample or controlled non-sensitive data only.
 - [ ] Search indexing remains disabled until the production access model is approved.
 
