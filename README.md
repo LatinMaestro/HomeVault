@@ -2,13 +2,13 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4E is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4F is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4E Release Architecture Lock` complete
+- Phase: `4F Better Auth Foundation` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
-- Auth: self-hosted Better Auth selected for production; implementation follows, while the current preview remains fail-closed and single-home
+- Auth: Better Auth server/schema foundation is fail-closed; account UI and household authorisation follow before production enablement
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
 - Mutations: room, asset, maintenance task, warranty, receipt, document, service provider, asset category, household profile and reminder metadata create/edit only when controlled preview database access is explicitly enabled; maintenance completion records are additive only
 - Storage: Vercel Private Blob selected; provisioning and uploads follow production identity

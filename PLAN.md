@@ -587,3 +587,9 @@ No record is moved, copied, deleted or independently indexed. The feature adds n
 Phase 4E selects self-hosted Better Auth with Prisma/PostgreSQL for production identity and Vercel Private Blob for household attachments. Managed Neon Auth remains off the critical path while it is Beta.
 
 Verified email/password is the initial account method; HomeVault retains server-owned household authorisation. Live email delivery, Blob provisioning, public naming, legal identity and store signing remain client-owned setup gates. See `docs/PHASE_4E_RELEASE_ARCHITECTURE.md`, `docs/AUTHENTICATION_ARCHITECTURE.md` and `docs/STORAGE_ARCHITECTURE.md`.
+
+## Phase 4F: Better Auth Foundation - Complete
+
+Phase 4F adds Better Auth and its Prisma adapter, the supported core identity models, a fail-closed runtime handler, disabled email boundary and configuration/smoke contracts.
+
+Signup stays disabled without explicit enablement and configured email delivery. No migration, account UI, onboarding or household authorisation switch occurs yet. Dependency metadata was generated entirely in GitHub Actions. See `docs/PHASE_4F_AUTH_FOUNDATION.md`.

@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:unit": "tsx --test tests/db-access.test.ts tests/maintenance-schedule.test.ts tests/icalendar.test.ts tests/inventory-csv.test.ts tests/maintenance-history-csv.test.ts tests/provider-contact-links.test.ts tests/maintenance-templates.test.ts tests/archive-data.test.ts tests/setup-guide.test.ts",
+    "test:unit": "tsx --test tests/db-access.test.ts tests/auth-config.test.ts tests/maintenance-schedule.test.ts tests/icalendar.test.ts tests/inventory-csv.test.ts tests/maintenance-history-csv.test.ts tests/provider-contact-links.test.ts tests/maintenance-templates.test.ts tests/archive-data.test.ts tests/setup-guide.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:format": "prisma format",
@@ -19,9 +19,11 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@better-auth/prisma-adapter": "1.6.23",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
     "@radix-ui/react-slot": "^1.2.4",
+    "better-auth": "1.6.23",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.475.0",

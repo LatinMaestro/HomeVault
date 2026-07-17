@@ -5,11 +5,32 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
+export function isDatabaseConfigured() {
+  return Boolean(process.env.DATABASE_URL);
+}
+
 export function isPreviewDatabaseEnabled() {
   return (
     Boolean(process.env.DATABASE_URL) &&
     process.env.HOMEVAULT_PREVIEW_DATABASE_ACCESS === "enabled"
   );
+}
+
+function getConfiguredDb() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error("Database access is not configured.");
+  }
+
+  if (!globalForPrisma.prisma) {
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+    globalForPrisma.prisma = new PrismaClient({ adapter });
+  }
+
+  return globalForPrisma.prisma;
+}
+
+export function getAuthDb() {
+  return getConfiguredDb();
 }
 
 export function getDb() {
@@ -19,10 +40,5 @@ export function getDb() {
     );
   }
 
-  if (!globalForPrisma.prisma) {
-    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL! });
-    globalForPrisma.prisma = new PrismaClient({ adapter });
-  }
-
-  return globalForPrisma.prisma;
+  return getConfiguredDb();
 }

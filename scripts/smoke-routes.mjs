@@ -150,6 +150,17 @@ async function verifyDeploymentContracts() {
     "Home route does not disable unnecessary camera permission.",
   );
 
+  const authResponse = await fetch(`${baseUrl}/api/auth/get-session`);
+  const authStatus = await authResponse.json();
+  assertContract(
+    authResponse.status === 503 && authStatus.available === false,
+    "Unconfigured authentication must fail closed with a service-unavailable response.",
+  );
+  assertContract(
+    (authResponse.headers.get("cache-control") ?? "").includes("no-store"),
+    "Unavailable authentication responses must not be cached.",
+  );
+
   const healthResponse = await fetch(`${baseUrl}/api/health`);
   const health = await healthResponse.json();
   assertContract(health.status === "ok", "Health response status is not ok.");

@@ -165,3 +165,7 @@ Added search and record-type filters to the derived archive. Permanent deletion 
 ## Phase 4E Complete
 
 Locked self-hosted Better Auth, verified email/password, HomeVault-owned household authorisation and Vercel Private Blob as the production release architecture. Implementation proceeds before client-owned email, storage, legal and store-account gates.
+
+## Phase 4F Complete
+
+Added the fail-closed Better Auth package, schema and runtime foundation. Live signup, email delivery, onboarding and household authorisation remain disabled until their dedicated phases and provider gate.
