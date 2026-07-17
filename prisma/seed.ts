@@ -20,6 +20,19 @@ async function main() {
     },
   });
 
+  const existingHome = await prisma.home.findFirst({
+    where: {
+      name: "Taylor Family Home",
+      members: { some: { userId: user.id } },
+    },
+    select: { id: true },
+  });
+
+  if (existingHome) {
+    console.log("Taylor Family Home seed data already exists; no duplicate home was created.");
+    return;
+  }
+
   const home = await prisma.home.create({
     data: {
       name: "Taylor Family Home",
