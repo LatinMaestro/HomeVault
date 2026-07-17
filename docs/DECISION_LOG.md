@@ -812,3 +812,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Better Auth core models share the existing HomeVault User identity.
 - No credential or synthetic password is committed.
 - Dependency lock generation remains an online GitHub Actions operation.
+
+
+## 2026-07-17 - Authentication Loads Only When Its Runtime Is Complete
+
+**Decision:** Add the Better Auth schema and server boundary now, but dynamically load the handler only when the database, auth secret and canonical URL are all configured. Keep public signup separately disabled until transactional email is ready.
+
+**Rationale:** Authentication foundations can be validated without turning an incomplete deployment into a partial identity system or making database-independent builds depend on production secrets.
+
+**Consequences:**
+
+- Missing auth runtime configuration returns a private, no-store unavailable response.
+- Builds and fallback screens remain useful without a live database or auth secret.
+- Verified email/password is the only approved initial sign-in method.
+- Account linking and social providers remain disabled.
+- No credential account is created by synthetic seed data.
+- Production migrations, account UI, session-based household resolution and live email remain later release gates.
