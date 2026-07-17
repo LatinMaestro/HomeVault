@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   checks:
-    name: Boundary, Prisma, lint, typecheck, build and route smoke
+    name: Boundary, Prisma, unit, lint, typecheck, build and route smoke
     runs-on: ubuntu-latest
     env:
       CI: true
@@ -43,6 +43,9 @@ jobs:
 
       - name: Generate Prisma client
         run: pnpm run prisma:generate
+
+      - name: Run unit contracts
+        run: pnpm run test:unit
 
       - name: Lint
         run: pnpm run lint
