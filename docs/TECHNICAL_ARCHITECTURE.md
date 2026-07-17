@@ -39,3 +39,17 @@ Apple App Store and Google Play distribution are product requirements.
 - Native projects must add meaningful device integration and app-like utility before submission.
 - The native shell must not contain database credentials or bypass server authorization.
 - Store signing, certificates and application IDs remain client-controlled secrets/configuration.
+
+
+## Production Identity Boundary
+
+Production authentication is an upcoming release phase, not part of the current preview.
+
+- Preferred candidate: Neon Managed Better Auth after general availability, or earlier only with explicit beta-risk acceptance.
+- Fallback: self-hosted Better Auth using the existing Next.js and PostgreSQL boundary.
+- Auth state must be environment-isolated and use managed secrets.
+- An external auth identity must map to one HomeVault `User`; email addresses are not authorisation keys.
+- Every household read and mutation must resolve a signed-in user and verify `HouseholdMember` access on the server.
+- The temporary earliest-home resolver and preview database switch must not remain in production data paths.
+- Route redirects improve UX but do not replace server-side checks.
+- Account export and deletion are part of the same production identity phase.
