@@ -550,3 +550,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Assigned assets and their maintenance tasks remain linked to existing detail workflows.
 - Empty and unknown rooms retain useful fallback states.
 - No schema, mutation, stored room dashboard or inferred unlinked maintenance relationship is introduced.
+
+## 2026-07-17 - Asset Detail Is The Care Record Hub
+
+**Decision:** Surface existing maintenance tasks and reminders alongside warranties, receipts and documents on asset detail.
+
+**Rationale:** Homeowners usually think about care in the context of the appliance or equipment itself. Showing established relationships in one place reduces navigation effort without creating duplicate records or automation.
+
+**Consequences:**
+
+- Asset reads include existing task and reminder relationships.
+- Linked records keep their own authoritative detail and edit workflows.
+- Empty relationship states remain visible and non-prescriptive.
+- No notification delivery, new scheduling behavior, schema or mutation is introduced.
