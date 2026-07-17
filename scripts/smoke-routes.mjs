@@ -11,6 +11,7 @@ const routes = [
   "/offline",
   "/calendar",
   "/home-report",
+  "/getting-started",
   "/privacy",
   "/support",
   "/",
