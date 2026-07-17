@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 3O is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 3P is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `3O Asset Category Detail` complete
+- Phase: `3P Warranty Follow-up Context` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: stubbed single-user mode with one shared earliest-home resolver only
 - Data: curated sample fallback by default; Prisma runtime access requires both `DATABASE_URL` and the explicit controlled-preview switch; canonical demo seeding is repeat-safe
@@ -16,7 +16,7 @@ Phase 3O is complete. HomeVault provides guarded household record workflows with
 - Home: fallback-safe household snapshot and attention queue for maintenance, reminders, warranties, inventory, receipts and documents
 - Presentation: household-friendly status, frequency and document labels
 - Findability: server-rendered search across core lists plus household-wide search from the app header
-- Date awareness: Brisbane-calendar maintenance due and warranty coverage states, plus strict guarded warranty and historical record dates
+- Date awareness: Brisbane-calendar maintenance due and warranty coverage states, strict guarded dates and warranty-linked follow-up reminders
 - Navigation: direct links between existing rooms, assets, tasks, warranties and records
 - Rooms: searchable list, guarded create/edit and detail views with assigned assets and linked maintenance
 - Asset categories: searchable flat taxonomy with guarded create/edit and assigned-asset detail views

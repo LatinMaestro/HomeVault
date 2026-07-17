@@ -101,3 +101,7 @@ Connected asset detail to existing maintenance and reminder records. No schema, 
 ## Phase 3O Complete
 
 Added fallback-safe asset category detail pages and assigned-asset navigation. The taxonomy and persistence model remain unchanged.
+
+## Phase 3P Complete
+
+Surfaced existing reminder metadata on warranty detail without adding delivery, scheduling or persistence capability.
