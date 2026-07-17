@@ -18,6 +18,21 @@ export type RoomSummary = {
   assetCount: number;
 };
 
+export type RoomDetail = RoomSummary & {
+  assets: Array<{
+    id: string;
+    name: string;
+    brand?: string | null;
+    status: string;
+  }>;
+  maintenanceTasks: Array<{
+    id: string;
+    title: string;
+    status: string;
+    nextDueDate?: string | null;
+  }>;
+};
+
 export type AssetCategorySummary = {
   id: string;
   name: string;
@@ -30,6 +45,7 @@ export type AssetSummary = {
   brand?: string | null;
   model?: string | null;
   status: string;
+  roomId?: string | null;
   roomName?: string | null;
   categoryName?: string | null;
   purchaseDate?: string | null;
@@ -199,6 +215,7 @@ export const sampleAssets: AssetDetail[] = [
     model: "RF605QDUVX1",
     serialNumber: "Sample only",
     status: "ACTIVE",
+    roomId: "room-kitchen",
     roomName: "Kitchen",
     categoryName: "Appliances",
     purchaseDate: "14 Mar 2024",
@@ -222,6 +239,7 @@ export const sampleAssets: AssetDetail[] = [
     brand: "Ryobi",
     model: null,
     status: "ACTIVE",
+    roomId: "room-garage",
     roomName: "Garage",
     categoryName: "Outdoor Equipment",
     purchaseDate: "2 Sep 2023",
