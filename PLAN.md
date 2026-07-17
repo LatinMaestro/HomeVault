@@ -527,3 +527,9 @@ Contact actions are user-initiated and reject malformed or unsafe values. No mes
 Phase 3U surfaces the existing current household membership records in Settings and the portable household export using names, optional nicknames and roles only.
 
 The feature is read-only and fallback-safe. It does not expose member email addresses or add invitations, role changes, production authentication, authorisation, schema changes, dependencies or external services. See `docs/PHASE_3U_PLAN.md`.
+
+## Phase 3V: Inventory Filters - Complete
+
+Phase 3V adds server-rendered room, category and lifecycle filters to the existing Assets screen, including explicit unassigned choices and clear combined-filter empty states.
+
+All options are derived from already-loaded fallback-safe records. No new query, persistence, schema, dependency, analytics or external service is introduced. See `docs/PHASE_3V_PLAN.md`.
