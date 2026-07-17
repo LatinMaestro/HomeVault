@@ -712,3 +712,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Document-type options come from current metadata.
 - No file is opened, parsed or classified.
 - Filter state is URL-only and retained nowhere.
+
+## 2026-07-17 - Reminder Triage Does Not Imply Delivery
+
+**Decision:** Allow users to filter reminder metadata by lifecycle, visible due state and explicit linked-record type without scheduling or sending notifications.
+
+**Rationale:** Organising recorded due dates is useful on its own and should not imply that email, push or SMS delivery exists.
+
+**Consequences:**
+
+- Due filters share the Australia/Brisbane rule used by visible badges.
+- Asset, warranty and maintenance links are recognised only when stored.
+- Unlinked reminder metadata remains discoverable.
+- No queue, worker, delivery credential or background job is introduced.
+- Filter state is URL-only and retained nowhere.
