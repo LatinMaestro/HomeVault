@@ -386,3 +386,12 @@
 - CI smoke verifies the manifest and install icon without `DATABASE_URL`.
 - Documentation defines Apple and Google policy, privacy, deletion, signing and asset gates.
 - No native project, device permission, dependency, store credential or external service is added.
+
+## Phase 2S Acceptance
+
+- A registered service worker provides the offline screen when navigation cannot reach the server.
+- Only the offline shell, icon and versioned static assets are cached.
+- Household pages, API/RSC responses and mutations are not cached.
+- The worker script is served with refresh-safe no-store headers and root scope.
+- CI smoke verifies the worker and offline route without `DATABASE_URL`.
+- No background sync, push, offline data store, dependency or native project is added.

@@ -322,3 +322,11 @@ Phase 2R records Apple App Store and Google Play as approved distribution target
 The recommended later path is a Capacitor shell only after production auth, authorization, deletion, privacy and storage gates, with meaningful native utility before submission. No native project, signing credential, store account, device permission, dependency or external service is added yet.
 
 See `docs/PHASE_2R_PLAN.md` and `docs/APP_STORE_READINESS.md`.
+
+## Phase 2S: Privacy-safe Offline Shell - Complete
+
+Phase 2S adds network-first navigation with a calm offline fallback for installed mobile use. Only the offline shell and versioned static assets are cached; household pages, data responses and mutations are never cached.
+
+No offline household store, background sync, push delivery, dependency, schema or native project is added.
+
+See `docs/PHASE_2S_PLAN.md`.

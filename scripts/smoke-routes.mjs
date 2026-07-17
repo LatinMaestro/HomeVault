@@ -6,6 +6,8 @@ const routes = [
   "/api/health",
   "/manifest.webmanifest",
   "/icons/homevault.svg",
+  "/sw.js",
+  "/offline",
   "/",
   "/search?q=fridge",
   "/vault",

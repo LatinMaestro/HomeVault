@@ -248,3 +248,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Native submission waits for production auth, authorization, account deletion, privacy URLs and approved storage.
 - Store builds must add meaningful platform utility and pass platform review.
 - Developer accounts, legal identity, signing and store listing actions remain client-controlled.
+
+## 2026-07-17 - Offline Fallback Does Not Cache Household Records
+
+**Decision:** Cache only a minimal offline page, brand icon and versioned static shell assets; keep household navigation network-first.
+
+**Rationale:** Installed mobile users need a coherent connectivity failure state, but silent household-data storage would create privacy, staleness and mutation-conflict risks before offline behavior is explicitly designed.
+
+**Consequences:**
+
+- Offline navigation renders a clear reconnect message.
+- Household pages, RSC payloads, API data and form submissions are not cached.
+- No background sync or offline mutation queue exists.
+- Rich offline access remains a future security and product decision.
