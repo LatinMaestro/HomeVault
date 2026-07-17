@@ -66,3 +66,10 @@ The current app does not include uploads, OCR, AI, email ingestion, notification
 HomeVault registers a minimal service worker for installed-mobile resilience. It caches only the offline page, brand icon and versioned static application assets.
 
 It does not cache household pages, server-component data, API responses or submitted forms. Household records still require a live connection. Any future offline household-data capability requires separate encryption, retention, conflict and device-loss decisions.
+
+
+## Temporary Preview Database Lock
+
+Until production authentication and household authorisation exist, runtime database access requires two independent configuration values: a database connection and an explicit controlled-preview enablement switch. A database integration or credential alone does not expose household records.
+
+The switch is suitable only for canonical demo or controlled non-sensitive review data. It must not be enabled for real household records, and it must be retired when session-bound household authorisation is implemented.
