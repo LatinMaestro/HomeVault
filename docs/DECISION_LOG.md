@@ -182,3 +182,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Search engines are instructed not to index or follow the app.
 - Only synthetic or non-sensitive data is appropriate before production auth and authorization.
 - Indexing can be reconsidered only with the future production access model.
+
+## 2026-07-17 - Canonical Demo Seed Is Repeat-safe And Non-destructive
+
+**Decision:** Detect the existing synthetic owner/home relationship and exit successfully instead of creating duplicate household data.
+
+**Rationale:** Cloud and Neon setup commands may be repeated. Duplicate homes would make the temporary current-home resolver ambiguous and undermine review confidence.
+
+**Consequences:**
+
+- Repeated seed runs do not create another Taylor Family Home for the synthetic owner.
+- Existing demo records are not overwritten or deleted.
+- Refreshing the entire demo dataset remains an explicit future maintenance operation.
+- CI continues to validate and build without requiring a live database.
