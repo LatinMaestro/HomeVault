@@ -497,3 +497,9 @@ The detail is composed from existing reads and relationships. No schema, mutatio
 Phase 3P surfaces existing linked reminders beside warranty coverage and document metadata, with direct navigation and honest empty states.
 
 No schema, mutation, reminder delivery, dependency or external service is added. See `docs/PHASE_3P_PLAN.md`.
+
+## Phase 3Q: Connected Record Context - Complete
+
+Phase 3Q exposes existing receipt and document relationships to assets, warranties, source receipts, maintenance tasks and related document metadata.
+
+The feature presents only established links. No schema, mutation, storage, upload, OCR, AI, email ingestion, dependency or external service is added. See `docs/PHASE_3Q_PLAN.md`.
