@@ -523,3 +523,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Vercel Production receives neither value at this stage.
 - Neon Auth and Data API remain unprovisioned.
 - Production migration, backup and retention operations remain release gates.
+
+## 2026-07-17 - Use The Vercel-managed Neon Resource
+
+**Decision:** Treat the Neon project managed by the connected Vercel team as HomeVault's canonical database resource, with HomeVault application tables and synthetic data isolated on its child `preview` branch.
+
+**Rationale:** The existing Vercel integration already owns and supplies the project connection settings. Reusing that resource avoids competing database integrations while preserving the fail-closed preview boundary.
+
+**Consequences:**
+
+- The managed default branch retains provider-owned Neon Auth tables but contains zero HomeVault application tables.
+- The child `preview` branch contains the Prisma schema and canonical Taylor Family Home seed.
+- Production HomeVault authentication is still unimplemented; existing provider tables do not approve or enable it.
+- Vercel Preview access still requires both the preview branch connection and `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled`.
+- The separately created standalone HomeVault project remains untouched until an explicit cleanup decision.
