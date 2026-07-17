@@ -589,3 +589,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Reminder detail remains the authoritative workflow.
 - Empty follow-up and document states are explicit.
 - No notification channel, background scheduling, schema or mutation is introduced.
+
+## 2026-07-17 - Metadata Shows Only Explicit Relationships
+
+**Decision:** Present receipt and document connections only when an existing relationship is stored in HomeVault.
+
+**Rationale:** Provenance makes household records easier to understand, but inferred links could misrepresent warranty, maintenance or purchase evidence.
+
+**Consequences:**
+
+- Receipt detail can list its related document metadata.
+- Document detail can link to its asset, warranty, source receipt and maintenance task.
+- Unlinked records state that no connection is recorded.
+- No fuzzy matching, OCR, AI, schema or mutation is introduced.
