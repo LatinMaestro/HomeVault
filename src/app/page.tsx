@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CalendarClock, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } from "lucide-react";
+import { ArrowRight, CalendarClock, CircleAlert, ClipboardCheck, Home, ReceiptText, ShieldCheck, Wrench } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { DataSourceNote } from "@/components/data-source-note";
@@ -20,6 +20,7 @@ export const dynamic = "force-dynamic";
 export default async function HomePage() {
   const dashboard = await getHomeDashboard();
   const {
+    attentionItems,
     assetCount,
     assetNames,
     documentCount,
@@ -32,6 +33,13 @@ export default async function HomePage() {
   const nextTaskStatus = getDateStatus(nextTask?.nextDueDateInput, "maintenance");
   const nextWarrantyStatus = getDateStatus(nextWarranty?.expiresAtInput, "warranty");
   const nextReminderStatus = getDateStatus(nextReminder?.dueAtInput, "reminder");
+
+  const urgentItems = attentionItems
+    .map((item) => ({
+      ...item,
+      status: getDateStatus(item.dateInput, item.context),
+    }))
+    .filter((item) => item.status.tone === "critical" || item.status.tone === "attention");
 
   const dashboardCards = [
     {
@@ -100,6 +108,33 @@ export default async function HomePage() {
         </div>
 
         <DataSourceNote source={dashboard.source} />
+
+        {urgentItems.length ? (
+          <Card className="border-primary/30">
+            <CardHeader>
+              <CardDescription>Due and expiry watch</CardDescription>
+              <CardTitle className="flex items-center gap-2 text-xl">
+                <CircleAlert className="h-5 w-5 text-primary" aria-hidden="true" />
+                Needs attention
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-2">
+              {urgentItems.map((item) => (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  className="flex flex-col gap-3 rounded-md border bg-background p-3 transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex-row sm:items-center sm:justify-between"
+                >
+                  <div className="min-w-0">
+                    <p className="font-medium text-foreground">{item.title}</p>
+                    <p className="mt-1 text-sm text-muted-foreground">{item.detail}</p>
+                  </div>
+                  <DateStatusBadge status={item.status} />
+                </Link>
+              ))}
+            </CardContent>
+          </Card>
+        ) : null}
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
           {dashboardCards.map((card) => {

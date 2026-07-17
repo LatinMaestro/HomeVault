@@ -27,7 +27,17 @@ type Result<T> = {
   source: DataSource;
 };
 
+export type HomeAttentionItem = {
+  id: string;
+  title: string;
+  detail: string;
+  dateInput?: string | null;
+  context: "maintenance" | "warranty" | "reminder";
+  href: string;
+};
+
 export type HomeDashboard = {
+  attentionItems: HomeAttentionItem[];
   roomCount: number;
   assetCount: number;
   assetNames: string[];
@@ -457,9 +467,42 @@ export async function getHomeDashboard(): Promise<Result<HomeDashboard>> {
   const nextWarranty = warranties.data[0] ?? null;
   const nextReminder =
     reminders.data.find((reminder) => reminder.status === "PENDING") ?? reminders.data[0] ?? null;
+  const attentionItems: HomeAttentionItem[] = [
+    ...tasks.data
+      .filter((task) => task.status === "ACTIVE")
+      .map((task) => ({
+        id: `maintenance-${task.id}`,
+        title: task.title,
+        detail: task.nextDueDate ?? "No due date",
+        dateInput: task.nextDueDateInput,
+        context: "maintenance" as const,
+        href: `/maintenance/${task.id}`,
+      })),
+    ...reminders.data
+      .filter((reminder) => reminder.status === "PENDING")
+      .map((reminder) => ({
+        id: `reminder-${reminder.id}`,
+        title: reminder.title,
+        detail: reminder.dueAt,
+        dateInput: reminder.dueAtInput,
+        context: "reminder" as const,
+        href: `/maintenance/reminders/${reminder.id}`,
+      })),
+    ...warranties.data.map((warranty) => ({
+      id: `warranty-${warranty.id}`,
+      title: `${warranty.assetName} warranty`,
+      detail: warranty.expiresAt ?? "No expiry date",
+      dateInput: warranty.expiresAtInput,
+      context: "warranty" as const,
+      href: `/warranties/${warranty.id}`,
+    })),
+  ]
+    .sort((left, right) => (left.dateInput ?? "9999").localeCompare(right.dateInput ?? "9999"))
+    .slice(0, 8);
 
   return {
     data: {
+      attentionItems,
       roomCount: rooms.data.length,
       assetCount: assets.data.length,
       assetNames: assets.data.slice(0, 2).map((asset) => asset.name),

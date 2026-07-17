@@ -368,3 +368,12 @@
 - The database-free route smoke verifies the endpoint.
 - Generated robots rules disallow crawling of all preview routes.
 - No monitoring service, dependency, schema, secret or environment variable is added.
+
+## Phase 2Q Acceptance
+
+- The dashboard groups overdue, due-soon and expiring task, reminder and warranty records.
+- Urgency uses the existing Australia/Brisbane date rules.
+- Each item links to its existing detail route.
+- Normal future and missing-date records do not appear as urgent.
+- Database and sample modes remain useful without build-time database access.
+- No notification, scheduler, mutation, schema or external service is added.
