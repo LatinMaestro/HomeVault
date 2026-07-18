@@ -6,6 +6,7 @@ import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
+import { NativeShareButton } from "@/components/native-share-button";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,11 @@ export default async function AssetDetailPage({
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
               <BackLinkButton href="/vault/assets">Back to assets</BackLinkButton>
+              <NativeShareButton
+                title={asset.data.name}
+                path={`/vault/assets/${asset.data.id}`}
+                description="View this household asset in HomeVault."
+              />
               <Button asChild variant="outline">
                 <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit asset</Link>
               </Button>
