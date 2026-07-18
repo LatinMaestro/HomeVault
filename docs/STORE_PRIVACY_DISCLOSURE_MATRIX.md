@@ -72,7 +72,7 @@ Google's definition of sharing contains processor and service-provider exception
 | Resend | Sends verification and password-recovery email | Processes recipient email and transactional content | None |
 | Better Auth | Application authentication library | Processes credential, session and verification records | None |
 | Prisma PostgreSQL adapter | Server database access library | Processes database queries in the application runtime | None |
-| Capacitor core and native plugins | iOS/Android container, connectivity, app lifecycle, status bar and privacy screen | No independent server-side collection identified | None |
+| Capacitor core and native plugins | iOS/Android container, connectivity, app lifecycle, status bar, privacy screen and user-initiated share sheet | No independent server-side collection identified; share content goes only to the destination chosen by the user | None |
 | GitHub Actions | Build and release automation | Must receive signing secrets only; no production household data | None |
 
 Store signing providers, customer support tools or crash reporting must be added to this register before use. No crash-reporting or analytics SDK is currently approved.
