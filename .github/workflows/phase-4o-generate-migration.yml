@@ -1,0 +1,48 @@
+name: Generate Phase 4O migration baseline
+
+on:
+  push:
+    branches:
+      - agent/phase-4o-production-migration-readiness
+    paths:
+      - .github/workflows/phase-4o-generate-migration.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+        with:
+          ref: agent/phase-4o-production-migration-readiness
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.4.0
+        with:
+          version: 10.28.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate reviewed baseline
+        run: |
+          mkdir -p prisma/migrations/0001_homevault_baseline
+          pnpm exec prisma migrate diff --from-empty --to-schema prisma/schema.prisma --script > prisma/migrations/0001_homevault_baseline/migration.sql
+          printf 'provider = "postgresql"\n' > prisma/migrations/migration_lock.toml
+
+      - name: Commit generated migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prisma/migrations
+          git commit -m "Add production migration baseline"
+          git push
