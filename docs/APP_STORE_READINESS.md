@@ -123,7 +123,7 @@ The following require separate product and privacy approval:
 
 - Production identity, email delivery, database migrations and private Blob are implemented but not all live-enabled and end-to-end tested.
 - Preview privacy/support/deletion routes exist, but final legal identity and contact URLs are not confirmed.
-- Native iOS and Android projects compile unsigned; distribution signing is not connected.
+- Native iOS and Android Debug/Release configurations compile unsigned, and the manual signed-artifact workflow is ready; distribution signing credentials are not connected.
 - Branded raster app icons exist, while final store screenshots and promotional artwork remain.
 - Apple Developer and Google Play app records, signing and policy declarations are not connected.
 - Final Vercel, TestFlight, Play internal-test and physical-device review is pending.
@@ -178,9 +178,10 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [x] Branded iOS and Android icon/splash resources are generated.
 - [x] Cleartext and mixed-content runtime access are disabled.
 - [x] Trusted links, native back behaviour, connectivity fallback and status bars are integrated.
-- [x] GitHub Actions compiles unsigned Android debug and iOS Simulator candidates.
+- [x] GitHub Actions compiles Android Debug/unsigned Release and iOS Debug/Release Simulator candidates.
+- [x] A fail-closed manual workflow is ready to create signed AAB and IPA artifacts without automatic store upload.
 - [ ] Confirm identifiers in Apple Developer and Google Play Console.
-- [ ] Connect signing and compile distributable archive/bundle artifacts.
+- [ ] Connect protected cloud signing secrets and compile distributable archive/bundle artifacts.
 - [ ] Complete TestFlight and Google Play internal testing on physical devices.
 
 
@@ -193,3 +194,16 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [x] Website association endpoints fail closed without signing identities.
 - [ ] Configure Apple Team ID and Play App Signing fingerprint.
 - [ ] Verify Universal Links and Android App Links on signed physical-device builds.
+
+
+## Native Release Automation Evidence
+
+- [x] Release version and build-number inputs are validated before signing.
+- [x] Android signing material is restored only inside the temporary cloud runner.
+- [x] Apple signing uses a temporary keychain and provisioning-profile installation with cleanup.
+- [x] Signed artifacts have short retention and are not submitted automatically.
+- [ ] Create and protect the GitHub `native-release` environment.
+- [ ] Supply client-owned Apple and Android signing secrets.
+- [ ] Produce, inspect and internally distribute the first signed candidates.
+
+See `docs/NATIVE_RELEASE_OPERATIONS.md`.

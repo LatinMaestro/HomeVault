@@ -1035,3 +1035,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - The `homevault://` custom scheme works independently of store signing.
 - Verified HTTPS link files return 404 until Apple Team ID and Play signing fingerprint pass strict validation.
 - Universal/App Link verification and physical-device testing remain signing-stage gates.
+
+
+## 2026-07-18 - Native Signing Is Manual, Cloud-held And Non-submitting
+
+**Decision:** Prove both native Release configurations on every relevant pull request, and create signed AAB/IPA artifacts only through an explicitly dispatched GitHub Actions workflow using protected client-owned secrets. Do not upload to either store automatically.
+
+**Rationale:** Reproducible release engineering should be complete before store accounts are connected, but signing identity and public distribution remain consequential client controls. Separating compilation from signing preserves review evidence without exposing credentials or accidentally releasing a build.
+
+**Consequences:**
+
+- Android and iOS Debug/Release configurations receive cloud compile evidence.
+- Marketing version and build number are explicit, validated release inputs.
+- Android keystores and Apple certificates/profiles exist only on temporary runners.
+- Signed artifacts expire after 14 days and require human inspection.
+- TestFlight and Google Play internal testing remain mandatory handoff gates.
+- Store credentials, legal identity, signing setup and public submission remain client-owned actions.
