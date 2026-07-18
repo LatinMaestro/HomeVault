@@ -124,7 +124,7 @@ The following require separate product and privacy approval:
 - Production identity, email delivery, database migrations and private Blob are implemented but not all live-enabled and end-to-end tested.
 - Preview privacy/support/deletion routes exist, but final legal identity and contact URLs are not confirmed.
 - Native iOS and Android Debug/Release configurations compile unsigned, and the manual signed-artifact workflow is ready; distribution signing credentials are not connected.
-- Branded raster app icons exist, while final store screenshots and promotional artwork remain.
+- Branded raster app icons and an iOS privacy manifest exist, while final store screenshots and promotional artwork remain.
 - Apple Developer and Google Play app records, signing and policy declarations are not connected.
 - Final Vercel, TestFlight, Play internal-test and physical-device review is pending.
 
@@ -207,3 +207,17 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [ ] Produce, inspect and internally distribute the first signed candidates.
 
 See `docs/NATIVE_RELEASE_OPERATIONS.md`.
+
+
+## Store Privacy Package Evidence
+
+- [x] The iOS app target bundles `PrivacyInfo.xcprivacy`.
+- [x] The manifest explicitly disables tracking and tracking domains.
+- [x] Current account, household, purchase-metadata and attachment data classes are declared for app functionality.
+- [x] CI verifies the privacy manifest remains bundled and aligned with the approved classes.
+- [x] Apple App Privacy and Google Play Data safety draft answers are mapped to the production data and processor inventory.
+- [ ] Inspect the final signed Xcode privacy report and Android merged manifest.
+- [ ] Confirm production vendor contracts, regions, backup/log retention and legal entity.
+- [ ] Submit matching declarations in App Store Connect and Play Console.
+
+See `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md`.

@@ -98,3 +98,15 @@
 - [ ] Verify signed Universal Links and Android App Links on physical devices.
 - [ ] Upload first to TestFlight and Google Play internal testing, never directly to public release.
 - [ ] Complete final account, attachment, export, recovery and deletion tests.
+
+
+## Store Privacy Checklist
+
+- [x] iOS privacy manifest is bundled and contract-tested.
+- [x] Tracking and tracking domains are explicitly disabled.
+- [x] Current account, household, purchase-metadata and attachment classes are mapped.
+- [x] Processor and native SDK inventory is documented.
+- [ ] Inspect the final Xcode privacy report and Android merged manifest.
+- [ ] Confirm production processor contracts, regions and backup/log retention.
+- [ ] Publish final legal privacy copy naming the client-controlled developer entity.
+- [ ] Submit Apple App Privacy and Google Play Data safety answers matching the signed build.

@@ -699,3 +699,21 @@ Next: add universal/app-link declarations and native privacy hardening, then pre
 - Publish association responses only after valid client-owned signing identities are configured.
 
 Next: add signed-release workflow templates and complete store listing/reviewer packages while production service credentials remain pending.
+
+
+## Phase 4T - Native Release Pipeline (Complete)
+
+- Compile Android Debug and unsigned Release bundle configurations in cloud CI.
+- Compile iOS Debug and Release Simulator configurations in cloud CI.
+- Keep signing material in a protected GitHub environment and temporary runners only.
+- Provide a manually dispatched signed AAB/IPA artifact workflow with no automatic store submission.
+- Document versioning, signing and internal-distribution handoff.
+
+## Phase 4U - Store Privacy Package (Complete)
+
+- Bundle an iOS privacy manifest that declares current linked data classes for app functionality and disables tracking.
+- Lock the manifest and Xcode target inclusion with unit and native compile checks.
+- Map current production data, processors, retention and deletion behavior to draft Apple App Privacy and Google Play Data safety answers.
+- Refresh the privacy architecture documentation to match implemented auth, storage and native boundaries.
+
+Next: complete the store reviewer package and release metadata, then run production service enablement and final end-to-end validation when client-owned credentials and legal/store inputs are available.

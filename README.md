@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4T is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4U is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4T Native Release Pipeline` complete
+- Phase: `4U Store Privacy Package` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: verified entry, recovery, onboarding, household authorization, profile/password/session controls, protected exports and password-confirmed account deletion are implemented fail-closed; production service enablement follows
 - Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
@@ -27,7 +27,7 @@ Phase 4T is complete. HomeVault provides guarded household record workflows with
 - Recovery: searchable, type-filterable archive view for inactive assets, closed maintenance tasks and finished reminders
 - Onboarding: a derived six-step household setup guide with no tracking profile
 - Navigation: a global Quick Add hub for every existing creation workflow
-- Distribution: branded Capacitor iOS and Android projects, native privacy/navigation integration, Debug/Release cloud compilation and a manual fail-closed signed-artifact workflow are in place; signing identities and store submission remain client-owned gates
+- Distribution: branded Capacitor iOS and Android projects, native privacy/navigation integration, Debug/Release cloud compilation, a manual fail-closed signed-artifact workflow and an executable store privacy package are in place; signing identities and store submission remain client-owned gates
 
 ## Default Development Workflow
 
@@ -166,3 +166,8 @@ The repository contains generated iOS and Android projects for `au.com.homevault
 ## Native Privacy And Links
 
 Native household screens are obscured in app-switcher previews; Android also blocks screenshots and device backup. Custom `homevault://` links are registered, while verified HTTPS links stay fail-closed until Apple Team ID and Play signing fingerprint are configured.
+
+
+## Store Privacy Disclosures
+
+The iOS target bundles a no-tracking privacy manifest, and CI locks its current account, household, purchase-metadata and attachment declarations. Draft Apple App Privacy and Google Play Data safety answers are maintained in `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md` and must be confirmed against the signed production build and final vendor contracts.
