@@ -60,12 +60,13 @@ export default async function WarrantyPage({
     );
   }
 
+  const warrantyData = warranty.data;
   return (
     <AppShell activeSection="Warranties">
       <section className="space-y-5">
         <PageHeader
           eyebrow="Warranties"
-          title={warranty.data.assetName}
+          title={warrantyData.assetName}
           description="Review coverage, linked document metadata and recorded follow-ups for this asset."
           action={<BackLinkButton href="/warranties">Back to warranties</BackLinkButton>}
         />
@@ -73,10 +74,10 @@ export default async function WarrantyPage({
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Button asChild variant="secondary">
-            <Link href={`/warranties/${warranty.data.id}/edit`}>Edit warranty</Link>
+            <Link href={`/warranties/${warrantyData.id}/edit`}>Edit warranty</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href={`/vault/assets/${warranty.data.assetId}`}>View covered asset</Link>
+            <Link href={`/vault/assets/${warrantyData.assetId}`}>View covered asset</Link>
           </Button>
         </div>
 
@@ -84,17 +85,17 @@ export default async function WarrantyPage({
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Warranty information</CardTitle>
             <DateStatusBadge
-              status={getDateStatus(warranty.data.expiresAtInput, "warranty")}
+              status={getDateStatus(warrantyData.expiresAtInput, "warranty")}
             />
           </CardHeader>
           <CardContent>
             <FieldList
               fields={[
-                { label: "Provider", value: warranty.data.provider },
-                { label: "Policy number", value: warranty.data.policyNumber },
-                { label: "Starts", value: warranty.data.startsAt },
-                { label: "Expires", value: warranty.data.expiresAt },
-                { label: "Notes", value: warranty.data.notes },
+                { label: "Provider", value: warrantyData.provider },
+                { label: "Policy number", value: warrantyData.policyNumber },
+                { label: "Starts", value: warrantyData.startsAt },
+                { label: "Expires", value: warrantyData.expiresAt },
+                { label: "Notes", value: warrantyData.notes },
               ]}
             />
           </CardContent>
@@ -107,8 +108,8 @@ export default async function WarrantyPage({
               <CardDescription>Document metadata linked to this warranty.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {warranty.data.documents.length > 0 ? (
-                warranty.data.documents.map((document) => (
+              {warrantyData.documents.length > 0 ? (
+                warrantyData.documents.map((document) => (
                   <Link
                     key={document.id}
                     href={`/receipts/${document.id}`}
@@ -132,8 +133,8 @@ export default async function WarrantyPage({
               <CardDescription>Recorded dates linked to this warranty.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {warranty.data.reminders.length > 0 ? (
-                warranty.data.reminders.map((reminder) => (
+              {warrantyData.reminders.length > 0 ? (
+                warrantyData.reminders.map((reminder) => (
                   <Link
                     key={reminder.id}
                     href={`/maintenance/reminders/${reminder.id}`}
