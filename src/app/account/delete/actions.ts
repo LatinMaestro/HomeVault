@@ -32,10 +32,12 @@ export async function deleteAccountAction(
   }
 
   try {
-    await deleteVerifiedAccount(user.id);
+    const result = await deleteVerifiedAccount(user.id);
     return {
       status: "success",
-      message: "Your HomeVault account and eligible household data were deleted.",
+      message: result.attachmentCleanupFailed
+        ? "Your account and household records were deleted. One or more private files need storage cleanup by HomeVault support."
+        : "Your HomeVault account, eligible household data and private files were deleted.",
     };
   } catch (error) {
     if (error instanceof OwnershipTransferRequiredError) {
