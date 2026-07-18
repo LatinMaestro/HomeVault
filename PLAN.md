@@ -659,3 +659,13 @@ See `docs/PHASE_4N_ACCOUNT_DELETION.md` for the completion record.
 - Document restore-point, rehearsal, deployment and rollback gates.
 
 Next: rehearse the baseline on a disposable Neon child branch, then continue private attachment lifecycle foundations while production identity services remain client-controlled.
+
+## Phase 4P - Private Document Attachments (Complete)
+
+- Add private Blob upload, authorised download and explicit removal for Document records.
+- Restrict formats to PDF, JPEG and PNG with a 4 MB server upload limit and signature checks.
+- Keep storage unavailable in sample, preview-identity and incomplete-auth environments.
+- Add additive attachment metadata migration and account-deletion cleanup.
+- Keep private object identifiers out of UI and exports.
+
+Next: close production account management gaps, then package the tested responsive web runtime as iOS and Android release candidates.
