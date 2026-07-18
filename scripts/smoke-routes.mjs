@@ -58,6 +58,7 @@ const routes = [
   "/sign-in",
   "/sign-up",
   "/account",
+  "/onboarding",
   "/settings",
 ];
 
