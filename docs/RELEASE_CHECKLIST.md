@@ -76,3 +76,13 @@
 - [ ] Produce a signed iOS archive and Android App Bundle.
 - [ ] Test account, attachment, offline and deletion workflows through internal distribution.
 - [ ] Complete store policy forms, reviewer access and final screenshots.
+
+
+## Native Privacy And Links Checklist
+
+- [x] App-switcher content is obscured.
+- [x] Android screenshot, backup and cleartext protections are enabled.
+- [x] Custom scheme handling accepts only HomeVault destinations.
+- [ ] Publish signed Apple and Android website association identities.
+- [ ] Test trusted, malformed and external links on both platforms.
+- [ ] Confirm the screenshot restriction matches final support and store-review expectations.
