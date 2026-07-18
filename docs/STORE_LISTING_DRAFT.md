@@ -138,12 +138,13 @@ Document uploads, notification delivery and account sharing must be described on
 
 ## Privacy Disclosure Working Notes
 
-Expected account-based production data may include:
+Expected account-based production data includes:
 
-- account identity such as name and email;
-- household profile and address metadata entered by the user;
-- asset, maintenance, warranty, receipt and document metadata;
-- support communications if support is contacted.
+- account name, verified email and generated user/session identifiers;
+- optional household profile and physical address metadata entered by the user;
+- optional asset, room, maintenance, warranty, reminder, provider and receipt metadata;
+- optional private PDF, JPEG or PNG document attachments;
+- support communications only if the user separately contacts support.
 
 Current product commitments:
 
@@ -155,7 +156,7 @@ Current product commitments:
 - account and associated-data deletion;
 - data minimisation.
 
-Final Apple privacy labels and Google Data safety answers must be generated from the actual production code, native SDK inventory and vendor contracts.
+The engineering draft for Apple privacy labels and Google Data safety answers is maintained in `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md`. Final declarations must be checked against the signed production build, native SDK inventory and vendor contracts.
 
 ## Client-controlled Submission Inputs
 
