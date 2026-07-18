@@ -24,6 +24,18 @@ export function DeleteAccountForm() {
   return (
     <form action={action} className="space-y-5">
       <div className="space-y-2">
+        <label className="text-sm font-medium text-foreground" htmlFor="delete-password">
+          Current password
+        </label>
+        <Input
+          id="delete-password"
+          name="password"
+          type="password"
+          autoComplete="current-password"
+          required
+        />
+      </div>
+      <div className="space-y-2">
         <label className="text-sm font-medium text-foreground" htmlFor="confirmation">
           Type DELETE to confirm
         </label>

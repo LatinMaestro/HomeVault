@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ShieldCheck, Trash2, UserRound } from "lucide-react";
 
+import { AccountSecurityControls } from "@/components/account-security-controls";
 import { AppShell } from "@/components/app-shell";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Badge } from "@/components/ui/badge";
@@ -88,6 +89,8 @@ export default async function AccountPage() {
             )}
           </CardContent>
         </Card>
+        <AccountSecurityControls currentName={user.name} />
+
         <Card>
           <CardHeader>
             <div className="flex items-start gap-3">

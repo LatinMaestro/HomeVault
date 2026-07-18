@@ -1,5 +1,7 @@
 "use server";
 
+import { headers } from "next/headers";
+
 import {
   OwnershipTransferRequiredError,
   deleteVerifiedAccount,
@@ -23,11 +25,36 @@ export async function deleteAccountAction(
     };
   }
 
+  const passwordValue = formData.get("password");
+  const password = typeof passwordValue === "string" ? passwordValue : "";
+  if (!password) {
+    return {
+      status: "error",
+      message: "Enter your current password to confirm account deletion.",
+    };
+  }
+
   const user = await getCurrentVerifiedSessionUser();
   if (!user) {
     return {
       status: "error",
       message: "Your verified session is unavailable. Sign in again before deleting the account.",
+    };
+  }
+
+  try {
+    const [{ auth }, requestHeaders] = await Promise.all([
+      import("@/lib/auth"),
+      headers(),
+    ]);
+    await auth.api.verifyPassword({
+      body: { password },
+      headers: requestHeaders,
+    });
+  } catch {
+    return {
+      status: "error",
+      message: "The current password was not accepted. Nothing was deleted.",
     };
   }
 

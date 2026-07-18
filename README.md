@@ -2,13 +2,13 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4P is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4Q is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4P Private Document Attachments` complete
+- Phase: `4Q Account Security Controls` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
-- Auth: verified entry, recovery readiness, onboarding, household authorization, protected exports and in-app account deletion are implemented fail-closed; production migration and service enablement follow
+- Auth: verified entry, recovery, onboarding, household authorization, profile/password/session controls, protected exports and password-confirmed account deletion are implemented fail-closed; production service enablement follows
 - Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
 - Mutations: existing create/edit and additive maintenance completion actions require writable OWNER or ADULT household access; controlled synthetic preview remains isolated while production auth is disabled
 - Storage: guarded private PDF/JPEG/PNG attachment lifecycle is implemented; live use remains disabled until a private Vercel Blob store and production identity are connected

@@ -104,3 +104,8 @@ A verified user can delete their account in-app. The transaction removes the Use
 ## Private Attachments
 
 Document attachments are limited to small PDF, JPEG and PNG files in a Vercel Private Blob store. Upload and removal require an authenticated writable household role; download requires authenticated membership in the same household. Storage keys and private provider URLs are not exposed in browser data or portable exports. File responses are no-store downloads with content sniffing disabled. Format signatures are validated, but HomeVault does not claim to provide malware scanning.
+
+
+## Account Security Controls
+
+Verified users can update their display name, change their password and revoke other active sessions. Password changes require the current password and revoke other devices. Permanent deletion separately re-verifies the current password before any database transaction begins. Account email changes remain disabled pending a dedicated verified-email transition design.

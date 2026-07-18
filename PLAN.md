@@ -669,3 +669,13 @@ Next: rehearse the baseline on a disposable Neon child branch, then continue pri
 - Keep private object identifiers out of UI and exports.
 
 Next: close production account management gaps, then package the tested responsive web runtime as iOS and Android release candidates.
+
+## Phase 4Q - Account Security Controls (Complete)
+
+- Allow a verified user to update their display name.
+- Allow password change with current-password verification and other-session revocation.
+- Allow the current device to revoke every other session.
+- Require current-password verification before permanent account deletion.
+- Keep account email changes disabled until the verified-email transition is separately reviewed.
+
+Next: create native iOS and Android wrapper foundations around the production web runtime, then close store metadata, signing and final service gates.
