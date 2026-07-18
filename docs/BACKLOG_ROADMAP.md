@@ -169,3 +169,12 @@ Locked self-hosted Better Auth, verified email/password, HomeVault-owned househo
 ## Phase 4F Complete
 
 Added the fail-closed Better Auth package, schema and runtime foundation. Live signup, email delivery, onboarding and household authorisation remain disabled until their dedicated phases and provider gate.
+
+
+## Phase 4G Completed
+
+- [x] Resolve verified sessions to immutable application users.
+- [x] Require explicit household membership before selecting a home.
+- [x] Prevent authenticated environments from falling back to preview access.
+- [x] Define shared write, administration and cross-household scope rules.
+- [ ] Migrate every database read and mutation to the household access boundary.
