@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import {
+  getCurrentHouseholdWriteContext,
+  type HouseholdWriteContext,
+} from "@/lib/household-access";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 export type RecordActionState = {
@@ -39,10 +41,11 @@ function getAmountCents(value: string) {
     : undefined;
 }
 
-async function getAssetId(homeId: string, assetName: string) {
+async function getAssetId(context: HouseholdWriteContext, assetName: string) {
+  const homeId = context.homeId;
   if (!assetName) return null;
 
-  const asset = await getDb().asset.findFirst({
+  const asset = await context.db.asset.findFirst({
     where: {
       homeId,
       name: { equals: assetName, mode: "insensitive" },
@@ -67,11 +70,9 @@ function unknownFailureState(recordType: "receipt" | "document"): RecordActionSt
   };
 }
 
-async function resolveHomeAndAsset(assetName: string) {
-  const homeId = await getCurrentHomeId();
-  if (!homeId) return { homeId: null, assetId: null };
-
-  const assetId = await getAssetId(homeId, assetName);
+async function resolveHomeAndAsset(context: HouseholdWriteContext, assetName: string) {
+  const homeId = context.homeId;
+  const assetId = await getAssetId(context, assetName);
   return { homeId, assetId };
 }
 
@@ -133,14 +134,16 @@ export async function createReceiptAction(
   const values = getReceiptValues(formData);
   const invalidState = invalidReceiptState(values);
   if (invalidState) return invalidState;
-  if (!isPreviewDatabaseEnabled()) return unavailableState("receipt");
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState("receipt");
 
   try {
-    const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
+    const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
     if (!homeId) return missingHomeState();
     if (values.assetName && !assetId) return unmatchedAssetState();
 
-    const receipt = await getDb().receipt.create({
+    const receipt = await context.db.receipt.create({
       data: {
         homeId,
         assetId,
@@ -169,14 +172,16 @@ export async function updateReceiptAction(
   const values = getReceiptValues(formData);
   const invalidState = invalidReceiptState(values);
   if (invalidState) return invalidState;
-  if (!isPreviewDatabaseEnabled()) return unavailableState("receipt");
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState("receipt");
 
   try {
-    const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
+    const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
     if (!homeId) return missingHomeState();
     if (values.assetName && !assetId) return unmatchedAssetState();
 
-    const receipt = await getDb().receipt.findFirst({
+    const receipt = await context.db.receipt.findFirst({
       where: { id: receiptId, homeId },
       select: { id: true, assetId: true },
     });
@@ -184,7 +189,7 @@ export async function updateReceiptAction(
       return { status: "error", message: "This receipt was not found in the configured database. Nothing was changed." };
     }
 
-    await getDb().receipt.update({
+    await context.db.receipt.update({
       where: { id: receiptId },
       data: {
         assetId,
@@ -239,14 +244,16 @@ export async function createDocumentAction(
   const values = getDocumentValues(formData);
   const invalidState = invalidDocumentState(values);
   if (invalidState || !values.type) return invalidState ?? unknownFailureState("document");
-  if (!isPreviewDatabaseEnabled()) return unavailableState("document");
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState("document");
 
   try {
-    const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
+    const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
     if (!homeId) return missingHomeState();
     if (values.assetName && !assetId) return unmatchedAssetState();
 
-    const document = await getDb().document.create({
+    const document = await context.db.document.create({
       data: {
         homeId,
         assetId,
@@ -273,14 +280,16 @@ export async function updateDocumentAction(
   const values = getDocumentValues(formData);
   const invalidState = invalidDocumentState(values);
   if (invalidState || !values.type) return invalidState ?? unknownFailureState("document");
-  if (!isPreviewDatabaseEnabled()) return unavailableState("document");
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState("document");
 
   try {
-    const { homeId, assetId } = await resolveHomeAndAsset(values.assetName);
+    const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
     if (!homeId) return missingHomeState();
     if (values.assetName && !assetId) return unmatchedAssetState();
 
-    const document = await getDb().document.findFirst({
+    const document = await context.db.document.findFirst({
       where: { id: documentId, homeId },
       select: { id: true, assetId: true },
     });
@@ -288,7 +297,7 @@ export async function updateDocumentAction(
       return { status: "error", message: "This document was not found in the configured database. Nothing was changed." };
     }
 
-    await getDb().document.update({
+    await context.db.document.update({
       where: { id: documentId },
       data: {
         assetId,
