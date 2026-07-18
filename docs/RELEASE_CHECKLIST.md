@@ -51,3 +51,15 @@
 - [ ] Add `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled` to Vercel Preview only.
 - [ ] Redeploy and verify database-backed read/write workflows.
 - [ ] Keep all production database variables unset until authentication and authorisation are complete.
+
+
+## Production Database Checklist
+
+- [x] A reviewed PostgreSQL migration baseline is committed.
+- [x] CI checks model coverage and destructive baseline SQL.
+- [x] Production status and deploy commands are documented.
+- [ ] Rehearse the baseline on a disposable Neon child branch.
+- [ ] Confirm the production Neon target and a current restore point.
+- [ ] Apply migrations from a controlled cloud environment, never during a Vercel build.
+- [ ] Confirm migration status and application tables after deployment.
+- [ ] Do not run the synthetic seed against production.

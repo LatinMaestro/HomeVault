@@ -649,3 +649,13 @@ See `docs/PHASE_4M_PASSWORD_RECOVERY.md` for the completion record.
 Phase 4N added signed-in account deletion, sole-member household cascade deletion, ownership-transfer blocking, protected exports and a public store-policy deletion route.
 
 See `docs/PHASE_4N_ACCOUNT_DELETION.md` for the completion record.
+
+## Phase 4O - Production Migration Readiness (Complete)
+
+- Commit the PostgreSQL migration baseline for all application and Better Auth models.
+- Validate the baseline in CI for model coverage and destructive SQL.
+- Add cloud-only status and deploy commands.
+- Keep migrations out of Vercel build and keep the live Neon default branch unchanged.
+- Document restore-point, rehearsal, deployment and rollback gates.
+
+Next: rehearse the baseline on a disposable Neon child branch, then continue private attachment lifecycle foundations while production identity services remain client-controlled.

@@ -2,14 +2,14 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4N is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4O is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4N Account Export And Deletion` complete
+- Phase: `4O Production Migration Readiness` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: verified entry, recovery readiness, onboarding, household authorization, protected exports and in-app account deletion are implemented fail-closed; production migration and service enablement follow
-- Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; canonical demo seeding is repeat-safe
+- Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
 - Mutations: existing create/edit and additive maintenance completion actions require writable OWNER or ADULT household access; controlled synthetic preview remains isolated while production auth is disabled
 - Storage: Vercel Private Blob selected; provisioning and uploads follow production identity
 - Current review posture: fallback-safe and contract-tested online for routes, authenticated navigation, household data boundaries, security headers, health, install metadata, crawler rules and the non-sensitive offline shell
@@ -68,6 +68,9 @@ npm run build
 npm run smoke:routes
 npm run prisma:validate
 npm run prisma:generate
+npm run check:migrations
+npm run db:migrate:status
+npm run db:migrate:deploy
 npm run db:push
 npm run db:seed
 ```
@@ -147,3 +150,7 @@ When Vercel usage is capped, batch app changes into fewer PRs and use GitHub Act
 HomeVault does not have production authentication yet. To prevent an attached database from becoming a public shared household, `DATABASE_URL` alone does not enable runtime reads or writes. Controlled non-sensitive preview access additionally requires `HOMEVAULT_PREVIEW_DATABASE_ACCESS=enabled`.
 
 Do not enable this switch for real household data or treat it as authentication. Production release must replace the temporary current-home resolver with signed-in, server-authorised household access.
+
+## Production Database Migrations
+
+Production schema changes use reviewed Prisma migrations and `prisma migrate deploy`; Vercel builds do not execute migrations. The initial baseline is committed but has not been applied to the Neon default branch. See `docs/PRODUCTION_DATABASE_OPERATIONS.md` for the cloud-first runbook and restore-point gate.

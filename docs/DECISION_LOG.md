@@ -956,3 +956,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Household records cascade only when that user is the sole member.
 - Ownership transfer must exist before advanced sharing can support owner departure.
 - Private Blob deletion joins this transaction boundary through a compensating storage workflow later.
+
+
+## 2026-07-18 - Production Schema Changes Use Reviewed Migrations
+
+**Decision:** Establish a generated PostgreSQL migration baseline and use `prisma migrate deploy` from a controlled cloud environment for production changes. Keep migration execution outside Vercel builds.
+
+**Rationale:** Production schema history must be reviewable, repeatable and independent from web compilation. `db push` is appropriate for disposable preview work but does not provide the deployment record or review gate required for household data.
+
+**Consequences:**
+
+- The baseline covers every current Prisma model and enum.
+- CI rejects incomplete or destructive baseline SQL.
+- Vercel can build with no database connection and never applies schema changes implicitly.
+- The Neon default branch remains unchanged until its target and restore point are confirmed.
+- Synthetic seed data remains prohibited in production.
+- Future schema changes require additive, reviewed migration directories.
