@@ -70,9 +70,10 @@
 - [x] iOS and Android source projects are committed.
 - [x] Platform projects synchronise from the locked Capacitor dependencies.
 - [x] Branded app icons and splash resources are generated.
-- [x] Unsigned Android debug and iOS Simulator cloud builds are configured.
+- [x] Android Debug/unsigned Release and iOS Debug/Release Simulator cloud builds are configured.
+- [x] Manual signed AAB/IPA artifact workflow is fail-closed and does not auto-submit.
 - [ ] Confirm bundle/application IDs in both developer accounts.
-- [ ] Configure cloud-held signing credentials.
+- [ ] Protect the GitHub `native-release` environment and configure cloud-held signing credentials.
 - [ ] Produce a signed iOS archive and Android App Bundle.
 - [ ] Test account, attachment, offline and deletion workflows through internal distribution.
 - [ ] Complete store policy forms, reviewer access and final screenshots.
@@ -86,3 +87,14 @@
 - [ ] Publish signed Apple and Android website association identities.
 - [ ] Test trusted, malformed and external links on both platforms.
 - [ ] Confirm the screenshot restriction matches final support and store-review expectations.
+
+
+## Signed Candidate Checklist
+
+- [ ] Run only from a reviewed `main` commit with green standard and Native CI.
+- [ ] Use a unique positive build number and three-part marketing version.
+- [ ] Keep all signing inputs in protected GitHub environment secrets.
+- [ ] Inspect the workflow provenance and signed artifacts before store upload.
+- [ ] Verify signed Universal Links and Android App Links on physical devices.
+- [ ] Upload first to TestFlight and Google Play internal testing, never directly to public release.
+- [ ] Complete final account, attachment, export, recovery and deletion tests.
