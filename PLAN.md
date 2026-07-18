@@ -635,3 +635,10 @@ See `docs/PHASE_4K_FIRST_HOUSEHOLD.md` for the completion record.
 Phase 4L made the shared household shell redirect unauthenticated users to sign in and verified users without membership to onboarding whenever production auth is configured. Privacy, support and offline access remain public.
 
 See `docs/PHASE_4L_PROTECTED_NAVIGATION.md` for the completion record.
+
+
+## Phase 4M: Password Recovery And Email Adapter - Complete
+
+Phase 4M added fail-closed Resend delivery code plus enumeration-safe password reset request and completion screens. Live email remains disabled until the client owns and configures a verified sender and managed credential.
+
+See `docs/PHASE_4M_PASSWORD_RECOVERY.md` for the completion record.

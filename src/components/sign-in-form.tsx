@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LogIn } from "lucide-react";
 
@@ -68,6 +69,11 @@ export function SignInForm() {
         <LogIn className="h-4 w-4" aria-hidden="true" />
         {pending ? "Signing in..." : "Sign in"}
       </Button>
+      <p className="text-center text-sm">
+        <Link className="font-medium text-primary hover:underline" href="/forgot-password">
+          Forgot your password?
+        </Link>
+      </p>
     </form>
   );
 }

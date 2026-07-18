@@ -10,6 +10,7 @@ const keys = [
   "AUTH_SIGNUP_ENABLED",
   "AUTH_EMAIL_FROM",
   "AUTH_EMAIL_PROVIDER",
+  "RESEND_API_KEY",
 ] as const;
 
 function withEnvironment(
@@ -66,6 +67,10 @@ test("signup requires explicit enablement and configured email delivery", () => 
   );
   withEnvironment(
     { ...base, AUTH_EMAIL_PROVIDER: "resend" },
+    () => assert.equal(isAuthSignupEnabled(), false),
+  );
+  withEnvironment(
+    { ...base, AUTH_EMAIL_PROVIDER: "resend", RESEND_API_KEY: "re_test" },
     () => assert.equal(isAuthSignupEnabled(), true),
   );
   withEnvironment(
@@ -73,6 +78,7 @@ test("signup requires explicit enablement and configured email delivery", () => 
       ...base,
       AUTH_EMAIL_PROVIDER: "resend",
       AUTH_SIGNUP_ENABLED: "TRUE",
+      RESEND_API_KEY: "re_test",
     },
     () => assert.equal(isAuthSignupEnabled(), false),
   );
