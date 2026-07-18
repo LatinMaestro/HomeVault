@@ -110,3 +110,12 @@
 - [ ] Confirm production processor contracts, regions and backup/log retention.
 - [ ] Publish final legal privacy copy naming the client-controlled developer entity.
 - [ ] Submit Apple App Privacy and Google Play Data safety answers matching the signed build.
+
+
+## Native Sharing Checklist
+
+- [x] Shared links remain on the current HomeVault origin.
+- [x] Share payloads omit private record fields and attachment URLs.
+- [x] Existing account and household checks protect opened links.
+- [ ] Verify share, cancel and unsupported states on signed iOS and Android devices.
+- [ ] Verify received links through authorised and unauthorised accounts.
