@@ -972,3 +972,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - The Neon default branch remains unchanged until its target and restore point are confirmed.
 - Synthetic seed data remains prohibited in production.
 - Future schema changes require additive, reviewed migration directories.
+
+
+## 2026-07-18 - Attachments Are Private, Small And Document-scoped
+
+**Decision:** Store at most one PDF, JPEG or PNG attachment up to 4 MB on a Document record using Vercel Private Blob, with every read and write passing through verified household authorisation.
+
+**Rationale:** Receipts, manuals and warranty evidence are sensitive household records. A narrow server-upload flow is beginner-friendly and remains below Vercel's function request ceiling while production storage usage is established.
+
+**Consequences:**
+
+- Preview identities cannot upload or download attachments.
+- Private Blob URLs and storage keys are never rendered or exported.
+- Filename, media type, size, upload date and ETag are stored as metadata.
+- Upload failure uses compensating cleanup; removal restores metadata when Blob deletion fails.
+- Sole-member household account deletion attempts to remove associated private objects.
+- OCR, AI classification, email ingestion, malware scanning and multi-file galleries remain out of scope.
