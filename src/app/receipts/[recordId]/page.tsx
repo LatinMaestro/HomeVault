@@ -7,6 +7,7 @@ import { DataSourceNote } from "@/components/data-source-note";
 import { DocumentAttachmentPanel } from "@/components/document-attachment-panel";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
+import { NativeShareButton } from "@/components/native-share-button";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -57,8 +58,9 @@ export default async function RecordPage({
     );
   }
 
+  const recordData = record.data;
   const attachmentEnabled =
-    record.data.type === "Document" &&
+    recordData.type === "Document" &&
     record.source === "database" &&
     isAuthRuntimeConfigured() &&
     isAttachmentStorageConfigured() &&
@@ -68,14 +70,19 @@ export default async function RecordPage({
     <AppShell activeSection="Receipts">
       <section className="space-y-5">
         <PageHeader
-          eyebrow={record.data.type}
-          title={record.data.title}
+          eyebrow={recordData.type}
+          title={recordData.title}
           description="Household record detail with guarded metadata editing and private attachments when production services are connected."
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
               <BackLinkButton href="/receipts">Back to receipts</BackLinkButton>
+              <NativeShareButton
+                title={recordData.title}
+                path={`/receipts/${recordData.id}`}
+                description="View this household record in HomeVault."
+              />
               <Button asChild variant="outline">
-                <Link href={`/receipts/${record.data.id}/edit`}>Edit metadata</Link>
+                <Link href={`/receipts/${recordData.id}/edit`}>Edit metadata</Link>
               </Button>
             </div>
           }
@@ -89,25 +96,25 @@ export default async function RecordPage({
           <CardContent>
             <FieldList
               fields={[
-                { label: "Type", value: record.data.type },
-                { label: "Details", value: getDisplayLabel(record.data.secondary) },
-                { label: "Date", value: record.data.date },
-                { label: "Linked asset", value: record.data.linkedAsset },
-                { label: "Amount", value: record.data.amount },
-                { label: "File name", value: record.data.fileName },
-                { label: "Notes", value: record.data.notes },
+                { label: "Type", value: recordData.type },
+                { label: "Details", value: getDisplayLabel(recordData.secondary) },
+                { label: "Date", value: recordData.date },
+                { label: "Linked asset", value: recordData.linkedAsset },
+                { label: "Amount", value: recordData.amount },
+                { label: "File name", value: recordData.fileName },
+                { label: "Notes", value: recordData.notes },
               ]}
             />
           </CardContent>
         </Card>
 
-        {record.data.type === "Document" ? (
+        {recordData.type === "Document" ? (
           <DocumentAttachmentPanel
-            documentId={record.data.id}
-            fileName={record.data.hasAttachment ? record.data.fileName : null}
-            contentType={record.data.attachmentContentType}
-            sizeBytes={record.data.attachmentSizeBytes}
-            uploadedAt={record.data.attachmentUploadedAt}
+            documentId={recordData.id}
+            fileName={recordData.hasAttachment ? recordData.fileName : null}
+            contentType={recordData.attachmentContentType}
+            sizeBytes={recordData.attachmentSizeBytes}
+            uploadedAt={recordData.attachmentUploadedAt}
             enabled={attachmentEnabled}
           />
         ) : null}
@@ -120,47 +127,47 @@ export default async function RecordPage({
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {record.data.linkedAssetId ||
-            record.data.linkedWarrantyId ||
-            record.data.linkedReceiptId ||
-            record.data.linkedMaintenanceTaskId ||
-            (record.data.relatedDocuments?.length ?? 0) > 0 ? (
+            {recordData.linkedAssetId ||
+            recordData.linkedWarrantyId ||
+            recordData.linkedReceiptId ||
+            recordData.linkedMaintenanceTaskId ||
+            (recordData.relatedDocuments?.length ?? 0) > 0 ? (
               <>
                 <div className="flex flex-wrap gap-2">
-                  {record.data.linkedAssetId ? (
+                  {recordData.linkedAssetId ? (
                     <Button asChild variant="outline" size="sm">
-                      <Link href={`/vault/assets/${record.data.linkedAssetId}`}>
-                        Asset: {record.data.linkedAsset}
+                      <Link href={`/vault/assets/${recordData.linkedAssetId}`}>
+                        Asset: {recordData.linkedAsset}
                       </Link>
                     </Button>
                   ) : null}
-                  {record.data.linkedWarrantyId ? (
+                  {recordData.linkedWarrantyId ? (
                     <Button asChild variant="outline" size="sm">
-                      <Link href={`/warranties/${record.data.linkedWarrantyId}`}>
-                        Warranty: {record.data.linkedWarranty}
+                      <Link href={`/warranties/${recordData.linkedWarrantyId}`}>
+                        Warranty: {recordData.linkedWarranty}
                       </Link>
                     </Button>
                   ) : null}
-                  {record.data.linkedReceiptId ? (
+                  {recordData.linkedReceiptId ? (
                     <Button asChild variant="outline" size="sm">
-                      <Link href={`/receipts/${record.data.linkedReceiptId}`}>
-                        Receipt: {record.data.linkedReceipt}
+                      <Link href={`/receipts/${recordData.linkedReceiptId}`}>
+                        Receipt: {recordData.linkedReceipt}
                       </Link>
                     </Button>
                   ) : null}
-                  {record.data.linkedMaintenanceTaskId ? (
+                  {recordData.linkedMaintenanceTaskId ? (
                     <Button asChild variant="outline" size="sm">
-                      <Link href={`/maintenance/${record.data.linkedMaintenanceTaskId}`}>
-                        Maintenance: {record.data.linkedMaintenanceTask}
+                      <Link href={`/maintenance/${recordData.linkedMaintenanceTaskId}`}>
+                        Maintenance: {recordData.linkedMaintenanceTask}
                       </Link>
                     </Button>
                   ) : null}
                 </div>
 
-                {record.data.relatedDocuments?.length ? (
+                {recordData.relatedDocuments?.length ? (
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-foreground">Related documents</p>
-                    {record.data.relatedDocuments.map((document) => (
+                    {recordData.relatedDocuments.map((document) => (
                       <Link
                         key={document.id}
                         href={`/receipts/${document.id}`}
