@@ -35,7 +35,7 @@ export default function AccountDeletionInfoPage() {
           </CardHeader>
           <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground">
             <p>
-              HomeVault removes the login, sessions and household memberships. If the person is the household's only member, the household and its rooms, assets, maintenance, warranties, receipts, documents and reminders are deleted through database relationships.
+              HomeVault removes the login, sessions and household memberships. If the person is the household&apos;s only member, the household and its rooms, assets, maintenance, warranties, receipts, documents and reminders are deleted through database relationships.
             </p>
             <p>
               An owner cannot leave other members without an owner. Ownership must be transferred before deletion in that situation.
