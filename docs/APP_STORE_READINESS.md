@@ -150,3 +150,14 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - Sole-member household records are deleted through database cascades.
 - Owners cannot abandon remaining members without transfer.
 - Private attachment cleanup remains a release gate until Blob is provisioned.
+
+
+## Attachment Readiness
+
+- [x] Private object-store architecture is implemented.
+- [x] Upload, household-authorised download and removal are fail-closed.
+- [x] File formats and a conservative server-upload size limit are enforced.
+- [x] Account deletion includes private attachment cleanup reporting.
+- [ ] Connect a Vercel Blob store created with Private access.
+- [ ] Validate the lifecycle with a verified production account and non-sensitive test files.
+- [ ] Confirm final privacy disclosures name the storage processor and retention/deletion behaviour.
