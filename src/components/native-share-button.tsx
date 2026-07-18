@@ -5,6 +5,7 @@ import { Share2 } from "lucide-react";
 import { Share } from "@capacitor/share";
 
 import { Button } from "@/components/ui/button";
+import { buildProtectedShareUrl } from "@/lib/native-share";
 
 export function NativeShareButton({
   title,
@@ -42,7 +43,7 @@ export function NativeShareButton({
       await Share.share({
         title,
         text: description ?? `Open ${title} in HomeVault.`,
-        url: new URL(path, window.location.origin).toString(),
+        url: buildProtectedShareUrl(path, window.location.origin),
         dialogTitle: "Share HomeVault record",
       });
     } catch {
