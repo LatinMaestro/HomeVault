@@ -44,16 +44,7 @@ export default async function WarrantyPage({
           <EmptyState
             title="No matching warranty"
             description="The warranty may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <BackLinkButton href="/warranties">Back to warranties</BackLinkButton>
-              <NativeShareButton
-                title={`${warranty.data.assetName} warranty`}
-                path={`/warranties/${warranty.data.id}`}
-                description="View this household warranty in HomeVault."
-              />
-            </div>
-          }
+            action={<BackLinkButton href="/warranties">Back to warranties</BackLinkButton>}
           />
         </section>
       </AppShell>
@@ -79,6 +70,11 @@ export default async function WarrantyPage({
           <Button asChild variant="outline">
             <Link href={`/vault/assets/${warrantyData.assetId}`}>View covered asset</Link>
           </Button>
+          <NativeShareButton
+            title={`${warrantyData.assetName} warranty`}
+            path={`/warranties/${warrantyData.id}`}
+            description="View this household warranty in HomeVault."
+          />
         </div>
 
         <Card>
