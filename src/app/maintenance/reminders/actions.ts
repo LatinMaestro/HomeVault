@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import {
+  getCurrentHouseholdWriteContext,
+  type HouseholdWriteContext,
+} from "@/lib/household-access";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 const reminderStatuses = ["PENDING", "DONE", "SNOOZED", "CANCELLED"] as const;
@@ -53,12 +55,13 @@ function invalidState(values: ReturnType<typeof getValues>): ReminderActionState
 }
 
 async function resolveLinks(
-  homeId: string,
+  context: HouseholdWriteContext,
   assetId: string,
   warrantyId: string,
   taskId: string,
 ) {
-  const db = getDb();
+  const db = context.db;
+  const homeId = context.homeId;
   const [asset, warranty, task] = await Promise.all([
     assetId
       ? db.asset.findFirst({ where: { id: assetId, homeId }, select: { id: true } })
@@ -109,15 +112,17 @@ export async function createReminderAction(
   const values = getValues(formData);
   const invalid = invalidState(values);
   if (invalid || !values.dueAt || !values.status) return invalid ?? unavailableState();
-  if (!isPreviewDatabaseEnabled()) return unavailableState();
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState();
 
   try {
-    const homeId = await getCurrentHomeId();
+    const homeId = context.homeId;
     if (!homeId) {
       return { status: "error", message: "The current home was not found. Nothing was changed." };
     }
 
-    const links = await resolveLinks(homeId, values.assetId, values.warrantyId, values.taskId);
+    const links = await resolveLinks(context, values.assetId, values.warrantyId, values.taskId);
     if (!links) {
       return {
         status: "error",
@@ -125,7 +130,7 @@ export async function createReminderAction(
       };
     }
 
-    const reminder = await getDb().reminder.create({
+    const reminder = await context.db.reminder.create({
       data: {
         homeId,
         ...links,
@@ -158,15 +163,17 @@ export async function updateReminderAction(
   const values = getValues(formData);
   const invalid = invalidState(values);
   if (invalid || !values.dueAt || !values.status) return invalid ?? unavailableState();
-  if (!isPreviewDatabaseEnabled()) return unavailableState();
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState();
 
   try {
-    const homeId = await getCurrentHomeId();
+    const homeId = context.homeId;
     if (!homeId) {
       return { status: "error", message: "The current home was not found. Nothing was changed." };
     }
 
-    const existing = await getDb().reminder.findFirst({
+    const existing = await context.db.reminder.findFirst({
       where: { id: reminderId, homeId },
       select: { id: true, assetId: true, warrantyId: true, taskId: true },
     });
@@ -177,7 +184,7 @@ export async function updateReminderAction(
       };
     }
 
-    const links = await resolveLinks(homeId, values.assetId, values.warrantyId, values.taskId);
+    const links = await resolveLinks(context, values.assetId, values.warrantyId, values.taskId);
     if (!links) {
       return {
         status: "error",
@@ -185,7 +192,7 @@ export async function updateReminderAction(
       };
     }
 
-    await getDb().reminder.update({
+    await context.db.reminder.update({
       where: { id: reminderId },
       data: {
         ...links,
