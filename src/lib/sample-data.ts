@@ -214,6 +214,10 @@ export type RecordSummary = {
 export type RecordDetail = RecordSummary & {
   notes?: string | null;
   fileName?: string | null;
+  hasAttachment?: boolean;
+  attachmentContentType?: string | null;
+  attachmentSizeBytes?: number | null;
+  attachmentUploadedAt?: string | null;
   amount?: string | null;
   merchant?: string | null;
   receiptNumber?: string | null;
