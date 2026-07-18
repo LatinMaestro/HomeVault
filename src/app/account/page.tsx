@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ShieldCheck, UserRound } from "lucide-react";
+import { ShieldCheck, Trash2, UserRound } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { SignOutButton } from "@/components/sign-out-button";
@@ -86,6 +86,27 @@ export default async function AccountPage() {
                 </Button>
               </div>
             )}
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <div className="flex items-start gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-md bg-secondary text-secondary-foreground">
+                <Trash2 className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div>
+                <CardDescription>Account lifecycle</CardDescription>
+                <CardTitle>Export or delete your account</CardTitle>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 sm:flex-row">
+            <Button asChild variant="outline">
+              <a href="/api/export/household.json" download>Export household</a>
+            </Button>
+            <Button asChild variant="destructive">
+              <Link href="/account/delete">Delete account</Link>
+            </Button>
           </CardContent>
         </Card>
       </section>
