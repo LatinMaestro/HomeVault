@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4Q is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4R is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4Q Account Security Controls` complete
+- Phase: `4R Native Platform Foundation` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: verified entry, recovery, onboarding, household authorization, profile/password/session controls, protected exports and password-confirmed account deletion are implemented fail-closed; production service enablement follows
 - Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
@@ -27,7 +27,7 @@ Phase 4Q is complete. HomeVault provides guarded household record workflows with
 - Recovery: searchable, type-filterable archive view for inactive assets, closed maintenance tasks and finished reminders
 - Onboarding: a derived six-step household setup guide with no tracking profile
 - Navigation: a global Quick Add hub for every existing creation workflow
-- Distribution: Apple App Store and Google Play are approved targets; native packaging follows production auth, deletion, privacy and storage gates
+- Distribution: branded Capacitor iOS and Android projects, native connectivity/navigation integration and unsigned cloud builds are now in place; signing and store submission remain client-owned gates
 
 ## Default Development Workflow
 
@@ -158,3 +158,7 @@ Production schema changes use reviewed Prisma migrations and `prisma migrate dep
 ## Private Attachments
 
 Document records support one private PDF, JPEG or PNG attachment up to 4 MB after production identity, migrations and Vercel Private Blob are connected. Downloads pass through household authorisation and never expose a Blob URL directly. See `docs/PRIVATE_ATTACHMENTS.md`.
+
+## Native Candidates
+
+The repository contains generated iOS and Android projects for `au.com.homevault.app`. GitHub Actions synchronises and compiles unsigned Android debug and iOS Simulator candidates. The client does not need local Xcode or Android Studio. See `docs/NATIVE_PLATFORM_DEVELOPMENT.md`.
