@@ -907,3 +907,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - A post-conflict membership check returns the established household when another request won.
 - Additional-home and invitation workflows require separate non-deterministic creation paths later.
 - The synthetic preview identity is never used for onboarding.
+
+
+## 2026-07-18 - Protect The Shared Shell, Keep Data Checks Independent
+
+**Decision:** Enforce verified session and household membership in the shared AppShell when auth is configured, while retaining independent authorisation inside reads and mutations.
+
+**Rationale:** Central navigation protection gives predictable sign-in and onboarding behavior, but a UI shell must never become the only control protecting household records.
+
+**Consequences:**
+
+- Missing or unverified sessions redirect to sign in.
+- Verified users without membership redirect to onboarding.
+- Privacy and support explicitly remain public.
+- No-auth deployments retain sample review without session lookups.
+- Read and write household checks remain authoritative even if a route is later rendered outside AppShell.
+- CI verifies the shared redirects and public-page opt-outs.
