@@ -117,6 +117,10 @@ export async function getCurrentHouseholdWriteContext(): Promise<HouseholdWriteC
   };
 }
 
+export async function isCurrentHouseholdWritable() {
+  return Boolean(await getCurrentHouseholdWriteContext());
+}
+
 export async function requireCurrentHouseholdAccess() {
   const access = await getCurrentHouseholdAccess();
   if (!access) throw new HouseholdAccessError();
