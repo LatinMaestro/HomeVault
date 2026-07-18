@@ -4,6 +4,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { BackLinkButton } from "@/components/back-link-button";
 import { DataSourceNote } from "@/components/data-source-note";
+import { DocumentAttachmentPanel } from "@/components/document-attachment-panel";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { PageHeader } from "@/components/page-header";
@@ -17,6 +18,9 @@ import {
 } from "@/components/ui/card";
 import { getDisplayLabel } from "@/lib/display-labels";
 import { getRecord } from "@/lib/home-data";
+import { isAuthRuntimeConfigured } from "@/lib/auth-config";
+import { isAttachmentStorageConfigured } from "@/lib/attachment-storage";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 export const metadata: Metadata = {
   title: "Receipt or Document Detail",
@@ -53,13 +57,20 @@ export default async function RecordPage({
     );
   }
 
+  const attachmentEnabled =
+    record.data.type === "Document" &&
+    record.source === "database" &&
+    isAuthRuntimeConfigured() &&
+    isAttachmentStorageConfigured() &&
+    (await isCurrentHouseholdWritable());
+
   return (
     <AppShell activeSection="Receipts">
       <section className="space-y-5">
         <PageHeader
           eyebrow={record.data.type}
           title={record.data.title}
-          description="Metadata-only record detail with database-backed editing when persistence is configured. File uploads and storage remain out of scope."
+          description="Household record detail with guarded metadata editing and private attachments when production services are connected."
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
               <BackLinkButton href="/receipts">Back to receipts</BackLinkButton>
@@ -89,6 +100,17 @@ export default async function RecordPage({
             />
           </CardContent>
         </Card>
+
+        {record.data.type === "Document" ? (
+          <DocumentAttachmentPanel
+            documentId={record.data.id}
+            fileName={record.data.hasAttachment ? record.data.fileName : null}
+            contentType={record.data.attachmentContentType}
+            sizeBytes={record.data.attachmentSizeBytes}
+            uploadedAt={record.data.attachmentUploadedAt}
+            enabled={attachmentEnabled}
+          />
+        ) : null}
 
         <Card>
           <CardHeader>
