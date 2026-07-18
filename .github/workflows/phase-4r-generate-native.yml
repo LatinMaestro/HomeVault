@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   generate:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
         with:
@@ -24,20 +24,28 @@ jobs:
         with:
           node-version: 22
           cache: pnpm
-      - run: pnpm add @capacitor/core @capacitor/app @capacitor/network @capacitor/status-bar
-      - run: pnpm add --save-dev @capacitor/cli @capacitor/ios @capacitor/android @capacitor/assets
-      - name: Generate platforms and branded assets
+      - name: Add native dependencies
+        run: |
+          pnpm add @capacitor/core @capacitor/app @capacitor/network @capacitor/status-bar
+          pnpm add --save-dev @capacitor/cli @capacitor/ios @capacitor/android @capacitor/assets
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json pnpm-lock.yaml
+          git commit -m "Add Capacitor dependencies"
+          git push
+      - name: Generate native projects
+        run: |
+          pnpm exec cap add ios
+          pnpm exec cap add android
+          git add ios android
+          git commit -m "Generate iOS and Android projects"
+          git push
+      - name: Generate branded assets
         run: |
           mkdir -p assets
           cp public/icons/homevault.svg assets/logo.svg
-          pnpm exec cap add ios
-          pnpm exec cap add android
           pnpm exec capacitor-assets generate --iconBackgroundColor '#0f766e' --iconBackgroundColorDark '#0f766e' --splashBackgroundColor '#f8faf9' --splashBackgroundColorDark '#102f2b'
           pnpm exec cap sync
-      - name: Commit generated projects
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json pnpm-lock.yaml assets ios android
-          git commit -m "Generate iOS and Android projects"
+          git add assets ios android
+          git commit -m "Generate branded native assets"
           git push
