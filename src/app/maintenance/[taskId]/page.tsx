@@ -11,6 +11,7 @@ import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
 import { MaintenanceCompletionForm } from "@/components/maintenance-form";
+import { NativeShareButton } from "@/components/native-share-button";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,7 +49,16 @@ export default async function MaintenanceTaskPage({
           <EmptyState
             title="No matching maintenance task"
             description="The task may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
+            action={
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>
+              <NativeShareButton
+                title={task.data.title}
+                path={`/maintenance/${task.data.id}`}
+                description="View this household maintenance task in HomeVault."
+              />
+            </div>
+          }
           />
         </section>
       </AppShell>
