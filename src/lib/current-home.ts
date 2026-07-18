@@ -1,10 +1,6 @@
-import { getDb } from "@/lib/db";
+import { getCurrentHouseholdAccess } from "@/lib/household-access";
 
 export async function getCurrentHomeId() {
-  const home = await getDb().home.findFirst({
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
-
-  return home?.id ?? null;
+  const access = await getCurrentHouseholdAccess();
+  return access?.homeId ?? null;
 }
