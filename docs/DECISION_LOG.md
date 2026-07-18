@@ -939,3 +939,20 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Password reset requests use a non-enumerating success message.
 - Existing sessions are revoked after a successful reset.
 - Domain verification, credential setup and live delivery testing remain client-owned gates.
+
+
+## 2026-07-18 - Account Deletion Preserves Household Ownership Invariants
+
+**Decision:** Delete sole-member households with their account, remove only non-owner memberships from shared homes and block an owner from deleting while other members remain.
+
+**Rationale:** Users need direct deletion, but deleting an owner must not silently strand a shared household or expose an unowned authorization state.
+
+**Consequences:**
+
+- The verified session supplies the user ID.
+- DELETE confirmation is required in the UI.
+- Application deletion is one transaction.
+- User, credential account and session rows cascade from the User.
+- Household records cascade only when that user is the sole member.
+- Ownership transfer must exist before advanced sharing can support owner departure.
+- Private Blob deletion joins this transaction boundary through a compensating storage workflow later.
