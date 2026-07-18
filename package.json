@@ -19,7 +19,9 @@
     "prisma:studio": "prisma studio",
     "check:migrations": "node scripts/check-migration-baseline.mjs",
     "db:migrate:status": "prisma migrate status",
-    "db:migrate:deploy": "prisma migrate deploy"
+    "db:migrate:deploy": "prisma migrate deploy",
+    "native:sync": "capacitor sync",
+    "native:doctor": "capacitor doctor"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "1.6.23",
