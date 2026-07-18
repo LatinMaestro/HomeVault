@@ -2,16 +2,16 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4O is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4P is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4O Production Migration Readiness` complete
+- Phase: `4P Private Document Attachments` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: verified entry, recovery readiness, onboarding, household authorization, protected exports and in-app account deletion are implemented fail-closed; production migration and service enablement follow
 - Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
 - Mutations: existing create/edit and additive maintenance completion actions require writable OWNER or ADULT household access; controlled synthetic preview remains isolated while production auth is disabled
-- Storage: Vercel Private Blob selected; provisioning and uploads follow production identity
+- Storage: guarded private PDF/JPEG/PNG attachment lifecycle is implemented; live use remains disabled until a private Vercel Blob store and production identity are connected
 - Current review posture: fallback-safe and contract-tested online for routes, authenticated navigation, household data boundaries, security headers, health, install metadata, crawler rules and the non-sensitive offline shell
 - Home: fallback-safe household snapshot and attention queue for maintenance, reminders, warranties, inventory, receipts and documents
 - Presentation: household-friendly status, frequency and document labels
@@ -154,3 +154,7 @@ Do not enable this switch for real household data or treat it as authentication.
 ## Production Database Migrations
 
 Production schema changes use reviewed Prisma migrations and `prisma migrate deploy`; Vercel builds do not execute migrations. The initial baseline is committed but has not been applied to the Neon default branch. See `docs/PRODUCTION_DATABASE_OPERATIONS.md` for the cloud-first runbook and restore-point gate.
+
+## Private Attachments
+
+Document records support one private PDF, JPEG or PNG attachment up to 4 MB after production identity, migrations and Vercel Private Blob are connected. Downloads pass through household authorisation and never expose a Blob URL directly. See `docs/PRIVATE_ATTACHMENTS.md`.
