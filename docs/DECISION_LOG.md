@@ -844,3 +844,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - OWNER and ADULT may write household records; only OWNER may administer a household.
 - CHILD and GUEST remain read-only until a separately reviewed permissions model exists.
 - The temporary preview resolver remains available only while production auth is absent.
+
+
+## 2026-07-18 - Household Reads Receive Identity Context, Not A Global Home
+
+**Decision:** Pass the resolved access mode, database client and authorised Home ID into every central household read instead of discovering a current home inside individual queries.
+
+**Rationale:** Database availability and household identity are separate concerns. A query can be safe only when its Home ID came from verified membership or the explicitly isolated synthetic preview context.
+
+**Consequences:**
+
+- Authenticated reads cannot select an arbitrary first Home row.
+- Every central query remains scoped by one resolved Home ID.
+- Missing access and database failures return curated sample data while production identity is disabled.
+- CI rejects direct use of the preview switch, temporary current-home helper or unscoped database helper in the central read module.
+- Server Action migration remains the next required production gate.
