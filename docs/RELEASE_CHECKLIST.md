@@ -110,3 +110,14 @@
 - [ ] Confirm production processor contracts, regions and backup/log retention.
 - [ ] Publish final legal privacy copy naming the client-controlled developer entity.
 - [ ] Submit Apple App Privacy and Google Play Data safety answers matching the signed build.
+
+
+## Reviewer Package Checklist
+
+- [x] Reviewer journey and expected authorization behavior are documented.
+- [x] Synthetic account and attachment-fixture rules are documented.
+- [x] Client-owned service, legal and store gates are sequenced.
+- [x] Final web/iOS/Android acceptance protocol exists.
+- [ ] Fill client-owned contact, legal identity, public name and retention values.
+- [ ] Create and verify the synthetic reviewer account.
+- [ ] Complete every applicable final acceptance item on the submitted builds.

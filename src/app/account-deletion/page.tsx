@@ -30,12 +30,12 @@ export default function AccountDeletionInfoPage() {
               In-app deletion
             </CardTitle>
             <CardDescription>
-              Open Account, choose Delete account, review the consequences and type DELETE to confirm.
+              Open Account, choose Delete account, review the consequences, enter the current password and type DELETE to confirm.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground">
             <p>
-              HomeVault removes the login, sessions and household memberships. If the person is the household&apos;s only member, the household and its rooms, assets, maintenance, warranties, receipts, documents and reminders are deleted through database relationships.
+              HomeVault removes the login, sessions and household memberships. If the person is the household&apos;s only member, the household and its rooms, assets, maintenance, warranties, receipts, documents, reminders and private attachments enter the guarded deletion workflow.
             </p>
             <p>
               An owner cannot leave other members without an owner. Ownership must be transferred before deletion in that situation.
@@ -54,7 +54,7 @@ export default function AccountDeletionInfoPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm leading-6 text-muted-foreground">
-            Active application records are removed immediately. Encrypted infrastructure backups may persist for a limited provider retention period before automatic expiry. HomeVault may retain only information required by law or to resolve security and fraud issues.
+            Active application records are removed through the account-deletion workflow. Infrastructure backups and provider logs may expire on provider schedules rather than instantly. Exact production periods and any legally required exceptions will be published in the final privacy policy.
           </CardContent>
         </Card>
       </section>

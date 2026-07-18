@@ -221,3 +221,16 @@ See `docs/NATIVE_RELEASE_OPERATIONS.md`.
 - [ ] Submit matching declarations in App Store Connect and Play Console.
 
 See `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md`.
+
+
+## Reviewer Handoff Evidence
+
+- [x] Reviewer path, expected behaviour and accurate exclusions are documented.
+- [x] Synthetic reviewer-account requirements and harmless attachment fixtures are defined.
+- [x] Client-owned production, legal, Apple, Google and final-approval actions are sequenced.
+- [x] One web/iOS/Android final acceptance protocol is ready.
+- [ ] Create the verified synthetic reviewer account after production services are live.
+- [ ] Supply private review credentials in the store consoles.
+- [ ] Complete and retain the final acceptance evidence.
+
+See `docs/STORE_REVIEWER_PACKAGE.md`, `docs/CLIENT_RELEASE_ACTIONS.md` and `docs/FINAL_ACCEPTANCE_TEST.md`.

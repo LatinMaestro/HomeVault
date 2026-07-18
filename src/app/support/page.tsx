@@ -9,7 +9,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 
 export const metadata: Metadata = {
   title: "Support",
-  description: "HomeVault preview help, troubleshooting and release support information.",
+  description: "HomeVault help, troubleshooting and account support information.",
 };
 
 const helpItems = [
@@ -40,7 +40,7 @@ const helpItems = [
   {
     title: "Privacy or account help",
     description:
-      "The current preview has no production accounts. Public support contact details and an account-deletion path are required before store release.",
+      "Verified accounts include password recovery, session controls, export and deletion when production services are enabled. A public support contact remains required before store release.",
     icon: ShieldCheck,
     href: "/privacy",
     action: "Read privacy information",
@@ -53,8 +53,8 @@ export default function SupportPage() {
       <section className="space-y-5">
         <PageHeader
           eyebrow="Support"
-          title="Help with the HomeVault preview"
-          description="Practical guidance for the current review build. A public support contact and response process will be added before store submission."
+          title="Help with HomeVault"
+          description="Practical guidance for the current app and review builds. A public support contact and response process will be published before store submission."
         />
 
         <div className="grid gap-4 md:grid-cols-2">
