@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import { getCurrentHouseholdWriteContext } from "@/lib/household-access";
 
 export type RoomActionState = {
   status: "idle" | "success" | "error";
@@ -41,13 +40,15 @@ export async function createRoomAction(
     return { status: "error", message: "Add a room name before saving." };
   }
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -96,13 +97,15 @@ export async function updateRoomAction(
     return { status: "error", message: "Add a room name before saving." };
   }
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
