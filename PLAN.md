@@ -621,3 +621,10 @@ See `docs/PHASE_4I_AUTHORISED_MUTATIONS.md` for the completion record.
 Phase 4J added fail-closed sign-in, gated signup, verified account status and sign-out without requiring auth secrets for builds or sample review. Email identity remains separate from household authorisation.
 
 See `docs/PHASE_4J_ACCOUNT_ENTRY.md` for the completion record.
+
+
+## Phase 4K: First Household Onboarding - Complete
+
+Phase 4K lets a verified account create its first Home and OWNER membership atomically, with deterministic race protection and no preview-identity fallback.
+
+See `docs/PHASE_4K_FIRST_HOUSEHOLD.md` for the completion record.

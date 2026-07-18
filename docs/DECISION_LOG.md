@@ -891,3 +891,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Account status reports missing household setup without granting data access.
 - No-secret previews retain a useful sample review path.
 - Social login and account linking remain disabled.
+
+
+## 2026-07-18 - First-home Onboarding Is Atomic And User-deterministic
+
+**Decision:** Create the initial Home and OWNER membership in one transaction using a deterministic Home ID derived from the immutable verified user ID.
+
+**Rationale:** The first account must never receive an orphaned home or duplicate ownership when a mobile retry, double submission or concurrent request occurs.
+
+**Consequences:**
+
+- Form data cannot choose the owner identity.
+- Existing membership makes onboarding idempotent.
+- Concurrent creates compete for one deterministic Home primary key.
+- A post-conflict membership check returns the established household when another request won.
+- Additional-home and invitation workflows require separate non-deterministic creation paths later.
+- The synthetic preview identity is never used for onboarding.
