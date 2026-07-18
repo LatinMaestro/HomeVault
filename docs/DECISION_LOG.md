@@ -1067,3 +1067,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Processor-contract exceptions are not assumed without final legal/vendor review.
 - Every new SDK or data capability must reopen the manifest, matrix, privacy policy and both store forms.
 - Final declarations and retention periods remain client-owned legal submission decisions.
+
+
+## 2026-07-19 - Native Sharing Grants No Household Access
+
+**Decision:** Use the platform share sheet for selected household detail links, but constrain payloads to a generic label and same-origin protected URL. Treat sharing as navigation only, never as an access grant.
+
+**Rationale:** A native share sheet is useful mobile utility for coordinating home maintenance, while record fields and attachments can be sensitive. Existing session and household membership checks should remain the only authority when a recipient opens a link.
+
+**Consequences:**
+
+- Asset, maintenance, warranty and record details can invoke installed sharing apps.
+- Absolute external and protocol-relative destinations are rejected.
+- Serial numbers, policy references, notes, storage keys and private file URLs are excluded.
+- Recipients without authorised membership reach the normal account boundary.
+- Public-link sharing and attachment sharing remain unimplemented.
+- The user-selected destination receives the share payload; HomeVault adds no sharing analytics.
