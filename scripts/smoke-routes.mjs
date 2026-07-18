@@ -56,6 +56,8 @@ const routes = [
   "/receipts/receipt-fridge/edit",
   "/receipts/document-aircon-service",
   "/sign-in",
+  "/forgot-password",
+  "/reset-password",
   "/sign-up",
   "/account",
   "/onboarding",
