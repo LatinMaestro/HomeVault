@@ -49,16 +49,7 @@ export default async function MaintenanceTaskPage({
           <EmptyState
             title="No matching maintenance task"
             description="The task may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>
-              <NativeShareButton
-                title={task.data.title}
-                path={`/maintenance/${task.data.id}`}
-                description="View this household maintenance task in HomeVault."
-              />
-            </div>
-          }
+            action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
           />
         </section>
       </AppShell>
@@ -93,6 +84,11 @@ export default async function MaintenanceTaskPage({
               </Link>
             </Button>
           ) : null}
+          <NativeShareButton
+            title={taskData.title}
+            path={`/maintenance/${taskData.id}`}
+            description="View this household maintenance task in HomeVault."
+          />
         </div>
 
         <Card>
