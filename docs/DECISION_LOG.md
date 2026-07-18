@@ -859,3 +859,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Missing access and database failures return curated sample data while production identity is disabled.
 - CI rejects direct use of the preview switch, temporary current-home helper or unscoped database helper in the central read module.
 - Server Action migration remains the next required production gate.
+
+
+## 2026-07-18 - Write Availability And Write Authority Share One Context
+
+**Decision:** Derive both form availability and every Server Action database operation from the same writable household context, limited to OWNER and ADULT memberships.
+
+**Rationale:** Presentation and enforcement can drift when they use different environment checks. A request should be offered and allowed to save only from one verified membership decision, while the Server Action remains the final authority.
+
+**Consequences:**
+
+- CHILD and GUEST sessions cannot write household records.
+- Related asset, room, category, provider and reminder links are validated inside the authorised Home.
+- Missing access produces a non-destructive unavailable response.
+- Synthetic preview writes remain possible only when production auth is absent.
+- CI rejects direct use of the preview switch, temporary current-home resolver and raw database helper anywhere under app routes.
+- Household administration remains OWNER-only and is not exposed yet.
