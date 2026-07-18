@@ -7,6 +7,28 @@ export class OwnershipTransferRequiredError extends Error {
   }
 }
 
+export type MembershipDeletionSummary = {
+  id: string;
+  homeId: string;
+  role: "OWNER" | "ADULT" | "CHILD" | "GUEST";
+  memberCount: number;
+};
+
+export function getMembershipDeletionPlan(memberships: MembershipDeletionSummary[]) {
+  if (memberships.some((membership) => membership.role === "OWNER" && membership.memberCount > 1)) {
+    throw new OwnershipTransferRequiredError();
+  }
+
+  return {
+    homeIds: memberships
+      .filter((membership) => membership.memberCount === 1)
+      .map((membership) => membership.homeId),
+    membershipIds: memberships
+      .filter((membership) => membership.memberCount > 1)
+      .map((membership) => membership.id),
+  };
+}
+
 export type AccountDeletionResult = {
   deletedHomeCount: number;
   removedMembershipCount: number;
@@ -25,26 +47,27 @@ export async function deleteVerifiedAccount(userId: string): Promise<AccountDele
       },
     });
 
-    const blockedOwnership = memberships.some(
-      (membership) => membership.role === "OWNER" && membership.home._count.members > 1,
+    const plan = getMembershipDeletionPlan(
+      memberships.map((membership) => ({
+        id: membership.id,
+        homeId: membership.homeId,
+        role: membership.role,
+        memberCount: membership.home._count.members,
+      })),
     );
-    if (blockedOwnership) throw new OwnershipTransferRequiredError();
 
-    let deletedHomeCount = 0;
-    let removedMembershipCount = 0;
-
-    for (const membership of memberships) {
-      if (membership.home._count.members === 1) {
-        await transaction.home.delete({ where: { id: membership.homeId } });
-        deletedHomeCount += 1;
-      } else {
-        await transaction.householdMember.delete({ where: { id: membership.id } });
-        removedMembershipCount += 1;
-      }
+    for (const homeId of plan.homeIds) {
+      await transaction.home.delete({ where: { id: homeId } });
+    }
+    for (const membershipId of plan.membershipIds) {
+      await transaction.householdMember.delete({ where: { id: membershipId } });
     }
 
     await transaction.user.delete({ where: { id: userId } });
 
-    return { deletedHomeCount, removedMembershipCount };
+    return {
+      deletedHomeCount: plan.homeIds.length,
+      removedMembershipCount: plan.membershipIds.length,
+    };
   });
 }
