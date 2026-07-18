@@ -1,5 +1,7 @@
-import { getCurrentHomeId as resolveCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import {
+  getCurrentHouseholdAccess,
+  getHouseholdDb,
+} from "@/lib/household-access";
 import {
   sampleAssetCategories,
   sampleAssets,
@@ -93,31 +95,36 @@ function formatCurrency(cents?: number | null) {
   return currencyFormatter.format(cents / 100);
 }
 
-async function withDatabase<T>(query: () => Promise<T>, fallback: T): Promise<Result<T>> {
-  if (!isPreviewDatabaseEnabled()) {
+type DatabaseQueryContext = {
+  db: ReturnType<typeof getHouseholdDb>;
+  homeId: string;
+};
+
+async function withDatabase<T>(
+  query: (context: DatabaseQueryContext) => Promise<T>,
+  fallback: T,
+): Promise<Result<T>> {
+  const access = await getCurrentHouseholdAccess();
+  if (!access) {
     return { data: fallback, source: "sample" };
   }
 
   try {
-    return { data: await query(), source: "database" };
+    return {
+      data: await query({
+        db: getHouseholdDb(access),
+        homeId: access.homeId,
+      }),
+      source: "database",
+    };
   } catch {
     return { data: fallback, source: "sample" };
   }
 }
 
-async function getCurrentHomeId() {
-  const homeId = await resolveCurrentHomeId();
-  if (!homeId) {
-    throw new Error("Current HomeVault home was not found");
-  }
-
-  return homeId;
-}
-
 export async function getHomeProfile(): Promise<Result<HomeProfile>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    const home = await getDb().home.findUnique({
+  return withDatabase(async ({ db, homeId }) => {
+    const home = await db.home.findUnique({
       where: { id: homeId },
       select: {
         id: true,
@@ -135,9 +142,8 @@ export async function getHomeProfile(): Promise<Result<HomeProfile>> {
 }
 
 export async function getHouseholdMembers(): Promise<Result<HouseholdMemberSummary[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    const members = await getDb().householdMember.findMany({
+  return withDatabase(async ({ db, homeId }) => {
+    const members = await db.householdMember.findMany({
       where: { homeId },
       orderBy: { createdAt: "asc" },
       include: {
@@ -157,11 +163,9 @@ export async function getHouseholdMembers(): Promise<Result<HouseholdMemberSumma
 }
 
 export async function getRooms(): Promise<Result<RoomSummary[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    if (!homeId) return sampleRooms;
+  return withDatabase(async ({ db, homeId }) => {
 
-    const rooms = await getDb().room.findMany({
+    const rooms = await db.room.findMany({
       where: { homeId },
       orderBy: { name: "asc" },
       include: { _count: { select: { assets: true } } },
@@ -220,10 +224,9 @@ export async function getRoom(id: string): Promise<Result<RoomDetail | null>> {
 }
 
 export async function getAssetCategories(): Promise<Result<AssetCategorySummary[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
+  return withDatabase(async ({ db, homeId }) => {
 
-    const categories = await getDb().assetCategory.findMany({
+    const categories = await db.assetCategory.findMany({
       where: { homeId },
       orderBy: { name: "asc" },
       include: { _count: { select: { assets: true } } },
@@ -269,11 +272,9 @@ export async function getAssetCategory(
 }
 
 export async function getAssets(): Promise<Result<AssetDetail[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    if (!homeId) return sampleAssets;
+  return withDatabase(async ({ db, homeId }) => {
 
-    const assets = await getDb().asset.findMany({
+    const assets = await db.asset.findMany({
       where: { homeId },
       orderBy: { name: "asc" },
       include: {
@@ -343,10 +344,9 @@ export async function getAsset(id: string): Promise<Result<AssetDetail | null>> 
 }
 
 export async function getServiceProviders(): Promise<Result<ServiceProviderDetail[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
+  return withDatabase(async ({ db, homeId }) => {
 
-    const providers = await getDb().serviceProvider.findMany({
+    const providers = await db.serviceProvider.findMany({
       where: { homeId },
       orderBy: { name: "asc" },
       include: {
@@ -384,11 +384,9 @@ export async function getServiceProvider(id: string): Promise<Result<ServiceProv
 }
 
 export async function getMaintenanceTasks(): Promise<Result<MaintenanceTaskDetail[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    if (!homeId) return sampleMaintenanceTasks;
+  return withDatabase(async ({ db, homeId }) => {
 
-    const tasks = await getDb().maintenanceTask.findMany({
+    const tasks = await db.maintenanceTask.findMany({
       where: { homeId },
       orderBy: [{ nextDueDate: "asc" }, { title: "asc" }],
       include: {
@@ -443,11 +441,9 @@ export async function getMaintenanceTask(id: string): Promise<Result<Maintenance
 }
 
 export async function getWarranties(): Promise<Result<WarrantyDetail[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    if (!homeId) return sampleWarranties;
+  return withDatabase(async ({ db, homeId }) => {
 
-    const warranties = await getDb().warranty.findMany({
+    const warranties = await db.warranty.findMany({
       where: { homeId },
       orderBy: { expiresAt: "asc" },
       include: {
@@ -492,11 +488,8 @@ export async function getWarranty(id: string): Promise<Result<WarrantyDetail | n
 }
 
 export async function getRecords(): Promise<Result<RecordDetail[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    if (!homeId) return sampleRecords;
+  return withDatabase(async ({ db, homeId }) => {
 
-    const db = getDb();
     const [receipts, documents] = await Promise.all([
       db.receipt.findMany({
         where: { homeId },
@@ -563,9 +556,8 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
 }
 
 export async function getReminders(): Promise<Result<ReminderDetail[]>> {
-  return withDatabase(async () => {
-    const homeId = await getCurrentHomeId();
-    const reminders = await getDb().reminder.findMany({
+  return withDatabase(async ({ db, homeId }) => {
+    const reminders = await db.reminder.findMany({
       where: { homeId },
       orderBy: [{ dueAt: "asc" }, { title: "asc" }],
       include: {
