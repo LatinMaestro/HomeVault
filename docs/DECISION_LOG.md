@@ -1019,3 +1019,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - GitHub Actions builds unsigned Android and iOS Simulator candidates.
 - Production availability remains necessary because private household records are not cached in the native bundle.
 - Store signing, account records, legal identity and final review are client-owned gates.
+
+
+## 2026-07-18 - Native Privacy Protection Is On By Default
+
+**Decision:** Enable privacy-screen protection for the complete native runtime, disable Android backup/screenshots/cleartext traffic and fail closed for website-link association until signing identities are known.
+
+**Rationale:** Household documents, serial numbers and maintenance records can appear whenever the app backgrounds. Native distribution should not add app-switcher, screenshot, backup or link-interception exposure beyond the protected web product.
+
+**Consequences:**
+
+- iOS obscures background previews and Android uses secure-window protection.
+- Android users cannot take screenshots while HomeVault is open.
+- Android application data is excluded from device backup.
+- The `homevault://` custom scheme works independently of store signing.
+- Verified HTTPS link files return 404 until Apple Team ID and Play signing fingerprint pass strict validation.
+- Universal/App Link verification and physical-device testing remain signing-stage gates.
