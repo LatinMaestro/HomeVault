@@ -14,13 +14,13 @@ The repository now provides:
 - no production tracking, advertising or unnecessary device permissions;
 - a privacy-safe offline fallback that does not cache household records.
 
-This is an installable foundation, not a store-submission build.
+This is now an unsigned native release-candidate foundation, not a signed store-submission build.
 
 ## Recommended Distribution Architecture
 
 1. Keep Next.js, Prisma and PostgreSQL as the shared application and server foundation.
 2. Finish production identity, authorization, deletion, privacy and storage decision gates on the web platform.
-3. Add a Capacitor-based iOS and Android shell only after the core authenticated workflows are stable.
+3. Maintain the generated Capacitor iOS and Android projects and their cloud build evidence.
 4. Add meaningful platform integration before App Store submission, such as secure device re-entry, native sharing/export, approved document capture and useful offline behavior.
 5. Keep all household authorization on the server. A native shell must never become the security boundary.
 6. Use TestFlight and Google Play internal testing before public store review.
@@ -121,14 +121,12 @@ The following require separate product and privacy approval:
 
 ## Current Submission Blockers
 
-- No production authentication or server-side household authorization.
-- No account deletion workflow.
-- Preview privacy and support routes exist, but final legal/contact URLs and the account-deletion URL are not complete.
-- No native iOS or Android projects.
-- No final raster store assets.
-- No developer-account, signing or store-listing configuration in the repository.
-- No approved production storage approach.
-- Final Vercel and device review is pending.
+- Production identity, email delivery, database migrations and private Blob are implemented but not all live-enabled and end-to-end tested.
+- Preview privacy/support/deletion routes exist, but final legal identity and contact URLs are not confirmed.
+- Native iOS and Android projects compile unsigned; distribution signing is not connected.
+- Branded raster app icons exist, while final store screenshots and promotional artwork remain.
+- Apple Developer and Google Play app records, signing and policy declarations are not connected.
+- Final Vercel, TestFlight, Play internal-test and physical-device review is pending.
 
 These blockers do not prevent continued shared-app development. They do prevent a responsible public store submission.
 
@@ -171,3 +169,16 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [x] Permanent account deletion re-verifies the current password.
 - [ ] Validate account controls with a live verified production account.
 - [ ] Decide whether verified email change is required for the first store release.
+
+
+## Native Candidate Evidence
+
+- [x] Capacitor iOS and Android projects are committed.
+- [x] Shared bundle/application ID is configured as `au.com.homevault.app`.
+- [x] Branded iOS and Android icon/splash resources are generated.
+- [x] Cleartext and mixed-content runtime access are disabled.
+- [x] Trusted links, native back behaviour, connectivity fallback and status bars are integrated.
+- [x] GitHub Actions compiles unsigned Android debug and iOS Simulator candidates.
+- [ ] Confirm identifiers in Apple Developer and Google Play Console.
+- [ ] Connect signing and compile distributable archive/bundle artifacts.
+- [ ] Complete TestFlight and Google Play internal testing on physical devices.
