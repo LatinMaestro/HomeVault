@@ -16,7 +16,10 @@
     "prisma:format": "prisma format",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
-    "prisma:studio": "prisma studio"
+    "prisma:studio": "prisma studio",
+    "check:migrations": "node scripts/check-migration-baseline.mjs",
+    "db:migrate:status": "prisma migrate status",
+    "db:migrate:deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@better-auth/prisma-adapter": "1.6.23",
