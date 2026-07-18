@@ -23,7 +23,7 @@ const principles = [
   {
     title: "Keep preview data non-sensitive",
     description:
-      "Verified account and household authorisation boundaries are implemented but remain disabled until production services are configured. Public previews use sample or controlled synthetic data only.",
+      "Verified account and household authorisation boundaries are implemented and fail closed until production services are configured. Public previews use sample or controlled synthetic data only.",
     icon: LockKeyhole,
   },
   {
@@ -33,9 +33,9 @@ const principles = [
     icon: ShieldCheck,
   },
   {
-    title: "Files remain out of the system",
+    title: "Private attachments stay guarded",
     description:
-      "Receipt and document records are metadata only. HomeVault does not currently accept, store or process uploaded files.",
+      "Approved PDF, JPEG and PNG attachments use private storage only after verified household access. Files are not public, analysed by AI or processed with OCR.",
     icon: Database,
   },
 ];
@@ -47,7 +47,7 @@ export default function PrivacyPage() {
         <PageHeader
           eyebrow="Privacy"
           title="Your home records deserve careful handling"
-          description="This page describes the current HomeVault preview. A final legal privacy policy, accountable entity and contact details will be published before public release."
+          description="This page describes HomeVault's current engineering privacy posture. The accountable entity, final retention periods and public contact details will be published before release."
         />
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -78,14 +78,14 @@ export default function PrivacyPage() {
               <Badge variant="secondary">Required release gate</Badge>
             </div>
             <CardDescription>
-              Production privacy controls are planned but are not represented as complete.
+              Engineering controls are implemented; live service enablement and legal publication remain.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground">
             <p>
-              Public release requires production authentication, server-side household
-              authorisation, account and data deletion, approved storage, retention rules,
-              and published privacy and support contacts.
+              Public release requires production migrations, verified auth email, private
+              storage provisioning, end-to-end account and attachment testing, confirmed
+              retention rules, and published privacy and support contacts.
             </p>
             <Button asChild variant="outline">
               <Link href="/support">View support information</Link>
