@@ -79,6 +79,17 @@ for (const forbidden of ["getCurrentHomeId", "isPreviewDatabaseEnabled", "getDb(
   }
 }
 
+const appSourceRoot = join(sourceRoot, "app");
+for (const file of listSourceFiles(appSourceRoot)) {
+  const source = readFileSync(file, "utf8");
+  const sourcePath = relative(root, file).split(sep).join("/");
+  for (const forbidden of ["isPreviewDatabaseEnabled", "getCurrentHomeId", "getDb()"]) {
+    if (source.includes(forbidden)) {
+      violations.push(`${sourcePath}: bypasses household access through "${forbidden}"`);
+    }
+  }
+}
+
 if (violations.length > 0) {
   console.error("HomeVault data boundary check failed:");
   for (const violation of violations) console.error(`- ${violation}`);
