@@ -60,6 +60,8 @@ const routes = [
   "/reset-password",
   "/sign-up",
   "/account",
+  "/account/delete",
+  "/account-deletion",
   "/onboarding",
   "/settings",
 ];
