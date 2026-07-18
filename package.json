@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test:unit": "tsx --test tests/db-access.test.ts tests/auth-config.test.ts tests/household-access.test.ts tests/first-household.test.ts tests/account-deletion.test.ts tests/maintenance-schedule.test.ts tests/icalendar.test.ts tests/inventory-csv.test.ts tests/maintenance-history-csv.test.ts tests/provider-contact-links.test.ts tests/maintenance-templates.test.ts tests/archive-data.test.ts tests/setup-guide.test.ts",
+    "test:unit": "tsx --test tests/db-access.test.ts tests/auth-config.test.ts tests/household-access.test.ts tests/first-household.test.ts tests/account-deletion.test.ts tests/maintenance-schedule.test.ts tests/icalendar.test.ts tests/inventory-csv.test.ts tests/maintenance-history-csv.test.ts tests/provider-contact-links.test.ts tests/maintenance-templates.test.ts tests/archive-data.test.ts tests/setup-guide.test.ts tests/attachment-storage.test.ts",
     "prisma:generate": "prisma generate",
     "prisma:validate": "prisma validate",
     "prisma:format": "prisma format",
