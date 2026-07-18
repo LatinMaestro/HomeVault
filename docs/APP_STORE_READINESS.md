@@ -182,3 +182,14 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [ ] Confirm identifiers in Apple Developer and Google Play Console.
 - [ ] Connect signing and compile distributable archive/bundle artifacts.
 - [ ] Complete TestFlight and Google Play internal testing on physical devices.
+
+
+## Native Privacy And Link Evidence
+
+- [x] App-switcher privacy protection is enabled on iOS and Android.
+- [x] Android screenshots, recording, backup, cleartext and mixed content are blocked.
+- [x] A custom HomeVault URL scheme is registered on both platforms.
+- [x] Universal/App Link declarations target only the canonical HomeVault domain.
+- [x] Website association endpoints fail closed without signing identities.
+- [ ] Configure Apple Team ID and Play App Signing fingerprint.
+- [ ] Verify Universal Links and Android App Links on signed physical-device builds.
