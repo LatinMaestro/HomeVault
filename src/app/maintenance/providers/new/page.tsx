@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Add a service provider to the current HomeVault home.",
 };
 
-export default function NewServiceProviderPage() {
+export default async function NewServiceProviderPage() {
   return (
     <AppShell activeSection="Maintenance">
       <section className="space-y-5">
@@ -29,7 +29,7 @@ export default function NewServiceProviderPage() {
           description="Add practical contact metadata that can be linked to maintenance tasks."
           fields={serviceProviderFields}
           action={createServiceProviderAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>
