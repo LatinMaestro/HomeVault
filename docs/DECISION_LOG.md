@@ -1083,3 +1083,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Account deletion is reachable but reviewers are asked not to confirm it unless needed.
 - Final acceptance records the exact signed build, commit, devices and declarations.
 - Legal identity, review contact and private credentials remain client-owned console inputs.
+
+## 2026-07-19 - Native Sharing Preserves The Household Boundary
+
+**Decision:** Use the operating-system share sheet only for validated same-origin HomeVault record links. Do not create public links, access grants or payloads containing household record metadata.
+
+**Rationale:** Native sharing is useful for family coordination, but a convenient share action must not weaken HomeVault's authorization or private-file controls.
+
+**Consequences:**
+
+- Recipients must sign in and belong to the record's household.
+- Shared payloads contain a generic label and protected route only.
+- Serial numbers, policy references, notes, attachment keys and private file URLs are excluded.
+- No contacts permission, sharing analytics or new public-link model is introduced.
