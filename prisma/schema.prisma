@@ -318,9 +318,13 @@ model Document {
   maintenanceTaskId String?
   title             String
   type              DocumentType @default(OTHER)
-  fileName          String?
-  storageKey        String?
-  notes             String?
+  fileName              String?
+  storageKey            String?
+  attachmentContentType String?
+  attachmentEtag        String?
+  attachmentSizeBytes   Int?
+  attachmentUploadedAt  DateTime?
+  notes                 String?
   issuedAt          DateTime?
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt

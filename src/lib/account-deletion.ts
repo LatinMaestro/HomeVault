@@ -1,3 +1,4 @@
+import { deletePrivateAttachments } from "@/lib/attachment-storage";
 import { getAuthDb } from "@/lib/db";
 
 export class OwnershipTransferRequiredError extends Error {
@@ -32,10 +33,11 @@ export function getMembershipDeletionPlan(memberships: MembershipDeletionSummary
 export type AccountDeletionResult = {
   deletedHomeCount: number;
   removedMembershipCount: number;
+  attachmentCleanupFailed: boolean;
 };
 
 export async function deleteVerifiedAccount(userId: string): Promise<AccountDeletionResult> {
-  return getAuthDb().$transaction(async (transaction) => {
+  const deletion = await getAuthDb().$transaction(async (transaction) => {
     const memberships = await transaction.householdMember.findMany({
       where: { userId },
       include: {
@@ -56,6 +58,17 @@ export async function deleteVerifiedAccount(userId: string): Promise<AccountDele
       })),
     );
 
+    const attachments =
+      plan.homeIds.length > 0
+        ? await transaction.document.findMany({
+            where: {
+              homeId: { in: plan.homeIds },
+              storageKey: { not: null },
+            },
+            select: { storageKey: true },
+          })
+        : [];
+
     for (const homeId of plan.homeIds) {
       await transaction.home.delete({ where: { id: homeId } });
     }
@@ -68,6 +81,16 @@ export async function deleteVerifiedAccount(userId: string): Promise<AccountDele
     return {
       deletedHomeCount: plan.homeIds.length,
       removedMembershipCount: plan.membershipIds.length,
+      storageKeys: attachments.flatMap((attachment) =>
+        attachment.storageKey ? [attachment.storageKey] : [],
+      ),
     };
   });
+
+  const attachmentsRemoved = await deletePrivateAttachments(deletion.storageKeys);
+  return {
+    deletedHomeCount: deletion.deletedHomeCount,
+    removedMembershipCount: deletion.removedMembershipCount,
+    attachmentCleanupFailed: !attachmentsRemoved,
+  };
 }
