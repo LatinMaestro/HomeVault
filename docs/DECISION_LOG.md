@@ -923,3 +923,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - No-auth deployments retain sample review without session lookups.
 - Read and write household checks remain authoritative even if a route is later rendered outside AppShell.
 - CI verifies the shared redirects and public-page opt-outs.
+
+
+## 2026-07-18 - Resend Is The First Transactional Auth Email Adapter
+
+**Decision:** Implement Resend's HTTPS email endpoint behind HomeVault's provider-neutral auth email interface, but keep it disabled until a client-owned verified sender and API key are configured.
+
+**Rationale:** Verification and recovery require reliable transactional delivery. A small HTTP adapter avoids another runtime dependency, preserves provider replaceability and can remain completely dormant during builds and sample review.
+
+**Consequences:**
+
+- AUTH_EMAIL_PROVIDER must equal resend exactly.
+- AUTH_EMAIL_FROM and RESEND_API_KEY are both required.
+- Provider selection alone cannot enable signup or recovery.
+- Password reset requests use a non-enumerating success message.
+- Existing sessions are revoked after a successful reset.
+- Domain verification, credential setup and live delivery testing remain client-owned gates.
