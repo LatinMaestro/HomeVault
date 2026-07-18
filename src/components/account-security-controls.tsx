@@ -58,7 +58,8 @@ export function AccountSecurityControls({ currentName }: { currentName: string }
 
   async function changePassword(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const passwordForm = event.currentTarget;
+    const form = new FormData(passwordForm);
     const currentPassword = String(form.get("currentPassword") ?? "");
     const newPassword = String(form.get("newPassword") ?? "");
     const confirmPassword = String(form.get("confirmPassword") ?? "");
@@ -84,7 +85,7 @@ export function AccountSecurityControls({ currentName }: { currentName: string }
       });
       return;
     }
-    event.currentTarget.reset();
+    passwordForm.reset();
     setPasswordFeedback({
       tone: "success",
       message: "Your password was changed and other devices were signed out.",
