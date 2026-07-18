@@ -51,4 +51,4 @@ The native runtime enables privacy-screen protection before household use. iOS a
 
 ## Protected Record Sharing
 
-Supported native detail screens use the official Capacitor Share plugin for the platform share sheet. The payload is deliberately limited to a generic record label and a validated same-origin HomeVault route. Sharing does not create a public link or access grant, and the recipient must pass the normal sign-in and household membership checks. Sensitive record fields, private attachment keys and file URLs are never included.
+Supported native detail screens use the official Capacitor Share plugin for the platform share sheet. The payload is deliberately limited to a generic record label and a validated same-origin HomeVault route. Sharing does not create a public link or access grant, and the recipient must pass the normal sign-in and household membership checks. Sensitive record fields, private attachment keys and file URLs are never included. The control is capability-detected and remains hidden when the platform share API is unavailable.
