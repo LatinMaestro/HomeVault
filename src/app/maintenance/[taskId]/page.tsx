@@ -65,29 +65,30 @@ export default async function MaintenanceTaskPage({
     );
   }
 
+  const taskData = task.data;
   return (
     <AppShell activeSection="Maintenance">
       <section className="space-y-5">
         <PageHeader
           eyebrow="Maintenance"
-          title={task.data.title}
-          description={task.data.description || "Maintenance task detail with database-backed editing when persistence is configured."}
+          title={taskData.title}
+          description={taskData.description || "Maintenance task detail with database-backed editing when persistence is configured."}
           action={<BackLinkButton href="/maintenance">Back to maintenance</BackLinkButton>}
         />
         <DataSourceNote source={task.source} />
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
           <Button asChild variant="secondary">
-            <Link href={`/maintenance/${task.data.id}/edit`}>Edit task</Link>
+            <Link href={`/maintenance/${taskData.id}/edit`}>Edit task</Link>
           </Button>
-          {task.data.assetId ? (
+          {taskData.assetId ? (
             <Button asChild variant="outline">
-              <Link href={`/vault/assets/${task.data.assetId}`}>View linked asset</Link>
+              <Link href={`/vault/assets/${taskData.assetId}`}>View linked asset</Link>
             </Button>
           ) : null}
-          {task.data.serviceProviderId ? (
+          {taskData.serviceProviderId ? (
             <Button asChild variant="outline">
-              <Link href={`/maintenance/providers/${task.data.serviceProviderId}`}>
+              <Link href={`/maintenance/providers/${taskData.serviceProviderId}`}>
                 View service provider
               </Link>
             </Button>
@@ -98,17 +99,17 @@ export default async function MaintenanceTaskPage({
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>Task details</CardTitle>
             <DateStatusBadge
-              status={getDateStatus(task.data.nextDueDateInput, "maintenance")}
+              status={getDateStatus(taskData.nextDueDateInput, "maintenance")}
             />
           </CardHeader>
           <CardContent>
             <FieldList
               fields={[
-                { label: "Frequency", value: getMaintenanceFrequencyLabel(task.data.frequency, task.data.customIntervalDays) },
-                { label: "Next due", value: task.data.nextDueDate },
-                { label: "Status", value: getDisplayLabel(task.data.status) },
-                { label: "Asset", value: task.data.assetName },
-                { label: "Service provider", value: task.data.serviceProviderName },
+                { label: "Frequency", value: getMaintenanceFrequencyLabel(taskData.frequency, taskData.customIntervalDays) },
+                { label: "Next due", value: taskData.nextDueDate },
+                { label: "Status", value: getDisplayLabel(taskData.status) },
+                { label: "Asset", value: taskData.assetName },
+                { label: "Service provider", value: taskData.serviceProviderName },
               ]}
             />
           </CardContent>
@@ -121,8 +122,8 @@ export default async function MaintenanceTaskPage({
               <CardDescription>Document metadata linked to this task.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {task.data.documents.length > 0 ? (
-                task.data.documents.map((document) => (
+              {taskData.documents.length > 0 ? (
+                taskData.documents.map((document) => (
                   <Link
                     key={document.id}
                     href={`/receipts/${document.id}`}
@@ -148,8 +149,8 @@ export default async function MaintenanceTaskPage({
               <CardDescription>Recorded dates linked to this task.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {task.data.reminders.length > 0 ? (
-                task.data.reminders.map((reminder) => (
+              {taskData.reminders.length > 0 ? (
+                taskData.reminders.map((reminder) => (
                   <Link
                     key={reminder.id}
                     href={`/maintenance/reminders/${reminder.id}`}
@@ -174,7 +175,7 @@ export default async function MaintenanceTaskPage({
         <MaintenanceCompletionForm
           action={completionAction}
           databaseConfigured={await isCurrentHouseholdWritable()}
-          taskStatus={task.data.status}
+          taskStatus={taskData.status}
         />
 
         <Card>
@@ -183,8 +184,8 @@ export default async function MaintenanceTaskPage({
             <CardDescription>Service records linked to this task.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm">
-            {task.data.completions.length ? (
-              task.data.completions.map((completion) => (
+            {taskData.completions.length ? (
+              taskData.completions.map((completion) => (
                 <div key={completion.id} className="rounded-md border bg-background p-3">
                   <p className="font-medium text-foreground">{completion.completedAt}</p>
                   <p className="text-muted-foreground">
