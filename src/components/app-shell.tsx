@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import {
   Archive,
   ClipboardList,
@@ -14,6 +15,10 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { isAuthRuntimeConfigured } from "@/lib/auth-config";
+import {
+  getCurrentHouseholdAccess,
+  getCurrentVerifiedSessionUser,
+} from "@/lib/household-access";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -25,14 +30,24 @@ const navigation = [
   { name: "Settings", href: "/settings", icon: Settings },
 ];
 
-export function AppShell({
+export async function AppShell({
   activeSection,
   children,
+  publicAccess = false,
 }: {
   activeSection: string;
   children: React.ReactNode;
+  publicAccess?: boolean;
 }) {
   const accountMode = isAuthRuntimeConfigured();
+
+  if (accountMode && !publicAccess) {
+    const user = await getCurrentVerifiedSessionUser();
+    if (!user) redirect("/sign-in");
+
+    const householdAccess = await getCurrentHouseholdAccess();
+    if (!householdAccess) redirect("/onboarding");
+  }
 
   return (
     <div className="min-h-screen bg-background">
