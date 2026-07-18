@@ -161,3 +161,13 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [ ] Connect a Vercel Blob store created with Private access.
 - [ ] Validate the lifecycle with a verified production account and non-sensitive test files.
 - [ ] Confirm final privacy disclosures name the storage processor and retention/deletion behaviour.
+
+
+## Account Security Readiness
+
+- [x] Display-name management is available in-app.
+- [x] Password changes require the current password and revoke other sessions.
+- [x] Users can sign out every other active device.
+- [x] Permanent account deletion re-verifies the current password.
+- [ ] Validate account controls with a live verified production account.
+- [ ] Decide whether verified email change is required for the first store release.
