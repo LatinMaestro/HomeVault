@@ -49,23 +49,24 @@ export default async function AssetDetailPage({
     );
   }
 
+  const assetData = asset.data;
   return (
     <AppShell activeSection="Vault">
       <section className="space-y-5">
         <PageHeader
           eyebrow="Assets"
-          title={asset.data.name}
+          title={assetData.name}
           description="Asset detail with database-backed editing when persistence is configured."
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
               <BackLinkButton href="/vault/assets">Back to assets</BackLinkButton>
               <NativeShareButton
-                title={asset.data.name}
-                path={`/vault/assets/${asset.data.id}`}
+                title={assetData.name}
+                path={`/vault/assets/${assetData.id}`}
                 description="View this household asset in HomeVault."
               />
               <Button asChild variant="outline">
-                <Link href={`/vault/assets/${asset.data.id}/edit`}>Edit asset</Link>
+                <Link href={`/vault/assets/${assetData.id}/edit`}>Edit asset</Link>
               </Button>
             </div>
           }
@@ -76,20 +77,20 @@ export default async function AssetDetailPage({
           <CardHeader>
             <CardTitle>Asset information</CardTitle>
             <CardDescription>
-              <Badge variant="secondary">{getDisplayLabel(asset.data.status)}</Badge>
+              <Badge variant="secondary">{getDisplayLabel(assetData.status)}</Badge>
             </CardDescription>
           </CardHeader>
           <CardContent>
             <FieldList
               fields={[
-                { label: "Brand", value: asset.data.brand },
-                { label: "Model", value: asset.data.model },
-                { label: "Serial number", value: asset.data.serialNumber },
-                { label: "Room", value: asset.data.roomName },
-                { label: "Category", value: asset.data.categoryName },
-                { label: "Purchase date", value: asset.data.purchaseDate },
-                { label: "Purchase place", value: asset.data.purchasePlace },
-                { label: "Notes", value: asset.data.notes },
+                { label: "Brand", value: assetData.brand },
+                { label: "Model", value: assetData.model },
+                { label: "Serial number", value: assetData.serialNumber },
+                { label: "Room", value: assetData.roomName },
+                { label: "Category", value: assetData.categoryName },
+                { label: "Purchase date", value: assetData.purchaseDate },
+                { label: "Purchase place", value: assetData.purchasePlace },
+                { label: "Notes", value: assetData.notes },
               ]}
             />
           </CardContent>
@@ -102,8 +103,8 @@ export default async function AssetDetailPage({
               <CardDescription>Care tasks linked to this asset.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {asset.data.maintenanceTasks.length ? (
-                asset.data.maintenanceTasks.map((task) => (
+              {assetData.maintenanceTasks.length ? (
+                assetData.maintenanceTasks.map((task) => (
                   <Link
                     key={task.id}
                     href={`/maintenance/${task.id}`}
@@ -130,8 +131,8 @@ export default async function AssetDetailPage({
               <CardDescription>Recorded follow-ups linked to this asset.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {asset.data.reminders.length ? (
-                asset.data.reminders.map((reminder) => (
+              {assetData.reminders.length ? (
+                assetData.reminders.map((reminder) => (
                   <Link
                     key={reminder.id}
                     href={`/maintenance/reminders/${reminder.id}`}
@@ -158,8 +159,8 @@ export default async function AssetDetailPage({
               <CardDescription>Coverage linked to this asset.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {asset.data.warranties.length ? (
-                asset.data.warranties.map((warranty) => (
+              {assetData.warranties.length ? (
+                assetData.warranties.map((warranty) => (
                   <Link
                     key={warranty.id}
                     href={`/warranties/${warranty.id}`}
@@ -180,8 +181,8 @@ export default async function AssetDetailPage({
               <CardDescription>Purchase metadata linked to this asset.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {asset.data.receipts.length ? (
-                asset.data.receipts.map((receipt) => (
+              {assetData.receipts.length ? (
+                assetData.receipts.map((receipt) => (
                   <Link
                     key={receipt.id}
                     href={`/receipts/${receipt.id}`}
@@ -202,8 +203,8 @@ export default async function AssetDetailPage({
               <CardDescription>Metadata-only documents linked to this asset.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm">
-              {asset.data.documents.length ? (
-                asset.data.documents.map((document) => (
+              {assetData.documents.length ? (
+                assetData.documents.map((document) => (
                   <Link
                     key={document.id}
                     href={`/receipts/${document.id}`}
