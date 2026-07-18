@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import { getCurrentHouseholdWriteContext } from "@/lib/household-access";
 
 export type AssetCategoryActionState = {
   status: "idle" | "success" | "error";
@@ -43,11 +42,13 @@ export async function createAssetCategoryAction(
   const name = getFieldValue(formData, "name");
   const description = getFieldValue(formData, "description");
   if (!name) return { status: "error", message: "Add a category name before saving." };
-  if (!isPreviewDatabaseEnabled()) return unavailableState();
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState();
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
     if (!homeId) {
       return {
         status: "error",
@@ -83,11 +84,13 @@ export async function updateAssetCategoryAction(
   const name = getFieldValue(formData, "name");
   const description = getFieldValue(formData, "description");
   if (!name) return { status: "error", message: "Add a category name before saving." };
-  if (!isPreviewDatabaseEnabled()) return unavailableState();
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState();
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
     if (!homeId) {
       return {
         status: "error",

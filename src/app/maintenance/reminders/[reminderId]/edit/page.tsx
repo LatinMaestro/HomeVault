@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -57,7 +57,7 @@ export default async function EditReminderPage({
             tasks: tasks.data,
           })}
           action={updateAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>

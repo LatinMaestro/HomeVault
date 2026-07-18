@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import {
+  getCurrentHouseholdWriteContext,
+  type HouseholdWriteContext,
+} from "@/lib/household-access";
 import { getOptionalDateValue } from "@/lib/form-values";
 import { getMaintenanceScheduleAfterCompletion } from "@/lib/maintenance-schedule";
 
@@ -52,10 +54,11 @@ function getStatusValue(value: string): MaintenanceStatusValue | null {
   return maintenanceStatusValues.find((status) => status === value.trim().toUpperCase()) ?? null;
 }
 
-async function getAssetId(homeId: string, assetName: string) {
+async function getAssetId(context: HouseholdWriteContext, assetName: string) {
+  const homeId = context.homeId;
   if (!assetName) return null;
 
-  const asset = await getDb().asset.findFirst({
+  const asset = await context.db.asset.findFirst({
     where: {
       homeId,
       name: { equals: assetName, mode: "insensitive" },
@@ -66,10 +69,11 @@ async function getAssetId(homeId: string, assetName: string) {
   return asset?.id ?? null;
 }
 
-async function getServiceProviderId(homeId: string, providerName: string) {
+async function getServiceProviderId(context: HouseholdWriteContext, providerName: string) {
+  const homeId = context.homeId;
   if (!providerName) return null;
 
-  const provider = await getDb().serviceProvider.findFirst({
+  const provider = await context.db.serviceProvider.findFirst({
     where: {
       homeId,
       name: { equals: providerName, mode: "insensitive" },
@@ -182,13 +186,15 @@ export async function createMaintenanceTaskAction(
   const status = values.status;
   if (!frequency || !status) return invalidTaskState(values) ?? unknownFailureState();
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -198,8 +204,8 @@ export async function createMaintenanceTaskAction(
     }
 
     const [assetId, serviceProviderId] = await Promise.all([
-      getAssetId(homeId, values.assetName),
-      getServiceProviderId(homeId, values.serviceProviderName),
+      getAssetId(context, values.assetName),
+      getServiceProviderId(context, values.serviceProviderName),
     ]);
     const linkWarning = getLinkWarning(
       values.assetName,
@@ -250,13 +256,15 @@ export async function updateMaintenanceTaskAction(
   const status = values.status;
   if (!frequency || !status) return invalidTaskState(values) ?? unknownFailureState();
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -278,8 +286,8 @@ export async function updateMaintenanceTaskAction(
     }
 
     const [assetId, serviceProviderId] = await Promise.all([
-      getAssetId(homeId, values.assetName),
-      getServiceProviderId(homeId, values.serviceProviderName),
+      getAssetId(context, values.assetName),
+      getServiceProviderId(context, values.serviceProviderName),
     ]);
     const linkWarning = getLinkWarning(
       values.assetName,
@@ -343,7 +351,9 @@ export async function completeMaintenanceTaskAction(
     };
   }
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return {
       status: "error",
       message: "Completion saving is not enabled for this preview. Nothing was changed.",
@@ -351,8 +361,8 @@ export async function completeMaintenanceTaskAction(
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {

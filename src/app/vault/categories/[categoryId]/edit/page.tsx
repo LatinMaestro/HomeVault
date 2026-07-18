@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -39,7 +39,7 @@ export default async function EditAssetCategoryPage({
         <AssetCategoryForm
           fields={getAssetCategoryFields(category)}
           action={updateAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>

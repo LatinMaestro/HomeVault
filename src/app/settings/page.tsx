@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -75,7 +75,7 @@ export default async function SettingsPage() {
         <HouseholdProfileForm
           fields={getHouseholdProfileFields(home.data)}
           action={updateHouseholdProfileAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
 
         <Card>

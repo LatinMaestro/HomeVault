@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -41,7 +41,7 @@ export default async function EditRoomPage({
           description="Room saving is now enabled when this room exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
           fields={getRoomEditShellFields(room)}
           action={updateAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>

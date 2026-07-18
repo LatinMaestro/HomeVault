@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -39,7 +39,7 @@ export default async function NewWarrantyPage() {
           description="Warranty saving is enabled when the database is configured and the asset name matches an existing asset."
           fields={fields}
           action={createWarrantyAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>

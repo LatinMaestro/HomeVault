@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import { getCurrentHouseholdWriteContext } from "@/lib/household-access";
 
 const australianStates = ["ACT", "NSW", "NT", "QLD", "SA", "TAS", "VIC", "WA"] as const;
 
@@ -34,7 +33,9 @@ export async function updateHouseholdProfileAction(
   if (postcode && !/^\d{4}$/.test(postcode)) {
     return { status: "error", message: "Use a four-digit Australian postcode or leave it blank. Nothing was changed." };
   }
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return {
       status: "error",
       message: "Saving is not enabled for this preview. The page is still safe to review, but no household details were changed.",
@@ -42,7 +43,7 @@ export async function updateHouseholdProfileAction(
   }
 
   try {
-    const homeId = await getCurrentHomeId();
+    const homeId = context.homeId;
     if (!homeId) {
       return {
         status: "error",
@@ -50,7 +51,7 @@ export async function updateHouseholdProfileAction(
       };
     }
 
-    await getDb().home.update({
+    await context.db.home.update({
       where: { id: homeId },
       data: {
         name,

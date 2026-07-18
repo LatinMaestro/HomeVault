@@ -187,3 +187,13 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Preserve curated sample fallback when access or the database is unavailable.
 - [x] Enforce the household read boundary in CI.
 - [ ] Migrate all Server Actions and form availability checks to writable household access.
+
+
+## Phase 4I Completed
+
+- [x] Require OWNER or ADULT membership for every existing mutation.
+- [x] Scope related-record validation and writes to the authorised Home ID.
+- [x] Keep CHILD and GUEST memberships read-only.
+- [x] Derive form availability from server-side household access.
+- [x] Reject app-route access-boundary bypasses in CI.
+- [ ] Add production account screens, onboarding and lifecycle workflows.

@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import {
+  getCurrentHouseholdWriteContext,
+  type HouseholdWriteContext,
+} from "@/lib/household-access";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 const assetStatusValues = [
@@ -31,10 +33,11 @@ function getStatusValue(value: string): AssetStatusValue | null {
   return assetStatusValues.find((status) => status === value.trim().toUpperCase()) ?? null;
 }
 
-async function getRoomId(homeId: string, roomName: string) {
+async function getRoomId(context: HouseholdWriteContext, roomName: string) {
+  const homeId = context.homeId;
   if (!roomName) return null;
 
-  const room = await getDb().room.findFirst({
+  const room = await context.db.room.findFirst({
     where: {
       homeId,
       name: { equals: roomName, mode: "insensitive" },
@@ -45,10 +48,11 @@ async function getRoomId(homeId: string, roomName: string) {
   return room?.id ?? null;
 }
 
-async function getCategoryId(homeId: string, categoryName: string) {
+async function getCategoryId(context: HouseholdWriteContext, categoryName: string) {
+  const homeId = context.homeId;
   if (!categoryName) return null;
 
-  const category = await getDb().assetCategory.findFirst({
+  const category = await context.db.assetCategory.findFirst({
     where: {
       homeId,
       name: { equals: categoryName, mode: "insensitive" },
@@ -143,13 +147,15 @@ export async function createAssetAction(
   const status = values.status;
   if (!status) return unknownFailureState();
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -159,8 +165,8 @@ export async function createAssetAction(
     }
 
     const [roomId, categoryId] = await Promise.all([
-      getRoomId(homeId, values.roomName),
-      getCategoryId(homeId, values.categoryName),
+      getRoomId(context, values.roomName),
+      getCategoryId(context, values.categoryName),
     ]);
     const linkWarning = getLinkWarning(
       values.roomName,
@@ -213,13 +219,15 @@ export async function updateAssetAction(
   const status = values.status;
   if (!status) return unknownFailureState();
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -241,8 +249,8 @@ export async function updateAssetAction(
     }
 
     const [roomId, categoryId] = await Promise.all([
-      getRoomId(homeId, values.roomName),
-      getCategoryId(homeId, values.categoryName),
+      getRoomId(context, values.roomName),
+      getCategoryId(context, values.categoryName),
     ]);
     const linkWarning = getLinkWarning(
       values.roomName,

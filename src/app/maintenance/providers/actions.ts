@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import { getCurrentHouseholdWriteContext } from "@/lib/household-access";
 
 export type ServiceProviderActionState = {
   status: "idle" | "success" | "error";
@@ -85,11 +84,13 @@ export async function createServiceProviderAction(
   const values = getProviderValues(formData);
   const invalidState = invalidProviderState(values);
   if (invalidState) return invalidState;
-  if (!isPreviewDatabaseEnabled()) return unavailableState();
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState();
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
     if (!homeId) {
       return {
         status: "error",
@@ -136,11 +137,13 @@ export async function updateServiceProviderAction(
   const values = getProviderValues(formData);
   const invalidState = invalidProviderState(values);
   if (invalidState) return invalidState;
-  if (!isPreviewDatabaseEnabled()) return unavailableState();
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) return unavailableState();
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
     if (!homeId) {
       return {
         status: "error",

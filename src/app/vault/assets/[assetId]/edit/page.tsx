@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -56,7 +56,7 @@ export default async function EditAssetPage({
           description="Asset saving is now enabled when this asset exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
           fields={fields}
           action={updateAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>

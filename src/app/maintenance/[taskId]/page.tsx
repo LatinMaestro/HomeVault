@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -163,7 +163,7 @@ export default async function MaintenanceTaskPage({
 
         <MaintenanceCompletionForm
           action={completionAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
           taskStatus={task.data.status}
         />
 

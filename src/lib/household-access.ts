@@ -92,12 +92,33 @@ export function getHouseholdDb(access: HouseholdAccess) {
   return access.mode === "authenticated" ? getAuthDb() : getDb();
 }
 
+export type HouseholdWriteContext = {
+  access: HouseholdAccess;
+  db: ReturnType<typeof getHouseholdDb>;
+  homeId: string;
+};
+
 export async function getCurrentHouseholdAccess(): Promise<HouseholdAccess | null> {
   if (isAuthRuntimeConfigured()) {
     return resolveAuthenticatedAccess();
   }
 
   return resolvePreviewAccess();
+}
+
+export async function getCurrentHouseholdWriteContext(): Promise<HouseholdWriteContext | null> {
+  const access = await getCurrentHouseholdAccess();
+  if (!access || !canWriteHousehold(access.role)) return null;
+
+  return {
+    access,
+    db: getHouseholdDb(access),
+    homeId: access.homeId,
+  };
+}
+
+export async function isCurrentHouseholdWritable() {
+  return Boolean(await getCurrentHouseholdWriteContext());
 }
 
 export async function requireCurrentHouseholdAccess() {
