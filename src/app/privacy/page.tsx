@@ -23,7 +23,7 @@ const principles = [
   {
     title: "Keep preview data non-sensitive",
     description:
-      "The current preview has no production sign-in or household authorisation. Use the built-in sample household only, or controlled non-sensitive review data.",
+      "Verified account and household authorisation boundaries are implemented but remain disabled until production services are configured. Public previews use sample or controlled synthetic data only.",
     icon: LockKeyhole,
   },
   {
@@ -42,7 +42,7 @@ const principles = [
 
 export default function PrivacyPage() {
   return (
-    <AppShell activeSection="">
+    <AppShell activeSection="" publicAccess>
       <section className="space-y-5">
         <PageHeader
           eyebrow="Privacy"
