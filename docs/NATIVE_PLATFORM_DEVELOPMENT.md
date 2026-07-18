@@ -48,3 +48,7 @@ The first public submission must be tested through TestFlight and Google Play in
 ## Privacy And Link Hardening
 
 The native runtime enables privacy-screen protection before household use. iOS app-switcher previews are obscured; Android also prevents screenshots, screen recording and application backup. Both platforms register `homevault://`. The canonical HTTPS domain is declared for verified links, but the public association endpoints return 404 until `APPLE_APP_TEAM_ID` and `ANDROID_APP_LINK_SHA256_CERT_FINGERPRINT` are configured from the final signing accounts.
+
+## Protected Record Sharing
+
+Supported native detail screens use the official Capacitor Share plugin for the platform share sheet. The payload is deliberately limited to a generic record label and a validated same-origin HomeVault route. Sharing does not create a public link or access grant, and the recipient must pass the normal sign-in and household membership checks. Sensitive record fields, private attachment keys and file URLs are never included. The control is capability-detected and remains hidden when the platform share API is unavailable.

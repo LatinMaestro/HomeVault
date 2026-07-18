@@ -727,3 +727,12 @@ Next: complete the store reviewer package and release metadata, then run product
 - Establish one final acceptance protocol covering web, attachments, accounts, iOS, Android, accessibility and store disclosures.
 
 Next: enable and validate production services, finish protected native sharing once cloud runners are available, then execute signed internal-distribution and final client acceptance.
+
+## Phase 4V - Protected Native Record Sharing (Complete)
+
+- Use the platform share sheet for protected asset, maintenance, warranty and receipt/document links.
+- Share only a generic label and same-origin HomeVault URL; never expose record metadata, attachment keys or private file URLs.
+- Keep authorization unchanged: recipients must sign in and belong to the record's household.
+- Compile generated iOS and Android plugin projects in cloud CI.
+
+Next: enable and validate production services, then execute signed internal-distribution and final client acceptance when client-owned credentials and legal/store inputs are available.
