@@ -229,3 +229,14 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Keep privacy, support and offline access public.
 - [x] Enforce navigation contracts in CI.
 - [ ] Add password recovery and account deletion lifecycle.
+
+
+## Phase 4M Completed
+
+- [x] Add a concrete provider behind the internal auth email boundary.
+- [x] Require provider, sender and credential before email is available.
+- [x] Add enumeration-safe reset request UI.
+- [x] Add token completion with session revocation.
+- [x] Keep no-secret deployments useful and testable.
+- [ ] Provision and verify the client-owned sending domain and credential.
+- [ ] Add account export/deletion lifecycle.
