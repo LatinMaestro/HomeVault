@@ -9,7 +9,7 @@ function navigateFromAppUrl(value: string) {
   try {
     const url = new URL(value);
     const isTrustedHttps = url.protocol === "https:" && url.hostname === productionHost;
-    const isHomeVaultScheme = url.protocol === "au.com.homevault.app:";
+    const isHomeVaultScheme = url.protocol === "homevault:";
     if (!isTrustedHttps && !isHomeVaultScheme) return;
 
     const destination = `${url.pathname || "/"}${url.search}${url.hash}`;
@@ -29,13 +29,23 @@ export function NativeRuntime() {
     const removers: Array<() => Promise<void>> = [];
 
     async function configureNativeRuntime() {
-      const [{ App }, { Network }, { StatusBar, Style }] = await Promise.all([
-        import("@capacitor/app"),
-        import("@capacitor/network"),
-        import("@capacitor/status-bar"),
-      ]);
+      const [{ App }, { Network }, { PrivacyScreen }, { StatusBar, Style }] =
+        await Promise.all([
+          import("@capacitor/app"),
+          import("@capacitor/network"),
+          import("@capacitor/privacy-screen"),
+          import("@capacitor/status-bar"),
+        ]);
       if (!active) return;
 
+      await PrivacyScreen.enable({
+        android: {
+          dimBackground: true,
+          preventScreenshots: true,
+          privacyModeOnActivityHidden: "splash",
+        },
+        ios: { blurEffect: "dark" },
+      });
       await StatusBar.setStyle({ style: Style.Light });
       if (Capacitor.getPlatform() === "android") {
         await StatusBar.setBackgroundColor({ color: "#0f766e" });

@@ -41,3 +41,8 @@ The Native CI workflow:
 Unsigned CI builds prove source compatibility only. Store distribution still requires client-owned Apple/Google accounts, app records, signing credentials, legal identity, policy declarations and production service configuration.
 
 The first public submission must be tested through TestFlight and Google Play internal testing. Store reviewers need a synthetic, verified review account; no private household data should be supplied.
+
+
+## Privacy And Link Hardening
+
+The native runtime enables privacy-screen protection before household use. iOS app-switcher previews are obscured; Android also prevents screenshots, screen recording and application backup. Both platforms register `homevault://`. The canonical HTTPS domain is declared for verified links, but the public association endpoints return 404 until `APPLE_APP_TEAM_ID` and `ANDROID_APP_LINK_SHA256_CERT_FINGERPRINT` are configured from the final signing accounts.

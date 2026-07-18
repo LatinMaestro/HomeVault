@@ -689,3 +689,13 @@ Next: create native iOS and Android wrapper foundations around the production we
 - Add unsigned iOS Simulator and Android debug cloud builds with generated-project drift checks.
 
 Next: add universal/app-link declarations and native privacy hardening, then prepare store release metadata and signed-build workflows awaiting client credentials.
+
+## Phase 4S - Native Privacy And Link Hardening (Complete)
+
+- Obscure household screens in iOS and Android app-switcher previews.
+- Prevent Android screenshots, device backup, cleartext traffic and mixed content.
+- Register a HomeVault custom URL scheme on both platforms.
+- Declare the canonical HTTPS domain for iOS Universal Links and Android App Links.
+- Publish association responses only after valid client-owned signing identities are configured.
+
+Next: add signed-release workflow templates and complete store listing/reviewer packages while production service credentials remain pending.
