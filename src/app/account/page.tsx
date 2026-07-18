@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ShieldCheck, UserRound } from "lucide-react";
 
 import { AppShell } from "@/components/app-shell";
 import { SignOutButton } from "@/components/sign-out-button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { isAuthRuntimeConfigured } from "@/lib/auth-config";
 import {
@@ -75,9 +77,14 @@ export default async function AccountPage() {
                 <Badge variant="secondary">{access.role}</Badge>
               </div>
             ) : (
-              <p className="text-sm leading-6 text-muted-foreground">
-                This verified account is not connected to a household yet. First-home setup is added in the next release phase.
-              </p>
+              <div className="space-y-4">
+                <p className="text-sm leading-6 text-muted-foreground">
+                  This verified account is not connected to a household yet. Create the first home to begin using private records.
+                </p>
+                <Button asChild>
+                  <Link href="/onboarding">Set up my home</Link>
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>
