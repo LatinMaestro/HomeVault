@@ -99,3 +99,8 @@ Before production release, these routes must move behind signed-in household aut
 ## Account Deletion Boundary
 
 A verified user can delete their account in-app. The transaction removes the User, credential accounts, sessions and memberships. If they are the household's only member, the Home and all relational household records are deleted by cascade. Owners with remaining members are blocked until ownership can be transferred. Infrastructure backup expiry and future private attachment cleanup remain documented retention gates.
+
+
+## Private Attachments
+
+Document attachments are limited to small PDF, JPEG and PNG files in a Vercel Private Blob store. Upload and removal require an authenticated writable household role; download requires authenticated membership in the same household. Storage keys and private provider URLs are not exposed in browser data or portable exports. File responses are no-store downloads with content sniffing disabled. Format signatures are validated, but HomeVault does not claim to provide malware scanning.
