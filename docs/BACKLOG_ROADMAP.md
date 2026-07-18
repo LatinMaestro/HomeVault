@@ -208,3 +208,14 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Smoke-test account routes without a database.
 - [ ] Create the first household atomically for a verified member.
 - [ ] Add recovery and account deletion lifecycle.
+
+
+## Phase 4K Completed
+
+- [x] Require a verified session for first-home setup.
+- [x] Create Home and OWNER membership atomically.
+- [x] Make concurrent/repeated onboarding idempotent.
+- [x] Validate Australian household metadata.
+- [x] Redirect existing members away from onboarding.
+- [ ] Protect authenticated navigation presentation.
+- [ ] Add password recovery and account deletion lifecycle.
