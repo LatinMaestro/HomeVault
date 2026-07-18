@@ -642,3 +642,10 @@ See `docs/PHASE_4L_PROTECTED_NAVIGATION.md` for the completion record.
 Phase 4M added fail-closed Resend delivery code plus enumeration-safe password reset request and completion screens. Live email remains disabled until the client owns and configures a verified sender and managed credential.
 
 See `docs/PHASE_4M_PASSWORD_RECOVERY.md` for the completion record.
+
+
+## Phase 4N: Account Export And Deletion - Complete
+
+Phase 4N added signed-in account deletion, sole-member household cascade deletion, ownership-transfer blocking, protected exports and a public store-policy deletion route.
+
+See `docs/PHASE_4N_ACCOUNT_DELETION.md` for the completion record.

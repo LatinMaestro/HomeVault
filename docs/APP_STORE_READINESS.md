@@ -140,3 +140,13 @@ HomeVault has selected self-hosted Better Auth with the existing Next.js, Prisma
 Vercel Private Blob is the selected production attachment store. Provisioning and uploads follow production identity and account-lifecycle controls.
 
 See `docs/AUTHENTICATION_ARCHITECTURE.md`.
+
+
+## Implemented Account Lifecycle Evidence
+
+- In-app deletion confirmation: `/account/delete`.
+- Public deletion information: `/account-deletion`.
+- Household export is offered before deletion.
+- Sole-member household records are deleted through database cascades.
+- Owners cannot abandon remaining members without transfer.
+- Private attachment cleanup remains a release gate until Blob is provisioned.

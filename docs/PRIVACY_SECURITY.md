@@ -94,3 +94,8 @@ Settings provides on-request downloads for visible household metadata and asset 
 The inventory CSV quotes every cell and neutralises values that spreadsheet software could interpret as formulas. Exports contain metadata only because file storage is not implemented.
 
 Before production release, these routes must move behind signed-in household authorisation and become part of the tested account export and deletion lifecycle.
+
+
+## Account Deletion Boundary
+
+A verified user can delete their account in-app. The transaction removes the User, credential accounts, sessions and memberships. If they are the household's only member, the Home and all relational household records are deleted by cascade. Owners with remaining members are blocked until ownership can be transferred. Infrastructure backup expiry and future private attachment cleanup remain documented retention gates.

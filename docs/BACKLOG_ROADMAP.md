@@ -240,3 +240,14 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Keep no-secret deployments useful and testable.
 - [ ] Provision and verify the client-owned sending domain and credential.
 - [ ] Add account export/deletion lifecycle.
+
+
+## Phase 4N Completed
+
+- [x] Add in-app permanent account deletion.
+- [x] Delete sole-member households and their relational records atomically.
+- [x] Block owners from abandoning other members.
+- [x] Protect exports when production auth is configured.
+- [x] Publish a public deletion-information route.
+- [ ] Extend deletion to private Blob attachments after storage is provisioned.
+- [ ] Baseline and apply production database migrations.
