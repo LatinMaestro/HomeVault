@@ -7,6 +7,7 @@ import { DataSourceNote } from "@/components/data-source-note";
 import { DocumentAttachmentPanel } from "@/components/document-attachment-panel";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
+import { NativeShareButton } from "@/components/native-share-button";
 import { PageHeader } from "@/components/page-header";
 import { Button } from "@/components/ui/button";
 import {
@@ -74,6 +75,11 @@ export default async function RecordPage({
           action={
             <div className="flex flex-col gap-2 sm:flex-row">
               <BackLinkButton href="/receipts">Back to receipts</BackLinkButton>
+              <NativeShareButton
+                title={record.data.title}
+                path={`/receipts/${record.data.id}`}
+                description="View this household record in HomeVault."
+              />
               <Button asChild variant="outline">
                 <Link href={`/receipts/${record.data.id}/edit`}>Edit metadata</Link>
               </Button>
