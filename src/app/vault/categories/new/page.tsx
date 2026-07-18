@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Add an asset category to the current HomeVault home.",
 };
 
-export default function NewAssetCategoryPage() {
+export default async function NewAssetCategoryPage() {
   return (
     <AppShell activeSection="Vault">
       <section className="space-y-5">
@@ -27,7 +27,7 @@ export default function NewAssetCategoryPage() {
         <AssetCategoryForm
           fields={getAssetCategoryFields()}
           action={createAssetCategoryAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>
