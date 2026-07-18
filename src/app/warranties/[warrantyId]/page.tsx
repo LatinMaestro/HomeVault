@@ -7,6 +7,7 @@ import { DataSourceNote } from "@/components/data-source-note";
 import { DateStatusBadge } from "@/components/date-status-badge";
 import { EmptyState } from "@/components/empty-state";
 import { FieldList } from "@/components/field-list";
+import { NativeShareButton } from "@/components/native-share-button";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,16 @@ export default async function WarrantyPage({
           <EmptyState
             title="No matching warranty"
             description="The warranty may have been removed, may not exist in the configured database, or may not be part of the built-in sample data."
-            action={<BackLinkButton href="/warranties">Back to warranties</BackLinkButton>}
+            action={
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <BackLinkButton href="/warranties">Back to warranties</BackLinkButton>
+              <NativeShareButton
+                title={`${warranty.data.assetName} warranty`}
+                path={`/warranties/${warranty.data.id}`}
+                description="View this household warranty in HomeVault."
+              />
+            </div>
+          }
           />
         </section>
       </AppShell>
