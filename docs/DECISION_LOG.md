@@ -1067,3 +1067,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Processor-contract exceptions are not assumed without final legal/vendor review.
 - Every new SDK or data capability must reopen the manifest, matrix, privacy policy and both store forms.
 - Final declarations and retention periods remain client-owned legal submission decisions.
+
+
+## 2026-07-19 - Store Review Uses A Stable Synthetic Household
+
+**Decision:** Give store reviewers one verified, persistent synthetic OWNER account with a guided cross-platform journey and harmless sample attachments. Keep credentials private in store-console fields and keep all real household data out of review evidence.
+
+**Rationale:** Review must exercise production authorization, files, exports and deletion without depending on client intervention or exposing personal records. A stable fixture also makes re-review and policy responses reproducible.
+
+**Consequences:**
+
+- Reviewer access cannot rely on expiring links, geofences, VPNs or staff action.
+- The account remains active for the complete review and appeal window.
+- Review notes explicitly describe implemented native utility and product exclusions.
+- Account deletion is reachable but reviewers are asked not to confirm it unless needed.
+- Final acceptance records the exact signed build, commit, devices and declarations.
+- Legal identity, review contact and private credentials remain client-owned console inputs.
