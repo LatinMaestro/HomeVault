@@ -875,3 +875,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Synthetic preview writes remain possible only when production auth is absent.
 - CI rejects direct use of the preview switch, temporary current-home resolver and raw database helper anywhere under app routes.
 - Household administration remains OWNER-only and is not exposed yet.
+
+
+## 2026-07-18 - Account Entry Is Reviewable Without Being Partially Enabled
+
+**Decision:** Ship account routes and browser forms with explicit server-side availability gates, while leaving signup disabled until transactional email exists.
+
+**Rationale:** The interface and build can be validated before production secrets are supplied, but a household app must not create accounts that cannot verify or recover their email.
+
+**Consequences:**
+
+- Sign-in submits only when the complete auth runtime is configured.
+- Signup requires both the explicit enablement switch and configured email boundary.
+- Verified identity is exposed separately from household membership.
+- Account status reports missing household setup without granting data access.
+- No-secret previews retain a useful sample review path.
+- Social login and account linking remain disabled.
