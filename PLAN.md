@@ -607,3 +607,10 @@ See `docs/PHASE_4G_HOUSEHOLD_ACCESS.md` for the completion record.
 Phase 4H migrated the central household read layer to verified session membership and made CI reject the former earliest-home and preview-switch read bypasses. Curated sample fallback remains available without runtime access.
 
 See `docs/PHASE_4H_AUTHORISED_READS.md` for the completion record.
+
+
+## Phase 4I: Authorised Household Mutations - Complete
+
+Phase 4I migrated every existing Server Action and form-availability decision to writable household membership. The app source contract now rejects direct preview, temporary current-home and raw database access from routes.
+
+See `docs/PHASE_4I_AUTHORISED_MUTATIONS.md` for the completion record.
