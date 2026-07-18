@@ -988,3 +988,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Upload failure uses compensating cleanup; removal restores metadata when Blob deletion fails.
 - Sole-member household account deletion attempts to remove associated private objects.
 - OCR, AI classification, email ingestion, malware scanning and multi-file galleries remain out of scope.
+
+
+## 2026-07-18 - Sensitive Account Changes Reconfirm Credentials
+
+**Decision:** Require the current password for password changes and permanent account deletion, and revoke other sessions after a successful password change.
+
+**Rationale:** A session left open on a shared household device should not be sufficient to silently change credentials or erase the account. Users also need a direct way to end sessions on devices they no longer control.
+
+**Consequences:**
+
+- Password changes use Better Auth's credential verification.
+- Successful password changes preserve the current device and revoke other sessions.
+- Account deletion requires both the verified session and current password.
+- Display-name updates do not alter household identity or email ownership.
+- Email change remains disabled until its dual-address verification and recovery behaviour is reviewed.
