@@ -2,17 +2,17 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4K is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4L is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4K First Household Onboarding` complete
+- Phase: `4L Protected Navigation` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: verified email/password entry, account status, sign-out, atomic first-household onboarding and household authorization are implemented fail-closed; recovery, deletion and production enablement follow
 - Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; canonical demo seeding is repeat-safe
 - Mutations: existing create/edit and additive maintenance completion actions require writable OWNER or ADULT household access; controlled synthetic preview remains isolated while production auth is disabled
 - Storage: Vercel Private Blob selected; provisioning and uploads follow production identity
-- Current review posture: fallback-safe and contract-tested online for routes, security headers, health, install metadata, crawler rules and the non-sensitive offline shell
+- Current review posture: fallback-safe and contract-tested online for routes, authenticated navigation, household data boundaries, security headers, health, install metadata, crawler rules and the non-sensitive offline shell
 - Home: fallback-safe household snapshot and attention queue for maintenance, reminders, warranties, inventory, receipts and documents
 - Presentation: household-friendly status, frequency and document labels
 - Findability: server-rendered search across core lists plus household-wide search from the app header
