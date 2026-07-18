@@ -115,7 +115,7 @@ The following require separate product and privacy approval:
 - Local or push notifications.
 - Biometric re-entry.
 - Offline household-data caching.
-- Native sharing/export.
+- Native file-export sharing beyond the implemented protected record links.
 - Deep links and universal/app links.
 - Purchases or subscriptions.
 
@@ -177,7 +177,7 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [x] Shared bundle/application ID is configured as `au.com.homevault.app`.
 - [x] Branded iOS and Android icon/splash resources are generated.
 - [x] Cleartext and mixed-content runtime access are disabled.
-- [x] Trusted links, native back behaviour, connectivity fallback and status bars are integrated.
+- [x] Trusted links, native back behaviour, connectivity fallback, status bars and protected record sharing are integrated.
 - [x] GitHub Actions compiles Android Debug/unsigned Release and iOS Debug/Release Simulator candidates.
 - [x] A fail-closed manual workflow is ready to create signed AAB and IPA artifacts without automatic store upload.
 - [ ] Confirm identifiers in Apple Developer and Google Play Console.
@@ -221,3 +221,12 @@ See `docs/NATIVE_RELEASE_OPERATIONS.md`.
 - [ ] Submit matching declarations in App Store Connect and Play Console.
 
 See `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md`.
+
+
+## Native Utility Evidence
+
+- [x] Core household detail screens invoke the iOS/Android share sheet when available.
+- [x] Shared destinations are constrained to same-origin protected HomeVault paths.
+- [x] Share payloads exclude private record fields and attachment URLs.
+- [x] Opening a shared link still requires account and household authorisation.
+- [ ] Verify the native share sheet and received links on signed physical-device builds.
