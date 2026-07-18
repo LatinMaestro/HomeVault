@@ -828,3 +828,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Account linking and social providers remain disabled.
 - No credential account is created by synthetic seed data.
 - Production migrations, account UI, session-based household resolution and live email remain later release gates.
+
+
+## 2026-07-18 - Authentication Configuration Disables Preview Identity Fallback
+
+**Decision:** When the Better Auth runtime is configured, resolve the current household only from a verified server session and an explicit HouseholdMember relationship. Never fall back to the synthetic preview identity for an unauthenticated request.
+
+**Rationale:** A preview switch is a review convenience, not an identity mechanism. Allowing it to rescue a missing production session would turn a configuration overlap into an authentication bypass.
+
+**Consequences:**
+
+- Verified session user IDs are the only identity key in authenticated mode.
+- Membership is required before a Home ID is returned.
+- Missing sessions and missing memberships fail with the same non-revealing boundary.
+- OWNER and ADULT may write household records; only OWNER may administer a household.
+- CHILD and GUEST remain read-only until a separately reviewed permissions model exists.
+- The temporary preview resolver remains available only while production auth is absent.

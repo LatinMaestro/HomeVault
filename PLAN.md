@@ -593,3 +593,10 @@ Verified email/password is the initial account method; HomeVault retains server-
 Phase 4F adds Better Auth and its Prisma adapter, the supported core identity models, a fail-closed runtime handler, disabled email boundary and configuration/smoke contracts.
 
 Signup stays disabled without explicit enablement and configured email delivery. No migration, account UI, onboarding or household authorisation switch occurs yet. Dependency metadata was generated entirely in GitHub Actions. See `docs/PHASE_4F_AUTH_FOUNDATION.md`.
+
+
+## Phase 4G: Household Access Boundary - Complete
+
+Phase 4G added a server-owned access object that resolves verified Better Auth sessions through immutable user IDs and explicit household memberships. Authentication-enabled requests cannot fall back to synthetic preview access, and shared role/scope rules now define the next protected-data migration.
+
+See `docs/PHASE_4G_HOUSEHOLD_ACCESS.md` for the completion record.
