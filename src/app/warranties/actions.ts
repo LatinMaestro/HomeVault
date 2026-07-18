@@ -2,8 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 
-import { getCurrentHomeId } from "@/lib/current-home";
-import { getDb, isPreviewDatabaseEnabled } from "@/lib/db";
+import {
+  getCurrentHouseholdWriteContext,
+  type HouseholdWriteContext,
+} from "@/lib/household-access";
 import { getOptionalDateValue } from "@/lib/form-values";
 
 export type WarrantyActionState = {
@@ -16,10 +18,11 @@ function getFieldValue(formData: FormData, field: string) {
   return typeof value === "string" ? value.trim() : "";
 }
 
-async function getAssetId(homeId: string, assetName: string) {
+async function getAssetId(context: HouseholdWriteContext, assetName: string) {
+  const homeId = context.homeId;
   if (!assetName) return null;
 
-  const asset = await getDb().asset.findFirst({
+  const asset = await context.db.asset.findFirst({
     where: {
       homeId,
       name: { equals: assetName, mode: "insensitive" },
@@ -85,13 +88,15 @@ export async function createWarrantyAction(
   const invalidState = invalidWarrantyState(values);
   if (invalidState) return invalidState;
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -100,7 +105,7 @@ export async function createWarrantyAction(
       };
     }
 
-    const assetId = await getAssetId(homeId, values.assetName);
+    const assetId = await getAssetId(context, values.assetName);
 
     if (!assetId) {
       return {
@@ -140,13 +145,15 @@ export async function updateWarrantyAction(
   const invalidState = invalidWarrantyState(values);
   if (invalidState) return invalidState;
 
-  if (!isPreviewDatabaseEnabled()) {
+  const context = await getCurrentHouseholdWriteContext();
+
+  if (!context) {
     return unavailableState();
   }
 
   try {
-    const db = getDb();
-    const homeId = await getCurrentHomeId();
+    const db = context.db;
+    const homeId = context.homeId;
 
     if (!homeId) {
       return {
@@ -167,7 +174,7 @@ export async function updateWarrantyAction(
       };
     }
 
-    const assetId = await getAssetId(homeId, values.assetName);
+    const assetId = await getAssetId(context, values.assetName);
 
     if (!assetId) {
       return {
