@@ -10,7 +10,7 @@ HomeVault uses Capacitor 8 to produce iOS and Android release candidates from th
 - Native code does not contain database, auth, Blob or email secrets.
 - Cleartext HTTP and mixed content are disabled.
 - A bundled privacy-safe shell is retained for a failed initial connection.
-- Native runtime integration handles trusted app links, Android back behaviour, connectivity fallback and system status bars.
+- Native runtime integration handles trusted app links, Android back behaviour, connectivity fallback, system status bars and protected record sharing.
 
 ## Identifiers
 
@@ -48,3 +48,10 @@ The first public submission must be tested through TestFlight and Google Play in
 ## Privacy And Link Hardening
 
 The native runtime enables privacy-screen protection before household use. iOS app-switcher previews are obscured; Android also prevents screenshots, screen recording and application backup. Both platforms register `homevault://`. The canonical HTTPS domain is declared for verified links, but the public association endpoints return 404 until `APPLE_APP_TEAM_ID` and `ANDROID_APP_LINK_SHA256_CERT_FINGERPRINT` are configured from the final signing accounts.
+
+
+## Native Record Sharing
+
+Asset, maintenance, warranty and receipt/document detail screens offer the platform share sheet when supported. HomeVault shares only a generic label and same-origin protected record URL. It does not place serial numbers, policy references, notes, attachment object keys or private file URLs in the share payload.
+
+Opening a shared link still requires normal sign-in and household membership. Sharing does not grant access, create a public link or copy a private attachment.
