@@ -717,3 +717,13 @@ Next: add signed-release workflow templates and complete store listing/reviewer 
 - Refresh the privacy architecture documentation to match implemented auth, storage and native boundaries.
 
 Next: complete the store reviewer package and release metadata, then run production service enablement and final end-to-end validation when client-owned credentials and legal/store inputs are available.
+
+
+## Phase 4W - Reviewer And Release Package (Complete)
+
+- Refresh public privacy, support and account-deletion copy to match implemented controls and remaining live-service gates.
+- Define the synthetic store reviewer account, guided review path, expected behavior and honest exclusions.
+- Sequence client-owned production, legal, Apple, Google and final-approval actions.
+- Establish one final acceptance protocol covering web, attachments, accounts, iOS, Android, accessibility and store disclosures.
+
+Next: enable and validate production services, finish protected native sharing once cloud runners are available, then execute signed internal-distribution and final client acceptance.
