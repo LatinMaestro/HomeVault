@@ -2,11 +2,11 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4R is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+Phase 4S is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
 
 ## Current Status
 
-- Phase: `4R Native Platform Foundation` complete
+- Phase: `4S Native Privacy And Link Hardening` complete
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
 - Auth: verified entry, recovery, onboarding, household authorization, profile/password/session controls, protected exports and password-confirmed account deletion are implemented fail-closed; production service enablement follows
 - Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
@@ -162,3 +162,7 @@ Document records support one private PDF, JPEG or PNG attachment up to 4 MB afte
 ## Native Candidates
 
 The repository contains generated iOS and Android projects for `au.com.homevault.app`. GitHub Actions synchronises and compiles unsigned Android debug and iOS Simulator candidates. The client does not need local Xcode or Android Studio. See `docs/NATIVE_PLATFORM_DEVELOPMENT.md`.
+
+## Native Privacy And Links
+
+Native household screens are obscured in app-switcher previews; Android also blocks screenshots and device backup. Custom `homevault://` links are registered, while verified HTTPS links stay fail-closed until Apple Team ID and Play signing fingerprint are configured.
