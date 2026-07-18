@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -46,7 +46,7 @@ export default async function EditWarrantyPage({
           description="Warranty saving is enabled when this warranty exists in the configured database. If this is sample data, HomeVault will explain that nothing changed."
           fields={fields}
           action={updateAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>
