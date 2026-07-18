@@ -8,10 +8,12 @@ import {
   Search,
   Settings,
   ShieldCheck,
+  UserRound,
   Wrench,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { isAuthRuntimeConfigured } from "@/lib/auth-config";
 import { cn } from "@/lib/utils";
 
 const navigation = [
@@ -30,6 +32,8 @@ export function AppShell({
   activeSection: string;
   children: React.ReactNode;
 }) {
+  const accountMode = isAuthRuntimeConfigured();
+
   return (
     <div className="min-h-screen bg-background">
       <a
@@ -61,8 +65,15 @@ export function AppShell({
                 <Search className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
+            {accountMode ? (
+              <Button asChild size="icon" variant="outline">
+                <Link href="/account" aria-label="HomeVault account" title="Account">
+                  <UserRound className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </Button>
+            ) : null}
             <div className="hidden rounded-md border bg-secondary px-3 py-1 text-xs font-medium text-secondary-foreground sm:block">
-              Single-user preview
+              {accountMode ? "Secure account mode" : "Sample preview"}
             </div>
           </div>
         </div>
