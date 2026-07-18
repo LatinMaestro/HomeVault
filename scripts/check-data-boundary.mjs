@@ -90,6 +90,30 @@ for (const file of listSourceFiles(appSourceRoot)) {
   }
 }
 
+const publicShellPages = new Set([
+  "src/app/privacy/page.tsx",
+  "src/app/support/page.tsx",
+]);
+for (const page of publicShellPages) {
+  const source = readFileSync(join(root, page), "utf8");
+  if (!source.includes("<AppShell") || !source.includes("publicAccess")) {
+    violations.push(`${page}: public policy/help page must explicitly opt out of account navigation protection`);
+  }
+}
+
+const appShellModulePath = "src/components/app-shell.tsx";
+const appShellModule = readFileSync(join(root, appShellModulePath), "utf8");
+for (const contract of [
+  "getCurrentVerifiedSessionUser",
+  "getCurrentHouseholdAccess",
+  'redirect("/sign-in")',
+  'redirect("/onboarding")',
+]) {
+  if (!appShellModule.includes(contract)) {
+    violations.push(`${appShellModulePath}: missing navigation access contract "${contract}"`);
+  }
+}
+
 if (violations.length > 0) {
   console.error("HomeVault data boundary check failed:");
   for (const violation of violations) console.error(`- ${violation}`);
