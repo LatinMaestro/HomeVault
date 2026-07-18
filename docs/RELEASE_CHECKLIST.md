@@ -63,3 +63,16 @@
 - [ ] Apply migrations from a controlled cloud environment, never during a Vercel build.
 - [ ] Confirm migration status and application tables after deployment.
 - [ ] Do not run the synthetic seed against production.
+
+
+## Native Candidate Checklist
+
+- [x] iOS and Android source projects are committed.
+- [x] Platform projects synchronise from the locked Capacitor dependencies.
+- [x] Branded app icons and splash resources are generated.
+- [x] Unsigned Android debug and iOS Simulator cloud builds are configured.
+- [ ] Confirm bundle/application IDs in both developer accounts.
+- [ ] Configure cloud-held signing credentials.
+- [ ] Produce a signed iOS archive and Android App Bundle.
+- [ ] Test account, attachment, offline and deletion workflows through internal distribution.
+- [ ] Complete store policy forms, reviewer access and final screenshots.

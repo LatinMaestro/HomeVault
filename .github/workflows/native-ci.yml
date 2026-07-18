@@ -1,0 +1,76 @@
+name: Native CI
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "android/**"
+      - "ios/**"
+      - "assets/**"
+      - "native-shell/**"
+      - "capacitor.config.ts"
+      - "src/components/native-runtime.tsx"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/native-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "android/**"
+      - "ios/**"
+      - "assets/**"
+      - "native-shell/**"
+      - "capacitor.config.ts"
+      - "src/components/native-runtime.tsx"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - ".github/workflows/native-ci.yml"
+
+concurrency:
+  group: native-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android debug build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+        with:
+          version: 10.28.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec cap sync android
+      - name: Confirm generated Android project is current
+        run: git diff --exit-code -- android
+      - name: Compile Android debug candidate
+        working-directory: android
+        run: ./gradlew assembleDebug
+
+  ios:
+    name: iOS simulator build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: pnpm/action-setup@v4.4.0
+        with:
+          version: 10.28.0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec cap sync ios
+      - name: Confirm generated iOS project is current
+        run: git diff --exit-code -- ios
+      - name: Compile iOS simulator candidate
+        run: xcodebuild -project ios/App/App.xcodeproj -scheme App -configuration Debug -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build

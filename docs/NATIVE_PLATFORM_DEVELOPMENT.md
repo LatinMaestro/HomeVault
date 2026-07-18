@@ -1,0 +1,43 @@
+# Native Platform Development
+
+HomeVault uses Capacitor 8 to produce iOS and Android release candidates from the shared authenticated Next.js runtime.
+
+## Architecture
+
+- The native containers load only `https://home-vault.vercel.app` by default.
+- `HOMEVAULT_NATIVE_SERVER_URL` may override the URL only during a controlled native build.
+- Household access remains enforced by the Next.js server and PostgreSQL membership boundary.
+- Native code does not contain database, auth, Blob or email secrets.
+- Cleartext HTTP and mixed content are disabled.
+- A bundled privacy-safe shell is retained for a failed initial connection.
+- Native runtime integration handles trusted app links, Android back behaviour, connectivity fallback and system status bars.
+
+## Identifiers
+
+- Shared application/bundle ID: `au.com.homevault.app`
+- Display name: `HomeVault`
+- Initial version: `1.0`
+- Initial build/version code: `1`
+- iOS minimum: 15.0
+- Android minimum SDK: 24
+- Android target/compile SDK: 36
+
+Identifiers must be confirmed in the Apple and Google developer accounts before signing. Changing them after an app record is created is a client-controlled release decision.
+
+## Online-first Workflow
+
+Native projects are generated, synced and compiled in GitHub Actions. The client is not expected to install Xcode, Android Studio, Node.js or native dependencies locally.
+
+The Native CI workflow:
+
+1. installs the locked dependencies;
+2. synchronises the generated platform project;
+3. rejects uncommitted generated drift;
+4. builds an unsigned Android debug candidate on Linux;
+5. builds an unsigned iOS Simulator candidate on macOS.
+
+## Release Boundaries
+
+Unsigned CI builds prove source compatibility only. Store distribution still requires client-owned Apple/Google accounts, app records, signing credentials, legal identity, policy declarations and production service configuration.
+
+The first public submission must be tested through TestFlight and Google Play internal testing. Store reviewers need a synthetic, verified review account; no private household data should be supplied.

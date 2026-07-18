@@ -679,3 +679,13 @@ Next: close production account management gaps, then package the tested responsi
 - Keep account email changes disabled until the verified-email transition is separately reviewed.
 
 Next: create native iOS and Android wrapper foundations around the production web runtime, then close store metadata, signing and final service gates.
+
+## Phase 4R - Native Platform Foundation (Complete)
+
+- Generate branded Capacitor 8 iOS and Android projects from the shared HomeVault runtime.
+- Restrict the remote runtime to the canonical HomeVault HTTPS host.
+- Integrate trusted link handling, Android back behaviour, native connectivity fallback and status bars.
+- Generate iOS and Android icons/splash assets from the HomeVault mark.
+- Add unsigned iOS Simulator and Android debug cloud builds with generated-project drift checks.
+
+Next: add universal/app-link declarations and native privacy hardening, then prepare store release metadata and signed-build workflows awaiting client credentials.

@@ -1003,3 +1003,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Account deletion requires both the verified session and current password.
 - Display-name updates do not alter household identity or email ownership.
 - Email change remains disabled until its dual-address verification and recovery behaviour is reviewed.
+
+
+## 2026-07-18 - One Capacitor Runtime Serves Both Store Platforms
+
+**Decision:** Package the canonical authenticated HomeVault HTTPS runtime in Capacitor 8 containers for iOS and Android, with native connectivity, trusted-link, system-bar and back-navigation integration.
+
+**Rationale:** HomeVault's server-rendered household authorization and data workflows must remain one product surface. Capacitor preserves that boundary while enabling platform builds and native behaviour without maintaining two independent clients.
+
+**Consequences:**
+
+- The shared identifier is `au.com.homevault.app` pending store-account confirmation.
+- Cleartext traffic and Android mixed content are disabled.
+- Native code contains no service secrets and cannot bypass household authorization.
+- GitHub Actions builds unsigned Android and iOS Simulator candidates.
+- Production availability remains necessary because private household records are not cached in the native bundle.
+- Store signing, account records, legal identity and final review are client-owned gates.
