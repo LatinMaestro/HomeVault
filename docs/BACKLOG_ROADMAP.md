@@ -178,3 +178,12 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Prevent authenticated environments from falling back to preview access.
 - [x] Define shared write, administration and cross-household scope rules.
 - [ ] Migrate every database read and mutation to the household access boundary.
+
+
+## Phase 4H Completed
+
+- [x] Scope all central household reads with the resolved access Home ID.
+- [x] Select the database client from authenticated or controlled-preview access mode.
+- [x] Preserve curated sample fallback when access or the database is unavailable.
+- [x] Enforce the household read boundary in CI.
+- [ ] Migrate all Server Actions and form availability checks to writable household access.

@@ -88,6 +88,10 @@ async function resolvePreviewAccess(): Promise<HouseholdAccess | null> {
   };
 }
 
+export function getHouseholdDb(access: HouseholdAccess) {
+  return access.mode === "authenticated" ? getAuthDb() : getDb();
+}
+
 export async function getCurrentHouseholdAccess(): Promise<HouseholdAccess | null> {
   if (isAuthRuntimeConfigured()) {
     return resolveAuthenticatedAccess();

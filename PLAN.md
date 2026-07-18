@@ -600,3 +600,10 @@ Signup stays disabled without explicit enablement and configured email delivery.
 Phase 4G added a server-owned access object that resolves verified Better Auth sessions through immutable user IDs and explicit household memberships. Authentication-enabled requests cannot fall back to synthetic preview access, and shared role/scope rules now define the next protected-data migration.
 
 See `docs/PHASE_4G_HOUSEHOLD_ACCESS.md` for the completion record.
+
+
+## Phase 4H: Authorised Household Reads - Complete
+
+Phase 4H migrated the central household read layer to verified session membership and made CI reject the former earliest-home and preview-switch read bypasses. Curated sample fallback remains available without runtime access.
+
+See `docs/PHASE_4H_AUTHORISED_READS.md` for the completion record.

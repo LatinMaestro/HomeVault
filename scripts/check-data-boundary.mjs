@@ -59,6 +59,26 @@ for (const contract of requiredContracts) {
   }
 }
 
+const householdReadModulePath = "src/lib/home-data.ts";
+const householdReadModule = readFileSync(join(root, householdReadModulePath), "utf8");
+const householdReadContracts = [
+  'getCurrentHouseholdAccess',
+  'getHouseholdDb',
+  'homeId: access.homeId',
+];
+
+for (const contract of householdReadContracts) {
+  if (!householdReadModule.includes(contract)) {
+    violations.push(`${householdReadModulePath}: missing household access contract "${contract}"`);
+  }
+}
+
+for (const forbidden of ["getCurrentHomeId", "isPreviewDatabaseEnabled", "getDb()"]) {
+  if (householdReadModule.includes(forbidden)) {
+    violations.push(`${householdReadModulePath}: bypasses household access through "${forbidden}"`);
+  }
+}
+
 if (violations.length > 0) {
   console.error("HomeVault data boundary check failed:");
   for (const violation of violations) console.error(`- ${violation}`);
