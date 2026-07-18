@@ -1051,3 +1051,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Signed artifacts expire after 14 days and require human inspection.
 - TestFlight and Google Play internal testing remain mandatory handoff gates.
 - Store credentials, legal identity, signing setup and public submission remain client-owned actions.
+
+
+## 2026-07-18 - Store Privacy Declarations Follow The Broadest Shipped Data Path
+
+**Decision:** Bundle an iOS privacy manifest and maintain one cross-store disclosure matrix that conservatively covers every current optional production data path, even when a user has not supplied that class of data.
+
+**Rationale:** Apple and Google declarations describe the submitted app's capabilities and third-party handling, not one review account's current records. A shared engineering inventory reduces drift between code, native metadata, legal copy and store forms.
+
+**Consequences:**
+
+- Tracking, advertising and analytics remain explicitly absent.
+- Account identity, household content, receipt metadata and approved private attachments are treated as linked data used for app functionality.
+- CI verifies that the iOS manifest is bundled and retains the approved declarations.
+- Processor-contract exceptions are not assumed without final legal/vendor review.
+- Every new SDK or data capability must reopen the manifest, matrix, privacy policy and both store forms.
+- Final declarations and retention periods remain client-owned legal submission decisions.
