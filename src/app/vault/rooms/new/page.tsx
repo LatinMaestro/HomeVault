@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   description: "Create a HomeVault room when database persistence is configured.",
 };
 
-export default function NewRoomPage() {
+export default async function NewRoomPage() {
   return (
     <AppShell activeSection="Vault">
       <section className="space-y-5">
@@ -29,7 +29,7 @@ export default function NewRoomPage() {
           description="Room saving is now enabled when the database is configured. If the database is unavailable, HomeVault will explain that nothing changed."
           fields={roomShellFields}
           action={createRoomAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>
