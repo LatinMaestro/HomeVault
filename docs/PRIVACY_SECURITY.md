@@ -3,7 +3,7 @@
 ## Principles
 
 - Collect the least information needed.
-- Keep household data scoped to the temporary current home.
+- Scope every authenticated household read and mutation to verified membership.
 - Do not add analytics or persist search terms.
 - Do not send household data to AI or OCR services.
 - Avoid paid or external integrations without explicit approval.
@@ -12,13 +12,13 @@
 
 ## Preview Deployment Boundary
 
-HomeVault currently has no production authentication or per-user authorization. Preview and production deployments from the current codebase are suitable only for curated sample data or controlled development review.
+HomeVault implements verified email/password authentication, session-bound household membership and server-side role checks, but those controls remain fail-closed until the complete production environment is configured. Deployments without that configuration render curated sample data only.
 
-- Do not connect a database containing real household data to a publicly accessible deployment.
-- Do not store real documents, credentials or sensitive identifiers.
-- Keep preview surfaces out of search indexes until the production access model is approved.
-- Use Vercel-managed environment variables for approved secrets; never commit them.
-- Database-backed mutations remain a development capability, not a production security boundary.
+- Never enable the synthetic preview database switch for real household data.
+- Keep sample previews free of real documents, credentials and sensitive identifiers.
+- Keep preview surfaces out of search indexes.
+- Use managed environment secrets for approved credentials; never commit them.
+- Production data may be enabled only after migrations, auth email, private storage and end-to-end household-boundary checks pass.
 
 ## Browser Security Baseline
 
@@ -38,28 +38,25 @@ These controls reduce browser exposure but do not replace authentication, author
 
 The Prisma schema supports approved development and preview provisioning. Runtime reads and writes use `DATABASE_URL` only when configured, and builds do not require a live database.
 
-Until production authentication is approved:
+Authenticated runtime access resolves one verified session and explicit HouseholdMember relationship before any household database read or mutation. OWNER and ADULT roles may write; CHILD and GUEST remain read-only. Authentication-enabled requests never fall back to the synthetic preview identity.
 
-- use only synthetic or non-sensitive review data;
-- do not treat the temporary current-home resolver as authorization;
-- do not expose a real household database through a public deployment;
-- do not enable document storage or uploads.
+Without the complete auth runtime, use only synthetic or non-sensitive review data. `DATABASE_URL` alone never enables the legacy preview mode, and private attachments remain unavailable without verified household access.
 
 ## Production Decision Gates
 
-A real household-data launch requires explicit approval and implementation of:
+A real household-data launch now requires operational enablement and evidence for:
 
-- Production authentication.
-- Server-side authorization for every read and mutation.
-- Approved file storage, access control and retention policy.
-- Data export and account/home deletion workflows.
-- Secret rotation and incident-response procedures.
-- Production environment separation and database backup policy.
-- Security and privacy review of the deployed application.
+- production database migration with a confirmed restore point;
+- auth secret, canonical URL, verified transactional sender and signup gate;
+- private Blob provisioning and attachment lifecycle verification;
+- account creation, recovery, household authorization, exports and deletion;
+- secret rotation and incident-response ownership;
+- production/preview separation, backup policy and retained test evidence;
+- final security, privacy and store-disclosure review.
 
 ## Deferred Capabilities
 
-The current app does not include uploads, OCR, AI, email ingestion, notification delivery, payments, analytics, external integrations or native apps.
+The app includes guarded private document attachments and Capacitor iOS/Android candidates. It does not include OCR, AI, email ingestion, notification delivery, payments, analytics, advertising, camera capture or external account integrations.
 
 ## Offline Storage Boundary
 
@@ -109,3 +106,10 @@ Document attachments are limited to small PDF, JPEG and PNG files in a Vercel Pr
 ## Account Security Controls
 
 Verified users can update their display name, change their password and revoke other active sessions. Password changes require the current password and revoke other devices. Permanent deletion separately re-verifies the current password before any database transaction begins. Account email changes remain disabled pending a dedicated verified-email transition design.
+
+
+## Native Privacy Boundary
+
+The iOS and Android containers load only the canonical HTTPS runtime and contain no database, email, Blob or auth secrets. App-switcher content is obscured on both platforms; Android also blocks screenshots, recording, backup, cleartext and mixed content. Verified website links fail closed until store signing identities are configured.
+
+The iOS target contains a privacy manifest declaring linked account and household data used only for app functionality, with tracking disabled. The engineering disclosure source for Apple App Privacy and Google Play Data safety is `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md`. It must be re-audited against every signed release.
