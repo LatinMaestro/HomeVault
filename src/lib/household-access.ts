@@ -36,14 +36,35 @@ export function requireMatchingHome(access: HouseholdAccess, requestedHomeId: st
   return access;
 }
 
-async function resolveAuthenticatedAccess(): Promise<HouseholdAccess | null> {
+export type VerifiedSessionUser = {
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+};
+
+export async function getCurrentVerifiedSessionUser(): Promise<VerifiedSessionUser | null> {
+  if (!isAuthRuntimeConfigured()) return null;
+
   const [{ auth }, requestHeaders] = await Promise.all([import("@/lib/auth"), headers()]);
   const session = await auth.api.getSession({ headers: requestHeaders });
 
   if (!session?.user?.id || !session.user.emailVerified) return null;
 
+  return {
+    id: session.user.id,
+    name: session.user.name,
+    email: session.user.email,
+    image: session.user.image,
+  };
+}
+
+async function resolveAuthenticatedAccess(): Promise<HouseholdAccess | null> {
+  const user = await getCurrentVerifiedSessionUser();
+  if (!user) return null;
+
   const membership = await getAuthDb().householdMember.findFirst({
-    where: { userId: session.user.id },
+    where: { userId: user.id },
     orderBy: { createdAt: "asc" },
     select: {
       id: true,

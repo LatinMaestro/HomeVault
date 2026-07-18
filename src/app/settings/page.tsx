@@ -32,20 +32,20 @@ const readinessCards = [
   },
   {
     title: "Account mode",
-    description: "The app is still in single-user preview mode. Production authentication and household sharing need separate approval before implementation.",
-    badge: "Preview only",
+    description: "Verified email/password account entry is implemented but stays disabled until production runtime and email delivery are configured. Household sharing remains unavailable.",
+    badge: "Fail-closed",
     icon: LockKeyhole,
   },
   {
     title: "Data mode",
-    description: "Runtime pages use sample data by default. Approved metadata reads and saves require an explicit controlled-preview database switch until production accounts are ready.",
+    description: "Authenticated reads and saves require verified household membership. Sample and controlled-preview modes remain isolated while production accounts are disabled.",
     badge: "Fail-closed",
     icon: Database,
   },
 ];
 
 const unavailableItems = [
-  "Production authentication",
+  "Production account enablement and email delivery",
   "File uploads or storage",
   "OCR or AI extraction",
   "Notifications or email ingestion",

@@ -197,3 +197,14 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Derive form availability from server-side household access.
 - [x] Reject app-route access-boundary bypasses in CI.
 - [ ] Add production account screens, onboarding and lifecycle workflows.
+
+
+## Phase 4J Completed
+
+- [x] Add verified email/password sign-in UI.
+- [x] Gate signup on explicit enablement and transactional email readiness.
+- [x] Add account status and sign-out.
+- [x] Keep account routes useful without runtime secrets.
+- [x] Smoke-test account routes without a database.
+- [ ] Create the first household atomically for a verified member.
+- [ ] Add recovery and account deletion lifecycle.
