@@ -33,12 +33,14 @@ The Native CI workflow:
 1. installs the locked dependencies;
 2. synchronises the generated platform project;
 3. rejects uncommitted generated drift;
-4. builds an unsigned Android debug candidate on Linux;
-5. builds an unsigned iOS Simulator candidate on macOS.
+4. compiles Android Debug and unsigned Android Release bundle configurations on Linux;
+5. compiles iOS Debug and Release Simulator configurations on macOS.
 
 ## Release Boundaries
 
-Unsigned CI builds prove source compatibility only. Store distribution still requires client-owned Apple/Google accounts, app records, signing credentials, legal identity, policy declarations and production service configuration.
+Unsigned CI builds prove source and release-configuration compatibility only. A separate manual GitHub Actions workflow is ready to create signed AAB and IPA artifacts after client-owned credentials are stored in the protected `native-release` environment. It never uploads to a store automatically.
+
+Store distribution still requires client-owned Apple/Google accounts, app records, signing credentials, legal identity, policy declarations and production service configuration. See `docs/NATIVE_RELEASE_OPERATIONS.md` for the online signing and handoff runbook.
 
 The first public submission must be tested through TestFlight and Google Play internal testing. Store reviewers need a synthetic, verified review account; no private household data should be supplied.
 
