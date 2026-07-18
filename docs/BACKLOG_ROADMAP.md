@@ -219,3 +219,13 @@ Added the fail-closed Better Auth package, schema and runtime foundation. Live s
 - [x] Redirect existing members away from onboarding.
 - [ ] Protect authenticated navigation presentation.
 - [ ] Add password recovery and account deletion lifecycle.
+
+
+## Phase 4L Completed
+
+- [x] Protect shared household navigation when auth is configured.
+- [x] Route unauthenticated users to sign in.
+- [x] Route verified membership-less users to onboarding.
+- [x] Keep privacy, support and offline access public.
+- [x] Enforce navigation contracts in CI.
+- [ ] Add password recovery and account deletion lifecycle.
