@@ -24,7 +24,7 @@ const helpItems = [
   {
     title: "Saving is unavailable",
     description:
-      "Database-backed saving works only when the preview has a configured database. Without one, HomeVault stays useful in read-only sample mode.",
+      "Saving requires verified writable household access, or the isolated controlled-preview mode while production accounts are disabled. Without either, HomeVault remains useful with sample data.",
     icon: Database,
     href: "/settings",
     action: "Check data mode",
@@ -49,7 +49,7 @@ const helpItems = [
 
 export default function SupportPage() {
   return (
-    <AppShell activeSection="">
+    <AppShell activeSection="" publicAccess>
       <section className="space-y-5">
         <PageHeader
           eyebrow="Support"

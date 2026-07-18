@@ -628,3 +628,10 @@ See `docs/PHASE_4J_ACCOUNT_ENTRY.md` for the completion record.
 Phase 4K lets a verified account create its first Home and OWNER membership atomically, with deterministic race protection and no preview-identity fallback.
 
 See `docs/PHASE_4K_FIRST_HOUSEHOLD.md` for the completion record.
+
+
+## Phase 4L: Protected Navigation - Complete
+
+Phase 4L made the shared household shell redirect unauthenticated users to sign in and verified users without membership to onboarding whenever production auth is configured. Privacy, support and offline access remain public.
+
+See `docs/PHASE_4L_PROTECTED_NAVIGATION.md` for the completion record.
