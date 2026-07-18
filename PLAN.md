@@ -717,3 +717,14 @@ Next: add signed-release workflow templates and complete store listing/reviewer 
 - Refresh the privacy architecture documentation to match implemented auth, storage and native boundaries.
 
 Next: complete the store reviewer package and release metadata, then run production service enablement and final end-to-end validation when client-owned credentials and legal/store inputs are available.
+
+
+## Phase 4V - Native Protected Record Sharing (Complete)
+
+- Add the official Capacitor Share integration to iOS, Android and supported web runtimes.
+- Offer platform sharing on asset, maintenance, warranty and receipt/document detail screens.
+- Share only generic labels and same-origin protected links.
+- Preserve normal sign-in and household-membership enforcement for every shared destination.
+- Exclude private fields, file objects and attachment URLs from share payloads.
+
+Next: complete the store reviewer and release-metadata package, then proceed to production service enablement and final validation when client-owned setup inputs are available.
