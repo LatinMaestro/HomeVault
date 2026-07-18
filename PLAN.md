@@ -614,3 +614,10 @@ See `docs/PHASE_4H_AUTHORISED_READS.md` for the completion record.
 Phase 4I migrated every existing Server Action and form-availability decision to writable household membership. The app source contract now rejects direct preview, temporary current-home and raw database access from routes.
 
 See `docs/PHASE_4I_AUTHORISED_MUTATIONS.md` for the completion record.
+
+
+## Phase 4J: Account Entry Experience - Complete
+
+Phase 4J added fail-closed sign-in, gated signup, verified account status and sign-out without requiring auth secrets for builds or sample review. Email identity remains separate from household authorisation.
+
+See `docs/PHASE_4J_ACCOUNT_ENTRY.md` for the completion record.
