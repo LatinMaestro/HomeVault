@@ -1,4 +1,4 @@
-import { isPreviewDatabaseEnabled } from "@/lib/db";
+import { isCurrentHouseholdWritable } from "@/lib/household-access";
 
 import type { Metadata } from "next";
 
@@ -40,7 +40,7 @@ export default async function NewReceiptPage() {
           description="The merchant is required. Purchase total is optional archival metadata in Australian dollars."
           fields={fields}
           action={createReceiptAction}
-          databaseConfigured={isPreviewDatabaseEnabled()}
+          databaseConfigured={await isCurrentHouseholdWritable()}
         />
       </section>
     </AppShell>
