@@ -2,8 +2,9 @@ import { isAttachmentStorageConfigured } from "@/lib/attachment-storage";
 import { isAuthRuntimeConfigured } from "@/lib/auth-config";
 import { isAuthEmailConfigured } from "@/lib/auth-email";
 import { getAuthDb, isPreviewDatabaseAccessDisabled } from "@/lib/db";
+import { canonicalProductionOrigin } from "@/lib/site";
 
-export const canonicalProductionOrigin = "https://homevault.grovekind.com";
+export { canonicalProductionOrigin } from "@/lib/site";
 
 export type ProductionReadinessConfiguration = {
   auth: boolean;

@@ -1138,3 +1138,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Better Auth, Capacitor, Universal Links, Android App Links, release checks and store URLs use the Grovekind hostname.
 - The Vercel hostname remains live during migration and recovery but is not the canonical public address.
 - Email should use a separate verified sending subdomain so its DNS does not conflict with the application hostname.
+
+
+## 2026-07-19 - Canonical Host Enforcement Protects Session Boundaries
+
+**Decision:** Permanently redirect requests made to the legacy Vercel production hostname to the client-owned Grovekind origin while leaving preview and deployment aliases untouched.
+
+**Rationale:** Better Auth uses one explicit production base URL. Allowing families to remain on a second production hostname would fragment cookies, links and recovery journeys even when both hosts serve the same deployment.
+
+**Consequences:**
+
+- Paths and query strings survive the host redirect.
+- Preview deployments continue to render on their assigned hosts.
+- Root metadata uses the Grovekind origin for absolute URL generation.
+- Cloudflare remains DNS-only for the HomeVault application record.
+- The database-free smoke suite proves the redirect without requiring a Vercel deployment or live services.

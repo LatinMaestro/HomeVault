@@ -2,6 +2,8 @@ import { spawn } from "node:child_process";
 
 const port = 3210;
 const baseUrl = `http://127.0.0.1:${port}`;
+const canonicalProductionOrigin = "https://homevault.grovekind.com";
+const legacyProductionHost = "home-vault.vercel.app";
 const routes = [
   "/api/health",
   "/archive",
@@ -156,6 +158,20 @@ async function verifyDeploymentContracts() {
   assertContract(
     (homeResponse.headers.get("permissions-policy") ?? "").includes("camera=()"),
     "Home route does not disable unnecessary camera permission.",
+  );
+
+  const legacyResponse = await fetch(`${baseUrl}/support?source=legacy`, {
+    headers: { host: legacyProductionHost },
+    redirect: "manual",
+  });
+  assertContract(
+    legacyResponse.status === 308,
+    "The legacy production hostname must redirect permanently.",
+  );
+  assertContract(
+    legacyResponse.headers.get("location") ===
+      `${canonicalProductionOrigin}/support?source=legacy`,
+    "The legacy hostname redirect must preserve path and query on the canonical origin.",
   );
 
   const authResponse = await fetch(`${baseUrl}/api/auth/get-session`);

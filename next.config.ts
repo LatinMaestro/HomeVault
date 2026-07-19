@@ -1,5 +1,10 @@
 import type { NextConfig } from "next";
 
+import {
+  canonicalProductionOrigin,
+  legacyProductionHost,
+} from "./src/lib/site";
+
 const isDevelopment = process.env.NODE_ENV === "development";
 
 const contentSecurityPolicy = [
@@ -40,6 +45,16 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
+  },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: legacyProductionHost }],
+        destination: `${canonicalProductionOrigin}/:path*`,
+        permanent: true,
+      },
+    ];
   },
   async headers() {
     return [

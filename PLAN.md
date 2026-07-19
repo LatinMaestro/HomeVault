@@ -755,3 +755,14 @@ Next: deploy current main after Vercel build capacity resets, enable client-owne
 - Add accurate version 1.0 release notes and attachment language without claiming notifications, AI, OCR or public sharing.
 
 Next: complete client-owned production services, then capture final signed-build screenshots and execute internal-distribution acceptance.
+
+
+## Phase 4Z - Canonical Origin Enforcement (Complete)
+
+- Centralise the client-owned production origin used by web readiness and native runtime handling.
+- Redirect the legacy Vercel production hostname to the Grovekind hostname with path and query preservation.
+- Set the root metadata base to the client-owned HTTPS origin.
+- Verify the host redirect in the database-free production route smoke suite.
+- Keep deployment aliases and preview hosts unaffected.
+
+Next: publish this source revision when Vercel build capacity permits, then enable client-owned production services and execute final signed-distribution acceptance.

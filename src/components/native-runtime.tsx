@@ -3,12 +3,12 @@
 import { useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 
-const productionHost = "homevault.grovekind.com";
+import { canonicalProductionHost } from "@/lib/site";
 
 function navigateFromAppUrl(value: string) {
   try {
     const url = new URL(value);
-    const isTrustedHttps = url.protocol === "https:" && url.hostname === productionHost;
+    const isTrustedHttps = url.protocol === "https:" && url.hostname === canonicalProductionHost;
     const isHomeVaultScheme = url.protocol === "homevault:";
     if (!isTrustedHttps && !isHomeVaultScheme) return;
 
