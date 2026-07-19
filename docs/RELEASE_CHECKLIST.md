@@ -59,10 +59,10 @@
 - [x] A reviewed PostgreSQL migration baseline is committed.
 - [x] CI checks model coverage and destructive baseline SQL.
 - [x] Production status and deploy commands are documented.
-- [ ] Rehearse the baseline on a disposable Neon child branch.
-- [ ] Confirm the production Neon target and a current restore point.
-- [ ] Apply migrations from a controlled cloud environment, never during a Vercel build.
-- [ ] Confirm migration status and application tables after deployment.
+- [x] Rehearse the baseline on a disposable Neon child branch.
+- [x] Confirm the production Neon target and a current restore point.
+- [x] Apply migrations from a controlled cloud environment, never during a Vercel build.
+- [x] Confirm migration status and application tables after deployment.
 - [ ] Do not run the synthetic seed against production.
 
 
@@ -122,5 +122,5 @@
 - [ ] Fill client-owned contact, legal identity, public name and retention values.
 - [ ] Create and verify the synthetic reviewer account.
 - [ ] Complete every applicable final acceptance item on the submitted builds.
-- [ ] Confirm `/api/readiness` returns `ready` on the exact production deployment.
-- [ ] Run the manual Production Readiness workflow against the canonical production origin.
+- [x] Confirm `/api/readiness` returns `ready` on the exact production deployment.
+- [x] Run the manual Production Readiness workflow against the canonical production origin.
