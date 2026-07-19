@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 
 const helpItems = [
   {
-    title: "A sample record is missing",
+    title: "A record is missing",
     description:
-      "Return to the relevant list and choose one of the Taylor Family Home sample records. Unknown record links show a safe not-found state.",
+      "Return to the relevant list and open a record available to your household. Unknown or unavailable links show a safe, non-revealing state.",
     icon: LifeBuoy,
     href: "/vault",
     action: "Open the vault",
@@ -24,7 +24,7 @@ const helpItems = [
   {
     title: "Saving is unavailable",
     description:
-      "Saving requires verified writable household access, or the isolated controlled-preview mode while production accounts are disabled. Without either, HomeVault remains useful with sample data.",
+      "Saving requires a verified account with writable access to the current household. Read-only household roles can review records without changing them.",
     icon: Database,
     href: "/settings",
     action: "Check data mode",
