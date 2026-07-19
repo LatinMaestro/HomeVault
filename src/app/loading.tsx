@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 export default function Loading() {
   return (
-    <AppShell activeSection="Home">
+    <AppShell activeSection="Home" publicAccess>
       <section className="space-y-5" aria-busy="true" aria-live="polite">
         <div className="space-y-3">
           <Badge variant="secondary">Loading</Badge>
