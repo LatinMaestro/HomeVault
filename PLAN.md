@@ -745,3 +745,13 @@ Next: enable and validate production services, then execute signed internal-dist
 - Return no configuration detail, credentials or household data from the readiness endpoint.
 
 Next: deploy current main after Vercel build capacity resets, enable client-owned production services, then run signed internal distribution and final acceptance.
+
+## Phase 4Y - Release Copy And Mobile Navigation Alignment (Complete)
+
+- Remove preview-era statements that contradicted implemented accounts, deletion and private attachments.
+- Align dashboard, Settings, support and store-listing language with the actual release boundary.
+- Replace the clipped mobile navigation strip with a safe-area-aware fixed bottom bar.
+- Preserve full desktop navigation, semantic labels and all existing routes.
+- Add accurate version 1.0 release notes and attachment language without claiming notifications, AI, OCR or public sharing.
+
+Next: complete client-owned production services, then capture final signed-build screenshots and execute internal-distribution acceptance.
