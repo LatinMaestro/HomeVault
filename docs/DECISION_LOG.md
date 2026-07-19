@@ -1153,3 +1153,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Root metadata uses the Grovekind origin for absolute URL generation.
 - Cloudflare remains DNS-only for the HomeVault application record.
 - The database-free smoke suite proves the redirect without requiring a Vercel deployment or live services.
+
+
+## 2026-07-19 - Production Changes And Runtime Validation Are Cloud-controlled
+
+**Decision:** Apply reviewed production migrations and run disposable live-service validation only through guarded GitHub Actions workflows, independently of Vercel builds.
+
+**Rationale:** Production database and account evidence must be repeatable without client-machine commands, build-time database access or persistent test identities.
+
+**Consequences:**
+
+- Prisma migration history is applied with `prisma migrate deploy` using an encrypted GitHub Actions secret.
+- Production migration and runtime jobs are narrowly triggerable and use read-only repository permissions.
+- Live validation covers public account routes, signed-out route protection, Better Auth signup, email verification gating, database writes and Resend delivery.
+- Disposable identities are removed in guaranteed cleanup; the successful run left zero test users, accounts, verifications and homes.
+- Vercel compilation remains independent from the production database.
+- Signed native candidates, store-console declarations and final legal identity remain client-owned release gates.
