@@ -11,9 +11,9 @@ import { getDateStatus } from "@/lib/date-status";
 import { getHomeDashboard } from "@/lib/home-data";
 
 const reviewNotes = [
-  "The household overview uses configured records and falls back to sample data when database access is unavailable.",
-  "Guarded create and edit saving is available for rooms, assets, maintenance, warranties, receipts and document metadata when the database is configured.",
-  "Deletes, uploads, OCR, AI, notifications, payments and analytics remain out of scope.",
+  "Verified household membership protects saved home records and private attachments.",
+  "Owners and adult household members can maintain records while read-only roles stay protected.",
+  "No advertising, behavioural analytics, AI, OCR, budgeting or payment processing.",
 ];
 
 export const dynamic = "force-dynamic";
@@ -173,10 +173,10 @@ export default async function HomePage() {
 
         <Card>
           <CardHeader>
-            <CardDescription>Current boundaries</CardDescription>
+            <CardDescription>Privacy by design</CardDescription>
             <CardTitle className="flex items-center gap-2 text-xl">
               <ClipboardCheck className="h-5 w-5 text-primary" aria-hidden="true" />
-              Household records, kept practical
+              Useful records without unnecessary tracking
             </CardTitle>
           </CardHeader>
           <CardContent>
