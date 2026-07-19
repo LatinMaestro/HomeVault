@@ -2,9 +2,9 @@
 
 Engineering can continue without these inputs until the matching release gate. Each item requires the client's account ownership, legal identity, payment approval or secret handling and must not be guessed.
 
-## Gate 1: Production Services
+## Gate 1: Production Services - Infrastructure Complete
 
-Required before live account testing:
+The production database, auth configuration, verified Resend sender and private Blob store are connected. The controlled migration and disposable signup/delivery validation passed. The following configuration record is retained for operations:
 
 - Confirm the Vercel-managed HomeVault Neon default branch is the production database target.
 - Create a current Neon restore point.
@@ -88,13 +88,12 @@ Required only after engineering validation is complete:
 
 ## Current Blockers
 
-As of 2026-07-19, engineering source and unsigned build foundations are ready. The following are not yet evidenced as live:
+As of 2026-07-19, production migrations, readiness, disposable signup, database writes and Resend delivery are verified. Production remained unseeded and disposable identity cleanup passed. The remaining client-owned or signed-build gates are:
 
-- production migration deployment and restore rehearsal;
-- verified transactional auth email;
-- private Blob lifecycle;
-- final legal entity, support contact and retention periods;
-- Apple/Google app records and signing credentials;
-- signed physical-device and internal-distribution tests.
+- verified sign-in, first-home onboarding, private Blob lifecycle and account controls using a controlled production account;
+- final legal entity, monitored support contact and retention periods;
+- Apple and Google developer app records and signing credentials;
+- signed physical-device and internal-distribution tests;
+- final store declarations, screenshots and submission approval.
 
 These are release blockers, not reasons to require local development on the client PC.
