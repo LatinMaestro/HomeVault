@@ -122,7 +122,7 @@ The following are not part of the first release and require separate product and
 
 ## Current Submission Blockers
 
-- Production identity, email delivery, database migrations and private Blob are implemented but not all live-enabled and end-to-end tested.
+- Production identity, transactional email, database migrations and private Blob are live. Disposable signup, verification gating, database writes and delivery have passed; verified sign-in, onboarding, private-file lifecycle and account controls still require final controlled-account acceptance.
 - Preview privacy/support/deletion routes exist, but final legal identity and contact URLs are not confirmed.
 - Native iOS and Android Debug/Release configurations compile unsigned, and the manual signed-artifact workflow is ready; distribution signing credentials are not connected.
 - Branded raster app icons and an iOS privacy manifest exist, while final store screenshots and Google Play feature artwork remain.
@@ -157,7 +157,7 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [x] Upload, household-authorised download and removal are fail-closed.
 - [x] File formats and a conservative server-upload size limit are enforced.
 - [x] Account deletion includes private attachment cleanup reporting.
-- [ ] Connect a Vercel Blob store created with Private access.
+- [x] Connect a Vercel Blob store created with Private access.
 - [ ] Validate the lifecycle with a verified production account and non-sensitive test files.
 - [ ] Confirm final privacy disclosures name the storage processor and retention/deletion behaviour.
 
@@ -168,7 +168,7 @@ See `docs/AUTHENTICATION_ARCHITECTURE.md`.
 - [x] Password changes require the current password and revoke other sessions.
 - [x] Users can sign out every other active device.
 - [x] Permanent account deletion re-verifies the current password.
-- [ ] Validate account controls with a live verified production account.
+- [ ] Validate verified sign-in, onboarding and account controls with a live production account.
 - [ ] Decide whether verified email change is required for the first store release.
 
 
