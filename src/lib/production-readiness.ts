@@ -1,7 +1,7 @@
 import { isAttachmentStorageConfigured } from "@/lib/attachment-storage";
 import { isAuthRuntimeConfigured } from "@/lib/auth-config";
 import { isAuthEmailConfigured } from "@/lib/auth-email";
-import { getAuthDb } from "@/lib/db";
+import { getAuthDb, isPreviewDatabaseAccessDisabled } from "@/lib/db";
 
 export const canonicalProductionOrigin = "https://home-vault.vercel.app";
 
@@ -31,8 +31,7 @@ export function getProductionReadinessConfiguration(): ProductionReadinessConfig
     email: isAuthEmailConfigured(),
     attachments: isAttachmentStorageConfigured(),
     canonicalUrl: hasCanonicalAuthUrl(),
-    previewModeDisabled:
-      process.env.HOMEVAULT_PREVIEW_DATABASE_ACCESS !== "enabled",
+    previewModeDisabled: isPreviewDatabaseAccessDisabled(),
   };
 }
 
