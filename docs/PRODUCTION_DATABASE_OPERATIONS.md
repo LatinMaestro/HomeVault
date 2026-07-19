@@ -45,4 +45,4 @@ Prisma migrations are forward-only. For a failed deployment, stop writes, captur
 
 ## Current Gate
 
-The client confirmed the Vercel-managed Neon production target and created `pre-homevault-production-migration` from its current default branch. The complete migration history has been rehearsed successfully on an isolated temporary Neon branch. Production application remains pending the encrypted GitHub Actions database credential and controlled workflow run.
+The client confirmed the Vercel-managed Neon production target and created `pre-homevault-production-migration` from its default branch. The complete migration history was rehearsed on an isolated temporary branch and applied to production through the controlled GitHub workflow on 2026-07-19. Both reviewed migrations are recorded in Prisma's migration ledger, all expected HomeVault tables are present, the synthetic seed was not run, `/api/health` and `/api/readiness` return successfully, and the disposable production account validation completed with cleanup.
