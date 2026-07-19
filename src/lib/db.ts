@@ -16,6 +16,10 @@ export function isPreviewDatabaseEnabled() {
   );
 }
 
+export function isPreviewDatabaseAccessDisabled() {
+  return process.env.HOMEVAULT_PREVIEW_DATABASE_ACCESS !== "enabled";
+}
+
 function getConfiguredDb() {
   if (!process.env.DATABASE_URL) {
     throw new Error("Database access is not configured.");
