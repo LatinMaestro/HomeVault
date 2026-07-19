@@ -10,6 +10,10 @@ on:
   push:
     branches:
       - ops/production-runtime-validation
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
 
 concurrency:
   group: homevault-production-runtime-validation
@@ -21,7 +25,10 @@ permissions:
 jobs:
   validate:
     name: Validate live production services
-    if: github.event_name == 'push' || inputs.confirmation == 'VALIDATE_PRODUCTION'
+    if: >-
+      github.event_name == 'push' ||
+      (github.event_name == 'workflow_dispatch' && inputs.confirmation == 'VALIDATE_PRODUCTION') ||
+      (github.event_name == 'pull_request' && github.head_ref == 'ops/production-runtime-validation')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
