@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import { NativeRuntime } from "@/components/native-runtime";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
+import { canonicalProductionOrigin } from "@/lib/site";
 
 import "./globals.css";
 
@@ -24,6 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(canonicalProductionOrigin),
   applicationName: "HomeVault",
   manifest: "/manifest.webmanifest",
   icons: {

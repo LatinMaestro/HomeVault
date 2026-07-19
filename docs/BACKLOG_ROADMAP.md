@@ -28,28 +28,28 @@
 
 ## Near Term
 
-- Review the latest merged dashboard on Vercel after deployment catches up with `main`.
-- Continue controlled database and sample-fallback review across create, edit and detail flows.
-- Keep deletes, production auth, file storage, uploads, OCR, email ingestion and reminder delivery out of scope until separately approved.
-- Use GitHub PRs and GitHub Actions as the default review evidence while Vercel usage is constrained.
-- Use Vercel previews for visual review when usage allows or when a deployment issue needs investigation.
+- Publish the canonical-domain source revision when Vercel build capacity permits.
+- Enable the approved Better Auth, Resend and private Blob production services.
+- Rehearse and deploy the reviewed Prisma migration baseline after a current Neon restore point.
+- Create the synthetic reviewer household and execute the final web acceptance protocol.
+- Produce signed iOS and Android candidates after client-owned store identities and credentials are available.
 
 ## Future Approved-Decision Candidates
 
-- Production authentication.
-- Approved file storage.
 - Reminder delivery.
-- Household sharing.
+- Advanced household invitations and role management.
 - Multi-property support.
-- Capacitor-based iOS and Android packaging after auth, deletion, privacy and storage gates.
+- Biometric native re-entry.
+- Optional privacy-reviewed crash reporting.
 
-## Not Planned For Phase 1
+## Not Planned For The Initial Release
 
-- OCR.
-- AI extraction.
-- Budgeting or financial features.
-- Paid integrations.
-- Native packaging during the current shared-app phase; dual-store distribution remains the approved later target.
+- OCR or AI extraction.
+- Budgeting, valuation or other financial features.
+- Public attachment links.
+- Insurance claim automation.
+- Advertising or behavioural analytics.
+- Paid third-party integrations without separate approval.
 
 ## Phase 1W Complete
 

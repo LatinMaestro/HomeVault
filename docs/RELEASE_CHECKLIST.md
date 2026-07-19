@@ -21,6 +21,7 @@
 - [ ] Runtime pages remain useful when `DATABASE_URL` is absent or unavailable.
 - [ ] Security headers are present on deployed routes.
 - [ ] `/api/health` responds successfully without database access.
+- [ ] The legacy Vercel production hostname redirects to the canonical client-owned HTTPS origin.
 - [ ] `/robots.txt` disallows crawling until production auth is approved.
 - [ ] Manifest, install icon, theme colour and standalone metadata are valid.
 - [ ] Safe-area layout is reviewed on representative iOS and Android devices.
