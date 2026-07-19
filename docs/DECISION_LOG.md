@@ -1096,3 +1096,17 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Shared payloads contain a generic label and protected route only.
 - Serial numbers, policy references, notes, attachment keys and private file URLs are excluded.
 - No contacts permission, sharing analytics or new public-link model is introduced.
+
+## 2026-07-19 - Production Readiness Fails Closed And Discloses No Detail
+
+**Decision:** Keep build-safe liveness separate from production readiness. Report production ready only when the approved database, authentication, email, private storage, canonical URL and production-mode boundary are complete and the database answers a connectivity check.
+
+**Rationale:** A successful web response does not prove that account and household workflows are operational. Release evidence needs one stable online contract without exposing secret values, infrastructure details or household data.
+
+**Consequences:**
+
+- Database-free previews and builds remain healthy through the existing liveness route.
+- The readiness response contains only a generic ready/not-ready status.
+- Missing or unreachable services produce HTTP 503 and fail the release workflow.
+- GitHub can run final runtime checks without client-machine commands or repository secrets.
+- Readiness does not replace authenticated reviewer journeys, signed-device tests or processor/legal review.
