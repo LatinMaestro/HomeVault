@@ -12,7 +12,9 @@ The repository now provides:
 - database-free production route smoke coverage;
 - privacy-first preview controls;
 - no production tracking, advertising or unnecessary device permissions;
-- a privacy-safe offline fallback that does not cache household records.
+- a privacy-safe offline fallback that does not cache household records;
+- guarded private PDF, JPEG and PNG attachments;
+- native sharing of protected same-origin record links.
 
 This is now an unsigned native release-candidate foundation, not a signed store-submission build.
 
@@ -106,17 +108,16 @@ Required before submission:
 - Review/demo credentials backed by synthetic data.
 - Release notes and reviewer instructions.
 
-## Deferred Native Capabilities
+## Deliberately Absent Or Future Capabilities
 
-The following require separate product and privacy approval:
+The following are not part of the first release and require separate product and privacy approval:
 
 - Camera or document capture.
-- File uploads and production storage.
 - Local or push notifications.
 - Biometric re-entry.
 - Offline household-data caching.
-- Native sharing/export.
-- Deep links and universal/app links.
+- Public record or attachment sharing.
+- Advanced household invitations and role management.
 - Purchases or subscriptions.
 
 ## Current Submission Blockers
@@ -124,7 +125,7 @@ The following require separate product and privacy approval:
 - Production identity, email delivery, database migrations and private Blob are implemented but not all live-enabled and end-to-end tested.
 - Preview privacy/support/deletion routes exist, but final legal identity and contact URLs are not confirmed.
 - Native iOS and Android Debug/Release configurations compile unsigned, and the manual signed-artifact workflow is ready; distribution signing credentials are not connected.
-- Branded raster app icons and an iOS privacy manifest exist, while final store screenshots and promotional artwork remain.
+- Branded raster app icons and an iOS privacy manifest exist, while final store screenshots and Google Play feature artwork remain.
 - Apple Developer and Google Play app records, signing and policy declarations are not connected.
 - Final Vercel, TestFlight, Play internal-test and physical-device review is pending.
 
