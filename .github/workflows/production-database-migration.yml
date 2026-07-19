@@ -1,0 +1,135 @@
+name: Production database migration
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type MIGRATE_PRODUCTION to approve the migration
+        required: true
+        type: string
+  push:
+    branches:
+      - ops/production-database-migration
+
+concurrency:
+  group: homevault-production-database
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  migrate:
+    name: Apply reviewed Prisma migrations
+    if: github.event_name == 'push' || inputs.confirmation == 'MIGRATE_PRODUCTION'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.HOMEVAULT_PRODUCTION_DATABASE_URL }}
+      CI: true
+      NEXT_TELEMETRY_DISABLED: 1
+
+    steps:
+      - name: Checkout main migration history
+        uses: actions/checkout@v6
+
+      - name: Verify production database credential
+        run: |
+          node -e '
+            const value = process.env.DATABASE_URL;
+            if (!value) throw new Error("HOMEVAULT_PRODUCTION_DATABASE_URL is not configured.");
+            const url = new URL(value);
+            if (url.protocol !== "postgresql:" && url.protocol !== "postgres:") {
+              throw new Error("Production database credential must be a PostgreSQL URL.");
+            }
+            if (!url.hostname.endsWith(".neon.tech")) {
+              throw new Error("Production migration is restricted to the approved Neon target.");
+            }
+            console.log("Approved Neon production target detected.");
+          '
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4.4.0
+        with:
+          version: 10.28.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate migration history
+        run: |
+          pnpm run check:migrations
+          pnpm run prisma:validate
+          pnpm run prisma:generate
+
+      - name: Apply reviewed migrations
+        run: pnpm run db:migrate:deploy
+
+      - name: Verify migration status
+        run: pnpm run db:migrate:status
+
+      - name: Verify production schema
+        run: |
+          node <<'NODE'
+          const { Client } = require("pg");
+
+          const expectedTables = [
+            "Account",
+            "Asset",
+            "AssetCategory",
+            "Document",
+            "Home",
+            "HouseholdMember",
+            "MaintenanceCompletion",
+            "MaintenanceTask",
+            "Receipt",
+            "Reminder",
+            "Room",
+            "ServiceProvider",
+            "Session",
+            "User",
+            "Verification",
+            "Warranty",
+          ];
+
+          async function verify() {
+            const client = new Client({ connectionString: process.env.DATABASE_URL });
+            await client.connect();
+
+            try {
+              const tableResult = await client.query(
+                'SELECT table_name FROM information_schema.tables WHERE table_schema = \'public\' AND table_name = ANY($1::text[])',
+                [expectedTables],
+              );
+              const found = new Set(tableResult.rows.map((row) => row.table_name));
+              const missing = expectedTables.filter((table) => !found.has(table));
+
+              const migrationResult = await client.query(
+                'SELECT migration_name FROM "_prisma_migrations" WHERE finished_at IS NOT NULL ORDER BY migration_name',
+              );
+              const migrations = migrationResult.rows.map((row) => row.migration_name);
+
+              if (missing.length > 0) {
+                throw new Error(`Production schema is missing: ${missing.join(", ")}`);
+              }
+              if (!migrations.includes("0001_homevault_baseline") || !migrations.includes("0002_private_document_attachments")) {
+                throw new Error("Reviewed Prisma migration history is incomplete.");
+              }
+
+              console.log(`Verified ${found.size} HomeVault tables and ${migrations.length} applied migration records.`);
+            } finally {
+              await client.end();
+            }
+          }
+
+          verify().catch((error) => {
+            console.error(error.message);
+            process.exit(1);
+          });
+          NODE
