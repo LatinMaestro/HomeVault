@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export default function NotFound() {
   return (
-    <AppShell activeSection="Home">
+    <AppShell activeSection="Home" publicAccess>
       <section className="space-y-5">
         <PageHeader
           eyebrow="Not found"
