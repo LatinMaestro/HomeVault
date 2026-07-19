@@ -1,6 +1,6 @@
 # Production Database Operations
 
-HomeVault now keeps a reviewed Prisma migration history for PostgreSQL. The baseline in `prisma/migrations/0001_homevault_baseline` represents the complete application and Better Auth schema as of Phase 4O.
+HomeVault keeps a reviewed Prisma migration history for PostgreSQL. The baseline in `prisma/migrations/0001_homevault_baseline` represents the complete application and Better Auth schema as of Phase 4O.
 
 ## Safety Rules
 
@@ -12,17 +12,28 @@ HomeVault now keeps a reviewed Prisma migration history for PostgreSQL. The base
 - Take or confirm a Neon restore point or branch before changing the default branch.
 - Never seed the production database with the synthetic Taylor Family Home.
 - Never apply a migration to the Neon default branch merely to make CI pass.
+- Never hand-edit Prisma migration records.
 
 ## Online Deployment Runbook
 
 1. Merge the reviewed migration PR after CI passes.
 2. Confirm the target Neon project, default branch and database.
 3. Confirm a current restorable Neon branch or restore point exists.
-4. Run `pnpm run db:migrate:status` from a controlled cloud environment using the production `DATABASE_URL`.
-5. Run `pnpm run db:migrate:deploy` once from that controlled environment.
-6. Re-run migration status and inspect the application tables.
-7. Verify `/api/health`, sign-in, onboarding and one authorised household read.
-8. Keep Vercel build and deployment steps independent from migration execution.
+4. Add the production Neon pooled connection string to the GitHub Actions secret `HOMEVAULT_PRODUCTION_DATABASE_URL`.
+5. Trigger the `Production database migration` workflow from the GitHub Actions interface, or create the controlled `ops/production-database-migration` trigger branch.
+6. The workflow validates the locked migration history and applies `prisma migrate deploy`.
+7. The workflow verifies Prisma migration status, expected application tables and applied migration records.
+8. Verify `/api/health`, `/api/readiness`, account entry, onboarding and one authorised household read.
+9. Keep Vercel build and deployment steps independent from migration execution.
+
+## Cloud Workflow Guardrails
+
+- The workflow accepts only a PostgreSQL connection hosted by the approved Neon service.
+- The credential exists only as an encrypted GitHub Actions secret.
+- The migration job has read-only repository permissions and a single non-cancelling concurrency group.
+- No seed command is present.
+- Re-running the job is safe because `prisma migrate deploy` applies only pending reviewed migrations.
+- Logs expose migration names and verification counts, never the database credential or household rows.
 
 ## Preview Validation
 
@@ -34,4 +45,4 @@ Prisma migrations are forward-only. For a failed deployment, stop writes, captur
 
 ## Current Gate
 
-The migration baseline is ready for review and disposable-branch rehearsal. Applying it to the live Neon default branch remains intentionally deferred until the production auth and email environment is ready and the target/restore point are confirmed.
+The client confirmed the Vercel-managed Neon production target and created `pre-homevault-production-migration` from its current default branch. The complete migration history has been rehearsed successfully on an isolated temporary Neon branch. Production application remains pending the encrypted GitHub Actions database credential and controlled workflow run.
