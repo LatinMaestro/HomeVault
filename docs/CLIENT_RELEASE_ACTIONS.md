@@ -10,7 +10,7 @@ Required before live account testing:
 - Create a current Neon restore point.
 - Authorise the reviewed Prisma migration deployment.
 - Configure a high-entropy `BETTER_AUTH_SECRET`.
-- Set `BETTER_AUTH_URL=https://home-vault.vercel.app`.
+- Set `BETTER_AUTH_URL=https://homevault.grovekind.com`.
 - Verify a sending domain or address in Resend.
 - Configure `AUTH_EMAIL_PROVIDER=resend`, `AUTH_EMAIL_FROM`, `RESEND_API_KEY` and `AUTH_SIGNUP_ENABLED=true`.
 - Provision or confirm a Vercel Blob store with **Private** access.

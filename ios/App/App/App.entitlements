@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:home-vault.vercel.app</string>
+		<string>applinks:homevault.grovekind.com</string>
 	</array>
 </dict>
 </plist>

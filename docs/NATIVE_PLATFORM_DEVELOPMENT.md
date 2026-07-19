@@ -4,7 +4,7 @@ HomeVault uses Capacitor 8 to produce iOS and Android release candidates from th
 
 ## Architecture
 
-- The native containers load only `https://home-vault.vercel.app` by default.
+- The native containers load only `https://homevault.grovekind.com` by default.
 - `HOMEVAULT_NATIVE_SERVER_URL` may override the URL only during a controlled native build.
 - Household access remains enforced by the Next.js server and PostgreSQL membership boundary.
 - Native code does not contain database, auth, Blob or email secrets.

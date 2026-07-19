@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 const productionUrl =
-  process.env.HOMEVAULT_NATIVE_SERVER_URL ?? "https://home-vault.vercel.app";
+  process.env.HOMEVAULT_NATIVE_SERVER_URL ?? "https://homevault.grovekind.com";
 const productionHost = new URL(productionUrl).hostname;
 
 const config: CapacitorConfig = {

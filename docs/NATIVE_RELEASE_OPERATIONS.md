@@ -15,7 +15,7 @@ Unsigned builds prove source and release-configuration compatibility. They are n
 
 - Apple bundle ID: `au.com.homevault.app`
 - Android application ID: `au.com.homevault.app`
-- Canonical runtime: `https://home-vault.vercel.app`
+- Canonical runtime: `https://homevault.grovekind.com`
 - GitHub environment used by signed builds: `native-release`
 
 The identifiers must be reserved in the client's Apple Developer and Google Play Console accounts before signing credentials are configured.

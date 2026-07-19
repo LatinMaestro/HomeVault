@@ -3,7 +3,7 @@ import { isAuthRuntimeConfigured } from "@/lib/auth-config";
 import { isAuthEmailConfigured } from "@/lib/auth-email";
 import { getAuthDb, isPreviewDatabaseAccessDisabled } from "@/lib/db";
 
-export const canonicalProductionOrigin = "https://home-vault.vercel.app";
+export const canonicalProductionOrigin = "https://homevault.grovekind.com";
 
 export type ProductionReadinessConfiguration = {
   auth: boolean;
