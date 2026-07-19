@@ -22,12 +22,12 @@ import {
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { name: "Home", href: "/", icon: Home },
-  { name: "Vault", href: "/vault", icon: Archive },
-  { name: "Maintenance", href: "/maintenance", icon: Wrench },
-  { name: "Warranties", href: "/warranties", icon: ShieldCheck },
-  { name: "Receipts", href: "/receipts", icon: ReceiptText },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Home", mobileName: "Home", href: "/", icon: Home },
+  { name: "Vault", mobileName: "Vault", href: "/vault", icon: Archive },
+  { name: "Maintenance", mobileName: "Maintain", href: "/maintenance", icon: Wrench },
+  { name: "Warranties", mobileName: "Warranty", href: "/warranties", icon: ShieldCheck },
+  { name: "Receipts", mobileName: "Records", href: "/receipts", icon: ReceiptText },
+  { name: "Settings", mobileName: "Settings", href: "/settings", icon: Settings },
 ];
 
 export async function AppShell({
@@ -97,9 +97,9 @@ export async function AppShell({
       <div className="mx-auto flex max-w-7xl flex-col lg:flex-row">
         <nav
           aria-label="Primary"
-          className="border-b bg-background px-2 py-2 lg:min-h-[calc(100vh-73px)] lg:w-64 lg:border-b-0 lg:border-r lg:p-4"
+          className="hidden min-h-[calc(100vh-73px)] w-64 border-r bg-background p-4 lg:block"
         >
-          <div className="flex gap-1 overflow-x-auto lg:flex-col lg:overflow-visible">
+          <div className="flex flex-col gap-1">
             {navigation.map((item) => {
               const Icon = item.icon;
               const isActive = item.name === activeSection;
@@ -109,7 +109,7 @@ export async function AppShell({
                   href={item.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex min-h-11 min-w-fit items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     isActive
                       ? "bg-primary text-primary-foreground"
                       : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
@@ -123,7 +123,36 @@ export async function AppShell({
           </div>
         </nav>
 
-        <main id="main-content" tabIndex={-1} className="flex-1 px-4 pt-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8">
+        <nav
+          aria-label="Mobile primary"
+          className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+        >
+          <div className="mx-auto grid h-16 max-w-lg grid-cols-6">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              const isActive = item.name === activeSection;
+              return (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  aria-label={item.name}
+                  aria-current={isActive ? "page" : undefined}
+                  className={cn(
+                    "flex min-w-0 flex-col items-center justify-center gap-1 px-1 text-[10px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring",
+                    isActive
+                      ? "text-primary"
+                      : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+                  )}
+                >
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                  <span className="max-w-full truncate">{item.mobileName}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+
+        <main id="main-content" tabIndex={-1} className="flex-1 px-4 pt-6 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:px-6 lg:px-8 lg:pb-6">
           {children}
           <footer className="mt-10 flex flex-wrap gap-x-5 gap-y-2 border-t pt-5 text-sm text-muted-foreground">
             <Link className="min-h-11 py-3 hover:text-foreground" href="/privacy">
