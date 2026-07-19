@@ -34,3 +34,7 @@ HomeVault should feel calm, practical and trustworthy. The interface should suit
 - Preserve readable content with browser and OS text scaling.
 - Treat standalone display mode as a first-class viewport.
 - Final native shells must use platform-appropriate back behavior, launch treatment and accessibility semantics.
+
+## Mobile Primary Navigation
+
+On viewports below the desktop breakpoint, the six established primary destinations use a fixed bottom icon bar with safe-area padding and stable equal-width tracks. Short visible labels keep every destination readable without horizontal scrolling; full route names remain available to assistive technology. The desktop experience retains the full-label sidebar.
