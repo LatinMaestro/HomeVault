@@ -30,9 +30,9 @@ The listing must not claim:
 - financial or budgeting functionality;
 - OCR or AI extraction;
 - notification delivery until implemented;
-- file/photo storage until implemented;
 - offline household-data access until implemented;
-- advanced family sharing until implemented.
+- public record or attachment sharing;
+- advanced household invitations or role management.
 
 ## Apple Draft
 
@@ -68,19 +68,20 @@ KEEP WARRANTY AND RECEIPT DETAILS HANDY
 
 - Link warranty information to the relevant asset.
 - Track important start and expiry dates.
-- Organise receipt and document metadata without budgeting features.
+- Organise receipt and document details without budgeting features.
+- Keep approved PDF, JPEG and PNG attachments in private household storage.
 
 REMEMBER IMPORTANT DATES
 
 - Record household reminder dates and linked context.
 - Review due and overdue items in one attention queue.
-- Notification delivery is added only when it can be implemented responsibly.
 
 PRIVACY-FIRST BY DESIGN
 
 - No advertising or behavioural analytics.
 - No AI or OCR processing.
 - No unnecessary camera, location or microphone access.
+- Private attachments remain behind verified household access.
 - Clear controls and straightforward household language.
 
 HomeVault is designed for Australian homeowners who want practical records for maintenance, repairs, warranties and everyday home upkeep.
@@ -134,7 +135,20 @@ HomeVault is a household records and maintenance organiser. It does not provide 
 
 Reviewer access instructions and synthetic review credentials will be added after production authentication exists.
 
-Document uploads, notification delivery and account sharing must be described only if they are present in the submitted build.
+Private document attachments are implemented for PDF, JPEG and PNG files and must be claimed only after the production Blob lifecycle passes final acceptance. Notification delivery, camera capture, public links and advanced household sharing are not included.
+
+## Version 1.0 Release Notes Draft
+
+Welcome to HomeVault Home Care.
+
+- Organise rooms, household assets and practical home records.
+- Track maintenance, completion history, reminders and service providers.
+- Keep warranty, receipt and document details linked to the right asset.
+- Store approved household attachments privately.
+- Search, export and print useful household summaries.
+- Manage account security, portable exports and deletion in one place.
+
+This first release contains no advertising, behavioural analytics, AI, OCR, budgeting or payment features.
 
 ## Privacy Disclosure Working Notes
 

@@ -32,7 +32,7 @@ const readinessCards = [
   },
   {
     title: "Account mode",
-    description: "Verified email/password account entry is implemented but stays disabled until production runtime and email delivery are configured. Household sharing remains unavailable.",
+    description: "Verified email/password entry, recovery and account controls activate only with the complete production runtime. Advanced household sharing remains unavailable.",
     badge: "Fail-closed",
     icon: LockKeyhole,
   },
@@ -45,12 +45,12 @@ const readinessCards = [
 ];
 
 const unavailableItems = [
-  "Production account enablement and email delivery",
-  "File uploads or storage",
+  "Advanced household invitations or role management",
   "OCR or AI extraction",
   "Notifications or email ingestion",
   "Payments, subscriptions or analytics",
-  "Delete actions",
+  "Camera capture",
+  "Public record or attachment links",
 ];
 
 export default async function SettingsPage() {
@@ -69,7 +69,7 @@ export default async function SettingsPage() {
         <PageHeader
           eyebrow="Settings"
           title="Household settings and privacy"
-          description="Maintain the current home profile while account, storage and integration decisions remain separate."
+          description="Manage the household profile, portable exports, record recovery and privacy boundaries."
         />
         <DataSourceNote source={dataSource} />
         <HouseholdProfileForm
@@ -203,8 +203,8 @@ export default async function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardDescription>Not enabled yet</CardDescription>
-            <CardTitle>Guardrails for the current preview</CardTitle>
+            <CardDescription>Deliberately not included</CardDescription>
+            <CardTitle>Product boundaries</CardTitle>
           </CardHeader>
           <CardContent>
             <ul className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2 lg:grid-cols-3">

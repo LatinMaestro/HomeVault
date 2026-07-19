@@ -1110,3 +1110,16 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Missing or unreachable services produce HTTP 503 and fail the release workflow.
 - GitHub can run final runtime checks without client-machine commands or repository secrets.
 - Readiness does not replace authenticated reviewer journeys, signed-device tests or processor/legal review.
+
+## 2026-07-19 - Release Copy And Navigation Must Reflect The Shipped Product
+
+**Decision:** Remove preview-era capability statements as features become implemented, and use a fixed safe-area-aware bottom navigation bar on mobile while retaining the full desktop sidebar.
+
+**Rationale:** Store reviewers and families must not see claims that account deletion or private attachments are unavailable when they are implemented. Primary mobile destinations must also remain fully visible without a clipped horizontal strip.
+
+**Consequences:**
+
+- Dashboard, Settings, support and store copy describe implemented guarded attachments and account controls accurately.
+- Deliberately absent capabilities remain explicit: AI, OCR, notifications, payments, analytics, camera capture, public links and advanced sharing.
+- Six primary mobile destinations use equal-width icon targets with short visible labels and full accessible names.
+- Final screenshots must still come from the signed production build after client-owned services and public identity are complete.
