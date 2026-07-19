@@ -3,12 +3,12 @@ import test from "node:test";
 
 import { buildProtectedShareUrl } from "../src/lib/native-share";
 
-const origin = "https://home-vault.vercel.app";
+const origin = "https://homevault.grovekind.com";
 
 test("native sharing builds a canonical protected record URL", () => {
   assert.equal(
     buildProtectedShareUrl("/vault/assets/asset-1?view=care", origin),
-    "https://home-vault.vercel.app/vault/assets/asset-1?view=care",
+    "https://homevault.grovekind.com/vault/assets/asset-1?view=care",
   );
 });
 

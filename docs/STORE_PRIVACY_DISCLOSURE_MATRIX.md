@@ -54,7 +54,7 @@ Initial engineering answers:
 - Is all collected user data encrypted in transit? **Yes**, for the approved HTTPS production runtime and providers.
 - Can users request deletion? **Yes**.
 - In-app deletion path: `Settings > Account and security > Delete account`.
-- Public deletion information URL: `https://home-vault.vercel.app/account-deletion`.
+- Public deletion information URL: `https://homevault.grovekind.com/account-deletion`.
 - Collection is required only for account name, verified email and generated account/security identifiers.
 - Household content, purchase metadata and attachments are user-optional.
 - Data is used for app functionality, account management and security.

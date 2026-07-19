@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { Capacitor } from "@capacitor/core";
 
-const productionHost = "home-vault.vercel.app";
+const productionHost = "homevault.grovekind.com";
 
 function navigateFromAppUrl(value: string) {
   try {

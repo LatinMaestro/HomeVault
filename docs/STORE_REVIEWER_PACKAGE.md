@@ -8,10 +8,10 @@ This is the engineering handoff for Apple App Review and Google Play review. Rep
 - Apple bundle ID: `au.com.homevault.app`.
 - Android application ID: `au.com.homevault.app`.
 - Category: Productivity; Lifestyle as a secondary category where supported.
-- Canonical service: `https://home-vault.vercel.app`.
-- Privacy URL: `https://home-vault.vercel.app/privacy`.
-- Support URL: `https://home-vault.vercel.app/support`.
-- Account deletion URL: `https://home-vault.vercel.app/account-deletion`.
+- Canonical service: `https://homevault.grovekind.com`.
+- Privacy URL: `https://homevault.grovekind.com/privacy`.
+- Support URL: `https://homevault.grovekind.com/support`.
+- Account deletion URL: `https://homevault.grovekind.com/account-deletion`.
 - Version: `1.0.0`.
 - Build number: assigned uniquely at signed-candidate dispatch.
 

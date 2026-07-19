@@ -1123,3 +1123,18 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Deliberately absent capabilities remain explicit: AI, OCR, notifications, payments, analytics, camera capture, public links and advanced sharing.
 - Six primary mobile destinations use equal-width icon targets with short visible labels and full accessible names.
 - Final screenshots must still come from the signed production build after client-owned services and public identity are complete.
+
+
+## 2026-07-19 - Grovekind Subdomain Is The Canonical Production Origin
+
+**Decision:** Use `https://homevault.grovekind.com` as HomeVault's canonical production web origin. Keep the Vercel-provided hostname available as an operational fallback, but do not use it in public, authentication, native-link or store metadata defaults.
+
+**Rationale:** A stable client-owned hostname separates HomeVault's public identity from its hosting provider and gives web, authentication and verified native links one durable origin.
+
+**Consequences:**
+
+- Cloudflare hosts a DNS-only CNAME for `homevault.grovekind.com` to Vercel's assigned target.
+- Vercel manages HTTPS and production routing for the subdomain.
+- Better Auth, Capacitor, Universal Links, Android App Links, release checks and store URLs use the Grovekind hostname.
+- The Vercel hostname remains live during migration and recovery but is not the canonical public address.
+- Email should use a separate verified sending subdomain so its DNS does not conflict with the application hostname.

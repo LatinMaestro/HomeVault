@@ -6,7 +6,7 @@ on:
       base_url:
         description: HTTPS HomeVault deployment origin
         required: true
-        default: https://home-vault.vercel.app
+        default: https://homevault.grovekind.com
         type: string
 
 permissions:
