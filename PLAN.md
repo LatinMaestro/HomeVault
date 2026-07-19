@@ -736,3 +736,12 @@ Next: enable and validate production services, finish protected native sharing o
 - Compile generated iOS and Android plugin projects in cloud CI.
 
 Next: enable and validate production services, then execute signed internal-distribution and final client acceptance when client-owned credentials and legal/store inputs are available.
+
+## Phase 4X - Production Readiness Contract (Complete)
+
+- Separate build-safe liveness from fail-closed production readiness.
+- Require the complete approved auth, email, storage, canonical URL and production database boundary before reporting ready.
+- Verify live public surfaces, security headers and runtime readiness through a manual cloud workflow.
+- Return no configuration detail, credentials or household data from the readiness endpoint.
+
+Next: deploy current main after Vercel build capacity resets, enable client-owned production services, then run signed internal distribution and final acceptance.

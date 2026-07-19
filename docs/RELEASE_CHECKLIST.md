@@ -121,3 +121,5 @@
 - [ ] Fill client-owned contact, legal identity, public name and retention values.
 - [ ] Create and verify the synthetic reviewer account.
 - [ ] Complete every applicable final acceptance item on the submitted builds.
+- [ ] Confirm `/api/readiness` returns `ready` on the exact production deployment.
+- [ ] Run the manual Production Readiness workflow against the canonical production origin.

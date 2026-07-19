@@ -1,0 +1,53 @@
+name: Production Readiness
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: HTTPS HomeVault deployment origin
+        required: true
+        default: https://home-vault.vercel.app
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Public release and runtime readiness
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate deployment origin
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          case "$BASE_URL" in
+            https://*) ;;
+            *) echo "Deployment origin must use HTTPS." >&2; exit 1 ;;
+          esac
+          test "${BASE_URL%/}" = "$BASE_URL"
+
+      - name: Verify public release surfaces
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          for path in /api/health /privacy /support /account-deletion /sign-in; do
+            curl --fail --silent --show-error --location               --retry 3 --retry-all-errors               --connect-timeout 10 --max-time 30               --output /dev/null "$BASE_URL$path"
+          done
+
+      - name: Verify production runtime readiness
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          response="$(curl --fail --silent --show-error             --retry 3 --retry-all-errors             --connect-timeout 10 --max-time 30             "$BASE_URL/api/readiness")"
+          test "$response" = '{"status":"ready","service":"HomeVault"}'
+
+      - name: Verify browser security headers
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          headers="$(curl --fail --silent --show-error --head "$BASE_URL/sign-in" | tr -d '\r' | tr '[:upper:]' '[:lower:]')"
+          grep -q '^content-security-policy:' <<< "$headers"
+          grep -q '^strict-transport-security:' <<< "$headers"
+          grep -q '^x-content-type-options: nosniff$' <<< "$headers"
+          grep -q '^x-frame-options: deny$' <<< "$headers"

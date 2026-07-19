@@ -113,3 +113,7 @@ Verified users can update their display name, change their password and revoke o
 The iOS and Android containers load only the canonical HTTPS runtime and contain no database, email, Blob or auth secrets. App-switcher content is obscured on both platforms; Android also blocks screenshots, recording, backup, cleartext and mixed content. Verified website links fail closed until store signing identities are configured.
 
 The iOS target contains a privacy manifest declaring linked account and household data used only for app functionality, with tracking disabled. The engineering disclosure source for Apple App Privacy and Google Play Data safety is `docs/STORE_PRIVACY_DISCLOSURE_MATRIX.md`. It must be re-audited against every signed release.
+
+## Production Readiness Boundary
+
+The public liveness route confirms only that the web process can answer requests. A separate fail-closed readiness route checks that the approved database, authentication, transactional email, private attachment storage, canonical URL and production-mode boundaries are configured, then verifies database connectivity. It returns only a generic ready/not-ready result, never environment names, values, database details or user data. The manual GitHub Production Readiness workflow uses that contract for final cloud-based release evidence.
