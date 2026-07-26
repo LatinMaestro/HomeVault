@@ -32,6 +32,7 @@ export function RecordMetadataForm({
   const [state, formAction, isPending] = useActionState(action, initialState);
   const isSuccess = state.status === "success";
   const label = recordType === "receipt" ? "receipt" : "document";
+  const isDocument = recordType === "document";
 
   return (
     <Card>
@@ -60,9 +61,13 @@ export function RecordMetadataForm({
             <div className="flex items-start gap-3">
               <FileText className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
               <div className="space-y-1">
-                <p className="text-sm font-medium">Metadata only</p>
+                <p className="text-sm font-medium">
+                  {isDocument ? "Attachment is next" : "Metadata only"}
+                </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  No file is selected, uploaded or stored. Scanning, email forwarding and deletes remain off.
+                  {isDocument
+                    ? "Save these details first. HomeVault will then open the document so you can choose and privately upload a PDF, JPEG or PNG."
+                    : "This receipt saves as metadata only. Scanning and email forwarding remain off."}
                 </p>
               </div>
             </div>
@@ -78,7 +83,9 @@ export function RecordMetadataForm({
               {isPending ? "Saving..." : `Save ${label}`}
             </Button>
             <p className="text-sm text-muted-foreground">
-              Saving is limited to {label} metadata in this phase.
+              {isDocument
+                ? "Step 1 of 2: save details, then add the private file."
+                : "Saving is limited to receipt metadata."}
             </p>
           </div>
 
