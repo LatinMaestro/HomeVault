@@ -236,6 +236,11 @@ export type RecordDetail = RecordSummary & {
     id: string;
     title: string;
     type: string;
+    fileName?: string | null;
+    hasAttachment?: boolean;
+    attachmentContentType?: string | null;
+    attachmentSizeBytes?: number | null;
+    attachmentUploadedAt?: string | null;
   }>;
 };
 
