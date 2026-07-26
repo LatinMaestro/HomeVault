@@ -77,6 +77,10 @@ export default async function RecordPage({
             sizeBytes: document.attachmentSizeBytes,
             uploadedAt: document.attachmentUploadedAt,
           }))[0];
+  const connectedDocuments =
+    recordData.relatedDocuments?.filter(
+      (document) => recordData.type !== "Receipt" || document.type !== "RECEIPT",
+    ) ?? [];
   const attachmentEnabled =
     Boolean(attachmentDocument) &&
     record.source === "database" &&
@@ -149,7 +153,7 @@ export default async function RecordPage({
             recordData.linkedWarrantyId ||
             recordData.linkedReceiptId ||
             recordData.linkedMaintenanceTaskId ||
-            (recordData.relatedDocuments?.length ?? 0) > 0 ? (
+            connectedDocuments.length > 0 ? (
               <>
                 <div className="flex flex-wrap gap-2">
                   {recordData.linkedAssetId ? (
@@ -182,10 +186,10 @@ export default async function RecordPage({
                   ) : null}
                 </div>
 
-                {recordData.relatedDocuments?.length ? (
+                {connectedDocuments.length ? (
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-foreground">Related documents</p>
-                    {recordData.relatedDocuments.map((document) => (
+                    {connectedDocuments.map((document) => (
                       <Link
                         key={document.id}
                         href={`/receipts/${document.id}`}
