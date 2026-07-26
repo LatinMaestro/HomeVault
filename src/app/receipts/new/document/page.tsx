@@ -1,4 +1,6 @@
 import { isCurrentHouseholdWritable } from "@/lib/household-access";
+import { isAuthRuntimeConfigured } from "@/lib/auth-config";
+import { isAttachmentStorageConfigured } from "@/lib/attachment-storage";
 
 import type { Metadata } from "next";
 
@@ -18,7 +20,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function NewDocumentPage() {
-  const assets = await getAssets();
+  const [assets, writable] = await Promise.all([
+    getAssets(),
+    isCurrentHouseholdWritable(),
+  ]);
+  const attachmentEnabled =
+    writable && isAuthRuntimeConfigured() && isAttachmentStorageConfigured();
   const fields = withFieldOptions(
     documentShellFields,
     "assetName",
@@ -31,17 +38,18 @@ export default async function NewDocumentPage() {
         <PageHeader
           eyebrow="Document"
           title="Add document metadata"
-          description="First save the document details. HomeVault will then open the saved record so you can choose and privately upload the file."
+          description="Save document details and optionally attach the private PDF or image in the same step."
           action={<BackLinkButton href="/receipts/new">Change record type</BackLinkButton>}
         />
         <RecordMetadataForm
           recordType="document"
           title="Document details"
-          description="Step 1 of 2: add a clear title and document type. The private file selector appears immediately after these details are saved."
+          description="Add a clear title and document type, then choose the private file before saving."
           fields={fields}
           action={createDocumentAction}
-          databaseConfigured={await isCurrentHouseholdWritable()}
-          documentAttachmentNext
+          databaseConfigured={writable}
+          allowAttachment
+          attachmentEnabled={attachmentEnabled}
         />
       </section>
     </AppShell>
