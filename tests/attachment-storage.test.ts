@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   attachmentMaxBytes,
+  getAttachmentContentDisposition,
   hasExpectedAttachmentSignature,
 } from "../src/lib/attachment-storage";
 
@@ -41,5 +42,17 @@ test("rejects a mismatched signature", () => {
       new Uint8Array([0xff, 0xd8, 0xff]),
     ),
     false,
+  );
+});
+
+
+test("builds private inline and download dispositions without exposing raw filenames", () => {
+  assert.equal(
+    getAttachmentContentDisposition("home receipt #1.pdf", true),
+    "inline; filename*=UTF-8''home%20receipt%20%231.pdf",
+  );
+  assert.equal(
+    getAttachmentContentDisposition("home receipt #1.pdf"),
+    "attachment; filename*=UTF-8''home%20receipt%20%231.pdf",
   );
 });
