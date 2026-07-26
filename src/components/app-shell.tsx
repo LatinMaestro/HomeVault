@@ -60,7 +60,7 @@ export async function AppShell({
 
       <header className="border-b bg-card/85 pt-[env(safe-area-inset-top)] backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex min-h-11 items-center gap-3" aria-label="HomeVault dashboard">
+          <Link prefetch={false} href="/" className="flex min-h-11 items-center gap-3" aria-label="HomeVault dashboard">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
               <ClipboardList className="h-5 w-5" aria-hidden="true" />
             </div>
@@ -71,18 +71,18 @@ export async function AppShell({
           </Link>
           <div className="flex items-center gap-2">
             <Button asChild size="icon">
-              <Link href="/add" aria-label="Add a HomeVault record" title="Add a record">
+              <Link prefetch={false} href="/add" aria-label="Add a HomeVault record" title="Add a record">
                 <Plus className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild size="icon" variant="outline">
-              <Link href="/search" aria-label="Search HomeVault" title="Search HomeVault">
+              <Link prefetch={false} href="/search" aria-label="Search HomeVault" title="Search HomeVault">
                 <Search className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
             {accountMode ? (
               <Button asChild size="icon" variant="outline">
-                <Link href="/account" aria-label="HomeVault account" title="Account">
+                <Link prefetch={false} href="/account" aria-label="HomeVault account" title="Account">
                   <UserRound className="h-4 w-4" aria-hidden="true" />
                 </Link>
               </Button>
@@ -107,6 +107,7 @@ export async function AppShell({
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={false}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
                     "flex min-h-11 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -135,6 +136,7 @@ export async function AppShell({
                 <Link
                   key={item.name}
                   href={item.href}
+                  prefetch={false}
                   aria-label={item.name}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(

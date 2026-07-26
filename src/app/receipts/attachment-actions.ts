@@ -19,9 +19,10 @@ function error(message: string): AttachmentActionState {
   return { status: "error", message };
 }
 
-function revalidateDocument(documentId: string) {
+function revalidateDocument(documentId: string, receiptId?: string | null) {
   revalidatePath("/receipts");
   revalidatePath(`/receipts/${documentId}`);
+  if (receiptId) revalidatePath(`/receipts/${receiptId}`);
 }
 
 async function getAttachmentContext() {
@@ -58,7 +59,7 @@ export async function uploadDocumentAttachmentAction(
 
   const document = await context.db.document.findFirst({
     where: { id: documentId, homeId: context.homeId },
-    select: { id: true, storageKey: true },
+    select: { id: true, storageKey: true, receiptId: true },
   });
   if (!document) return error("This document was not found in your household.");
   if (document.storageKey) {
@@ -92,7 +93,7 @@ export async function uploadDocumentAttachmentAction(
       return error("The document changed before upload completed. No file was kept.");
     }
 
-    revalidateDocument(documentId);
+    revalidateDocument(documentId, document.receiptId);
     return {
       status: "success",
       message: "The private attachment was uploaded and linked to this document.",
@@ -130,6 +131,7 @@ export async function deleteDocumentAttachmentAction(
       attachmentEtag: true,
       attachmentSizeBytes: true,
       attachmentUploadedAt: true,
+      receiptId: true,
     },
   });
   if (!document?.storageKey) return error("This document does not have a private attachment.");
@@ -164,7 +166,7 @@ export async function deleteDocumentAttachmentAction(
       return error("HomeVault could not remove the private file. Its record was restored.");
     }
 
-    revalidateDocument(documentId);
+    revalidateDocument(documentId, document.receiptId);
     return { status: "success", message: "The private attachment was permanently removed." };
   } catch {
     return error("HomeVault could not safely remove this attachment. Please try again.");

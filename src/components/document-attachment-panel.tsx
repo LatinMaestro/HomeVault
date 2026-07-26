@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { CheckCircle2, Download, FileUp, Trash2, TriangleAlert } from "lucide-react";
+import { CheckCircle2, Download, Eye, FileUp, Trash2, TriangleAlert } from "lucide-react";
 
 import {
   deleteDocumentAttachmentAction,
@@ -60,13 +60,30 @@ export function DocumentAttachmentPanel({
         {hasAttachment ? (
           <>
             <div className="rounded-md border bg-background p-4">
-              <p className="font-medium text-foreground">{fileName}</p>
+              <a
+                href={`/api/attachments/${documentId}?disposition=inline`}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-primary underline-offset-4 hover:underline"
+              >
+                {fileName}
+              </a>
               <p className="mt-1 text-sm text-muted-foreground">
                 {contentType} · {formatBytes(sizeBytes)} · Added {uploadedAt}
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button asChild>
+                <a
+                  href={`/api/attachments/${documentId}?disposition=inline`}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Eye className="h-4 w-4" aria-hidden="true" />
+                  View
+                </a>
+              </Button>
+              <Button asChild variant="outline">
                 <a href={`/api/attachments/${documentId}`}>
                   <Download className="h-4 w-4" aria-hidden="true" />
                   Download

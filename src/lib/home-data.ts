@@ -497,7 +497,7 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
         include: { asset: true, documents: true },
       }),
       db.document.findMany({
-        where: { homeId },
+        where: { homeId, receiptId: null },
         orderBy: { createdAt: "desc" },
         include: {
           asset: true,
@@ -528,6 +528,11 @@ export async function getRecords(): Promise<Result<RecordDetail[]>> {
           id: document.id,
           title: document.title,
           type: document.type,
+          fileName: document.fileName,
+          hasAttachment: Boolean(document.storageKey),
+          attachmentContentType: document.attachmentContentType,
+          attachmentSizeBytes: document.attachmentSizeBytes,
+          attachmentUploadedAt: formatDate(document.attachmentUploadedAt),
         })),
       })),
       ...documents.map((document) => ({

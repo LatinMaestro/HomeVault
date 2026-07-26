@@ -1,5 +1,6 @@
 import { getHouseholdDb, getCurrentHouseholdAccess } from "@/lib/household-access";
 import {
+  getAttachmentContentDisposition,
   getPrivateAttachment,
   isAttachmentStorageConfigured,
 } from "@/lib/attachment-storage";
@@ -19,7 +20,7 @@ function unavailable(status: number, message: string) {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ documentId: string }> },
 ) {
   const access = await getCurrentHouseholdAccess();
@@ -53,13 +54,13 @@ export async function GET(
     const blob = await getPrivateAttachment(document.storageKey);
     if (!blob) return unavailable(404, "Attachment not found.");
 
-    const encodedName = encodeURIComponent(document.fileName);
+    const inline = new URL(request.url).searchParams.get("disposition") === "inline";
     return new Response(blob.stream, {
       status: blob.statusCode,
       headers: {
         "Cache-Control": "private, no-store",
         "Content-Type": document.attachmentContentType,
-        "Content-Disposition": `attachment; filename*=UTF-8''${encodedName}`,
+        "Content-Disposition": getAttachmentContentDisposition(document.fileName, inline),
         ...(document.attachmentSizeBytes
           ? { "Content-Length": String(document.attachmentSizeBytes) }
           : {}),

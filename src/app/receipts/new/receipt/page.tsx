@@ -1,4 +1,6 @@
 import { isCurrentHouseholdWritable } from "@/lib/household-access";
+import { isAuthRuntimeConfigured } from "@/lib/auth-config";
+import { isAttachmentStorageConfigured } from "@/lib/attachment-storage";
 
 import type { Metadata } from "next";
 
@@ -18,7 +20,12 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function NewReceiptPage() {
-  const assets = await getAssets();
+  const [assets, writable] = await Promise.all([
+    getAssets(),
+    isCurrentHouseholdWritable(),
+  ]);
+  const attachmentEnabled =
+    writable && isAuthRuntimeConfigured() && isAttachmentStorageConfigured();
   const fields = withFieldOptions(
     receiptShellFields,
     "assetName",
@@ -31,7 +38,7 @@ export default async function NewReceiptPage() {
         <PageHeader
           eyebrow="Receipt"
           title="Add receipt metadata"
-          description="Save purchase reference details when database persistence is available. This does not create a budget or upload a receipt image."
+          description="Save purchase reference details and optionally attach the original receipt as a private PDF or image."
           action={<BackLinkButton href="/receipts/new">Change record type</BackLinkButton>}
         />
         <RecordMetadataForm
@@ -40,7 +47,9 @@ export default async function NewReceiptPage() {
           description="The merchant is required. Purchase total is optional archival metadata in Australian dollars."
           fields={fields}
           action={createReceiptAction}
-          databaseConfigured={await isCurrentHouseholdWritable()}
+          databaseConfigured={writable}
+          allowAttachment
+          attachmentEnabled={attachmentEnabled}
         />
       </section>
     </AppShell>

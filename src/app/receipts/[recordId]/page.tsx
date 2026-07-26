@@ -59,8 +59,30 @@ export default async function RecordPage({
   }
 
   const recordData = record.data;
+  const attachmentDocument =
+    recordData.type === "Document"
+      ? {
+          id: recordData.id,
+          fileName: recordData.hasAttachment ? recordData.fileName : null,
+          contentType: recordData.attachmentContentType,
+          sizeBytes: recordData.attachmentSizeBytes,
+          uploadedAt: recordData.attachmentUploadedAt,
+        }
+      : recordData.relatedDocuments
+          ?.filter((document) => document.type === "RECEIPT")
+          .map((document) => ({
+            id: document.id,
+            fileName: document.hasAttachment ? document.fileName : null,
+            contentType: document.attachmentContentType,
+            sizeBytes: document.attachmentSizeBytes,
+            uploadedAt: document.attachmentUploadedAt,
+          }))[0];
+  const connectedDocuments =
+    recordData.relatedDocuments?.filter(
+      (document) => recordData.type !== "Receipt" || document.type !== "RECEIPT",
+    ) ?? [];
   const attachmentEnabled =
-    recordData.type === "Document" &&
+    Boolean(attachmentDocument) &&
     record.source === "database" &&
     isAuthRuntimeConfigured() &&
     isAttachmentStorageConfigured() &&
@@ -108,13 +130,13 @@ export default async function RecordPage({
           </CardContent>
         </Card>
 
-        {recordData.type === "Document" ? (
+        {attachmentDocument ? (
           <DocumentAttachmentPanel
-            documentId={recordData.id}
-            fileName={recordData.hasAttachment ? recordData.fileName : null}
-            contentType={recordData.attachmentContentType}
-            sizeBytes={recordData.attachmentSizeBytes}
-            uploadedAt={recordData.attachmentUploadedAt}
+            documentId={attachmentDocument.id}
+            fileName={attachmentDocument.fileName}
+            contentType={attachmentDocument.contentType}
+            sizeBytes={attachmentDocument.sizeBytes}
+            uploadedAt={attachmentDocument.uploadedAt}
             enabled={attachmentEnabled}
           />
         ) : null}
@@ -131,7 +153,7 @@ export default async function RecordPage({
             recordData.linkedWarrantyId ||
             recordData.linkedReceiptId ||
             recordData.linkedMaintenanceTaskId ||
-            (recordData.relatedDocuments?.length ?? 0) > 0 ? (
+            connectedDocuments.length > 0 ? (
               <>
                 <div className="flex flex-wrap gap-2">
                   {recordData.linkedAssetId ? (
@@ -164,10 +186,10 @@ export default async function RecordPage({
                   ) : null}
                 </div>
 
-                {recordData.relatedDocuments?.length ? (
+                {connectedDocuments.length ? (
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-foreground">Related documents</p>
-                    {recordData.relatedDocuments.map((document) => (
+                    {connectedDocuments.map((document) => (
                       <Link
                         key={document.id}
                         href={`/receipts/${document.id}`}
