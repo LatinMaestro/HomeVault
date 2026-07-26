@@ -1169,3 +1169,19 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Disposable identities are removed in guaranteed cleanup; the successful run left zero test users, accounts, verifications and homes.
 - Vercel compilation remains independent from the production database.
 - Signed native candidates, store-console declarations and final legal identity remain client-owned release gates.
+
+
+## 2026-07-26 - Record Creation Accepts One Optional Private File
+
+**Decision:** Let users choose one validated PDF, JPEG or PNG while creating either a document or receipt. Receipt files remain receipt-linked Document records rather than adding duplicate storage fields to Receipt.
+
+**Rationale:** Families expect the archival file and its descriptive details to be captured together. Reusing the authorised Document storage boundary keeps viewing, downloading, deletion and privacy enforcement consistent.
+
+**Consequences:**
+
+- New document and receipt forms accept one optional file up to 4 MB.
+- Receipt attachment documents are managed from the receipt detail and excluded from the top-level document list.
+- Failed storage writes compensate by removing the new database records and any partially stored Blob.
+- Authorised files support private inline viewing and explicit download.
+- Navigation avoids eager authenticated route prefetching, and request-scoped access resolution is deduplicated to reduce latency.
+- OCR, AI, public links and multi-file galleries remain excluded.
