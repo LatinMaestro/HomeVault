@@ -11,6 +11,7 @@ export type HouseholdOwnershipTransferDecision =
       reason:
         | "actor-not-owner"
         | "different-household"
+        | "invalid-member"
         | "same-member"
         | "target-unverified"
         | "target-not-adult";
@@ -41,7 +42,11 @@ export function evaluateHouseholdOwnershipTransfer({
     return { status: "error", reason: "different-household" };
   }
 
-  if (!actorUserId || actorUserId === targetUserId) {
+  if (!actorUserId || !targetUserId) {
+    return { status: "error", reason: "invalid-member" };
+  }
+
+  if (actorUserId === targetUserId) {
     return { status: "error", reason: "same-member" };
   }
 
