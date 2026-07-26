@@ -321,18 +321,28 @@ export async function updateReceiptAction(
       return { status: "error", message: "This receipt was not found in the configured database. Nothing was changed." };
     }
 
-    await context.db.receipt.update({
-      where: { id: receiptId },
-      data: {
-        assetId,
-        merchant: values.merchant,
-        purchaseDate: values.purchaseDate,
-        totalAmountCents: values.totalAmountCents,
-        currency: "AUD",
-        receiptNumber: values.receiptNumber || null,
-        notes: values.notes || null,
-      },
-    });
+    await context.db.$transaction([
+      context.db.receipt.update({
+        where: { id: receiptId },
+        data: {
+          assetId,
+          merchant: values.merchant,
+          purchaseDate: values.purchaseDate,
+          totalAmountCents: values.totalAmountCents,
+          currency: "AUD",
+          receiptNumber: values.receiptNumber || null,
+          notes: values.notes || null,
+        },
+      }),
+      context.db.document.updateMany({
+        where: { receiptId, homeId, type: "RECEIPT" },
+        data: {
+          assetId,
+          title: `${values.merchant} receipt`,
+          issuedAt: values.purchaseDate,
+        },
+      }),
+    ]);
 
     revalidateRecordPaths(receiptId, assetId);
     if (receipt.assetId) revalidatePath(`/vault/assets/${receipt.assetId}`);
