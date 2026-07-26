@@ -10,6 +10,7 @@ import {
   normalizeHouseholdInvitationEmail,
   prepareHouseholdInvitation,
   validateHouseholdInvitationEmail,
+  verifyHouseholdInvitationToken,
 } from "../src/lib/household-invitation";
 
 test("normalises and validates invitation email addresses", () => {
@@ -18,8 +19,14 @@ test("normalises and validates invitation email addresses", () => {
     "member@example.com",
   );
   assert.equal(validateHouseholdInvitationEmail("member@example.com"), null);
-  assert.equal(validateHouseholdInvitationEmail(""), "Enter the household member's email address.");
-  assert.equal(validateHouseholdInvitationEmail("member-at-example"), "Enter a valid email address.");
+  assert.equal(
+    validateHouseholdInvitationEmail(""),
+    "Enter the household member's email address.",
+  );
+  assert.equal(
+    validateHouseholdInvitationEmail("member-at-example"),
+    "Enter a valid email address.",
+  );
 });
 
 test("creates high-entropy opaque invitation tokens and stores only their hash", () => {
@@ -32,10 +39,23 @@ test("creates high-entropy opaque invitation tokens and stores only their hash",
   assert.equal(hashHouseholdInvitationToken(token), tokenHash);
 });
 
+test("verifies invitation tokens without accepting malformed values", () => {
+  const token = createHouseholdInvitationToken();
+  const tokenHash = hashHouseholdInvitationToken(token);
+
+  assert.equal(verifyHouseholdInvitationToken(token, tokenHash), true);
+  assert.equal(verifyHouseholdInvitationToken(token + "x", tokenHash), false);
+  assert.equal(verifyHouseholdInvitationToken(token, "not-a-hash"), false);
+  assert.equal(verifyHouseholdInvitationToken("", tokenHash), false);
+});
+
 test("invitation expiry is seven days after creation", () => {
   const now = new Date("2026-07-27T00:00:00.000Z");
   const expiresAt = getHouseholdInvitationExpiry(now);
-  assert.equal(expiresAt.getTime() - now.getTime(), HOUSEHOLD_INVITATION_LIFETIME_MS);
+  assert.equal(
+    expiresAt.getTime() - now.getTime(),
+    HOUSEHOLD_INVITATION_LIFETIME_MS,
+  );
 });
 
 test("prepares a canonical non-owner invitation", () => {
@@ -46,16 +66,19 @@ test("prepares a canonical non-owner invitation", () => {
     inviteeEmail: "  ADULT@Example.com ",
     invitedRole: "ADULT",
     now,
-    token: "fixed-test-token",
   });
 
-  assert.deepEqual(prepared, {
-    inviteeEmail: "adult@example.com",
-    invitedRole: "ADULT",
-    token: "fixed-test-token",
-    tokenHash: hashHouseholdInvitationToken("fixed-test-token"),
-    expiresAt: new Date(now.getTime() + HOUSEHOLD_INVITATION_LIFETIME_MS),
-  });
+  assert.equal(prepared.inviteeEmail, "adult@example.com");
+  assert.equal(prepared.invitedRole, "ADULT");
+  assert.match(prepared.token, /^[A-Za-z0-9_-]{43}$/);
+  assert.equal(
+    verifyHouseholdInvitationToken(prepared.token, prepared.tokenHash),
+    true,
+  );
+  assert.deepEqual(
+    prepared.expiresAt,
+    new Date(now.getTime() + HOUSEHOLD_INVITATION_LIFETIME_MS),
+  );
 });
 
 test("rejects non-owner actors and direct owner invitations", () => {
@@ -66,7 +89,6 @@ test("rejects non-owner actors and direct owner invitations", () => {
         actorEmail: "adult@example.com",
         inviteeEmail: "guest@example.com",
         invitedRole: "GUEST",
-        token: "test-token",
       }),
     HouseholdInvitationInputError,
   );
@@ -78,7 +100,6 @@ test("rejects non-owner actors and direct owner invitations", () => {
         actorEmail: "owner@example.com",
         inviteeEmail: "new-owner@example.com",
         invitedRole: "OWNER",
-        token: "test-token",
       }),
     HouseholdInvitationInputError,
   );
@@ -92,7 +113,6 @@ test("rejects self-invitations after canonicalising email", () => {
         actorEmail: "OWNER@example.com",
         inviteeEmail: " owner@EXAMPLE.com ",
         invitedRole: "ADULT",
-        token: "test-token",
       }),
     /existing membership/,
   );
