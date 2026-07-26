@@ -10,7 +10,7 @@ Define ownership handover invariants before exposing member departure, owner del
 
 ## Policy
 
-- Only the current OWNER may initiate a transfer.
+- Every user ID, household ID, role and verification state is resolved server-side from current database state.\n- Only the current OWNER may initiate a transfer.
 - The target must be a distinct member of the same household.
 - The target account must have a verified email.
 - The target must already hold the ADULT role.
