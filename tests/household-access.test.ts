@@ -4,6 +4,9 @@ import test from "node:test";
 import {
   HouseholdAccessError,
   canAdministerHousehold,
+  canChangeHouseholdMemberRole,
+  canInviteHouseholdMember,
+  canRemoveHouseholdMember,
   canWriteHousehold,
   requireMatchingHome,
   type HouseholdAccess,
@@ -29,6 +32,36 @@ test("only owners can administer a household", () => {
   assert.equal(canAdministerHousehold("ADULT"), false);
   assert.equal(canAdministerHousehold("CHILD"), false);
   assert.equal(canAdministerHousehold("GUEST"), false);
+});
+
+test("owners can invite non-owner roles but cannot create another owner", () => {
+  assert.equal(canInviteHouseholdMember("OWNER", "ADULT"), true);
+  assert.equal(canInviteHouseholdMember("OWNER", "CHILD"), true);
+  assert.equal(canInviteHouseholdMember("OWNER", "GUEST"), true);
+  assert.equal(canInviteHouseholdMember("OWNER", "OWNER"), false);
+  assert.equal(canInviteHouseholdMember("ADULT", "GUEST"), false);
+});
+
+test("generic role changes cannot alter or create ownership", () => {
+  assert.equal(canChangeHouseholdMemberRole("OWNER", "ADULT", "CHILD"), true);
+  assert.equal(canChangeHouseholdMemberRole("OWNER", "GUEST", "ADULT"), true);
+  assert.equal(canChangeHouseholdMemberRole("OWNER", "ADULT", "ADULT"), false);
+  assert.equal(canChangeHouseholdMemberRole("OWNER", "OWNER", "ADULT"), false);
+  assert.equal(canChangeHouseholdMemberRole("OWNER", "ADULT", "OWNER"), false);
+  assert.equal(canChangeHouseholdMemberRole("ADULT", "GUEST", "ADULT"), false);
+});
+
+test("owners can remove non-owners and non-owners can leave themselves", () => {
+  assert.equal(canRemoveHouseholdMember("OWNER", "ADULT", false), true);
+  assert.equal(canRemoveHouseholdMember("OWNER", "CHILD", false), true);
+  assert.equal(canRemoveHouseholdMember("ADULT", "ADULT", true), true);
+  assert.equal(canRemoveHouseholdMember("GUEST", "GUEST", true), true);
+  assert.equal(canRemoveHouseholdMember("ADULT", "GUEST", false), false);
+});
+
+test("owners cannot be removed through the generic membership path", () => {
+  assert.equal(canRemoveHouseholdMember("OWNER", "OWNER", false), false);
+  assert.equal(canRemoveHouseholdMember("OWNER", "OWNER", true), false);
 });
 
 test("matching-home checks do not reveal cross-household records", () => {
