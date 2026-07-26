@@ -59,8 +59,26 @@ export default async function RecordPage({
   }
 
   const recordData = record.data;
+  const attachmentDocument =
+    recordData.type === "Document"
+      ? {
+          id: recordData.id,
+          fileName: recordData.hasAttachment ? recordData.fileName : null,
+          contentType: recordData.attachmentContentType,
+          sizeBytes: recordData.attachmentSizeBytes,
+          uploadedAt: recordData.attachmentUploadedAt,
+        }
+      : recordData.relatedDocuments
+          ?.filter((document) => document.type === "RECEIPT")
+          .map((document) => ({
+            id: document.id,
+            fileName: document.hasAttachment ? document.fileName : null,
+            contentType: document.attachmentContentType,
+            sizeBytes: document.attachmentSizeBytes,
+            uploadedAt: document.attachmentUploadedAt,
+          }))[0];
   const attachmentEnabled =
-    recordData.type === "Document" &&
+    Boolean(attachmentDocument) &&
     record.source === "database" &&
     isAuthRuntimeConfigured() &&
     isAttachmentStorageConfigured() &&
@@ -108,13 +126,13 @@ export default async function RecordPage({
           </CardContent>
         </Card>
 
-        {recordData.type === "Document" ? (
+        {attachmentDocument ? (
           <DocumentAttachmentPanel
-            documentId={recordData.id}
-            fileName={recordData.hasAttachment ? recordData.fileName : null}
-            contentType={recordData.attachmentContentType}
-            sizeBytes={recordData.attachmentSizeBytes}
-            uploadedAt={recordData.attachmentUploadedAt}
+            documentId={attachmentDocument.id}
+            fileName={attachmentDocument.fileName}
+            contentType={attachmentDocument.contentType}
+            sizeBytes={attachmentDocument.sizeBytes}
+            uploadedAt={attachmentDocument.uploadedAt}
             enabled={attachmentEnabled}
           />
         ) : null}
