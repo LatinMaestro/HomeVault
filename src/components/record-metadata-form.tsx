@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { CheckCircle2, Database, FileText, Save, TriangleAlert } from "lucide-react";
+import { CheckCircle2, Database, FileText, FileUp, Save, TriangleAlert } from "lucide-react";
 
 import type { RecordActionState } from "@/app/receipts/actions";
 import { PersistentFormFields } from "@/components/persistent-form-fields";
@@ -21,7 +21,8 @@ export function RecordMetadataForm({
   fields,
   action,
   databaseConfigured,
-  documentAttachmentNext = false,
+  allowAttachment = false,
+  attachmentEnabled = false,
 }: {
   recordType: "receipt" | "document";
   title: string;
@@ -29,12 +30,13 @@ export function RecordMetadataForm({
   fields: ShellField[];
   action: (state: RecordActionState, formData: FormData) => Promise<RecordActionState>;
   databaseConfigured: boolean;
-  documentAttachmentNext?: boolean;
+  allowAttachment?: boolean;
+  attachmentEnabled?: boolean;
 }) {
   const [state, formAction, isPending] = useActionState(action, initialState);
   const isSuccess = state.status === "success";
   const label = recordType === "receipt" ? "receipt" : "document";
-  const hasAttachmentStep = recordType === "document" && documentAttachmentNext;
+  const canSelectAttachment = allowAttachment && attachmentEnabled;
 
   return (
     <Card>
@@ -64,12 +66,14 @@ export function RecordMetadataForm({
               <FileText className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
               <div className="space-y-1">
                 <p className="text-sm font-medium">
-                  {hasAttachmentStep ? "Attachment is next" : "Metadata only"}
+                  {allowAttachment ? "Private file" : "Metadata only"}
                 </p>
                 <p className="text-sm leading-6 text-muted-foreground">
-                  {hasAttachmentStep
-                    ? "Save these details first. HomeVault will then open the document so you can choose and privately upload a PDF, JPEG or PNG."
-                    : "This receipt saves as metadata only. Scanning and email forwarding remain off."}
+                  {allowAttachment
+                    ? canSelectAttachment
+                      ? "Optionally choose a PDF, JPEG or PNG below. The file and details save together."
+                      : "Private file storage is unavailable. You can still save the record details."
+                    : "This form updates record details only. Existing private files are unchanged."}
                 </p>
               </div>
             </div>
@@ -79,15 +83,35 @@ export function RecordMetadataForm({
         <form className="space-y-4" action={formAction}>
           <PersistentFormFields fields={fields} />
 
+          {allowAttachment ? (
+            <div className="space-y-2 rounded-md border bg-background p-4">
+              <label htmlFor="attachment" className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <FileUp className="h-4 w-4 text-primary" aria-hidden="true" />
+                Add file <span className="font-normal text-muted-foreground">(optional)</span>
+              </label>
+              <input
+                id="attachment"
+                name="attachment"
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                disabled={!canSelectAttachment || isPending}
+                className="block min-h-11 w-full rounded-md border bg-card px-3 py-2 text-sm file:mr-3 file:rounded file:border-0 file:bg-secondary file:px-3 file:py-1 file:text-secondary-foreground disabled:cursor-not-allowed disabled:opacity-60"
+              />
+              <p className="text-sm text-muted-foreground">
+                PDF, JPEG or PNG up to 4 MB.
+              </p>
+            </div>
+          ) : null}
+
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <Button type="submit" disabled={isPending}>
               <Save className="h-4 w-4" aria-hidden="true" />
               {isPending ? "Saving..." : `Save ${label}`}
             </Button>
             <p className="text-sm text-muted-foreground">
-              {hasAttachmentStep
-                ? "Step 1 of 2: save details, then add the private file."
-                : "Saving is limited to receipt metadata."}
+              {allowAttachment
+                ? "The record saves with the selected private file."
+                : "Saving changes the record details only."}
             </p>
           </div>
 
