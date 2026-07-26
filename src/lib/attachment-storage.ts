@@ -95,6 +95,11 @@ export async function storePrivateAttachment({
   });
 }
 
+export function getAttachmentContentDisposition(fileName: string, inline = false) {
+  const encodedName = encodeURIComponent(fileName);
+  return `${inline ? "inline" : "attachment"}; filename*=UTF-8''${encodedName}`;
+}
+
 export async function getPrivateAttachment(pathname: string) {
   if (!isAttachmentStorageConfigured()) {
     throw new Error("Private attachment storage is unavailable.");
