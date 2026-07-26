@@ -29,6 +29,35 @@ export function canAdministerHousehold(role: HouseholdAccessRole) {
   return role === "OWNER";
 }
 
+export function canInviteHouseholdMember(
+  actorRole: HouseholdAccessRole,
+  invitedRole: HouseholdAccessRole,
+) {
+  return canAdministerHousehold(actorRole) && invitedRole !== "OWNER";
+}
+
+export function canChangeHouseholdMemberRole(
+  actorRole: HouseholdAccessRole,
+  currentRole: HouseholdAccessRole,
+  nextRole: HouseholdAccessRole,
+) {
+  return (
+    canAdministerHousehold(actorRole) &&
+    currentRole !== "OWNER" &&
+    nextRole !== "OWNER" &&
+    currentRole !== nextRole
+  );
+}
+
+export function canRemoveHouseholdMember(
+  actorRole: HouseholdAccessRole,
+  targetRole: HouseholdAccessRole,
+  isSelf: boolean,
+) {
+  if (targetRole === "OWNER") return false;
+  return isSelf || canAdministerHousehold(actorRole);
+}
+
 export function requireMatchingHome(access: HouseholdAccess, requestedHomeId: string) {
   if (access.homeId !== requestedHomeId) {
     throw new HouseholdAccessError();
