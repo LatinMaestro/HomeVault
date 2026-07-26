@@ -139,8 +139,6 @@ export async function createReceiptAction(
 
   if (!context) return unavailableState("receipt");
 
-  let savedDocumentId = "";
-
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
     if (!homeId) return missingHomeState();
@@ -250,6 +248,8 @@ export async function createDocumentAction(
   const context = await getCurrentHouseholdWriteContext();
 
   if (!context) return unavailableState("document");
+
+  let savedDocumentId = "";
 
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
