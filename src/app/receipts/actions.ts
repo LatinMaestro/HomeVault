@@ -272,13 +272,13 @@ export async function createReceiptAction(
       },
     });
 
+    savedReceiptId = receipt.id;
     const attachmentDocument = receipt.documents[0];
     if (!attachmentDocument) throw new Error("Receipt attachment record was not created.");
     if (selected.attachment) {
       await persistAttachment(context, attachmentDocument.id, selected.attachment);
     }
 
-    savedReceiptId = receipt.id;
     revalidateRecordPaths(receipt.id, assetId);
   } catch {
     if (savedReceiptId) {
