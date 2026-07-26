@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 import { isAfterBrisbaneToday } from "@/lib/date-status";
 import {
@@ -248,6 +249,8 @@ export async function createDocumentAction(
 
   if (!context) return unavailableState("document");
 
+  let savedDocumentId = "";
+
   try {
     const { homeId, assetId } = await resolveHomeAndAsset(context, values.assetName);
     if (!homeId) return missingHomeState();
@@ -265,11 +268,13 @@ export async function createDocumentAction(
       select: { id: true },
     });
 
+    savedDocumentId = document.id;
     revalidateRecordPaths(document.id, assetId);
-    return { status: "success", message: "Document metadata saved. No file was uploaded or stored." };
   } catch {
     return unknownFailureState("document");
   }
+
+  redirect(`/receipts/${savedDocumentId}`);
 }
 
 export async function updateDocumentAction(

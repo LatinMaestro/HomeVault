@@ -31,16 +31,17 @@ export default async function NewDocumentPage() {
         <PageHeader
           eyebrow="Document"
           title="Add document metadata"
-          description="Save a description of an important home document. No file is selected, uploaded or stored."
+          description="First save the document details. HomeVault will then open the saved record so you can choose and privately upload the file."
           action={<BackLinkButton href="/receipts/new">Change record type</BackLinkButton>}
         />
         <RecordMetadataForm
           recordType="document"
           title="Document details"
-          description="Add a clear title and supported document type. File handling remains disabled."
+          description="Step 1 of 2: add a clear title and document type. The private file selector appears immediately after these details are saved."
           fields={fields}
           action={createDocumentAction}
           databaseConfigured={await isCurrentHouseholdWritable()}
+          documentAttachmentNext
         />
       </section>
     </AppShell>
