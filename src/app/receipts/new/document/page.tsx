@@ -41,6 +41,7 @@ export default async function NewDocumentPage() {
           fields={fields}
           action={createDocumentAction}
           databaseConfigured={await isCurrentHouseholdWritable()}
+          documentAttachmentNext
         />
       </section>
     </AppShell>
