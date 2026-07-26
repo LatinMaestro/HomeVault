@@ -1,4 +1,5 @@
 import { headers } from "next/headers";
+import { cache } from "react";
 
 import { isAuthRuntimeConfigured } from "@/lib/auth-config";
 import { getAuthDb, getDb, isPreviewDatabaseEnabled } from "@/lib/db";
@@ -43,7 +44,7 @@ export type VerifiedSessionUser = {
   image?: string | null;
 };
 
-export async function getCurrentVerifiedSessionUser(): Promise<VerifiedSessionUser | null> {
+export const getCurrentVerifiedSessionUser = cache(async function getCurrentVerifiedSessionUser(): Promise<VerifiedSessionUser | null> {
   if (!isAuthRuntimeConfigured()) return null;
 
   const [{ auth }, requestHeaders] = await Promise.all([import("@/lib/auth"), headers()]);
@@ -57,7 +58,7 @@ export async function getCurrentVerifiedSessionUser(): Promise<VerifiedSessionUs
     email: session.user.email,
     image: session.user.image,
   };
-}
+});
 
 async function resolveAuthenticatedAccess(): Promise<HouseholdAccess | null> {
   const user = await getCurrentVerifiedSessionUser();
@@ -119,13 +120,13 @@ export type HouseholdWriteContext = {
   homeId: string;
 };
 
-export async function getCurrentHouseholdAccess(): Promise<HouseholdAccess | null> {
+export const getCurrentHouseholdAccess = cache(async function getCurrentHouseholdAccess(): Promise<HouseholdAccess | null> {
   if (isAuthRuntimeConfigured()) {
     return resolveAuthenticatedAccess();
   }
 
   return resolvePreviewAccess();
-}
+});
 
 export async function getCurrentHouseholdWriteContext(): Promise<HouseholdWriteContext | null> {
   const access = await getCurrentHouseholdAccess();
