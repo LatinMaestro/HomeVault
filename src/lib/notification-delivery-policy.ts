@@ -200,7 +200,7 @@ export function decideNotificationRetry({
     return { status: "unavailable" };
   }
 
-  if (job.status === "SENT" || job.status === "CANCELLED") {
+  if (job.status !== "PROCESSING") {
     return { status: "unavailable" };
   }
 
