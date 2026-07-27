@@ -280,6 +280,7 @@ export function decideCaptureUpload({
   attachmentSlotOccupied,
   idempotencyKey,
   duplicateOperation,
+  now,
 }: {
   draft: NativeCaptureDraft;
   currentUserId: string;
@@ -293,6 +294,7 @@ export function decideCaptureUpload({
   attachmentSlotOccupied: boolean;
   idempotencyKey: string;
   duplicateOperation: boolean;
+  now: Date;
 }): CaptureUploadDecision {
   if (
     !draft.id ||
@@ -302,6 +304,14 @@ export function decideCaptureUpload({
     !hasCurrentMembership ||
     !privateStorageAvailable ||
     draft.status !== "APPROVED" ||
+    now.getTime() >= draft.expiresAt.getTime() ||
+    !draft.fileName ||
+    draft.sizeBytes <= 0 ||
+    draft.sizeBytes > CAPTURE_MAX_BYTES ||
+    !CAPTURE_MEDIA_TYPES.includes(draft.mediaType) ||
+    !draft.signatureValid ||
+    !draft.metadataSanitized ||
+    !draft.orientationNormalized ||
     draft.userId !== currentUserId ||
     draft.homeId !== selectedHomeId ||
     recordHomeId !== selectedHomeId
