@@ -6,6 +6,7 @@ export type AccountPropertyMembership = {
   homeId: string;
   role: HouseholdAccessRole;
   memberCount: number;
+  ownerCount: number;
   active: boolean;
 };
 
@@ -46,6 +47,7 @@ function hasValidMembershipEvidence(
       membership.userId === currentUserId &&
       Number.isInteger(membership.memberCount) &&
       membership.memberCount > 0 &&
+      membership.ownerCount === 1 &&
       memberships.findIndex(
         (candidate) =>
           candidate.id === membership.id ||
@@ -86,8 +88,7 @@ export function decideMultiPropertyAccountDeletion({
 
   const invalidMembership = activeMemberships.some(
     (membership) =>
-      (membership.role === "OWNER" && membership.memberCount < 1) ||
-      (membership.role !== "OWNER" && membership.memberCount < 2),
+      membership.role !== "OWNER" && membership.memberCount < 2,
   );
 
   if (invalidMembership) {
