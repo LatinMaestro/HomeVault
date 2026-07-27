@@ -213,6 +213,7 @@ test("authorizes only exact-property private upload after approval", () => {
     attachmentSlotOccupied: false,
     idempotencyKey: "capture-upload-1",
     duplicateOperation: false,
+    now: new Date("2026-07-27T12:00:00.000Z"),
   };
 
   assert.deepEqual(decideCaptureUpload(input), {
@@ -236,6 +237,20 @@ test("authorizes only exact-property private upload after approval", () => {
   assert.deepEqual(
     decideCaptureUpload({ ...input, attachmentSlotOccupied: true }),
     { status: "attachment-slot-occupied" },
+  );
+  assert.deepEqual(
+    decideCaptureUpload({
+      ...input,
+      now: new Date("2026-07-28T00:00:00.000Z"),
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideCaptureUpload({
+      ...input,
+      draft: { ...approved, signatureValid: false },
+    }),
+    { status: "unavailable" },
   );
 });
 
