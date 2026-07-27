@@ -289,6 +289,8 @@ export function decideCalendarRevocation({
     (mapping, index) =>
       !mapping.id ||
       !mapping.externalEventId ||
+      !mapping.recordId ||
+      !mapping.occurrenceKey ||
       !mapping.homeVaultManaged ||
       mapping.connectionId !== connection.id ||
       mapping.homeId !== selectedHomeId ||
