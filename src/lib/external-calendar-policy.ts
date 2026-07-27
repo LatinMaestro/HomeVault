@@ -45,6 +45,7 @@ export type CalendarEventMapping = {
   connectionId: string;
   homeId: string;
   recordId: string;
+  occurrenceKey: string;
   topic: CalendarSyncTopic;
   externalEventId: string;
   homeVaultManaged: boolean;
@@ -167,6 +168,7 @@ export function decideCalendarSync({
   selectedHomeId,
   recordHomeId,
   recordId,
+  occurrenceKey,
   topic,
   recordActive,
   mapping,
@@ -178,6 +180,7 @@ export function decideCalendarSync({
   selectedHomeId: string;
   recordHomeId: string;
   recordId: string;
+  occurrenceKey: string;
   topic: CalendarSyncTopic;
   recordActive: boolean;
   mapping?: CalendarEventMapping | null;
@@ -189,6 +192,7 @@ export function decideCalendarSync({
     !currentUserId ||
     !selectedHomeId ||
     !recordId ||
+    !occurrenceKey ||
     !dedupeKey ||
     connection.userId !== currentUserId ||
     connection.homeId !== selectedHomeId ||
@@ -212,10 +216,13 @@ export function decideCalendarSync({
     if (
       !mapping.id ||
       !mapping.externalEventId ||
+      !mapping.recordId ||
+      !mapping.occurrenceKey ||
       !mapping.homeVaultManaged ||
       mapping.connectionId !== connection.id ||
       mapping.homeId !== selectedHomeId ||
       mapping.recordId !== recordId ||
+      mapping.occurrenceKey !== occurrenceKey ||
       mapping.topic !== topic
     ) {
       return { status: "unavailable" };
