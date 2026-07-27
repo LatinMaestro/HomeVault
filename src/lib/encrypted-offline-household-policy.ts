@@ -304,6 +304,8 @@ export function decideOfflineQueue({
   role,
   now,
   queueSize,
+  platformKeyAvailable,
+  integrityValid,
 }: {
   snapshot: OfflineSnapshot;
   action: OfflineQueuedAction;
@@ -314,9 +316,20 @@ export function decideOfflineQueue({
   role: OfflineRole;
   now: Date;
   queueSize: number;
+  platformKeyAvailable: boolean;
+  integrityValid: boolean;
 }): OfflineQueueDecision {
   if (
     !snapshot.id ||
+    !snapshot.keyId ||
+    !snapshot.integrityTag ||
+    !snapshot.encrypted ||
+    !snapshot.backupExcluded ||
+    !platformKeyAvailable ||
+    !integrityValid ||
+    snapshot.sizeBytes <= 0 ||
+    snapshot.sizeBytes > OFFLINE_CACHE_MAX_BYTES ||
+    !hasValidRecordScope(snapshot.recordTypes) ||
     !action.id ||
     !action.clientMutationId ||
     !action.recordId ||
@@ -325,6 +338,9 @@ export function decideOfflineQueue({
     !isAllowedMutation(action.mutationType) ||
     now.getTime() >= snapshot.expiresAt.getTime() ||
     now.getTime() >= action.expiresAt.getTime() ||
+    action.createdAt.getTime() > now.getTime() ||
+    action.expiresAt.getTime() > snapshot.expiresAt.getTime() ||
+    action.expiresAt.getTime() <= action.createdAt.getTime() ||
     snapshot.userId !== currentUserId ||
     snapshot.homeId !== selectedHomeId ||
     snapshot.deviceId !== deviceId ||
@@ -358,6 +374,8 @@ export function decideOfflineSync({
   action,
   currentUserId,
   selectedHomeId,
+  deviceId,
+  installationId,
   now,
   sessionVerified,
   hasCurrentMembership,
@@ -369,6 +387,8 @@ export function decideOfflineSync({
   action: OfflineQueuedAction;
   currentUserId: string;
   selectedHomeId: string;
+  deviceId: string;
+  installationId: string;
   now: Date;
   sessionVerified: boolean;
   hasCurrentMembership: boolean;
@@ -380,15 +400,25 @@ export function decideOfflineSync({
   if (
     !action.id ||
     !action.clientMutationId ||
+    !action.recordId ||
+    !action.baseServerRevision ||
     !action.payloadDigest ||
     !action.payloadEncrypted ||
+    !isAllowedMutation(action.mutationType) ||
+    !serverRevision ||
     action.userId !== currentUserId ||
-    action.homeId !== selectedHomeId
+    action.homeId !== selectedHomeId ||
+    action.deviceId !== deviceId ||
+    action.installationId !== installationId
   ) {
     return { status: "unavailable" };
   }
 
-  if (!sessionVerified || !hasCurrentMembership || !hasWriteRole(role)) {
+  if (!sessionVerified) {
+    return { status: "unavailable" };
+  }
+
+  if (!hasCurrentMembership || !hasWriteRole(role)) {
     return {
       status: "discard",
       actionId: action.id,
