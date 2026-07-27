@@ -134,6 +134,7 @@ test("updates or deletes only the exact HomeVault-managed event", () => {
     selectedHomeId: "home-1",
     recordHomeId: "home-1",
     recordId: "reminder-1",
+    occurrenceKey: "2026-07-28T00:00:00.000Z",
     topic: "REMINDER" as const,
     recordActive: true,
     mapping,
