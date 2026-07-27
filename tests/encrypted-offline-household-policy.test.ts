@@ -187,6 +187,8 @@ test("queues only encrypted, non-destructive, property-bound actions", () => {
     role: "ADULT" as const,
     now: new Date("2026-07-27T12:00:00.000Z"),
     queueSize: 3,
+    platformKeyAvailable: true,
+    integrityValid: true,
   };
 
   assert.deepEqual(decideOfflineQueue(input), {
@@ -213,6 +215,10 @@ test("queues only encrypted, non-destructive, property-bound actions", () => {
     }),
     { status: "unavailable" },
   );
+  assert.deepEqual(
+    decideOfflineQueue({ ...input, integrityValid: false }),
+    { status: "unavailable" },
+  );
 });
 
 test("reauthorizes queued actions and surfaces deterministic conflicts", () => {
@@ -220,6 +226,8 @@ test("reauthorizes queued actions and surfaces deterministic conflicts", () => {
     action,
     currentUserId: "user-1",
     selectedHomeId: "home-1",
+    deviceId: "device-1",
+    installationId: "install-1",
     now: new Date("2026-07-27T12:00:00.000Z"),
     sessionVerified: true,
     hasCurrentMembership: true,
@@ -237,6 +245,10 @@ test("reauthorizes queued actions and surfaces deterministic conflicts", () => {
   assert.deepEqual(
     decideOfflineSync({ ...input, serverRevision: "revision-11" }),
     { status: "conflict-review", actionId: "action-1" },
+  );
+  assert.deepEqual(
+    decideOfflineSync({ ...input, deviceId: "device-2" }),
+    { status: "unavailable" },
   );
   assert.deepEqual(
     decideOfflineSync({
@@ -258,6 +270,8 @@ test("discards revoked or expired actions and wipes lifecycle state", () => {
     action,
     currentUserId: "user-1",
     selectedHomeId: "home-1",
+    deviceId: "device-1",
+    installationId: "install-1",
     now: new Date("2026-07-27T12:00:00.000Z"),
     sessionVerified: true,
     hasCurrentMembership: true,
@@ -267,6 +281,10 @@ test("discards revoked or expired actions and wipes lifecycle state", () => {
     additiveReplaySafe: false,
   };
 
+  assert.deepEqual(
+    decideOfflineSync({ ...sync, sessionVerified: false }),
+    { status: "unavailable" },
+  );
   assert.deepEqual(
     decideOfflineSync({ ...sync, hasCurrentMembership: false }),
     {
