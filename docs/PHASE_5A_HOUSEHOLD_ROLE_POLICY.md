@@ -15,7 +15,8 @@ Establish fail-closed, executable role invariants before invitations, member adm
 - Generic role changes may move only between ADULT, CHILD and GUEST.
 - Ownership cannot be created, removed or downgraded through generic membership actions.
 - An OWNER may remove a non-owner.
-- A non-owner may leave their own household membership.
+- A non-owner may leave only when the authenticated actor user ID matches the target membership user ID.
+- Self-departure is derived server-side from identities; a request-supplied self flag is never trusted.
 - A non-owner cannot remove another member.
 - Ownership transfer remains a separate, transactional workflow and must preserve at least one owner.
 
