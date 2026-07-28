@@ -52,16 +52,48 @@ test("generic role changes cannot alter or create ownership", () => {
 });
 
 test("owners can remove non-owners and non-owners can leave themselves", () => {
-  assert.equal(canRemoveHouseholdMember("OWNER", "ADULT", false), true);
-  assert.equal(canRemoveHouseholdMember("OWNER", "CHILD", false), true);
-  assert.equal(canRemoveHouseholdMember("ADULT", "ADULT", true), true);
-  assert.equal(canRemoveHouseholdMember("GUEST", "GUEST", true), true);
-  assert.equal(canRemoveHouseholdMember("ADULT", "GUEST", false), false);
+  assert.equal(
+    canRemoveHouseholdMember("OWNER", "ADULT", "owner-1", "adult-1"),
+    true,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("OWNER", "CHILD", "owner-1", "child-1"),
+    true,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("ADULT", "ADULT", "adult-1", "adult-1"),
+    true,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("GUEST", "GUEST", "guest-1", "guest-1"),
+    true,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("ADULT", "GUEST", "adult-1", "guest-1"),
+    false,
+  );
+});
+
+test("self-departure is derived from authenticated and target user identities", () => {
+  assert.equal(
+    canRemoveHouseholdMember("ADULT", "ADULT", "adult-1", "adult-2"),
+    false,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("GUEST", "GUEST", "", "guest-1"),
+    false,
+  );
 });
 
 test("owners cannot be removed through the generic membership path", () => {
-  assert.equal(canRemoveHouseholdMember("OWNER", "OWNER", false), false);
-  assert.equal(canRemoveHouseholdMember("OWNER", "OWNER", true), false);
+  assert.equal(
+    canRemoveHouseholdMember("OWNER", "OWNER", "owner-1", "member-2"),
+    false,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("OWNER", "OWNER", "owner-1", "owner-1"),
+    false,
+  );
 });
 
 test("matching-home checks do not reveal cross-household records", () => {
