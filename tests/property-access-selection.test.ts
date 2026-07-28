@@ -20,7 +20,7 @@ const homeTwo: PropertyMembership = {
   role: "ADULT",
 };
 
-test("selects the sole valid membership without stored selection", () => {
+test("selects the sole exact membership without stored selection", () => {
   assert.deepEqual(
     resolvePropertyMembershipSelection({
       currentUserId: "user-1",
@@ -30,7 +30,7 @@ test("selects the sole valid membership without stored selection", () => {
   );
 });
 
-test("requires explicit selection when multiple properties are available", () => {
+test("requires explicit selection for distinct valid properties", () => {
   assert.deepEqual(
     resolvePropertyMembershipSelection({
       currentUserId: "user-1",
@@ -40,7 +40,7 @@ test("requires explicit selection when multiple properties are available", () =>
   );
 });
 
-test("selects only a requested property belonging to the current user", () => {
+test("selects only an exact requested property", () => {
   assert.deepEqual(
     resolvePropertyMembershipSelection({
       currentUserId: "user-1",
@@ -60,42 +60,27 @@ test("selects only a requested property belonging to the current user", () => {
   );
 });
 
-test("ignores memberships for another user and fails closed on duplicates", () => {
+test("fails closed when the candidate set contains another user", () => {
   assert.deepEqual(
     resolvePropertyMembershipSelection({
       currentUserId: "user-1",
-      memberships: [
-        {
-          ...homeOne,
-          id: "other-membership",
-          userId: "user-2",
-        },
-      ],
-    }),
-    { status: "unavailable" },
-  );
-
-  assert.deepEqual(
-    resolvePropertyMembershipSelection({
-      currentUserId: "user-1",
-      requestedHomeId: "home-1",
       memberships: [
         homeOne,
-        {
-          ...homeOne,
-          id: "duplicate-membership",
-        },
+        { ...homeTwo, userId: "user-2" },
       ],
     }),
     { status: "unavailable" },
   );
 });
 
-test("fails closed for missing user or malformed membership identifiers", () => {
+test("fails closed on duplicate membership or property identifiers", () => {
   assert.deepEqual(
     resolvePropertyMembershipSelection({
-      currentUserId: "",
-      memberships: [homeOne],
+      currentUserId: "user-1",
+      memberships: [
+        homeOne,
+        { ...homeTwo, id: homeOne.id },
+      ],
     }),
     { status: "unavailable" },
   );
@@ -103,7 +88,53 @@ test("fails closed for missing user or malformed membership identifiers", () => 
   assert.deepEqual(
     resolvePropertyMembershipSelection({
       currentUserId: "user-1",
-      memberships: [{ ...homeOne, homeId: "" }],
+      memberships: [
+        homeOne,
+        { ...homeOne, id: "membership-duplicate" },
+      ],
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("fails closed on whitespace and malformed identifiers", () => {
+  for (const currentUserId of ["", " user-1", "user-1 ", "   "]) {
+    assert.deepEqual(
+      resolvePropertyMembershipSelection({
+        currentUserId,
+        memberships: [homeOne],
+      }),
+      { status: "unavailable" },
+    );
+  }
+
+  for (const requestedHomeId of ["", " home-1", "home-1 ", "   "]) {
+    assert.deepEqual(
+      resolvePropertyMembershipSelection({
+        currentUserId: "user-1",
+        requestedHomeId,
+        memberships: [homeOne],
+      }),
+      { status: "unavailable" },
+    );
+  }
+});
+
+test("fails closed on empty memberships and invalid runtime roles", () => {
+  assert.deepEqual(
+    resolvePropertyMembershipSelection({
+      currentUserId: "user-1",
+      memberships: [],
+    }),
+    { status: "unavailable" },
+  );
+
+  assert.deepEqual(
+    resolvePropertyMembershipSelection({
+      currentUserId: "user-1",
+      memberships: [
+        { ...homeOne, role: "ADMIN" as PropertyMembership["role"] },
+      ],
     }),
     { status: "unavailable" },
   );
