@@ -16,11 +16,14 @@ const validRequest = {
   },
 };
 
-test("normalizes an Australian property and derives OWNER identity from the current user", () => {
+test("returns an exact atomic property and owner-membership plan", () => {
   assert.deepEqual(decideAdditionalPropertyCreation(validRequest), {
     status: "creation-allowed",
     requestId: "property_retry_123456",
-    ownerUserId: "user-1",
+    ownerMembership: {
+      userId: "user-1",
+      role: "OWNER",
+    },
     home: {
       name: "Coast House",
       addressLine: "12 Example Street",
@@ -32,15 +35,19 @@ test("normalizes an Australian property and derives OWNER identity from the curr
   });
 });
 
-test("requires a current verified identity", () => {
-  assert.deepEqual(
-    decideAdditionalPropertyCreation({
-      ...validRequest,
-      currentUserId: "",
-    }),
-    { status: "unavailable" },
-  );
+test("requires a canonical current identity", () => {
+  for (const currentUserId of ["", " user-1", "user-1 ", "   "]) {
+    assert.deepEqual(
+      decideAdditionalPropertyCreation({
+        ...validRequest,
+        currentUserId,
+      }),
+      { status: "unavailable" },
+    );
+  }
+});
 
+test("requires an exact verified-email boolean", () => {
   assert.deepEqual(
     decideAdditionalPropertyCreation({
       ...validRequest,
@@ -48,53 +55,71 @@ test("requires a current verified identity", () => {
     }),
     { status: "verification-required" },
   );
-});
-
-test("requires a bounded retry key for idempotent persistence", () => {
-  assert.deepEqual(
-    decideAdditionalPropertyCreation({
-      ...validRequest,
-      requestId: "short",
-    }),
-    { status: "invalid-request" },
-  );
 
   assert.deepEqual(
     decideAdditionalPropertyCreation({
       ...validRequest,
-      requestId: "property retry with spaces",
+      emailVerified: "true" as unknown as boolean,
     }),
-    { status: "invalid-request" },
+    { status: "verification-required" },
   );
 });
 
-test("rejects invalid property names, states and Australian postcodes", () => {
-  assert.deepEqual(
-    decideAdditionalPropertyCreation({
-      ...validRequest,
-      draft: { ...validRequest.draft, name: " " },
-    }),
-    { status: "invalid-request" },
-  );
+test("requires a bounded string retry key", () => {
+  for (const requestId of ["short", "property retry with spaces"]) {
+    assert.deepEqual(
+      decideAdditionalPropertyCreation({
+        ...validRequest,
+        requestId,
+      }),
+      { status: "invalid-request" },
+    );
+  }
 
   assert.deepEqual(
     decideAdditionalPropertyCreation({
       ...validRequest,
-      draft: { ...validRequest.draft, state: "California" },
-    }),
-    { status: "invalid-request" },
-  );
-
-  assert.deepEqual(
-    decideAdditionalPropertyCreation({
-      ...validRequest,
-      draft: { ...validRequest.draft, postcode: "123" },
+      requestId: 1234567890123456 as unknown as string,
     }),
     { status: "invalid-request" },
   );
 });
 
-test("keeps optional address fields empty without changing the country boundary", () => {
+test("fails closed without throwing on malformed runtime drafts", () => {
+  for (const draft of [
+    null,
+    { ...validRequest.draft, name: 42 },
+    { ...validRequest.draft, suburb: 42 },
+  ]) {
+    assert.deepEqual(
+      decideAdditionalPropertyCreation({
+        ...validRequest,
+        draft: draft as unknown as typeof validRequest.draft,
+      }),
+      { status: "invalid-request" },
+    );
+  }
+});
+
+test("rejects invalid state, postcode, control characters and oversized text", () => {
+  for (const draft of [
+    { ...validRequest.draft, state: "California" },
+    { ...validRequest.draft, postcode: "123" },
+    { ...validRequest.draft, name: "Coast\nHouse" },
+    { ...validRequest.draft, addressLine: "x".repeat(201) },
+    { ...validRequest.draft, suburb: "x".repeat(101) },
+  ]) {
+    assert.deepEqual(
+      decideAdditionalPropertyCreation({
+        ...validRequest,
+        draft,
+      }),
+      { status: "invalid-request" },
+    );
+  }
+});
+
+test("preserves empty optional fields inside the Australian boundary", () => {
   assert.deepEqual(
     decideAdditionalPropertyCreation({
       ...validRequest,
@@ -109,7 +134,10 @@ test("keeps optional address fields empty without changing the country boundary"
     {
       status: "creation-allowed",
       requestId: "property_retry_123456",
-      ownerUserId: "user-1",
+      ownerMembership: {
+        userId: "user-1",
+        role: "OWNER",
+      },
       home: {
         name: "Rental",
         addressLine: null,
