@@ -12,9 +12,13 @@ Define fail-closed invitation acceptance, expiry and revocation decisions before
 
 - Stored invitation states are PENDING, ACCEPTED and REVOKED.
 - A pending invitation becomes effectively EXPIRED at its exact server-side deadline.
+- Invalid invitee email, expiry, server-time, lifecycle status or terminal timestamps produce an explicit INVALID state.
+- Corrupt lifecycle data can never be treated as pending, accepted or revocable.
+- PENDING records cannot contain acceptance or revocation timestamps.
+- ACCEPTED and REVOKED records require the matching server timestamp, no conflicting terminal timestamp and a timestamp before expiry.
 - Only a verified account whose canonical email matches the invitee may accept.
-- Expired, accepted and revoked invitations cannot be accepted again.
-- Only an OWNER may revoke an unexpired pending invitation.
+- Expired, invalid, accepted and revoked invitations cannot be accepted again.
+- Only an OWNER may revoke a valid, unexpired pending invitation.
 - Acceptance records a server-supplied timestamp.
 - Token verification remains a separate prerequisite at the route boundary.
 - Membership creation and invitation acceptance must later occur in one idempotent database transaction.
