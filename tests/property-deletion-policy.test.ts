@@ -3,6 +3,7 @@ import test from "node:test";
 
 import {
   decidePropertyDeletion,
+  PROPERTY_DELETION_CLEANUP_SCOPES,
   type PropertyDeletionMembership,
 } from "../src/lib/property-deletion-policy";
 
@@ -20,31 +21,24 @@ const validRequest = {
   memberships: [owner],
 };
 
-test("allows the credential-confirmed sole owner to delete the explicitly selected property", () => {
+test("allows the credential-confirmed sole owner and binds complete cleanup", () => {
   assert.deepEqual(decidePropertyDeletion(validRequest), {
     status: "deletion-allowed",
     homeId: "home-1",
     ownerMembershipId: "membership-owner",
+    cleanupScopes: PROPERTY_DELETION_CLEANUP_SCOPES,
   });
 });
 
 test("requires an explicit current-user membership in the selected property", () => {
   assert.deepEqual(
-    decidePropertyDeletion({
-      ...validRequest,
-      currentUserId: "",
-    }),
+    decidePropertyDeletion({ ...validRequest, currentUserId: "" }),
     { status: "unavailable" },
   );
-
   assert.deepEqual(
-    decidePropertyDeletion({
-      ...validRequest,
-      selectedHomeId: "other-home",
-    }),
+    decidePropertyDeletion({ ...validRequest, selectedHomeId: "other-home" }),
     { status: "unavailable" },
   );
-
   assert.deepEqual(
     decidePropertyDeletion({
       ...validRequest,
@@ -62,7 +56,6 @@ test("requires the selected property's sole OWNER", () => {
     }),
     { status: "owner-required" },
   );
-
   assert.deepEqual(
     decidePropertyDeletion({
       ...validRequest,
@@ -80,13 +73,17 @@ test("requires the selected property's sole OWNER", () => {
   );
 });
 
-test("requires credential reconfirmation before destructive authorization", () => {
+test("requires exact credential reconfirmation before authorization", () => {
+  assert.deepEqual(
+    decidePropertyDeletion({ ...validRequest, credentialConfirmed: false }),
+    { status: "credential-confirmation-required" },
+  );
   assert.deepEqual(
     decidePropertyDeletion({
       ...validRequest,
-      credentialConfirmed: false,
+      credentialConfirmed: "true" as unknown as boolean,
     }),
-    { status: "credential-confirmation-required" },
+    { status: "unavailable" },
   );
 });
 
@@ -108,34 +105,53 @@ test("blocks deletion while another member remains", () => {
   );
 });
 
-test("fails closed for malformed or duplicate membership evidence", () => {
-  assert.deepEqual(
-    decidePropertyDeletion({
-      ...validRequest,
-      memberships: [{ ...owner, id: "" }],
-    }),
-    { status: "unavailable" },
-  );
-
-  assert.deepEqual(
-    decidePropertyDeletion({
+test("fails closed for malformed, cross-property or duplicate evidence", () => {
+  const malformedInputs: unknown[] = [
+    null,
+    { ...validRequest, currentUserId: " user-owner" },
+    { ...validRequest, selectedHomeId: "home-1 " },
+    { ...validRequest, memberships: null },
+    { ...validRequest, memberships: [null] },
+    { ...validRequest, memberships: [{ ...owner, id: "" }] },
+    { ...validRequest, memberships: [{ ...owner, role: "ADMIN" }] },
+    {
       ...validRequest,
       memberships: [
         owner,
-        {
-          ...owner,
-          id: "membership-duplicate-user",
-          role: "ADULT",
-        },
+        { ...owner, id: "membership-duplicate-user", role: "ADULT" },
       ],
-    }),
-    { status: "unavailable" },
-  );
+    },
+    {
+      ...validRequest,
+      memberships: [
+        owner,
+        { ...owner, userId: "other-user", homeId: "other-home" },
+      ],
+    },
+    { ...validRequest, memberships: [] },
+  ];
+
+  for (const input of malformedInputs) {
+    assert.deepEqual(
+      decidePropertyDeletion(input as typeof validRequest),
+      { status: "unavailable" },
+    );
+  }
+});
+
+test("bounds the server-resolved membership set", () => {
+  const memberships = Array.from({ length: 101 }, (_, index) => ({
+    id: `membership-${index}`,
+    userId: `user-${index}`,
+    homeId: "home-1",
+    role: index === 0 ? ("OWNER" as const) : ("ADULT" as const),
+  }));
 
   assert.deepEqual(
     decidePropertyDeletion({
       ...validRequest,
-      memberships: [],
+      currentUserId: "user-0",
+      memberships,
     }),
     { status: "unavailable" },
   );
