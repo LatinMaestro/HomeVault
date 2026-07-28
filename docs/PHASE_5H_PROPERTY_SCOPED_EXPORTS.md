@@ -4,15 +4,17 @@ Status: staged contract; existing production export routes are unchanged.
 
 ## Access Contract
 
-- Export requires a current verified user and an explicit server-controlled property selection.
+- Export requires an exact verified-identity result and an explicit server-controlled property selection.
+- Truthy or malformed identity-verification evidence never authorizes an export.
 - The selected property must match exactly one current-user membership.
-- Missing, malformed, duplicate, cross-user or unknown-property evidence fails closed.
+- Missing, malformed, duplicate, cross-user, oversized, invalid-role or unknown-property evidence fails closed without throwing.
+- The decision binds the exact user, property, membership, role and requested export kind so one authorization cannot be applied to another identity, property or format.
 - The contract preserves the current household read model for OWNER, ADULT, CHILD and GUEST. Any later role restriction requires a separate product/privacy decision and migration plan.
 - Export never falls back to the first, earliest or sole database property when the selected scope is unavailable.
 
 ## Required Query Boundary
 
-Every export implementation must carry the authorized property ID through the complete read graph:
+Every export implementation must carry the authorized property ID and export kind through the complete read graph:
 
 - household JSON;
 - inventory CSV;
