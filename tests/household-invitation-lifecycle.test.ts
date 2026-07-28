@@ -5,6 +5,7 @@ import {
   canRevokeHouseholdInvitation,
   evaluateHouseholdInvitationAcceptance,
   getEffectiveHouseholdInvitationStatus,
+  isValidHouseholdInvitationLifecycle,
   type HouseholdInvitationLifecycle,
 } from "../src/lib/household-invitation-lifecycle";
 
@@ -72,6 +73,8 @@ test("accepts only the matching verified email while pending", () => {
 });
 
 test("rejects expired, accepted and revoked invitations", () => {
+  const lifecycleAt = new Date("2026-07-28T00:00:00.000Z");
+
   assert.deepEqual(
     evaluateHouseholdInvitationAcceptance({
       invitation: pendingInvitation(),
@@ -84,7 +87,10 @@ test("rejects expired, accepted and revoked invitations", () => {
 
   assert.deepEqual(
     evaluateHouseholdInvitationAcceptance({
-      invitation: pendingInvitation({ status: "ACCEPTED" }),
+      invitation: pendingInvitation({
+        status: "ACCEPTED",
+        acceptedAt: lifecycleAt,
+      }),
       verifiedEmail: "member@example.com",
       emailVerified: true,
     }),
@@ -93,11 +99,88 @@ test("rejects expired, accepted and revoked invitations", () => {
 
   assert.deepEqual(
     evaluateHouseholdInvitationAcceptance({
-      invitation: pendingInvitation({ status: "REVOKED" }),
+      invitation: pendingInvitation({
+        status: "REVOKED",
+        revokedAt: lifecycleAt,
+      }),
       verifiedEmail: "member@example.com",
       emailVerified: true,
     }),
     { status: "error", reason: "revoked" },
+  );
+});
+
+test("fails closed for corrupt lifecycle dates, status timestamps and email", () => {
+  const invalidExpiry = pendingInvitation({
+    expiresAt: new Date("invalid"),
+  });
+  const acceptedWithoutTimestamp = pendingInvitation({
+    status: "ACCEPTED",
+  });
+  const pendingWithAcceptedTimestamp = pendingInvitation({
+    acceptedAt: new Date("2026-07-28T00:00:00.000Z"),
+  });
+  const invalidEmail = pendingInvitation({
+    inviteeEmail: "not-an-email",
+  });
+
+  assert.equal(isValidHouseholdInvitationLifecycle(invalidExpiry), false);
+  assert.equal(
+    isValidHouseholdInvitationLifecycle(acceptedWithoutTimestamp),
+    false,
+  );
+  assert.equal(
+    isValidHouseholdInvitationLifecycle(pendingWithAcceptedTimestamp),
+    false,
+  );
+  assert.equal(isValidHouseholdInvitationLifecycle(invalidEmail), false);
+
+  assert.equal(
+    getEffectiveHouseholdInvitationStatus(invalidExpiry),
+    "INVALID",
+  );
+  assert.equal(
+    getEffectiveHouseholdInvitationStatus(
+      pendingInvitation(),
+      new Date("invalid"),
+    ),
+    "INVALID",
+  );
+  assert.deepEqual(
+    evaluateHouseholdInvitationAcceptance({
+      invitation: invalidExpiry,
+      verifiedEmail: "member@example.com",
+      emailVerified: true,
+    }),
+    { status: "error", reason: "invalid-invitation" },
+  );
+  assert.equal(
+    canRevokeHouseholdInvitation({
+      actorRole: "OWNER",
+      invitation: invalidExpiry,
+    }),
+    false,
+  );
+});
+
+test("requires terminal timestamps to precede expiry", () => {
+  assert.equal(
+    isValidHouseholdInvitationLifecycle(
+      pendingInvitation({
+        status: "ACCEPTED",
+        acceptedAt: expiresAt,
+      }),
+    ),
+    false,
+  );
+  assert.equal(
+    isValidHouseholdInvitationLifecycle(
+      pendingInvitation({
+        status: "REVOKED",
+        revokedAt: new Date("2026-08-03T00:00:00.001Z"),
+      }),
+    ),
+    false,
   );
 });
 
@@ -116,7 +199,10 @@ test("allows only an owner to revoke an unexpired pending invitation", () => {
   assert.equal(
     canRevokeHouseholdInvitation({
       actorRole: "OWNER",
-      invitation: pendingInvitation({ status: "ACCEPTED" }),
+      invitation: pendingInvitation({
+        status: "ACCEPTED",
+        acceptedAt: now,
+      }),
       now,
     }),
     false,
