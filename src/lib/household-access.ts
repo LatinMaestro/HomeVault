@@ -52,10 +52,13 @@ export function canChangeHouseholdMemberRole(
 export function canRemoveHouseholdMember(
   actorRole: HouseholdAccessRole,
   targetRole: HouseholdAccessRole,
-  isSelf: boolean,
+  actorUserId: string,
+  targetUserId: string,
 ) {
-  if (targetRole === "OWNER") return false;
-  return isSelf || canAdministerHousehold(actorRole);
+  if (!actorUserId || !targetUserId || targetRole === "OWNER") return false;
+  return (
+    actorUserId === targetUserId || canAdministerHousehold(actorRole)
+  );
 }
 
 export function requireMatchingHome(access: HouseholdAccess, requestedHomeId: string) {
