@@ -10,14 +10,18 @@ Define ownership handover invariants before exposing member departure, owner del
 
 ## Policy
 
-- Every user ID, household ID, role and verification state is resolved server-side from current database state.\n- Only the current OWNER may initiate a transfer.
-- The target must be a distinct member of the same household.
-- The target account must have a verified email.
+- Every user ID, household ID, role, active-membership state and verification state is resolved server-side from current database state.
+- Household and user identifiers must be non-empty canonical values without surrounding or embedded whitespace.
+- Only the current active OWNER may initiate a transfer.
+- The target must be a distinct active member of the same household.
+- The target account must have an exactly verified email state.
 - The target must already hold the ADULT role.
 - CHILD, GUEST and existing OWNER targets are rejected.
 - Role promotion to ADULT remains a separate owner administration action.
-- A later persistence implementation must change the old OWNER to ADULT and the target ADULT to OWNER atomically.
-- Conditional writes or row locking must reject concurrent or stale transfers.
+- An allowed decision is bound to the exact household, previous-owner user ID and next-owner user ID.
+- The returned plan includes the expected current roles and both resulting roles so later persistence cannot evaluate one pair and apply another.
+- A later persistence implementation must conditionally change the old OWNER to ADULT and the target ADULT to OWNER in one transaction.
+- Conditional writes or row locking must reject concurrent, inactive or stale transfers.
 - Account deletion and owner departure remain blocked until the transfer commits.
 - Transfer errors presented publicly must not reveal membership in another household.
 
