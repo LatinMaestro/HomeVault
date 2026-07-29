@@ -1,41 +1,69 @@
-# Phase 7C: Encrypted Bounded Offline Household Access
+# Phase 7C: Encrypted bounded offline household access
 
-Status: staged policy contract; household record caching and offline mutations remain disabled.
+Status: policy hardened; household caching and offline mutations remain disabled.
 
-## Approved Direction
+## Approved boundary
 
-- Offline access is explicit opt-in for one verified user, device, installation and selected property.
-- Initial scope is bounded household metadata: home profile, rooms, assets, maintenance, reminders, warranties and record metadata.
-- Attachment bytes, authentication secrets, provider tokens, OCR/AI data and public sharing grants remain outside the offline cache.
-- Each snapshot is encrypted with an authenticated cipher using a per-installation key wrapped by iOS Keychain or Android Keystore.
-- Cache and keys are excluded from platform backup and require a device passcode.
-- A snapshot is limited to 25 MB and expires after 72 hours without server refresh.
+- Offline access is explicit opt-in for one verified user, active property
+  membership, device and installation.
+- Cached scope is allowlisted household metadata only: home profile, rooms,
+  assets, maintenance, reminders, warranties and record metadata.
+- Attachment bytes, credentials, provider tokens, OCR/AI material, sharing
+  grants and identity/role administration are never cached.
+- A snapshot is limited to 25 MB and expires no later than 72 hours after its
+  server-issued time. Clients cannot extend that authority while offline.
 
-## Offline Read Boundary
+## Encryption and device binding
 
-- Cached data is bound to immutable user, property, device and installation identifiers.
-- Integrity, supported schema, platform key and expiry are checked before decryption.
-- Unknown current membership while disconnected is shown as stale; it never grants server authority.
-- Known membership revocation, device loss, account switch, reinstall, key invalidation or expiry destroys the key and purges the cache.
-- Remote wipe cannot be guaranteed while a lost device has no network. Platform key protection and short expiry are therefore mandatory, with revocation applied at the next connection.
+- Every snapshot uses AES-256-GCM with authenticated additional data.
+- The per-installation key is held by iOS Keychain or Android Keystore, requires
+  a device passcode, is excluded from backup and is bound to app attestation.
+- Enrollment consumes short-lived, single-use credential evidence and binds the
+  exact session, user, property, membership revision, device, installation,
+  platform, key identifier/version and selected record types.
+- Before decryption, runtime-safe policy checks bind the snapshot version,
+  ciphertext digest, AAD digest, authentication tag and platform-key version.
+- Invalid data, tag failure, identity/account switching, installation/key
+  changes, known revocation, device loss or expiry destroys the key and purges
+  cached state.
+- Unknown membership while disconnected is visibly stale and never supplies
+  server authority. Remote wipe cannot be guaranteed until the device reconnects.
 
-## Queued Actions And Conflicts
+## Queued actions and conflicts
 
-- OWNER and ADULT may queue only create, update and additive maintenance-completion actions.
-- Destructive deletion, ownership/role changes, invitations, attachment writes, identity changes and external-provider actions require an online connection.
-- Every queued payload is encrypted and bound to a client mutation ID, record, property, device, base server revision and expiry.
-- Reconnection requires a live verified session and current writable property membership before replay.
-- Exact revision matches may apply idempotently. Safe additive maintenance completion is recomputed on the server.
-- All other revision mismatches become explicit user-reviewed conflicts; the client never silently overwrites server data.
-- Duplicate client mutation IDs acknowledge the existing server result and remove the queued copy.
+- The role and membership revision used for queue admission come from the
+  authenticated snapshot, not caller input.
+- Only bounded create, update and additive maintenance-completion actions may be
+  queued. Destruction, identity, role, invitation, attachment and provider work
+  remains online-only.
+- Each queued action is versioned, encrypted and bound to the snapshot, exact
+  membership, user, property, device, installation, record type/ID, base server
+  revision, payload/AAD digests, client mutation ID and expiry.
+- Reconnection repeats verified-session, active write-membership, property,
+  record, integrity and idempotency checks.
+- Exact revision matches may apply. Maintenance completion on a changed record
+  requires exact server evidence that it can be recomputed and is not already
+  present. Every other mismatch becomes user-reviewed conflict state.
+- A server result is durably recorded before removing its queued copy.
 
-## Lifecycle And Deletion
+## Lifecycle
 
-- Account switch, sign-out, account deletion, membership removal, reported device loss, reinstall, key invalidation and expiry purge snapshots and queued actions.
-- Property and account export identify offline-enabled devices and pending action counts without exporting encryption keys.
-- Account/property deletion revokes device registrations and requires processor/device cleanup evidence.
-- Offline status, last refresh, expiry and pending/conflict counts remain visible to the user.
+- Sign-out, account/property switching, deletion, membership revocation, device
+  loss, reinstall, key invalidation and expiry have explicit purge plans.
+- Device registrations are revoked for account deletion, membership revocation
+  and reported loss.
+- Offline-enabled devices and pending/conflict counts belong in export and
+  deletion evidence, but encryption keys and encrypted payloads do not.
+- Logs exclude household content, keys, ciphertext, digests and queued payloads.
 
-## Verification
+## Release gates
 
-Production enablement requires approved native secure-storage and encrypted-database components, cryptographic design review, migration and corruption tests, offline expiry tests, device-loss/revocation tests, account-switch residue tests, queue idempotency and conflict tests, low-storage and interrupted-sync recovery, accessibility, physical-device backup inspection, store-disclosure updates and exact-head standard/native CI.
+This contract does not enable offline household data. Release requires approved
+native secure-storage and encrypted-database components, cryptographic review,
+schema/corruption migration tests, low-storage/interrupted-sync tests,
+device-loss and backup inspection, account-residue tests, queue idempotency and
+conflict tests, accessibility, current disclosures, exact-head standard/native
+CI and signed physical-device acceptance.
+
+No native component, database, migration, permission, provider or production
+feature is enabled by this phase.
