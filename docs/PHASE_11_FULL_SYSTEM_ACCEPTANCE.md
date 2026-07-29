@@ -4,8 +4,9 @@ Status: prepared release-acceptance contract; it is not evidence that any candid
 
 ## Candidate Identity
 
-- Freeze one release commit, Vercel deployment, app version and Apple build number.
-- Every executable result must bind to that exact commit and a durable artifact digest.
+- Freeze one versioned candidate identity across the release commit, Vercel deployment, app version and Apple build number.
+- A server-resolved candidate proof must bind that identity to real exact-head standard CI, native CI, deployment readiness and both durable CI artifact digests.
+- Candidate and engineering evidence expires after 24 hours so a later decision cannot silently reuse a stale execution.
 - Source inspection, skipped jobs, jobs without steps/logs/artifacts, stale deployments and results from a stacked predecessor do not count as exact-head execution.
 
 ## Required Regression Domains
@@ -19,16 +20,18 @@ Status: prepared release-acceptance contract; it is not evidence that any candid
 
 ## Fail-closed Release Rules
 
-- No open severity 1 or 2 defect can be waived.
-- An open severity 3 or 4 defect requires a named owner, concrete reason and waiver expiring within 30 days.
+- No open severity 1 or 2 defect can be waived. A resolved defect requires server-resolved proof bound to its exact defect revision and release candidate.
+- An open severity 3 or 4 defect requires recorded authority, a concrete reason and a candidate-bound waiver expiring within 30 days.
 - Missing, non-executable, cross-head, non-fictional or incomplete-platform evidence blocks engineering acceptance.
-- Malformed runtime evidence fails closed without throwing; release build numbers must be positive integers.
-- Server-side property authorization, cross-property isolation, private-file delivery, least-privilege providers, secret/log scanning, user-reviewed automation and prohibited-scope absence must all pass.
-- The commercial model must be explicit. A free release records subscriptions in the exact non-executable, digest-free, platform-free not-applicable shape; a subscription release requires exact-head StoreKit and entitlement evidence.
+- Malformed runtime evidence and truthy substitutes fail closed without throwing; release build numbers and every mutable evidence revision must be positive integers.
+- Server-side property authorization, cross-property isolation, private-file delivery, least-privilege providers, secret/log scanning, user-reviewed automation, prohibited-scope absence, accessibility and performance each require fresh server-resolved evidence bound to the candidate.
+- Every cleanup scope requires its own fresh candidate-bound evidence; a caller-provided list of scope names is not proof of cleanup.
+- The commercial model must have a recorded, candidate-bound client decision. A free release records subscriptions in the exact non-executable, digest-free, run-free, platform-free not-applicable shape; a subscription release requires exact-head StoreKit and entitlement evidence.
 
 ## Client-only Gates
 
 - Engineering acceptance can produce `ready-for-client-gates`; it cannot manufacture legal approval, provider/cost approval, Apple enrolment, agreements, signing, physical-device regression, TestFlight acceptance or reviewer credentials.
+- `COMPLETE` and `REJECTED` require recorded client authority bound to the exact gate, decision revision and candidate. `PENDING` must not carry synthetic authority.
 - A rejected client gate blocks the release. Pending client gates prevent final go/no-go but do not invalidate exact-head engineering evidence.
 - App Review submission and public release remain explicit client actions.
 
@@ -41,6 +44,6 @@ Status: prepared release-acceptance contract; it is not evidence that any candid
 ## Required Evidence Package
 
 - Exact-head standard CI and native CI, signed-artifact identity, deployment identity, migration evidence and fresh production health/readiness.
-- Full regression matrix with durable artifact digests, platform coverage and fictional fixture declaration.
-- Defect ledger, lower-severity waivers, accessibility/performance results, lifecycle cleanup ledger and provider/privacy disclosures.
+- Full regression matrix with evidence IDs and revisions, workflow/run/job identity, durable artifact digests, issuance/expiry, platform coverage, fictional fixture declaration and server resolution.
+- Candidate-bound defect resolutions or lower-severity waivers, accessibility/performance evidence, lifecycle cleanup evidence and provider/privacy disclosures.
 - Final reviewer package and client gate checklist, followed by an explicit go/no-go decision.
