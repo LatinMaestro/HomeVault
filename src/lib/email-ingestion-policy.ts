@@ -1,5 +1,6 @@
 export const EMAIL_INGESTION_POLICY_VERSION = "homevault-email-ingestion-v1";
 export const EMAIL_WEBHOOK_MAX_AGE_MS = 5 * 60 * 1000;
+export const EMAIL_REVIEW_GRANT_MAX_AGE_MS = 15 * 60 * 1000;
 export const EMAIL_QUARANTINE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 export const EMAIL_MAX_RAW_BYTES = 25_000_000;
 export const EMAIL_MAX_BODY_CHARACTERS = 100_000;
@@ -20,6 +21,43 @@ export type EmailIngestionRole = "OWNER" | "ADULT" | "CHILD" | "GUEST";
 export type EmailAttachmentMediaType =
   (typeof EMAIL_ATTACHMENT_MEDIA_TYPES)[number];
 
+export type EmailMembershipEvidence = {
+  userId: string;
+  homeId: string;
+  role: EmailIngestionRole;
+  active: boolean;
+};
+
+export type EmailRouteMatchEvidence = {
+  routeId: string;
+  homeId: string;
+  routeVersion: number;
+  tokenHashMatchedConstantTime: boolean;
+};
+
+export type EmailWebhookEvidence = {
+  providerEventId: string;
+  canonicalContentDigest: string;
+  routeId: string;
+  routeVersion: number;
+  secretConfigured: boolean;
+  signatureValid: boolean;
+  verifiedAt: Date;
+};
+
+export type EmailReviewGrant = {
+  id: string;
+  userId: string;
+  homeId: string;
+  emailId: string;
+  emailVersion: number;
+  canonicalContentDigest: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  singleUse: boolean;
+  consumed: boolean;
+};
+
 export type EmailIngestionRoute = {
   id: string;
   homeId: string;
@@ -35,6 +73,9 @@ export type EmailSenderAuthentication = {
   dmarc: "PASS" | "FAIL" | "NONE";
   spf: "PASS" | "FAIL" | "NONE";
   alignedDomain: string | null;
+  canonicalContentDigest: string;
+  envelopeFrom: string;
+  headerFrom: string;
 };
 
 export type EmailAttachmentCandidate = {
@@ -63,6 +104,7 @@ export type QuarantinedEmailAttachment = {
 
 export type QuarantinedEmail = {
   id: string;
+  version: number;
   homeId: string;
   routeId: string;
   providerEventId: string;
@@ -171,6 +213,9 @@ export type EmailReviewDecision =
       includeSanitizedBody: boolean;
       useNormalRecordActions: true;
       requireExplicitFinalSave: true;
+      requireCompareAndSet: true;
+      expectedEmailVersion: number;
+      reviewGrantId: string;
       createAutomatically: false;
       runOcrAutomatically: false;
       runAiAutomatically: false;
@@ -196,6 +241,12 @@ export type EmailIngestionCleanupDecision = {
   deleteAttachmentObjects: true;
   deleteRelationalMetadata: true;
   invalidateReviewSessions: true;
+  deleteProviderCopies: true;
+  deleteProcessorCopies: true;
+  deleteCachesAndDeviceCopies: true;
+  deleteQueuedJobs: true;
+  deleteDedupeKeys: true;
+  removeAuditPayloads: true;
   preserveAcceptedRecordValues: boolean;
   requireRetryableCleanupLedger: true;
 };
@@ -280,16 +331,24 @@ function exactExtensionMatches(
 function senderVerifiedAndAllowed(
   authentication: EmailSenderAuthentication,
   allowlisted: boolean,
+  headerFrom: string,
 ) {
+  const headerDomain = headerFrom.trim().toLowerCase().split("@")[1];
   return (
     allowlisted === true &&
     authentication.dkim === "PASS" &&
     authentication.dmarc === "PASS" &&
-    validText(authentication.alignedDomain, 253)
+    validText(authentication.alignedDomain, 253) &&
+    authentication.alignedDomain?.trim().toLowerCase() === headerDomain
   );
 }
 
-function validSenderAuthentication(value: unknown) {
+function validSenderAuthentication(
+  value: unknown,
+  canonicalContentDigest: string,
+  envelopeFrom: string,
+  headerFrom: string,
+) {
   if (!value || typeof value !== "object") {
     return false;
   }
@@ -299,6 +358,9 @@ function validSenderAuthentication(value: unknown) {
     results.includes(authentication.dkim) &&
     results.includes(authentication.dmarc) &&
     results.includes(authentication.spf) &&
+    authentication.canonicalContentDigest === canonicalContentDigest &&
+    authentication.envelopeFrom === envelopeFrom &&
+    authentication.headerFrom === headerFrom &&
     (authentication.alignedDomain === null ||
       validText(authentication.alignedDomain, 253))
   );
@@ -308,8 +370,7 @@ export function decideEmailRouteProvision({
   currentUserId,
   selectedHomeId,
   sessionVerified,
-  hasCurrentMembership,
-  role,
+  membership,
   credentialsReconfirmed,
   generatedTokenEntropyBytes,
   generatedTokenHash,
@@ -317,8 +378,7 @@ export function decideEmailRouteProvision({
   currentUserId: string;
   selectedHomeId: string;
   sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: EmailIngestionRole;
+  membership: EmailMembershipEvidence;
   credentialsReconfirmed: boolean;
   generatedTokenEntropyBytes: number;
   generatedTokenHash: string;
@@ -326,15 +386,18 @@ export function decideEmailRouteProvision({
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    !sessionVerified ||
-    !hasCurrentMembership ||
+    sessionVerified !== true ||
+    !membership ||
+    membership.userId !== currentUserId ||
+    membership.homeId !== selectedHomeId ||
+    membership.active !== true ||
     !validText(generatedTokenHash, 512) ||
     !Number.isSafeInteger(generatedTokenEntropyBytes) ||
     generatedTokenEntropyBytes < EMAIL_ROUTE_MIN_ENTROPY_BYTES
   ) {
     return { status: "unavailable" };
   }
-  if (role !== "OWNER") {
+  if (membership.role !== "OWNER") {
     return { status: "read-only" };
   }
   if (credentialsReconfirmed !== true) {
@@ -353,7 +416,7 @@ export function decideEmailRouteProvision({
 
 export function decideEmailIngress({
   route,
-  routeTokenHashMatchesConstantTime,
+  routeMatchEvidence,
   providerEventId,
   internetMessageId,
   canonicalContentDigest,
@@ -368,14 +431,13 @@ export function decideEmailIngress({
   providerApproved,
   approvedRegionConfigured,
   boundedRetentionConfigured,
-  webhookSecretConfigured,
-  webhookSignatureValid,
+  webhookEvidence,
   webhookTimestamp,
   existingEmail,
   now,
 }: {
   route: EmailIngestionRoute;
-  routeTokenHashMatchesConstantTime: boolean;
+  routeMatchEvidence: EmailRouteMatchEvidence;
   providerEventId: string;
   internetMessageId: string;
   canonicalContentDigest: string;
@@ -390,8 +452,7 @@ export function decideEmailIngress({
   providerApproved: boolean;
   approvedRegionConfigured: boolean;
   boundedRetentionConfigured: boolean;
-  webhookSecretConfigured: boolean;
-  webhookSignatureValid: boolean;
+  webhookEvidence: EmailWebhookEvidence;
   webhookTimestamp: Date;
   existingEmail?: Pick<
     QuarantinedEmail,
@@ -409,14 +470,23 @@ export function decideEmailIngress({
     !Number.isSafeInteger(route.version) ||
     route.version < 1 ||
     route.status !== "ACTIVE" ||
-    routeTokenHashMatchesConstantTime !== true ||
+    !routeMatchEvidence ||
+    routeMatchEvidence.routeId !== route.id ||
+    routeMatchEvidence.homeId !== route.homeId ||
+    routeMatchEvidence.routeVersion !== route.version ||
+    routeMatchEvidence.tokenHashMatchedConstantTime !== true ||
     !validText(providerEventId, 200) ||
     !validText(internetMessageId, 998) ||
     !validText(canonicalContentDigest, 256) ||
     !canonicalDigestVerified ||
     !validEmailAddress(envelopeFrom) ||
     !validEmailAddress(headerFrom) ||
-    !validSenderAuthentication(senderAuthentication) ||
+    !validSenderAuthentication(
+      senderAuthentication,
+      canonicalContentDigest,
+      envelopeFrom,
+      headerFrom,
+    ) ||
     typeof senderAllowlisted !== "boolean" ||
     !Array.isArray(attachments)
   ) {
@@ -433,8 +503,15 @@ export function decideEmailIngress({
     return { status: "provider-gate", reason: "retention" };
   }
   if (
-    webhookSecretConfigured !== true ||
-    webhookSignatureValid !== true
+    !webhookEvidence ||
+    webhookEvidence.providerEventId !== providerEventId ||
+    webhookEvidence.canonicalContentDigest !== canonicalContentDigest ||
+    webhookEvidence.routeId !== route.id ||
+    webhookEvidence.routeVersion !== route.version ||
+    webhookEvidence.secretConfigured !== true ||
+    webhookEvidence.signatureValid !== true ||
+    !validDate(webhookEvidence.verifiedAt) ||
+    webhookEvidence.verifiedAt.getTime() !== webhookTimestamp.getTime()
   ) {
     return { status: "provider-gate", reason: "webhook" };
   }
@@ -527,6 +604,7 @@ export function decideEmailIngress({
     senderTrust: senderVerifiedAndAllowed(
       senderAuthentication,
       senderAllowlisted,
+      headerFrom,
     )
       ? "VERIFIED_ALLOWED"
       : "UNVERIFIED",
@@ -563,7 +641,14 @@ export function decideEmailQuarantine({
     email.expiresAt <= email.receivedAt ||
     email.expiresAt.getTime() - email.receivedAt.getTime() >
       EMAIL_QUARANTINE_TTL_MS ||
-    !validSenderAuthentication(email.senderAuthentication) ||
+    !validEmailAddress(email.envelopeFrom) ||
+    !validEmailAddress(email.headerFrom) ||
+    !validSenderAuthentication(
+      email.senderAuthentication,
+      email.canonicalContentDigest,
+      email.envelopeFrom,
+      email.headerFrom,
+    ) ||
     typeof email.senderAllowlisted !== "boolean" ||
     typeof email.bodySanitized !== "boolean" ||
     typeof email.remoteContentRemoved !== "boolean" ||
@@ -670,6 +755,7 @@ export function decideEmailQuarantine({
     senderWarningRequired: !senderVerifiedAndAllowed(
       email.senderAuthentication,
       email.senderAllowlisted,
+      email.headerFrom,
     ),
     privateOnly: true,
     noRemoteContent: true,
@@ -681,8 +767,8 @@ export function decideEmailReview({
   currentUserId,
   selectedHomeId,
   sessionVerified,
-  hasCurrentMembership,
-  role,
+  membership,
+  reviewGrant,
   email,
   confirmation,
   now,
@@ -690,8 +776,8 @@ export function decideEmailReview({
   currentUserId: string;
   selectedHomeId: string;
   sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: EmailIngestionRole;
+  membership: EmailMembershipEvidence;
+  reviewGrant: EmailReviewGrant;
   email: QuarantinedEmail;
   confirmation: EmailReviewConfirmation;
   now: Date;
@@ -701,30 +787,58 @@ export function decideEmailReview({
     !confirmation ||
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    !sessionVerified ||
-    !hasCurrentMembership ||
+    sessionVerified !== true ||
+    !membership ||
+    membership.userId !== currentUserId ||
+    membership.homeId !== selectedHomeId ||
+    membership.active !== true ||
+    !reviewGrant ||
+    !validText(reviewGrant.id, 200) ||
+    reviewGrant.userId !== currentUserId ||
+    reviewGrant.homeId !== selectedHomeId ||
+    reviewGrant.emailId !== email.id ||
+    reviewGrant.emailVersion !== email.version ||
+    reviewGrant.canonicalContentDigest !== email.canonicalContentDigest ||
+    !validDate(reviewGrant.issuedAt) ||
+    !validDate(reviewGrant.expiresAt) ||
+    reviewGrant.expiresAt <= reviewGrant.issuedAt ||
+    reviewGrant.expiresAt.getTime() - reviewGrant.issuedAt.getTime() >
+      EMAIL_REVIEW_GRANT_MAX_AGE_MS ||
+    reviewGrant.singleUse !== true ||
+    reviewGrant.consumed !== false ||
     !validDate(now) ||
     !validDate(email.receivedAt) ||
     !validDate(email.expiresAt) ||
     !validText(email.id, 200) ||
+    !Number.isSafeInteger(email.version) ||
+    email.version < 1 ||
     !validText(email.routeId, 200) ||
+    !validText(email.providerEventId, 200) ||
     !validText(email.internetMessageId, 998) ||
     !validText(email.canonicalContentDigest, 256) ||
+    !validEmailAddress(email.envelopeFrom) ||
     !validEmailAddress(email.headerFrom) ||
+    !validSenderAuthentication(
+      email.senderAuthentication,
+      email.canonicalContentDigest,
+      email.envelopeFrom,
+      email.headerFrom,
+    ) ||
     email.expiresAt <= email.receivedAt ||
     email.expiresAt.getTime() - email.receivedAt.getTime() >
       EMAIL_QUARANTINE_TTL_MS ||
     !Array.isArray(email.attachments) ||
+    email.attachments.length > EMAIL_MAX_ATTACHMENTS ||
     !Array.isArray(confirmation.selectedAttachmentIds) ||
     email.homeId !== selectedHomeId ||
     email.status !== "REVIEW_READY"
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) {
+  if (!hasWriteRole(membership.role)) {
     return { status: "read-only" };
   }
-  if (now >= email.expiresAt) {
+  if (now >= email.expiresAt || now >= reviewGrant.expiresAt) {
     return { status: "stale" };
   }
   if (
@@ -736,6 +850,9 @@ export function decideEmailReview({
     (confirmation.selectedAttachmentIds.length === 0 &&
       !confirmation.includeSanitizedBody) ||
     confirmation.selectedAttachmentIds.length > EMAIL_MAX_ATTACHMENTS ||
+    confirmation.selectedAttachmentIds.some(
+      (attachmentId) => !validText(attachmentId, 200),
+    ) ||
     new Set(confirmation.selectedAttachmentIds).size !==
       confirmation.selectedAttachmentIds.length
   ) {
@@ -778,8 +895,11 @@ export function decideEmailReview({
     title: confirmation.title.trim(),
     selectedAttachmentIds: [...confirmation.selectedAttachmentIds],
     includeSanitizedBody: confirmation.includeSanitizedBody,
-    useNormalRecordActions: true,
-    requireExplicitFinalSave: true,
+      useNormalRecordActions: true,
+      requireExplicitFinalSave: true,
+      requireCompareAndSet: true,
+      expectedEmailVersion: email.version,
+      reviewGrantId: reviewGrant.id,
     createAutomatically: false,
     runOcrAutomatically: false,
     runAiAutomatically: false,
@@ -808,6 +928,12 @@ export function decideEmailIngestionCleanup({
     deleteAttachmentObjects: true,
     deleteRelationalMetadata: true,
     invalidateReviewSessions: true,
+    deleteProviderCopies: true,
+    deleteProcessorCopies: true,
+    deleteCachesAndDeviceCopies: true,
+    deleteQueuedJobs: true,
+    deleteDedupeKeys: true,
+    removeAuditPayloads: true,
     preserveAcceptedRecordValues: scope === "EMAIL" || scope === "ROUTE",
     requireRetryableCleanupLedger: true,
   };
