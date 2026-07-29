@@ -1,5 +1,8 @@
 export const FULL_SYSTEM_ACCEPTANCE_POLICY_VERSION =
-  "homevault-full-system-acceptance-v1";
+  "homevault-full-system-acceptance-v2";
+
+export const ACCEPTANCE_EVIDENCE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+export const CLIENT_DECISION_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
 
 export const ACCEPTANCE_DOMAINS = [
   "AUTH_IDENTITY",
@@ -44,20 +47,21 @@ export const REQUIRED_CLEANUP_SCOPES = [
 ] as const;
 
 export const ACCEPTANCE_BOUNDARIES = [
-  "serverAuthorizationVerified",
-  "crossPropertyIsolationVerified",
-  "privateFileDeliveryVerified",
-  "leastPrivilegeProvidersVerified",
-  "secretsAndLogsScanPassed",
-  "userReviewedAutomationVerified",
-  "prohibitedProductScopesAbsent",
-  "accessibilityRegressionPassed",
-  "performanceBudgetsPassed",
+  "SERVER_AUTHORIZATION",
+  "CROSS_PROPERTY_ISOLATION",
+  "PRIVATE_FILE_DELIVERY",
+  "LEAST_PRIVILEGE_PROVIDERS",
+  "SECRETS_AND_LOGS_SCAN",
+  "USER_REVIEWED_AUTOMATION",
+  "PROHIBITED_PRODUCT_SCOPES_ABSENT",
+  "ACCESSIBILITY_REGRESSION",
+  "PERFORMANCE_BUDGETS",
 ] as const;
 
 export type AcceptanceDomain = (typeof ACCEPTANCE_DOMAINS)[number];
 export type ClientReleaseGate = (typeof CLIENT_RELEASE_GATES)[number];
 export type CleanupScope = (typeof REQUIRED_CLEANUP_SCOPES)[number];
+export type AcceptanceBoundary = (typeof ACCEPTANCE_BOUNDARIES)[number];
 export type AcceptancePlatform = "WEB" | "IOS" | "ANDROID";
 export type CommercialModel = "UNDECIDED" | "FREE" | "SUBSCRIPTION";
 
@@ -84,50 +88,144 @@ export const REQUIRED_PLATFORM_COVERAGE: Record<
 };
 
 export type CandidateIdentity = {
+  candidateId: string;
+  revision: number;
   releaseCommit: string;
   deploymentId: string;
   appVersion: string;
   buildNumber: string;
 };
 
+export type CandidateEvidence = {
+  evidenceId: string;
+  candidateId: string;
+  candidateRevision: number;
+  releaseCommit: string;
+  deploymentId: string;
+  appVersion: string;
+  buildNumber: string;
+  standardCiRunId: string;
+  nativeCiRunId: string;
+  standardArtifactDigest: string;
+  nativeArtifactDigest: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  exactHead: boolean;
+  standardCiPassed: boolean;
+  nativeCiPassed: boolean;
+  deploymentReady: boolean;
+  serverResolved: boolean;
+};
+
 export type AcceptanceEvidence = {
+  evidenceId: string;
+  revision: number;
   domain: AcceptanceDomain;
   status: "PASSED" | "FAILED" | "NOT_APPLICABLE";
+  candidateId: string;
+  candidateRevision: number;
   releaseCommit: string;
+  workflowRunId: string | null;
+  jobId: string | null;
   executable: boolean;
   artifactDigest: string | null;
   platforms: readonly AcceptancePlatform[];
   fictionalDataOnly: boolean;
+  issuedAt: Date;
+  expiresAt: Date;
+  serverResolved: boolean;
+};
+
+export type BoundaryEvidence = {
+  boundary: AcceptanceBoundary;
+  evidenceId: string;
+  candidateId: string;
+  candidateRevision: number;
+  releaseCommit: string;
+  artifactDigest: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  passed: boolean;
+  serverResolved: boolean;
+};
+
+export type CleanupEvidence = {
+  scope: CleanupScope;
+  evidenceId: string;
+  candidateId: string;
+  candidateRevision: number;
+  releaseCommit: string;
+  artifactDigest: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  completed: boolean;
+  serverResolved: boolean;
+};
+
+export type DefectResolutionEvidence = {
+  defectId: string;
+  defectRevision: number;
+  candidateId: string;
+  candidateRevision: number;
+  releaseCommit: string;
+  artifactDigest: string;
+  verifiedAt: Date;
+  resolved: boolean;
+  serverResolved: boolean;
+};
+
+export type DefectWaiverEvidence = {
+  defectId: string;
+  defectRevision: number;
+  candidateId: string;
+  candidateRevision: number;
+  authorityId: string;
+  reason: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  approved: boolean;
+  serverRecorded: boolean;
 };
 
 export type AcceptanceDefect = {
   id: string;
+  revision: number;
+  candidateId: string;
+  candidateRevision: number;
+  releaseCommit: string;
   severity: 1 | 2 | 3 | 4;
   status: "OPEN" | "RESOLVED";
-  waiver:
-    | {
-        owner: string;
-        reason: string;
-        expiresAt: Date;
-      }
-    | null;
+  resolution: DefectResolutionEvidence | null;
+  waiver: DefectWaiverEvidence | null;
 };
 
-export type AcceptanceBoundaries = {
-  serverAuthorizationVerified: boolean;
-  crossPropertyIsolationVerified: boolean;
-  privateFileDeliveryVerified: boolean;
-  leastPrivilegeProvidersVerified: boolean;
-  secretsAndLogsScanPassed: boolean;
-  userReviewedAutomationVerified: boolean;
-  prohibitedProductScopesAbsent: boolean;
-  accessibilityRegressionPassed: boolean;
-  performanceBudgetsPassed: boolean;
+export type ClientGateAuthority = {
+  gate: ClientReleaseGate;
+  candidateId: string;
+  candidateRevision: number;
+  authorityId: string;
+  decisionRevision: number;
+  decision: "COMPLETE" | "REJECTED";
+  decidedAt: Date;
+  serverRecorded: boolean;
 };
 
 export type ClientGateEvidence = {
   gate: ClientReleaseGate;
   status: "COMPLETE" | "PENDING" | "REJECTED";
+  authority: ClientGateAuthority | null;
+};
+
+export type CommercialSelectionEvidence = {
+  decisionId: string;
+  decisionRevision: number;
+  candidateId: string;
+  candidateRevision: number;
+  model: Exclude<CommercialModel, "UNDECIDED">;
+  authorityId: string;
+  decidedAt: Date;
+  approved: boolean;
+  serverRecorded: boolean;
 };
 
 export type FullSystemAcceptanceDecision =
@@ -143,10 +241,7 @@ export type FullSystemAcceptanceDecision =
       exactHeadEvidence: true;
       pendingClientGates: ClientReleaseGate[];
     }
-  | {
-      status: "blocked";
-      reasons: string[];
-    }
+  | { status: "blocked"; reasons: string[] }
   | { status: "unavailable" };
 
 const ACCEPTANCE_PLATFORMS = ["WEB", "IOS", "ANDROID"] as const;
@@ -155,15 +250,45 @@ const EVIDENCE_STATUSES = ["PASSED", "FAILED", "NOT_APPLICABLE"] as const;
 const CLIENT_GATE_STATUSES = ["COMPLETE", "PENDING", "REJECTED"] as const;
 const DEFECT_STATUSES = ["OPEN", "RESOLVED"] as const;
 
-function validText(value: unknown, maximum: number) {
+function validText(value: unknown, maximum = 200) {
   if (typeof value !== "string") return false;
   const normalized = value.trim();
   return (
     normalized.length > 0 &&
     normalized.length <= maximum &&
-    !normalized.includes("\0") &&
-    !normalized.includes("\r") &&
-    !normalized.includes("\n")
+    !/[\0\r\n]/.test(normalized)
+  );
+}
+
+function validRevision(value: unknown) {
+  return (
+    typeof value === "number" &&
+    Number.isSafeInteger(value) &&
+    value > 0
+  );
+}
+
+function validDigest(value: unknown) {
+  return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
+}
+
+function validDate(value: unknown) {
+  return value instanceof Date && Number.isFinite(value.getTime());
+}
+
+function freshWindow(
+  issuedAt: Date,
+  expiresAt: Date,
+  now: Date,
+  maximumAge = ACCEPTANCE_EVIDENCE_MAX_AGE_MS,
+) {
+  return (
+    validDate(issuedAt) &&
+    validDate(expiresAt) &&
+    issuedAt.getTime() <= now.getTime() &&
+    expiresAt.getTime() > now.getTime() &&
+    expiresAt.getTime() > issuedAt.getTime() &&
+    expiresAt.getTime() - issuedAt.getTime() <= maximumAge
   );
 }
 
@@ -171,13 +296,11 @@ function validCandidate(candidate: CandidateIdentity) {
   if (typeof candidate !== "object" || candidate === null) return false;
   const buildNumber = Number(candidate.buildNumber);
   return (
-    typeof candidate.releaseCommit === "string" &&
+    validText(candidate.candidateId) &&
+    validRevision(candidate.revision) &&
     /^[a-f0-9]{40}$/.test(candidate.releaseCommit) &&
-    typeof candidate.deploymentId === "string" &&
     /^dpl_[A-Za-z0-9]+$/.test(candidate.deploymentId) &&
-    typeof candidate.appVersion === "string" &&
     /^\d+\.\d+\.\d+$/.test(candidate.appVersion) &&
-    typeof candidate.buildNumber === "string" &&
     /^[1-9]\d*$/.test(candidate.buildNumber) &&
     Number.isSafeInteger(buildNumber)
   );
@@ -188,202 +311,433 @@ function completeUniqueSet<T extends string>(
   required: readonly T[],
 ) {
   return (
-    Array.isArray(actual) &&
-    Array.isArray(required) &&
     new Set(actual).size === actual.length &&
     actual.length === required.length &&
     required.every((value) => actual.includes(value))
   );
 }
 
-function validWaiver(defect: AcceptanceDefect, now: Date) {
-  if (!defect.waiver) return false;
-  const maximumExpiry = now.getTime() + 30 * 24 * 60 * 60 * 1000;
+function exactCandidate(
+  value: {
+    candidateId: string;
+    candidateRevision: number;
+    releaseCommit?: string;
+  },
+  candidate: CandidateIdentity,
+) {
   return (
-    typeof defect.waiver === "object" &&
-    validText(defect.waiver.owner, 160) &&
-    validText(defect.waiver.reason, 500) &&
-    defect.waiver.expiresAt instanceof Date &&
-    Number.isFinite(defect.waiver.expiresAt.getTime()) &&
-    defect.waiver.expiresAt.getTime() > now.getTime() &&
-    defect.waiver.expiresAt.getTime() <= maximumExpiry
+    value.candidateId === candidate.candidateId &&
+    value.candidateRevision === candidate.revision &&
+    (value.releaseCommit === undefined ||
+      value.releaseCommit === candidate.releaseCommit)
   );
 }
 
-function evidenceBlockers({
-  candidate,
-  evidence,
-  commercialModel,
-}: {
-  candidate: CandidateIdentity;
-  evidence: readonly AcceptanceEvidence[];
-  commercialModel: CommercialModel;
-}) {
-  const blockers: string[] = [];
-  const evidenceDomains = evidence.map((item) => item.domain);
+function validCandidateEvidenceShape(value: CandidateEvidence) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    validText(value.evidenceId) &&
+    validText(value.candidateId) &&
+    validRevision(value.candidateRevision) &&
+    typeof value.releaseCommit === "string" &&
+    typeof value.deploymentId === "string" &&
+    typeof value.appVersion === "string" &&
+    typeof value.buildNumber === "string" &&
+    validText(value.standardCiRunId) &&
+    validText(value.nativeCiRunId) &&
+    validDigest(value.standardArtifactDigest) &&
+    validDigest(value.nativeArtifactDigest) &&
+    validDate(value.issuedAt) &&
+    validDate(value.expiresAt) &&
+    typeof value.exactHead === "boolean" &&
+    typeof value.standardCiPassed === "boolean" &&
+    typeof value.nativeCiPassed === "boolean" &&
+    typeof value.deploymentReady === "boolean" &&
+    typeof value.serverResolved === "boolean"
+  );
+}
 
-  if (
-    !completeUniqueSet(evidenceDomains, ACCEPTANCE_DOMAINS) ||
-    evidence.some(
-      (item) =>
-        item.domain === "COMMERCIAL_ENTITLEMENTS" &&
-        commercialModel === "FREE" &&
-        item.status !== "NOT_APPLICABLE",
-    )
-  ) {
-    blockers.push("acceptance-domain-coverage");
-  }
+function validAcceptanceEvidenceShape(value: AcceptanceEvidence) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    validText(value.evidenceId) &&
+    validRevision(value.revision) &&
+    ACCEPTANCE_DOMAINS.includes(value.domain) &&
+    EVIDENCE_STATUSES.includes(value.status) &&
+    validText(value.candidateId) &&
+    validRevision(value.candidateRevision) &&
+    typeof value.releaseCommit === "string" &&
+    (value.workflowRunId === null || validText(value.workflowRunId)) &&
+    (value.jobId === null || validText(value.jobId)) &&
+    typeof value.executable === "boolean" &&
+    (value.artifactDigest === null || validDigest(value.artifactDigest)) &&
+    Array.isArray(value.platforms) &&
+    new Set(value.platforms).size === value.platforms.length &&
+    value.platforms.every((platform) =>
+      ACCEPTANCE_PLATFORMS.includes(platform),
+    ) &&
+    typeof value.fictionalDataOnly === "boolean" &&
+    validDate(value.issuedAt) &&
+    validDate(value.expiresAt) &&
+    typeof value.serverResolved === "boolean"
+  );
+}
 
-  for (const item of evidence) {
-    const commercialNotApplicable =
-      commercialModel === "FREE" &&
-      item.domain === "COMMERCIAL_ENTITLEMENTS" &&
-      item.status === "NOT_APPLICABLE";
-    const passed =
-      item.status === "PASSED" ||
-      (commercialNotApplicable && item.releaseCommit === candidate.releaseCommit);
-    const platforms = REQUIRED_PLATFORM_COVERAGE[item.domain];
-    if (!passed) blockers.push(`domain:${item.domain}:status`);
-    if (item.releaseCommit !== candidate.releaseCommit) {
-      blockers.push(`domain:${item.domain}:candidate`);
-    }
-    if (!commercialNotApplicable) {
-      if (
-        item.executable !== true ||
-        typeof item.artifactDigest !== "string" ||
-        !/^[a-f0-9]{64}$/.test(item.artifactDigest)
-      ) {
-        blockers.push(`domain:${item.domain}:executable-evidence`);
-      }
-      if (!platforms.every((platform) => item.platforms.includes(platform))) {
-        blockers.push(`domain:${item.domain}:platform-coverage`);
-      }
-      if (item.fictionalDataOnly !== true) {
-        blockers.push(`domain:${item.domain}:fixture-safety`);
-      }
-    } else if (
-      item.executable !== false ||
-      item.artifactDigest !== null ||
-      item.platforms.length !== 0 ||
-      item.fictionalDataOnly !== false
-    ) {
-      blockers.push(`domain:${item.domain}:not-applicable-shape`);
-    }
-  }
+function validBoundaryShape(value: BoundaryEvidence) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    ACCEPTANCE_BOUNDARIES.includes(value.boundary) &&
+    validText(value.evidenceId) &&
+    validText(value.candidateId) &&
+    validRevision(value.candidateRevision) &&
+    typeof value.releaseCommit === "string" &&
+    validDigest(value.artifactDigest) &&
+    validDate(value.issuedAt) &&
+    validDate(value.expiresAt) &&
+    typeof value.passed === "boolean" &&
+    typeof value.serverResolved === "boolean"
+  );
+}
 
-  return blockers;
+function validCleanupShape(value: CleanupEvidence) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    REQUIRED_CLEANUP_SCOPES.includes(value.scope) &&
+    validText(value.evidenceId) &&
+    validText(value.candidateId) &&
+    validRevision(value.candidateRevision) &&
+    typeof value.releaseCommit === "string" &&
+    validDigest(value.artifactDigest) &&
+    validDate(value.issuedAt) &&
+    validDate(value.expiresAt) &&
+    typeof value.completed === "boolean" &&
+    typeof value.serverResolved === "boolean"
+  );
+}
+
+function validDefectShape(value: AcceptanceDefect) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    validText(value.id) &&
+    validRevision(value.revision) &&
+    validText(value.candidateId) &&
+    validRevision(value.candidateRevision) &&
+    typeof value.releaseCommit === "string" &&
+    [1, 2, 3, 4].includes(value.severity) &&
+    DEFECT_STATUSES.includes(value.status) &&
+    (value.resolution === null ||
+      (typeof value.resolution === "object" &&
+        value.resolution !== null &&
+        validText(value.resolution.defectId) &&
+        validRevision(value.resolution.defectRevision) &&
+        validText(value.resolution.candidateId) &&
+        validRevision(value.resolution.candidateRevision) &&
+        typeof value.resolution.releaseCommit === "string" &&
+        validDigest(value.resolution.artifactDigest) &&
+        validDate(value.resolution.verifiedAt) &&
+        typeof value.resolution.resolved === "boolean" &&
+        typeof value.resolution.serverResolved === "boolean")) &&
+    (value.waiver === null ||
+      (typeof value.waiver === "object" &&
+        value.waiver !== null &&
+        validText(value.waiver.defectId) &&
+        validRevision(value.waiver.defectRevision) &&
+        validText(value.waiver.candidateId) &&
+        validRevision(value.waiver.candidateRevision) &&
+        validText(value.waiver.authorityId) &&
+        validText(value.waiver.reason, 500) &&
+        validDate(value.waiver.issuedAt) &&
+        validDate(value.waiver.expiresAt) &&
+        typeof value.waiver.approved === "boolean" &&
+        typeof value.waiver.serverRecorded === "boolean"))
+  );
+}
+
+function validClientGateShape(value: ClientGateEvidence) {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    CLIENT_RELEASE_GATES.includes(value.gate) &&
+    CLIENT_GATE_STATUSES.includes(value.status) &&
+    (value.authority === null ||
+      (typeof value.authority === "object" &&
+        value.authority !== null &&
+        CLIENT_RELEASE_GATES.includes(value.authority.gate) &&
+        validText(value.authority.candidateId) &&
+        validRevision(value.authority.candidateRevision) &&
+        validText(value.authority.authorityId) &&
+        validRevision(value.authority.decisionRevision) &&
+        ["COMPLETE", "REJECTED"].includes(value.authority.decision) &&
+        validDate(value.authority.decidedAt) &&
+        typeof value.authority.serverRecorded === "boolean"))
+  );
+}
+
+function validCommercialShape(value: CommercialSelectionEvidence | null) {
+  return (
+    value === null ||
+    (typeof value === "object" &&
+      validText(value.decisionId) &&
+      validRevision(value.decisionRevision) &&
+      validText(value.candidateId) &&
+      validRevision(value.candidateRevision) &&
+      ["FREE", "SUBSCRIPTION"].includes(value.model) &&
+      validText(value.authorityId) &&
+      validDate(value.decidedAt) &&
+      typeof value.approved === "boolean" &&
+      typeof value.serverRecorded === "boolean")
+  );
 }
 
 export function decideFullSystemAcceptance({
   candidate,
+  candidateEvidence,
   evidence,
   commercialModel,
+  commercialSelection,
   defects,
   boundaries,
-  completedCleanupScopes,
+  cleanupEvidence,
   clientGates,
   now,
 }: {
   candidate: CandidateIdentity;
+  candidateEvidence: CandidateEvidence;
   evidence: readonly AcceptanceEvidence[];
   commercialModel: CommercialModel;
+  commercialSelection: CommercialSelectionEvidence | null;
   defects: readonly AcceptanceDefect[];
-  boundaries: AcceptanceBoundaries;
-  completedCleanupScopes: readonly CleanupScope[];
+  boundaries: readonly BoundaryEvidence[];
+  cleanupEvidence: readonly CleanupEvidence[];
   clientGates: readonly ClientGateEvidence[];
   now: Date;
 }): FullSystemAcceptanceDecision {
   if (
     !validCandidate(candidate) ||
-    !(now instanceof Date) ||
-    !Number.isFinite(now.getTime()) ||
+    !validDate(now) ||
     !COMMERCIAL_MODELS.includes(commercialModel) ||
+    !validCandidateEvidenceShape(candidateEvidence) ||
+    !validCommercialShape(commercialSelection) ||
     !Array.isArray(evidence) ||
+    !evidence.every(validAcceptanceEvidenceShape) ||
     !Array.isArray(defects) ||
-    !Array.isArray(completedCleanupScopes) ||
+    !defects.every(validDefectShape) ||
+    !Array.isArray(boundaries) ||
+    !boundaries.every(validBoundaryShape) ||
+    !Array.isArray(cleanupEvidence) ||
+    !cleanupEvidence.every(validCleanupShape) ||
     !Array.isArray(clientGates) ||
-    typeof boundaries !== "object" ||
-    boundaries === null ||
-    !evidence.every(
-      (item) =>
-        typeof item === "object" &&
-        item !== null &&
-        ACCEPTANCE_DOMAINS.includes(item.domain) &&
-        EVIDENCE_STATUSES.includes(item.status) &&
-        typeof item.releaseCommit === "string" &&
-        typeof item.executable === "boolean" &&
-        (typeof item.artifactDigest === "string" ||
-          item.artifactDigest === null) &&
-        typeof item.fictionalDataOnly === "boolean" &&
-        Array.isArray(item.platforms) &&
-        new Set(item.platforms).size === item.platforms.length &&
-        item.platforms.every(
-          (platform: unknown) =>
-            typeof platform === "string" &&
-            ACCEPTANCE_PLATFORMS.includes(
-              platform as (typeof ACCEPTANCE_PLATFORMS)[number],
-            ),
-        ),
-    ) ||
-    clientGates.some(
-      (gate) =>
-        typeof gate !== "object" ||
-        gate === null ||
-        !CLIENT_RELEASE_GATES.includes(gate.gate) ||
-        !CLIENT_GATE_STATUSES.includes(gate.status),
-    ) ||
+    !clientGates.every(validClientGateShape) ||
     !completeUniqueSet(
       clientGates.map((gate) => gate.gate),
       CLIENT_RELEASE_GATES,
-    ) ||
-    !completeUniqueSet(
-      Object.keys(boundaries) as (keyof AcceptanceBoundaries)[],
-      ACCEPTANCE_BOUNDARIES,
-    ) ||
-    Object.values(boundaries).some((value) => typeof value !== "boolean") ||
-    defects.some(
-      (defect) =>
-        typeof defect !== "object" ||
-        defect === null ||
-        !validText(defect.id, 160) ||
-        ![1, 2, 3, 4].includes(defect.severity) ||
-        !DEFECT_STATUSES.includes(defect.status) ||
-        (defect.waiver !== null &&
-          (typeof defect.waiver !== "object" ||
-            defect.waiver === null ||
-            !validText(defect.waiver.owner, 160) ||
-            !validText(defect.waiver.reason, 500) ||
-            !(defect.waiver.expiresAt instanceof Date) ||
-            !Number.isFinite(defect.waiver.expiresAt.getTime()))),
     )
   ) {
     return { status: "unavailable" };
   }
 
-  const reasons = evidenceBlockers({
-    candidate,
-    evidence,
-    commercialModel,
-  });
-
-  if (commercialModel === "UNDECIDED") reasons.push("commercial-model");
+  const reasons: string[] = [];
+  const candidateProofMatches =
+    exactCandidate(candidateEvidence, candidate) &&
+    candidateEvidence.releaseCommit === candidate.releaseCommit &&
+    candidateEvidence.deploymentId === candidate.deploymentId &&
+    candidateEvidence.appVersion === candidate.appVersion &&
+    candidateEvidence.buildNumber === candidate.buildNumber;
   if (
-    !completeUniqueSet(completedCleanupScopes, REQUIRED_CLEANUP_SCOPES)
+    !candidateProofMatches ||
+    !freshWindow(candidateEvidence.issuedAt, candidateEvidence.expiresAt, now) ||
+    candidateEvidence.exactHead !== true ||
+    candidateEvidence.standardCiPassed !== true ||
+    candidateEvidence.nativeCiPassed !== true ||
+    candidateEvidence.deploymentReady !== true ||
+    candidateEvidence.serverResolved !== true
+  ) {
+    reasons.push("candidate-evidence");
+  }
+
+  if (
+    !completeUniqueSet(
+      evidence.map((item) => item.domain),
+      ACCEPTANCE_DOMAINS,
+    )
+  ) {
+    reasons.push("acceptance-domain-coverage");
+  }
+  for (const item of evidence) {
+    const domain = item.domain as AcceptanceDomain;
+    const notApplicable =
+      commercialModel === "FREE" &&
+      domain === "COMMERCIAL_ENTITLEMENTS" &&
+      item.status === "NOT_APPLICABLE";
+    if (!exactCandidate(item, candidate)) {
+      reasons.push(`domain:${domain}:candidate`);
+    }
+    if (
+      !freshWindow(item.issuedAt, item.expiresAt, now) ||
+      item.serverResolved !== true
+    ) {
+      reasons.push(`domain:${domain}:authority`);
+    }
+    if (notApplicable) {
+      if (
+        item.executable !== false ||
+        item.artifactDigest !== null ||
+        item.workflowRunId !== null ||
+        item.jobId !== null ||
+        item.platforms.length !== 0 ||
+        item.fictionalDataOnly !== false
+      ) {
+        reasons.push(`domain:${domain}:not-applicable-shape`);
+      }
+      continue;
+    }
+    if (item.status !== "PASSED") reasons.push(`domain:${domain}:status`);
+    if (
+      item.executable !== true ||
+      !validText(item.workflowRunId) ||
+      !validText(item.jobId) ||
+      !validDigest(item.artifactDigest)
+    ) {
+      reasons.push(`domain:${domain}:executable-evidence`);
+    }
+    if (
+      !REQUIRED_PLATFORM_COVERAGE[domain].every((platform) =>
+        item.platforms.includes(platform),
+      )
+    ) {
+      reasons.push(`domain:${domain}:platform-coverage`);
+    }
+    if (item.fictionalDataOnly !== true) {
+      reasons.push(`domain:${domain}:fixture-safety`);
+    }
+  }
+
+  if (
+    !completeUniqueSet(
+      boundaries.map((item) => item.boundary),
+      ACCEPTANCE_BOUNDARIES,
+    )
+  ) {
+    reasons.push("acceptance-boundary-coverage");
+  }
+  for (const item of boundaries) {
+    if (
+      !exactCandidate(item, candidate) ||
+      !freshWindow(item.issuedAt, item.expiresAt, now) ||
+      item.passed !== true ||
+      item.serverResolved !== true
+    ) {
+      reasons.push(`boundary:${item.boundary}`);
+    }
+  }
+
+  if (
+    !completeUniqueSet(
+      cleanupEvidence.map((item) => item.scope),
+      REQUIRED_CLEANUP_SCOPES,
+    )
   ) {
     reasons.push("lifecycle-cleanup");
   }
-  for (const [boundary, passed] of Object.entries(boundaries)) {
-    if (!passed) reasons.push(`boundary:${boundary}`);
+  for (const item of cleanupEvidence) {
+    if (
+      !exactCandidate(item, candidate) ||
+      !freshWindow(item.issuedAt, item.expiresAt, now) ||
+      item.completed !== true ||
+      item.serverResolved !== true
+    ) {
+      reasons.push(`cleanup:${item.scope}`);
+    }
   }
+
   for (const defect of defects) {
-    if (defect.status === "RESOLVED") continue;
-    if (defect.severity <= 2) {
+    if (!exactCandidate(defect, candidate)) {
+      reasons.push(`defect:${defect.id}:candidate`);
+      continue;
+    }
+    if (defect.status === "RESOLVED") {
+      const proof = defect.resolution;
+      if (
+        defect.waiver !== null ||
+        !proof ||
+        proof.defectId !== defect.id ||
+        proof.defectRevision !== defect.revision ||
+        !exactCandidate(proof, candidate) ||
+        proof.resolved !== true ||
+        proof.serverResolved !== true ||
+        !validDate(proof.verifiedAt) ||
+        proof.verifiedAt.getTime() > now.getTime()
+      ) {
+        reasons.push(`defect:${defect.id}:resolution`);
+      }
+      continue;
+    }
+    if (defect.resolution !== null || defect.severity <= 2) {
       reasons.push(`defect:${defect.id}:severity-${defect.severity}`);
-    } else if (!validWaiver(defect, now)) {
+      continue;
+    }
+    const waiver = defect.waiver;
+    if (
+      !waiver ||
+      waiver.defectId !== defect.id ||
+      waiver.defectRevision !== defect.revision ||
+      !exactCandidate(waiver, candidate) ||
+      !freshWindow(
+        waiver.issuedAt,
+        waiver.expiresAt,
+        now,
+        CLIENT_DECISION_MAX_AGE_MS,
+      ) ||
+      waiver.approved !== true ||
+      waiver.serverRecorded !== true
+    ) {
       reasons.push(`defect:${defect.id}:waiver`);
     }
   }
+
+  if (commercialModel === "UNDECIDED") {
+    reasons.push("commercial-model");
+    if (commercialSelection !== null) reasons.push("commercial-selection");
+  } else if (
+    !commercialSelection ||
+    commercialSelection.model !== commercialModel ||
+    !exactCandidate(commercialSelection, candidate) ||
+    !validDate(commercialSelection.decidedAt) ||
+    commercialSelection.decidedAt.getTime() > now.getTime() ||
+    now.getTime() - commercialSelection.decidedAt.getTime() >
+      CLIENT_DECISION_MAX_AGE_MS ||
+    commercialSelection.approved !== true ||
+    commercialSelection.serverRecorded !== true
+  ) {
+    reasons.push("commercial-selection");
+  }
+
   for (const gate of clientGates) {
+    if (gate.status === "PENDING") {
+      if (gate.authority !== null) {
+        reasons.push(`client-gate:${gate.gate}:authority`);
+      }
+      continue;
+    }
+    const authority = gate.authority;
+    if (
+      !authority ||
+      authority.gate !== gate.gate ||
+      authority.decision !== gate.status ||
+      !exactCandidate(authority, candidate) ||
+      !validDate(authority.decidedAt) ||
+      authority.decidedAt.getTime() > now.getTime() ||
+      now.getTime() - authority.decidedAt.getTime() >
+        CLIENT_DECISION_MAX_AGE_MS ||
+      authority.serverRecorded !== true
+    ) {
+      reasons.push(`client-gate:${gate.gate}:authority`);
+    }
     if (gate.status === "REJECTED") {
       reasons.push(`client-gate:${gate.gate}:rejected`);
     }
