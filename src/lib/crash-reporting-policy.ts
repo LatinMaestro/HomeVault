@@ -1,6 +1,9 @@
+import { createHash } from "node:crypto";
+
 export const CRASH_REPORTING_POLICY_VERSION = "homevault-crash-reporting-v1";
 export const CRASH_REPORT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 export const CRASH_PROCESSOR_SUBJECT_MAX_AGE_MS = 30 * 24 * 60 * 60 * 1000;
+export const CRASH_EVIDENCE_MAX_AGE_MS = 10 * 60 * 1000;
 export const CRASH_REPORT_RETENTION_MAX_DAYS = 14;
 export const CRASH_REPORT_MAX_MESSAGE_CHARACTERS = 500;
 export const CRASH_REPORT_MAX_STACK_FRAMES = 80;
@@ -30,6 +33,8 @@ export type CrashBreadcrumb = (typeof CRASH_BREADCRUMBS)[number];
 export type CrashPlatform = "IOS" | "ANDROID" | "WEB";
 
 export type CrashConsent = {
+  id: string;
+  revision: number;
   installationId: string;
   processorSubjectId: string;
   enabled: boolean;
@@ -38,6 +43,36 @@ export type CrashConsent = {
   processorSubjectExpiresAt: Date;
   consentedAt: Date;
   updatedAt: Date;
+};
+
+export type CrashInstallationEvidence = {
+  consentId: string;
+  consentRevision: number;
+  installationId: string;
+  processorSubjectId: string;
+  subjectMappingRevision: number;
+  uploadTokenId: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  serverResolved: boolean;
+};
+
+export type CrashRedactionEvidence = {
+  eventId: string;
+  processorSubjectId: string;
+  releaseCommit: string;
+  inputDigest: string;
+  canonicalDigest: string;
+  policyVersion: typeof CRASH_REPORTING_POLICY_VERSION;
+  redactedAt: Date;
+  serverRecomputed: boolean;
+  containsUserIdentity: boolean;
+  containsHouseholdIdentifier: boolean;
+  containsRecordContent: boolean;
+  containsFileNameOrUrl: boolean;
+  containsRequestOrResponseBody: boolean;
+  containsCredentialsOrTokens: boolean;
+  containsLocationOrContacts: boolean;
 };
 
 export type CrashStackFrame = {
@@ -75,12 +110,21 @@ export type CrashReportDraft = {
 };
 
 export type CrashProviderGate = {
+  approvalId: string;
+  approvalVersion: number;
+  providerId: string;
+  projectId: string;
+  approvedAt: Date;
+  expiresAt: Date;
   providerApproved: boolean;
   accountApproved: boolean;
   costApproved: boolean;
   privacyApproved: boolean;
   approvedRegionConfigured: boolean;
   dataProcessingAgreementApproved: boolean;
+  subprocessorInventoryApproved: boolean;
+  deletionSupported: boolean;
+  credentialsServerHeld: boolean;
   retentionDays: number;
   trackingDisabled: boolean;
   advertisingDisabled: boolean;
@@ -91,6 +135,17 @@ export type CrashProviderGate = {
   requestBodyCaptureDisabled: boolean;
   deviceFingerprintingDisabled: boolean;
   providerTrainingDisabled: boolean;
+};
+
+export type CrashCleanupEvidence = {
+  scope: "OPT_OUT" | "INSTALLATION" | "ACCOUNT";
+  installationId: string;
+  processorSubjectId: string;
+  consentId: string;
+  consentRevision: number;
+  issuedAt: Date;
+  expiresAt: Date;
+  serverAuthorized: boolean;
 };
 
 export type CrashProviderGateReason =
@@ -140,6 +195,13 @@ export type CrashCleanupDecision =
       revokeInstallationUploadToken: true;
       purgeLocalCrashQueue: true;
       deleteProcessorEventsBySubject: true;
+      deleteProviderBackups: true;
+      deleteDeliveryQueues: true;
+      deleteDeduplicationKeys: true;
+      deleteServerCaches: true;
+      deleteDeviceOfflineCopies: true;
+      deleteSourceMapAccessGrants: true;
+      redactSensitiveAuditPayloads: true;
       deleteSubjectMapping: true;
       disableFutureCapture: true;
       deleteOperationalAuditAfter: Date;
@@ -168,16 +230,84 @@ function uniqueValues<T>(values: readonly T[]) {
   return new Set(values).size === values.length;
 }
 
+function digest(value: unknown) {
+  return createHash("sha256").update(JSON.stringify(value)).digest("hex");
+}
+
+function canonicalReportInput(report: CrashReportDraft) {
+  return {
+    id: report.id,
+    processorSubjectId: report.processorSubjectId,
+    category: report.category,
+    platform: report.platform,
+    appVersion: report.appVersion.trim(),
+    buildNumber: report.buildNumber.trim(),
+    releaseCommit: report.releaseCommit,
+    occurredAt: validDate(report.occurredAt)
+      ? report.occurredAt.toISOString()
+      : "INVALID",
+    errorCode: report.errorCode.trim(),
+    redactedMessage: report.redactedMessage?.trim() ?? null,
+    stackFrames: report.stackFrames.map((frame) => ({
+      module: frame.module.trim(),
+      symbol: frame.symbol.trim(),
+      line: frame.line,
+      column: frame.column,
+      inApplication: frame.inApplication,
+    })),
+    breadcrumbs: [...report.breadcrumbs],
+    networkAvailable: report.networkAvailable,
+    memoryPressure: report.memoryPressure,
+    offlineMode: report.offlineMode,
+  };
+}
+
+export const crashReportingBindings = {
+  reportInput: (report: CrashReportDraft) => digest(canonicalReportInput(report)),
+  canonicalReport: (report: CrashReportDraft) =>
+    digest({
+      ...canonicalReportInput(report),
+      policyVersion: CRASH_REPORTING_POLICY_VERSION,
+    }),
+};
+
 function providerGateReason(
   gate: CrashProviderGate,
+  expectedProviderId: string,
+  expectedProjectId: string,
+  now: Date,
 ): CrashProviderGateReason | null {
   if (typeof gate !== "object" || gate === null) return "provider";
+  if (
+    !validText(gate.approvalId, 200) ||
+    !Number.isInteger(gate.approvalVersion) ||
+    gate.approvalVersion < 1 ||
+    !validText(gate.providerId, 200) ||
+    !validText(gate.projectId, 200) ||
+    gate.providerId !== expectedProviderId ||
+    gate.projectId !== expectedProjectId ||
+    !validDate(gate.approvedAt) ||
+    !validDate(gate.expiresAt) ||
+    gate.approvedAt > now ||
+    gate.expiresAt <= now ||
+    gate.expiresAt.getTime() - gate.approvedAt.getTime() >
+      30 * 24 * 60 * 60 * 1000
+  ) {
+    return "provider";
+  }
   if (gate.providerApproved !== true) return "provider";
   if (gate.accountApproved !== true) return "account";
   if (gate.costApproved !== true) return "cost";
   if (gate.privacyApproved !== true) return "privacy";
   if (gate.approvedRegionConfigured !== true) return "region";
   if (gate.dataProcessingAgreementApproved !== true) return "dpa";
+  if (
+    gate.subprocessorInventoryApproved !== true ||
+    gate.deletionSupported !== true ||
+    gate.credentialsServerHeld !== true
+  ) {
+    return "privacy";
+  }
   if (
     !Number.isInteger(gate.retentionDays) ||
     gate.retentionDays < 1 ||
@@ -262,24 +392,89 @@ function validReport(report: CrashReportDraft) {
   );
 }
 
+function validInstallationEvidence({
+  evidence,
+  consent,
+  now,
+}: {
+  evidence: CrashInstallationEvidence;
+  consent: CrashConsent;
+  now: Date;
+}) {
+  return (
+    typeof evidence === "object" &&
+    evidence !== null &&
+    evidence.consentId === consent.id &&
+    evidence.consentRevision === consent.revision &&
+    evidence.installationId === consent.installationId &&
+    evidence.processorSubjectId === consent.processorSubjectId &&
+    Number.isInteger(evidence.subjectMappingRevision) &&
+    evidence.subjectMappingRevision >= 1 &&
+    validText(evidence.uploadTokenId, 200) &&
+    validDate(evidence.issuedAt) &&
+    validDate(evidence.expiresAt) &&
+    evidence.issuedAt <= now &&
+    evidence.expiresAt > now &&
+    evidence.expiresAt.getTime() - evidence.issuedAt.getTime() <=
+      CRASH_EVIDENCE_MAX_AGE_MS &&
+    evidence.serverResolved === true
+  );
+}
+
+function validRedactionEvidence({
+  evidence,
+  report,
+  now,
+}: {
+  evidence: CrashRedactionEvidence;
+  report: CrashReportDraft;
+  now: Date;
+}) {
+  return (
+    typeof evidence === "object" &&
+    evidence !== null &&
+    evidence.eventId === report.id &&
+    evidence.processorSubjectId === report.processorSubjectId &&
+    evidence.releaseCommit === report.releaseCommit &&
+    evidence.inputDigest === crashReportingBindings.reportInput(report) &&
+    evidence.canonicalDigest ===
+      crashReportingBindings.canonicalReport(report) &&
+    evidence.canonicalDigest === report.canonicalDigest &&
+    evidence.policyVersion === CRASH_REPORTING_POLICY_VERSION &&
+    validDate(evidence.redactedAt) &&
+    evidence.redactedAt >= report.occurredAt &&
+    evidence.redactedAt <= now &&
+    now.getTime() - evidence.redactedAt.getTime() <=
+      CRASH_EVIDENCE_MAX_AGE_MS &&
+    evidence.serverRecomputed === true &&
+    evidence.containsUserIdentity === false &&
+    evidence.containsHouseholdIdentifier === false &&
+    evidence.containsRecordContent === false &&
+    evidence.containsFileNameOrUrl === false &&
+    evidence.containsRequestOrResponseBody === false &&
+    evidence.containsCredentialsOrTokens === false &&
+    evidence.containsLocationOrContacts === false
+  );
+}
+
 export function decideCrashCapture({
   consent,
   report,
   providerGate,
-  installationIdServerVerified,
-  processorSubjectServerVerified,
-  canonicalRedactionServerVerified,
-  canonicalDigestServerVerified,
+  expectedProviderId,
+  expectedProjectId,
+  installationEvidence,
+  redactionEvidence,
   existingEvent,
   now,
 }: {
   consent: CrashConsent;
   report: CrashReportDraft;
   providerGate: CrashProviderGate;
-  installationIdServerVerified: boolean;
-  processorSubjectServerVerified: boolean;
-  canonicalRedactionServerVerified: boolean;
-  canonicalDigestServerVerified: boolean;
+  expectedProviderId: string;
+  expectedProjectId: string;
+  installationEvidence: CrashInstallationEvidence;
+  redactionEvidence: CrashRedactionEvidence;
   existingEvent?: {
     id: string;
     processorSubjectId: string;
@@ -290,8 +485,13 @@ export function decideCrashCapture({
 }): CrashCaptureDecision {
   if (
     !validDate(now) ||
+    !validText(expectedProviderId, 200) ||
+    !validText(expectedProjectId, 200) ||
     typeof consent !== "object" ||
     consent === null ||
+    !validText(consent.id, 200) ||
+    !Number.isInteger(consent.revision) ||
+    consent.revision < 1 ||
     !validText(consent.installationId, 200) ||
     !validText(consent.processorSubjectId, 256) ||
     !validDate(consent.processorSubjectIssuedAt) ||
@@ -315,17 +515,20 @@ export function decideCrashCapture({
   if (consent.enabled !== true) return { status: "unavailable" };
   if (
     !validReport(report) ||
-    installationIdServerVerified !== true ||
-    processorSubjectServerVerified !== true ||
+    !validInstallationEvidence({ evidence: installationEvidence, consent, now }) ||
     report.processorSubjectId !== consent.processorSubjectId
   ) {
     return { status: "unavailable" };
   }
-  const gateReason = providerGateReason(providerGate);
+  const gateReason = providerGateReason(
+    providerGate,
+    expectedProviderId,
+    expectedProjectId,
+    now,
+  );
   if (gateReason) return { status: "provider-gate", reason: gateReason };
   if (
-    canonicalRedactionServerVerified !== true ||
-    canonicalDigestServerVerified !== true
+    !validRedactionEvidence({ evidence: redactionEvidence, report, now })
   ) {
     return { status: "unavailable" };
   }
@@ -377,24 +580,60 @@ export function decideCrashCapture({
 }
 
 export function decideCrashCleanup({
-  scope,
+  evidence,
+  consent,
+  expectedInstallationId,
+  expectedProcessorSubjectId,
   now,
 }: {
-  scope: "OPT_OUT" | "INSTALLATION" | "ACCOUNT";
+  evidence: CrashCleanupEvidence;
+  consent: CrashConsent;
+  expectedInstallationId: string;
+  expectedProcessorSubjectId: string;
   now: Date;
 }): CrashCleanupDecision {
   if (
-    !CRASH_CLEANUP_SCOPES.includes(scope) ||
+    typeof evidence !== "object" ||
+    evidence === null ||
+    typeof consent !== "object" ||
+    consent === null ||
+    !validText(consent.id, 200) ||
+    !Number.isInteger(consent.revision) ||
+    consent.revision < 1 ||
+    !validText(expectedInstallationId, 200) ||
+    !validText(expectedProcessorSubjectId, 256) ||
+    !CRASH_CLEANUP_SCOPES.includes(evidence.scope) ||
+    evidence.installationId !== expectedInstallationId ||
+    evidence.installationId !== consent.installationId ||
+    evidence.processorSubjectId !== expectedProcessorSubjectId ||
+    evidence.processorSubjectId !== consent.processorSubjectId ||
+    evidence.consentId !== consent.id ||
+    evidence.consentRevision !== consent.revision ||
+    !validDate(evidence.issuedAt) ||
+    !validDate(evidence.expiresAt) ||
+    evidence.issuedAt > now ||
+    evidence.expiresAt <= now ||
+    evidence.expiresAt.getTime() - evidence.issuedAt.getTime() >
+      CRASH_EVIDENCE_MAX_AGE_MS ||
+    evidence.serverAuthorized !== true ||
     !validDate(now)
   ) {
     return { status: "unavailable" };
   }
+  const scope = evidence.scope;
   return {
     status: "cleanup-authorized",
     scope,
     revokeInstallationUploadToken: true,
     purgeLocalCrashQueue: true,
     deleteProcessorEventsBySubject: true,
+    deleteProviderBackups: true,
+    deleteDeliveryQueues: true,
+    deleteDeduplicationKeys: true,
+    deleteServerCaches: true,
+    deleteDeviceOfflineCopies: true,
+    deleteSourceMapAccessGrants: true,
+    redactSensitiveAuditPayloads: true,
     deleteSubjectMapping: true,
     disableFutureCapture: true,
     deleteOperationalAuditAfter: new Date(
