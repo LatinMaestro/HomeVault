@@ -29,6 +29,9 @@ const senderAuthentication = {
   dmarc: "PASS" as const,
   spf: "PASS" as const,
   alignedDomain: "fictional-supplier.example",
+  canonicalContentDigest: "digest-message",
+  envelopeFrom: "sender@fictional-supplier.example",
+  headerFrom: "sender@fictional-supplier.example",
 };
 
 const attachmentCandidate = {
@@ -41,7 +44,12 @@ const attachmentCandidate = {
 
 const ingressInput = {
   route,
-  routeTokenHashMatchesConstantTime: true,
+  routeMatchEvidence: {
+    routeId: "route-1",
+    homeId: "home-1",
+    routeVersion: 1,
+    tokenHashMatchedConstantTime: true,
+  },
   providerEventId: "event-1",
   internetMessageId: "message-1@example.test",
   canonicalContentDigest: "digest-message",
@@ -56,14 +64,22 @@ const ingressInput = {
   providerApproved: true,
   approvedRegionConfigured: true,
   boundedRetentionConfigured: true,
-  webhookSecretConfigured: true,
-  webhookSignatureValid: true,
   webhookTimestamp: new Date("2026-07-28T05:59:00.000Z"),
+  webhookEvidence: {
+    providerEventId: "event-1",
+    canonicalContentDigest: "digest-message",
+    routeId: "route-1",
+    routeVersion: 1,
+    secretConfigured: true,
+    signatureValid: true,
+    verifiedAt: new Date("2026-07-28T05:59:00.000Z"),
+  },
   now,
 };
 
 const email: QuarantinedEmail = {
   id: "email-1",
+  version: 3,
   homeId: "home-1",
   routeId: "route-1",
   providerEventId: "event-1",
@@ -106,8 +122,12 @@ test("provisions only owner-controlled high-entropy hashed routes", () => {
       currentUserId: "user-1",
       selectedHomeId: "home-1",
       sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "OWNER",
+      membership: {
+        userId: "user-1",
+        homeId: "home-1",
+        role: "OWNER",
+        active: true,
+      },
       credentialsReconfirmed: true,
       generatedTokenEntropyBytes: 32,
       generatedTokenHash: "route-token-hash",
@@ -127,13 +147,62 @@ test("provisions only owner-controlled high-entropy hashed routes", () => {
       currentUserId: "user-1",
       selectedHomeId: "home-1",
       sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "ADULT",
+      membership: {
+        userId: "user-1",
+        homeId: "home-1",
+        role: "ADULT",
+        active: true,
+      },
       credentialsReconfirmed: true,
       generatedTokenEntropyBytes: 32,
       generatedTokenHash: "route-token-hash",
     }),
     { status: "read-only" },
+  );
+});
+
+test("binds route administration to the exact active membership", () => {
+  const input = {
+    currentUserId: "user-1",
+    selectedHomeId: "home-1",
+    sessionVerified: true,
+    membership: {
+      userId: "user-1",
+      homeId: "home-1",
+      role: "OWNER" as const,
+      active: true,
+    },
+    credentialsReconfirmed: true,
+    generatedTokenEntropyBytes: 32,
+    generatedTokenHash: "route-token-hash",
+  };
+  assert.deepEqual(
+    decideEmailRouteProvision({
+      ...input,
+      membership: { ...input.membership, userId: "user-2" },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideEmailRouteProvision({
+      ...input,
+      membership: { ...input.membership, homeId: "home-2" },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideEmailRouteProvision({
+      ...input,
+      membership: { ...input.membership, active: false },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideEmailRouteProvision({
+      ...input,
+      sessionVerified: "true" as unknown as boolean,
+    }),
+    { status: "unavailable" },
   );
 });
 
@@ -157,7 +226,10 @@ test("fails closed for wrong routes, invalid webhooks and replay", () => {
   assert.deepEqual(
     decideEmailIngress({
       ...ingressInput,
-      routeTokenHashMatchesConstantTime: false,
+      routeMatchEvidence: {
+        ...ingressInput.routeMatchEvidence,
+        tokenHashMatchedConstantTime: false,
+      },
     }),
     { status: "unavailable" },
   );
@@ -183,13 +255,23 @@ test("fails closed for wrong routes, invalid webhooks and replay", () => {
     { status: "unavailable" },
   );
   assert.deepEqual(
-    decideEmailIngress({ ...ingressInput, webhookSignatureValid: false }),
+    decideEmailIngress({
+      ...ingressInput,
+      webhookEvidence: {
+        ...ingressInput.webhookEvidence,
+        signatureValid: false,
+      },
+    }),
     { status: "provider-gate", reason: "webhook" },
   );
   assert.deepEqual(
     decideEmailIngress({
       ...ingressInput,
       webhookTimestamp: new Date("2026-07-28T05:54:59.000Z"),
+      webhookEvidence: {
+        ...ingressInput.webhookEvidence,
+        verifiedAt: new Date("2026-07-28T05:54:59.000Z"),
+      },
     }),
     { status: "invalid-message", reason: "replay" },
   );
@@ -204,6 +286,39 @@ test("fails closed for wrong routes, invalid webhooks and replay", () => {
     decideEmailIngress({
       ...ingressInput,
       attachments: undefined as unknown as typeof ingressInput.attachments,
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("rejects substituted route, webhook and sender-authentication evidence", () => {
+  assert.deepEqual(
+    decideEmailIngress({
+      ...ingressInput,
+      routeMatchEvidence: {
+        ...ingressInput.routeMatchEvidence,
+        homeId: "home-2",
+      },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideEmailIngress({
+      ...ingressInput,
+      webhookEvidence: {
+        ...ingressInput.webhookEvidence,
+        canonicalContentDigest: "digest-other",
+      },
+    }),
+    { status: "provider-gate", reason: "webhook" },
+  );
+  assert.deepEqual(
+    decideEmailIngress({
+      ...ingressInput,
+      senderAuthentication: {
+        ...senderAuthentication,
+        headerFrom: "attacker@example.test",
+      },
     }),
     { status: "unavailable" },
   );
@@ -285,6 +400,9 @@ test("marks unauthenticated senders for explicit review without auto-save", () =
       dmarc: "FAIL",
       spf: "NONE",
       alignedDomain: null,
+      canonicalContentDigest: "digest-message",
+      envelopeFrom: "sender@fictional-supplier.example",
+      headerFrom: "sender@fictional-supplier.example",
     },
   });
   assert.equal(decision.status, "quarantine-authorized");
@@ -411,8 +529,24 @@ test("requires authorised review and explicit final save", () => {
     currentUserId: "user-1",
     selectedHomeId: "home-1",
     sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "ADULT",
+    membership: {
+      userId: "user-1",
+      homeId: "home-1",
+      role: "ADULT",
+      active: true,
+    },
+    reviewGrant: {
+      id: "review-grant-1",
+      userId: "user-1",
+      homeId: "home-1",
+      emailId: "email-1",
+      emailVersion: 3,
+      canonicalContentDigest: "digest-message",
+      issuedAt: new Date("2026-07-28T05:59:00.000Z"),
+      expiresAt: new Date("2026-07-28T06:05:00.000Z"),
+      singleUse: true,
+      consumed: false,
+    },
     email: reviewEmail,
     confirmation: {
       confirmSender: true,
@@ -429,6 +563,9 @@ test("requires authorised review and explicit final save", () => {
   }
   assert.equal(decision.useNormalRecordActions, true);
   assert.equal(decision.requireExplicitFinalSave, true);
+  assert.equal(decision.requireCompareAndSet, true);
+  assert.equal(decision.expectedEmailVersion, 3);
+  assert.equal(decision.reviewGrantId, "review-grant-1");
   assert.equal(decision.createAutomatically, false);
   assert.equal(decision.runOcrAutomatically, false);
   assert.equal(decision.runAiAutomatically, false);
@@ -440,8 +577,24 @@ test("blocks read-only, cross-property and payment-credential body review", () =
     currentUserId: "user-1",
     selectedHomeId: "home-1",
     sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "OWNER" as const,
+    membership: {
+      userId: "user-1",
+      homeId: "home-1",
+      role: "OWNER" as const,
+      active: true,
+    },
+    reviewGrant: {
+      id: "review-grant-1",
+      userId: "user-1",
+      homeId: "home-1",
+      emailId: "email-1",
+      emailVersion: 3,
+      canonicalContentDigest: "digest-message",
+      issuedAt: new Date("2026-07-28T05:59:00.000Z"),
+      expiresAt: new Date("2026-07-28T06:05:00.000Z"),
+      singleUse: true,
+      consumed: false,
+    },
     email: { ...email, status: "REVIEW_READY" as const },
     confirmation: {
       confirmSender: true,
@@ -452,9 +605,13 @@ test("blocks read-only, cross-property and payment-credential body review", () =
     },
     now,
   };
-  assert.deepEqual(decideEmailReview({ ...input, role: "GUEST" }), {
-    status: "read-only",
-  });
+  assert.deepEqual(
+    decideEmailReview({
+      ...input,
+      membership: { ...input.membership, role: "GUEST" },
+    }),
+    { status: "read-only" },
+  );
   assert.deepEqual(
     decideEmailReview({ ...input, selectedHomeId: "home-2" }),
     { status: "unavailable" },
@@ -489,6 +646,65 @@ test("blocks read-only, cross-property and payment-credential body review", () =
   );
 });
 
+test("rejects substituted, consumed and stale review grants", () => {
+  const input = {
+    currentUserId: "user-1",
+    selectedHomeId: "home-1",
+    sessionVerified: true,
+    membership: {
+      userId: "user-1",
+      homeId: "home-1",
+      role: "OWNER" as const,
+      active: true,
+    },
+    reviewGrant: {
+      id: "review-grant-1",
+      userId: "user-1",
+      homeId: "home-1",
+      emailId: "email-1",
+      emailVersion: 3,
+      canonicalContentDigest: "digest-message",
+      issuedAt: new Date("2026-07-28T05:59:00.000Z"),
+      expiresAt: new Date("2026-07-28T06:05:00.000Z"),
+      singleUse: true,
+      consumed: false,
+    },
+    email: { ...email, status: "REVIEW_READY" as const },
+    confirmation: {
+      confirmSender: true,
+      targetType: "DOCUMENT" as const,
+      title: "Fictional manual",
+      selectedAttachmentIds: ["attachment-1"],
+      includeSanitizedBody: false,
+    },
+    now,
+  };
+  assert.deepEqual(
+    decideEmailReview({
+      ...input,
+      reviewGrant: { ...input.reviewGrant, emailVersion: 2 },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideEmailReview({
+      ...input,
+      reviewGrant: { ...input.reviewGrant, consumed: true },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideEmailReview({
+      ...input,
+      reviewGrant: {
+        ...input.reviewGrant,
+        expiresAt: new Date("2026-07-28T05:59:59.000Z"),
+      },
+    }),
+    { status: "stale" },
+  );
+});
+
 test("cleanup covers routes, messages, objects and retryable provider deletion", () => {
   assert.deepEqual(decideEmailIngestionCleanup({ scope: "EMAIL" }), {
     revokeRoutes: false,
@@ -498,6 +714,12 @@ test("cleanup covers routes, messages, objects and retryable provider deletion",
     deleteAttachmentObjects: true,
     deleteRelationalMetadata: true,
     invalidateReviewSessions: true,
+    deleteProviderCopies: true,
+    deleteProcessorCopies: true,
+    deleteCachesAndDeviceCopies: true,
+    deleteQueuedJobs: true,
+    deleteDedupeKeys: true,
+    removeAuditPayloads: true,
     preserveAcceptedRecordValues: true,
     requireRetryableCleanupLedger: true,
   });
