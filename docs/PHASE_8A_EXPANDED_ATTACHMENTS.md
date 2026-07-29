@@ -1,46 +1,46 @@
 # Phase 8A: Expanded Private Attachments
 
-Status: prepared policy contract; the current one-attachment PDF/JPEG/PNG lifecycle remains unchanged.
+Status: hardened policy contract only. The current one-file PDF/JPEG/PNG production lifecycle remains unchanged.
 
-## Approved Direction
+## Authorisation and evidence
 
-- Replace the single attachment columns with a normalized, additive `DocumentAttachment` relationship only through a reviewed migration.
-- Allow at most 10 attachments per Document, 4 MB per file and 20 MB total.
-- Continue PDF, JPEG and PNG and add HEIC/HEIF only after exact container signature validation, metadata removal, safe decoding/preview handling and physical-device interoperability tests.
-- Keep every original, quarantine object and derived preview private. Provider URLs and storage keys never reach the browser, native extension, widget, export or public-share payload.
-- OWNER and ADULT may add, reorder and delete. CHILD and GUEST remain read-only.
+- Every upload, reorder, read and deletion repeats an exact verified session, active property membership and current Document revision.
+- Roles come only from the current property membership. OWNER and ADULT may mutate; CHILD and GUEST remain read-only.
+- Mutation proofs are signed, single-use, unconsumed, valid for at most 15 minutes and bound to the exact user, property, membership revision, Document revision, request and operation.
+- Upload, gallery and attachment revisions use compare-and-set. Replayed, stale, substituted, malformed or truthy evidence fails closed.
 
-## Upload And Quarantine
+## Files, galleries and privacy
 
-- Re-authorise the verified session, selected property, role and target Document before creating any slot.
-- Bind every operation to an idempotency key, exact property/Document, digest, size and media type.
-- Validate filename, declared type, server-observed signature and size before private upload.
-- Store new objects as `QUARANTINED`; they are not downloadable or visible in the gallery.
-- Sanitize image metadata and never retain location/EXIF data not required for display.
-- A duplicate digest may reuse only an attachment already authorised in the same Document. Do not disclose or deduplicate against another property.
+- A reviewed additive migration may create at most 10 attachments per Document, 4 MB per file and 20 MB total.
+- PDF, JPEG, PNG, HEIC and HEIF require matching filename, media type, exact byte length, SHA-256 digest and server-observed container signature.
+- HEIC/HEIF containers must have a bounded `ftyp` box and an approved major or compatible brand. Safe decoding and polyglot/corruption checks remain mandatory before publication.
+- Duplicate detection is limited to the exact current Document gallery and never reveals another property’s content.
+- Originals, quarantine objects and derivatives stay private. Provider URLs and storage keys never enter client state, exports, logs, extensions, widgets or share payloads.
 
-## Malware Decision
+## Quarantine and malware decision
 
-- Expanded mode remains fail-closed until the approved scanning/safe-decoding path is configured.
-- Clean, signature-valid and metadata-sanitized objects may become `AVAILABLE`.
-- Malicious objects, expired quarantine or files that fail validation are rejected and deleted with their derived previews.
-- Scanner errors stay quarantined for bounded retry. Scanner absence never silently publishes.
-- Provider selection, cost, region, retention, incident response and data-processing terms remain explicit client/privacy gates; this policy chooses no provider.
+- Expanded uploads begin in quarantine and are neither visible nor downloadable.
+- Metadata sanitisation, safe decode and an exact clean result from a separately approved scanner are all mandatory.
+- Scan evidence binds the exact provider, attachment/property/Document, attachment revision, storage key, digest and byte size. It is signed, short-lived and single-use.
+- Scanner errors or absence never publish. Malicious and expired files enter exact-object cleanup with a retryable ledger.
+- Scanner provider, price, region, retention, contract and incident ownership remain client/privacy gates. This contract enables no provider.
 
-## Gallery, Read And Delete
+## Read, mutation and deletion
 
-- Gallery positions update atomically and must contain the exact complete attachment set for one Document.
-- Authorised reads use HomeVault no-store streaming routes and repeat membership checks; direct Blob URLs remain hidden.
-- Individual deletion is idempotent and removes original and derived objects before clearing relational metadata.
-- Document, property and account deletion cover originals, previews, quarantine objects, metadata, pending cleanup and authorised-download invalidation.
-- Failed provider deletion enters a retryable cleanup ledger and blocks a false complete-deletion claim.
+- Reads repeat current session, membership and Document evidence and stream only `AVAILABLE` objects through no-store HomeVault routes.
+- Reordering requires the exact complete attachment set, order digest and gallery revision.
+- Deletion binds the exact attachment and Document revisions and removes originals and every derived object before claiming completion.
+- Document, property, account, aborted-upload and quarantine-expiry cleanup also purges encrypted offline copies, invalidates download grants, revokes guest/public shares and cancels OCR, AI and email jobs.
+- Failed provider cleanup remains visible in a retryable ledger; exports and deletion must not claim completion early.
 
-## Export And Migration
+## Enablement gates
 
-- Export enumerates every attachment and its portable metadata, with authenticated private retrieval; it never emits provider URLs.
-- Migration must preserve the current attachment as position zero, be retry-safe and leave the existing lifecycle usable until cutover is verified.
-- Rollback must not orphan new objects or restore deleted provider URLs into application data.
+No schema, migration, scanner, route, processor, permission or production behaviour is enabled here. Integration requires:
 
-## Verification
-
-Production enablement requires exact-head unit, standard and native CI; additive migration rehearsal and rollback; PDF/JPEG/PNG/HEIC/HEIF fixtures; corrupt/polyglot/container tests; scanner clean/malicious/error/timeout tests; concurrent upload/reorder/delete tests; cross-property denial; private URL inspection; export and account/property deletion; interrupted cleanup recovery; accessibility and gallery layout; iOS/Android physical-device capture/import/view; processor and store-disclosure updates.
+- exact-head standard and native CI;
+- reviewed migration rehearsal and rollback;
+- corrupt, polyglot, signature, decoder, scanner and concurrency tests;
+- cross-property denial and private-URL inspection;
+- export, retention and deletion verification across database, Blob, devices, processors and shares;
+- iOS/Android physical-device import, capture, gallery and accessibility review;
+- approved provider/cost/legal decisions and updated privacy/store disclosures.
