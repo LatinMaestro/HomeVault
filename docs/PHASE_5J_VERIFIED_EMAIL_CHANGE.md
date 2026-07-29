@@ -4,40 +4,40 @@ Status: staged contract; production email change remains disabled.
 
 ## Request Boundary
 
-- The current verified session supplies the immutable user ID and current email.
-- The user reconfirms the current password before requesting a change.
-- The new address is normalized, validated, different from the current address and checked against current account identities.
-- The current email remains authoritative until the complete lifecycle succeeds.
+- The current verified session supplies the immutable, canonical user ID and current email.
+- Email verification, credential reconfirmation and uniqueness results must be exact server booleans; truthy runtime values fail closed.
+- Both addresses are normalized and validated without allowing malformed runtime values to throw.
+- The current email remains authoritative until one atomic transaction succeeds.
 - Starting a new request supersedes every older pending request for that user.
 
-## Dual-proof Lifecycle
+## Purpose-bound Proofs
 
-- Generate two independent, high-entropy, purpose-bound tokens internally.
-- Store token hashes only and compare presented proofs in constant time.
-- Send approval to the current verified address and verification to the requested new address.
-- Both proofs must belong to the same pending request and user.
-- Exact expiry is enforced before recording either proof and again before application.
-- Invalid, expired, cancelled, superseded, applied and replayed proofs fail closed.
-- Token links never reveal whether an unrelated account or address exists.
+- Generate independent high-entropy tokens for old-address approval and new-address verification.
+- Store hashes only and compare presented proofs in constant time.
+- Token evidence is bound to one token ID, request ID, user ID, target address, approved proof purpose and expiry.
+- Unknown proof purposes, consumed tokens, invalid dates, tokens that outlive the request and any mismatched binding fail closed.
+- Recorded proof timestamps must precede request expiry; token IDs must be canonical and distinct.
+- Invalid, expired, cancelled, superseded, applied and replayed requests remain unavailable without revealing unrelated account state.
 
 ## Atomic Application
 
-Immediately before applying the change, the server must re-read:
+Immediately before application, the server re-reads the verified current session, unchanged current email, pending request, exact expiry, two coherent proofs and new-address availability.
 
-- the verified current session;
-- the unchanged current account email;
-- both recorded proofs;
-- pending state and expiry;
-- uniqueness/availability of the requested address.
+One transaction:
 
-One transaction updates the account email as verified, marks the request applied and supersedes sibling requests. Other sessions are revoked while the reconfirmed current session is preserved, matching HomeVault's password-change posture. The old address receives a security notification and recovery/support instructions. No automatic email reversal occurs without verified recovery because a reversible link would create another takeover token.
+- updates the immutable user's email and marks it verified;
+- marks the request applied and supersedes sibling requests;
+- preserves only the reconfirmed current session and revokes all other sessions; and
+- schedules a security notification to the old address.
+
+The allow result binds that complete plan. No automatic email reversal occurs without verified account recovery.
 
 ## Privacy And Operations
 
-- Email messages contain no household names, properties, records or attachments.
-- Rate limits apply per account, address, IP risk signal and delivery provider without behavioural profiling.
-- Logs retain request identifiers, proof purpose, timestamps and generic outcomes only.
-- Account export/deletion includes pending email-change records and their processor copies.
-- Store privacy disclosures and the reviewer journey must be updated when production enablement occurs.
+- Messages contain no household names, properties, records or attachments.
+- Rate limits apply per account, address, IP risk signal and provider without behavioural profiling.
+- Logs retain request IDs, token IDs, proof purpose, timestamps and generic outcomes only.
+- Account export/deletion covers pending requests, token hashes, logs and processor copies.
+- Store disclosures and reviewer steps update only if production enablement is approved.
 
-Production integration requires migration, delivery, concurrent-request, expiry, replay, session-revocation, recovery and exact-head CI/native evidence.
+Production integration still requires a migration, delivery provider configuration, transactional concurrency tests, session revocation, recovery, exact-head standard/native CI and client approval.
