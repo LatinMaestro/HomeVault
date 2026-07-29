@@ -8,12 +8,14 @@ Status: prepared provider-neutral policy contract; inbound email remains disable
 - Store only the route-token hash. Never expose the raw token in exports, logs, PRs, analytics or public URLs.
 - Compare the presented route token to the stored hash with a server-side constant-time operation; callers never submit or compare pre-hashed tokens.
 - OWNER creation/rotation requires credential reconfirmation and atomically revokes the previous route.
+- Bind route administration to the exact active user/property membership. A caller-supplied role or membership boolean is not authorisation evidence.
 - Resolve property scope only from the exact active recipient route. Never trust sender, subject, body, attachment or provider-supplied household metadata to select a property.
 
 ## Provider And Webhook Boundary
 
 - Do not enable an inbound provider until cost, region, retention, deletion, subprocessor, incident response and webhook behavior are approved.
 - Require the configured webhook secret, valid signature, unique provider event ID and a timestamp no more than five minutes old.
+- Bind webhook verification to the exact route ID/version, provider event ID, canonical body digest and verification timestamp. Evidence from another route, revision, event or message cannot be substituted.
 - Accept only bounded provider/message identifiers and a server-verified canonical content digest. Deduplicate by provider event ID or exact same-property Internet Message ID plus that digest.
 - Unknown, revoked or cross-property routes fail closed without revealing that a route or property exists.
 
@@ -30,6 +32,7 @@ Status: prepared provider-neutral policy contract; inbound email remains disable
 ## Sender Validation
 
 - Record envelope/header sender and DKIM, DMARC and SPF results.
+- Bind sender-authentication results to the exact canonical message digest and envelope/header addresses; provider results from another message fail closed.
 - A sender is trusted only when explicitly allowlisted with aligned DKIM and DMARC passes.
 - Unverified or forwarding-altered messages may reach review with a prominent warning, but can never auto-save.
 - Sender authentication does not replace property route secrecy, attachment scanning or user review.
@@ -37,8 +40,10 @@ Status: prepared provider-neutral policy contract; inbound email remains disable
 ## Review Before Save
 
 - OWNER or ADULT must re-authorise into the exact property, inspect the sanitized message and explicitly confirm the sender, target type, title and each selected clean attachment.
+- The review boundary requires a short-lived, single-use grant bound to the exact user, active membership, property, email ID/version and canonical digest. Consumed, expired or substituted grants fail closed.
 - A save must contain at least one confirmed clean attachment or the confirmed sanitized body; an empty record cannot cross the review boundary.
 - The result only opens the ordinary Document/Receipt save boundary. A second explicit final save is required.
+- Final save uses compare-and-set against the reviewed email version so concurrent quarantine, deletion or review changes cannot be silently overwritten.
 - Preserve source provenance and deduplicate retry, but never preserve the route secret or provider URL.
 - Do not automatically run OCR or AI, create records/tasks/reminders, contact providers or transcribe full payment credentials. Those capabilities retain their separate user-requested contracts.
 - CHILD and GUEST remain read-only.
@@ -48,6 +53,7 @@ Status: prepared provider-neutral policy contract; inbound email remains disable
 - Export accepted record provenance only where useful; exclude routes, webhook data, provider storage keys and rejected/quarantined content.
 - Route, property and account deletion revoke affected routes. Deleting one email does not revoke an otherwise valid property route.
 - Email, route, property and account deletion remove their scoped raw messages, sanitized bodies, quarantine objects, attachments, review sessions and relational metadata.
+- Cleanup also covers provider/processor copies, queues, deduplication keys, caches, device/offline copies and sensitive audit payloads.
 - Accepted records follow normal record deletion. Provider deletion failures enter a retryable cleanup ledger and block a false complete-deletion claim.
 
 ## Verification
