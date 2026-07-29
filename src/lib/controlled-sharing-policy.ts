@@ -4,6 +4,7 @@ export const CONTROLLED_SHARE_TOKEN_MIN_ENTROPY_BYTES = 32;
 export const CONTROLLED_SHARE_MIN_TTL_MS = 5 * 60 * 1000;
 export const CONTROLLED_SHARE_MAX_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 export const CONTROLLED_SHARE_SESSION_TTL_MS = 15 * 60 * 1000;
+export const CONTROLLED_SHARE_CONFIRMATION_TTL_MS = 10 * 60 * 1000;
 export const CONTROLLED_SHARE_AUDIT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
 export const CONTROLLED_SHARE_MAX_ATTACHMENTS = 10;
 
@@ -42,6 +43,60 @@ export type ControlledShareTargetType =
   | "WARRANTY"
   | "ASSET"
   | "MAINTENANCE";
+
+export type ControlledShareMembershipEvidence = {
+  userId: string;
+  homeId: string;
+  role: ControlledShareRole;
+  active: boolean;
+  revision: number;
+};
+
+export type ControlledShareConfirmationEvidence = {
+  id: string;
+  userId: string;
+  homeId: string;
+  recordId: string;
+  recordRevision: number;
+  selectionBinding: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  singleUse: boolean;
+  consumed: boolean;
+};
+
+export type ControlledShareTokenEvidence = {
+  grantId: string;
+  routeGrantId: string;
+  tokenHash: string;
+  matchedConstantTime: boolean;
+};
+
+export type ControlledShareRateLimitEvidence = {
+  grantId: string;
+  allowed: boolean;
+};
+
+export type ControlledShareRecipientEvidence = {
+  grantId: string;
+  verifiedUserId: string;
+  recipientEmailHash: string;
+  matchedConstantTime: boolean;
+};
+
+export type ControlledShareRecipientBindingEvidence = {
+  userId: string;
+  homeId: string;
+  recordId: string;
+  recipientEmailHash: string;
+  serverVerified: boolean;
+};
+
+export type ControlledShareSessionEvidence = {
+  grantId: string;
+  sessionId: string;
+  matchedConstantTime: boolean;
+};
 
 export type ControlledShareAttachment = {
   id: string;
@@ -92,6 +147,7 @@ export type ControlledShareGrant = {
 
 export type ControlledShareSession = {
   id: string;
+  version: number;
   grantId: string;
   verifiedUserId: string | null;
   createdAt: Date;
@@ -231,6 +287,11 @@ export type ControlledShareCleanupDecision =
       deleteTokenHashes: true;
       invalidateSessions: true;
       deleteShareViews: true;
+      purgeBrowserAndCdnCaches: true;
+      deleteDeviceAndOfflineCopies: true;
+      deleteQueuedShareActions: true;
+      deleteNotificationReferences: true;
+      removeAuditPayloads: true;
       deleteAuditAfter: Date;
       deleteAcceptedRecord: boolean;
       deletePrivateAttachment: boolean;
@@ -262,6 +323,58 @@ function validDate(value: unknown): value is Date {
 
 function uniqueValues<T>(values: readonly T[]) {
   return Array.isArray(values) && new Set(values).size === values.length;
+}
+
+function validMembershipEvidence(
+  evidence: ControlledShareMembershipEvidence,
+  userId: string,
+  homeId: string,
+) {
+  return (
+    Boolean(evidence) &&
+    evidence.userId === userId &&
+    evidence.homeId === homeId &&
+    evidence.active === true &&
+    Number.isSafeInteger(evidence.revision) &&
+    evidence.revision >= 1 &&
+    ["OWNER", "ADULT", "CHILD", "GUEST"].includes(evidence.role)
+  );
+}
+
+function selectionBinding({
+  record,
+  selectedFields,
+  attachmentBindings,
+  allowDownload,
+  audience,
+  recipientEmailHash,
+  startsAt,
+  expiresAt,
+}: {
+  record: ControlledShareRecord;
+  selectedFields: readonly ControlledShareField[];
+  attachmentBindings: readonly ControlledShareAttachmentBinding[];
+  allowDownload: boolean;
+  audience: "PUBLIC_LINK" | "VERIFIED_RECIPIENT";
+  recipientEmailHash: string | null;
+  startsAt: Date;
+  expiresAt: Date;
+}) {
+  return JSON.stringify({
+    homeId: record.homeId,
+    recordId: record.id,
+    recordRevision: record.revision,
+    selectedFields: [...selectedFields],
+    attachmentBindings: attachmentBindings.map((binding) => ({
+      attachmentId: binding.attachmentId,
+      contentDigest: binding.contentDigest,
+    })),
+    allowDownload,
+    audience,
+    recipientEmailHash,
+    startsAt: startsAt.toISOString(),
+    expiresAt: expiresAt.toISOString(),
+  });
 }
 
 function validRecordShape(record: ControlledShareRecord) {
@@ -407,50 +520,48 @@ export function decideControlledShareGrant({
   currentUserId,
   selectedHomeId,
   sessionVerified,
-  hasCurrentMembership,
-  role,
+  membership,
   record,
   selectedFields,
   selectedAttachmentIds,
   allowDownload,
   audience,
   recipientEmailHash,
-  recipientEmailHashServerVerified,
+  recipientBindingEvidence,
   startsAt,
   expiresAt,
   generatedGrantId,
   generatedGrantIdEntropyBytes,
   generatedTokenEntropyBytes,
   generatedTokenHash,
-  explicitConfirmation,
+  confirmationEvidence,
   now,
 }: {
   currentUserId: string;
   selectedHomeId: string;
   sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ControlledShareRole;
+  membership: ControlledShareMembershipEvidence;
   record: ControlledShareRecord;
   selectedFields: readonly ControlledShareField[];
   selectedAttachmentIds: readonly string[];
   allowDownload: boolean;
   audience: "PUBLIC_LINK" | "VERIFIED_RECIPIENT";
   recipientEmailHash: string | null;
-  recipientEmailHashServerVerified: boolean;
+  recipientBindingEvidence: ControlledShareRecipientBindingEvidence | null;
   startsAt: Date;
   expiresAt: Date;
   generatedGrantId: string;
   generatedGrantIdEntropyBytes: number;
   generatedTokenEntropyBytes: number;
   generatedTokenHash: string;
-  explicitConfirmation: boolean;
+  confirmationEvidence: ControlledShareConfirmationEvidence;
   now: Date;
 }): ControlledShareGrantDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
     sessionVerified !== true ||
-    hasCurrentMembership !== true ||
+    !validMembershipEvidence(membership, currentUserId, selectedHomeId) ||
     !validDate(now) ||
     !record ||
     record.homeId !== selectedHomeId ||
@@ -461,11 +572,8 @@ export function decideControlledShareGrant({
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) {
+  if (!hasWriteRole(membership.role)) {
     return { status: "read-only" };
-  }
-  if (explicitConfirmation !== true) {
-    return { status: "confirmation-required" };
   }
   if (
     !validDate(startsAt) ||
@@ -504,9 +612,15 @@ export function decideControlledShareGrant({
   }
   if (
     (audience !== "PUBLIC_LINK" && audience !== "VERIFIED_RECIPIENT") ||
-    (audience === "PUBLIC_LINK" && recipientEmailHash !== null) ||
+    (audience === "PUBLIC_LINK" &&
+      (recipientEmailHash !== null || recipientBindingEvidence !== null)) ||
     (audience === "VERIFIED_RECIPIENT" &&
-      (recipientEmailHashServerVerified !== true ||
+      (!recipientBindingEvidence ||
+        recipientBindingEvidence.userId !== currentUserId ||
+        recipientBindingEvidence.homeId !== selectedHomeId ||
+        recipientBindingEvidence.recordId !== record.id ||
+        recipientBindingEvidence.recipientEmailHash !== recipientEmailHash ||
+        recipientBindingEvidence.serverVerified !== true ||
         recipientEmailHash === null ||
         !validText(recipientEmailHash, 512)))
   ) {
@@ -533,6 +647,37 @@ export function decideControlledShareGrant({
       attachmentId: attachment.id,
       contentDigest: attachment.contentDigest,
     });
+  }
+  const expectedSelectionBinding = selectionBinding({
+    record,
+    selectedFields,
+    attachmentBindings: bindings,
+    allowDownload,
+    audience,
+    recipientEmailHash,
+    startsAt,
+    expiresAt,
+  });
+  if (
+    !confirmationEvidence ||
+    !validText(confirmationEvidence.id, 200) ||
+    confirmationEvidence.userId !== currentUserId ||
+    confirmationEvidence.homeId !== selectedHomeId ||
+    confirmationEvidence.recordId !== record.id ||
+    confirmationEvidence.recordRevision !== record.revision ||
+    confirmationEvidence.selectionBinding !== expectedSelectionBinding ||
+    !validDate(confirmationEvidence.issuedAt) ||
+    !validDate(confirmationEvidence.expiresAt) ||
+    confirmationEvidence.expiresAt <= confirmationEvidence.issuedAt ||
+    confirmationEvidence.expiresAt.getTime() -
+      confirmationEvidence.issuedAt.getTime() >
+      CONTROLLED_SHARE_CONFIRMATION_TTL_MS ||
+    now < confirmationEvidence.issuedAt ||
+    now >= confirmationEvidence.expiresAt ||
+    confirmationEvidence.singleUse !== true ||
+    confirmationEvidence.consumed !== false
+  ) {
+    return { status: "confirmation-required" };
   }
   return {
     status: "grant-authorized",
@@ -567,20 +712,18 @@ export function decideControlledShareExchange({
   record,
   routeGrantId,
   requestMethod,
-  tokenHashMatchesConstantTime,
-  rateLimitAllowed,
-  verifiedRecipientUserId,
-  recipientEmailHashMatchesConstantTime,
+  tokenEvidence,
+  rateLimitEvidence,
+  recipientEvidence,
   now,
 }: {
   grant: ControlledShareGrant;
   record: ControlledShareRecord;
   routeGrantId: string;
   requestMethod: "GET" | "POST";
-  tokenHashMatchesConstantTime: boolean;
-  rateLimitAllowed: boolean;
-  verifiedRecipientUserId: string | null;
-  recipientEmailHashMatchesConstantTime: boolean;
+  tokenEvidence: ControlledShareTokenEvidence;
+  rateLimitEvidence: ControlledShareRateLimitEvidence;
+  recipientEvidence: ControlledShareRecipientEvidence | null;
   now: Date;
 }): ControlledShareExchangeDecision {
   if (
@@ -591,9 +734,14 @@ export function decideControlledShareExchange({
     !validText(routeGrantId, 200) ||
     routeGrantId !== grant.id ||
     requestMethod !== "POST" ||
-    tokenHashMatchesConstantTime !== true ||
-    rateLimitAllowed !== true ||
-    typeof recipientEmailHashMatchesConstantTime !== "boolean"
+    !tokenEvidence ||
+    tokenEvidence.grantId !== grant.id ||
+    tokenEvidence.routeGrantId !== routeGrantId ||
+    tokenEvidence.tokenHash !== grant.tokenHash ||
+    tokenEvidence.matchedConstantTime !== true ||
+    !rateLimitEvidence ||
+    rateLimitEvidence.grantId !== grant.id ||
+    rateLimitEvidence.allowed !== true
   ) {
     return { status: "unavailable" };
   }
@@ -605,10 +753,16 @@ export function decideControlledShareExchange({
   }
   if (
     grant.audience === "VERIFIED_RECIPIENT" &&
-    (!validText(verifiedRecipientUserId ?? "", 200) ||
-      !recipientEmailHashMatchesConstantTime)
+    (!recipientEvidence ||
+      recipientEvidence.grantId !== grant.id ||
+      !validText(recipientEvidence.verifiedUserId, 200) ||
+      recipientEvidence.recipientEmailHash !== grant.recipientEmailHash ||
+      recipientEvidence.matchedConstantTime !== true)
   ) {
     return { status: "recipient-verification-required" };
+  }
+  if (grant.audience === "PUBLIC_LINK" && recipientEvidence !== null) {
+    return { status: "unavailable" };
   }
   return {
     status: "session-authorized",
@@ -634,17 +788,15 @@ function authorizeShareSession({
   grant,
   record,
   session,
-  sessionHashMatchesConstantTime,
-  currentVerifiedRecipientUserId,
-  recipientEmailHashMatchesConstantTime,
+  sessionEvidence,
+  recipientEvidence,
   now,
 }: {
   grant: ControlledShareGrant;
   record: ControlledShareRecord;
   session: ControlledShareSession;
-  sessionHashMatchesConstantTime: boolean;
-  currentVerifiedRecipientUserId: string | null;
-  recipientEmailHashMatchesConstantTime: boolean;
+  sessionEvidence: ControlledShareSessionEvidence;
+  recipientEvidence: ControlledShareRecipientEvidence | null;
   now: Date;
 }): "authorized" | "expired-or-revoked" | "stale" | "unavailable" {
   if (
@@ -654,6 +806,8 @@ function authorizeShareSession({
     !session ||
     !validGrantShape(grant) ||
     !validText(session.id, 200) ||
+    !Number.isSafeInteger(session.version) ||
+    session.version < 1 ||
     session.grantId !== grant.id ||
     !validDate(session.createdAt) ||
     !validDate(session.expiresAt) ||
@@ -663,8 +817,10 @@ function authorizeShareSession({
     session.expiresAt.getTime() - session.createdAt.getTime() >
       CONTROLLED_SHARE_SESSION_TTL_MS ||
     (session.revokedAt !== null && !validDate(session.revokedAt)) ||
-    sessionHashMatchesConstantTime !== true ||
-    typeof recipientEmailHashMatchesConstantTime !== "boolean"
+    !sessionEvidence ||
+    sessionEvidence.grantId !== grant.id ||
+    sessionEvidence.sessionId !== session.id ||
+    sessionEvidence.matchedConstantTime !== true
   ) {
     return "unavailable";
   }
@@ -678,10 +834,16 @@ function authorizeShareSession({
   }
   if (
     grant.audience === "VERIFIED_RECIPIENT" &&
-    (!validText(session.verifiedUserId ?? "", 200) ||
-      session.verifiedUserId !== currentVerifiedRecipientUserId ||
-      recipientEmailHashMatchesConstantTime !== true)
+    (!recipientEvidence ||
+      recipientEvidence.grantId !== grant.id ||
+      !validText(session.verifiedUserId ?? "", 200) ||
+      session.verifiedUserId !== recipientEvidence.verifiedUserId ||
+      recipientEvidence.recipientEmailHash !== grant.recipientEmailHash ||
+      recipientEvidence.matchedConstantTime !== true)
   ) {
+    return "unavailable";
+  }
+  if (grant.audience === "PUBLIC_LINK" && recipientEvidence !== null) {
     return "unavailable";
   }
   return recordMatchesGrant(grant, record) ? "authorized" : "stale";
@@ -691,9 +853,8 @@ export function decideControlledShareView(input: {
   grant: ControlledShareGrant;
   record: ControlledShareRecord;
   session: ControlledShareSession;
-  sessionHashMatchesConstantTime: boolean;
-  currentVerifiedRecipientUserId: string | null;
-  recipientEmailHashMatchesConstantTime: boolean;
+  sessionEvidence: ControlledShareSessionEvidence;
+  recipientEvidence: ControlledShareRecipientEvidence | null;
   now: Date;
 }): ControlledShareViewDecision {
   const authorization = authorizeShareSession(input);
@@ -725,9 +886,8 @@ export function decideControlledShareDownload(
     grant: ControlledShareGrant;
     record: ControlledShareRecord;
     session: ControlledShareSession;
-    sessionHashMatchesConstantTime: boolean;
-    currentVerifiedRecipientUserId: string | null;
-    recipientEmailHashMatchesConstantTime: boolean;
+    sessionEvidence: ControlledShareSessionEvidence;
+    recipientEvidence: ControlledShareRecipientEvidence | null;
     now: Date;
   } & { attachmentId: string },
 ): ControlledShareDownloadDecision {
@@ -771,22 +931,20 @@ export function decideControlledShareRevocation({
   currentUserId,
   selectedHomeId,
   sessionVerified,
-  hasCurrentMembership,
-  role,
+  membership,
   grant,
 }: {
   currentUserId: string;
   selectedHomeId: string;
   sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ControlledShareRole;
+  membership: ControlledShareMembershipEvidence;
   grant: ControlledShareGrant;
 }): ControlledShareRevocationDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
     sessionVerified !== true ||
-    hasCurrentMembership !== true ||
+    !validMembershipEvidence(membership, currentUserId, selectedHomeId) ||
     !grant ||
     !validGrantShape(grant) ||
     grant.homeId !== selectedHomeId
@@ -794,8 +952,8 @@ export function decideControlledShareRevocation({
     return { status: "unavailable" };
   }
   if (
-    role !== "OWNER" &&
-    !(role === "ADULT" && grant.createdByUserId === currentUserId)
+    membership.role !== "OWNER" &&
+    !(membership.role === "ADULT" && grant.createdByUserId === currentUserId)
   ) {
     return { status: "read-only" };
   }
@@ -864,6 +1022,11 @@ export function decideControlledShareCleanup({
     deleteTokenHashes: true,
     invalidateSessions: true,
     deleteShareViews: true,
+    purgeBrowserAndCdnCaches: true,
+    deleteDeviceAndOfflineCopies: true,
+    deleteQueuedShareActions: true,
+    deleteNotificationReferences: true,
+    removeAuditPayloads: true,
     deleteAuditAfter: new Date(
       now.getTime() + CONTROLLED_SHARE_AUDIT_RETENTION_MS,
     ),
