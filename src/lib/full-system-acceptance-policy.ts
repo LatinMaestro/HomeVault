@@ -574,6 +574,13 @@ export function decideFullSystemAcceptance({
       commercialModel === "FREE" &&
       domain === "COMMERCIAL_ENTITLEMENTS" &&
       item.status === "NOT_APPLICABLE";
+    if (
+      commercialModel === "FREE" &&
+      domain === "COMMERCIAL_ENTITLEMENTS" &&
+      !notApplicable
+    ) {
+      reasons.push("domain:COMMERCIAL_ENTITLEMENTS:not-applicable-required");
+    }
     if (!exactCandidate(item, candidate)) {
       reasons.push(`domain:${domain}:candidate`);
     }
