@@ -359,6 +359,18 @@ test("rejects malformed dates and unsafe build numbers without throwing", () => 
     }),
     { status: "unavailable" },
   );
+  for (const buildNumber of [
+    102,
+    "999999999999999999999999999999999999",
+  ]) {
+    assert.deepEqual(
+      decideReleaseQualityThresholds({
+        ...input,
+        candidate: { ...candidate, buildNumber } as never,
+      }),
+      { status: "unavailable" },
+    );
+  }
 });
 
 function replaceEvidence(
