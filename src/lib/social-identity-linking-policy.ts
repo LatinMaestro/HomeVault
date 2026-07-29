@@ -14,15 +14,51 @@ export type StoredSocialLinkRequestStatus =
 
 export type EffectiveSocialLinkRequestStatus =
   | StoredSocialLinkRequestStatus
-  | "EXPIRED";
+  | "EXPIRED"
+  | "INVALID";
 
 export type SocialLinkRequest = {
   id: string;
   userId: string;
   initiatingSessionId: string;
   provider: SocialIdentityProvider;
+  stateId: string;
+  nonceId: string;
+  pkceChallengeId: string;
   status: StoredSocialLinkRequestStatus;
   expiresAt: Date;
+};
+
+export type SocialCallbackEvidence = {
+  requestId: string;
+  userId: string;
+  sessionId: string;
+  provider: SocialIdentityProvider;
+  providerSubject: string;
+  stateId: string;
+  nonceId: string;
+  pkceChallengeId: string;
+  stateVerified: boolean;
+  nonceVerified: boolean;
+  pkceVerified: boolean;
+  issuerVerified: boolean;
+  audienceVerified: boolean;
+  signatureVerified: boolean;
+  timestampsVerified: boolean;
+  stateConsumedAt?: Date | null;
+};
+
+export type SocialIdentityLink = {
+  id: string;
+  userId: string;
+  provider: SocialIdentityProvider;
+  providerSubject: string;
+};
+
+export type AlternateSignInEvidence = {
+  userId: string;
+  methodId: string;
+  verified: boolean;
 };
 
 export type SocialLinkStartDecision =
@@ -39,10 +75,19 @@ export type SocialLinkStartDecision =
 export type SocialLinkCompletionDecision =
   | {
       status: "link-allowed";
+      requestId: string;
       userId: string;
+      sessionId: string;
       provider: SocialIdentityProvider;
       providerSubject: string;
       linkedAt: Date;
+      transactionPlan: {
+        consumeRequest: true;
+        preserveUserId: true;
+        preserveVerifiedEmail: true;
+        mergeByProviderEmail: false;
+        reassignExistingIdentity: false;
+      };
     }
   | { status: "unavailable" }
   | { status: "expired" }
@@ -53,18 +98,65 @@ export type SocialLinkCompletionDecision =
 export type SocialUnlinkDecision =
   | {
       status: "unlink-allowed";
+      linkId: string;
       userId: string;
       provider: SocialIdentityProvider;
+      providerSubject: string;
+      lifecyclePlan: {
+        preserveUserId: true;
+        revokeProviderSessions: true;
+        notifyVerifiedEmail: true;
+      };
     }
   | { status: "unavailable" }
   | { status: "credential-confirmation-required" }
   | { status: "alternate-sign-in-required" };
 
+const APPROVED_STATUSES = new Set<StoredSocialLinkRequestStatus>([
+  "PENDING",
+  "LINKED",
+  "CANCELLED",
+  "SUPERSEDED",
+]);
+const APPROVED_PROVIDERS = new Set<SocialIdentityProvider>(
+  APPROVED_SOCIAL_IDENTITY_PROVIDERS,
+);
+
+function isCanonicalIdentifier(
+  value: unknown,
+  maximumLength = 128,
+): value is string {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value.length <= maximumLength &&
+    value.trim() === value &&
+    !/[\u0000-\u001f\u007f]/.test(value)
+  );
+}
+
+function isValidDate(value: unknown): value is Date {
+  return value instanceof Date && Number.isFinite(value.getTime());
+}
+
 export function isApprovedSocialIdentityProvider(
-  provider: string,
+  provider: unknown,
 ): provider is SocialIdentityProvider {
-  return APPROVED_SOCIAL_IDENTITY_PROVIDERS.includes(
-    provider as SocialIdentityProvider,
+  return APPROVED_PROVIDERS.has(provider as SocialIdentityProvider);
+}
+
+function isRequestShapeValid(request: SocialLinkRequest) {
+  return Boolean(
+    request &&
+      isCanonicalIdentifier(request.id) &&
+      isCanonicalIdentifier(request.userId) &&
+      isCanonicalIdentifier(request.initiatingSessionId) &&
+      isApprovedSocialIdentityProvider(request.provider) &&
+      isCanonicalIdentifier(request.stateId) &&
+      isCanonicalIdentifier(request.nonceId) &&
+      isCanonicalIdentifier(request.pkceChallengeId) &&
+      APPROVED_STATUSES.has(request.status) &&
+      isValidDate(request.expiresAt),
   );
 }
 
@@ -72,40 +164,40 @@ export function getEffectiveSocialLinkRequestStatus(
   request: SocialLinkRequest,
   now = new Date(),
 ): EffectiveSocialLinkRequestStatus {
-  if (request.status !== "PENDING") {
-    return request.status;
-  }
-
-  return request.expiresAt.getTime() <= now.getTime()
-    ? "EXPIRED"
-    : "PENDING";
+  if (!isRequestShapeValid(request) || !isValidDate(now)) return "INVALID";
+  if (request.status !== "PENDING") return request.status;
+  return request.expiresAt.getTime() <= now.getTime() ? "EXPIRED" : "PENDING";
 }
 
 export function decideSocialLinkStart({
   currentUserId,
   currentSessionId,
+  sessionVerified,
   emailVerified,
   credentialConfirmed,
   provider,
 }: {
   currentUserId: string;
   currentSessionId: string;
+  sessionVerified: boolean;
   emailVerified: boolean;
   credentialConfirmed: boolean;
-  provider: string;
+  provider: unknown;
 }): SocialLinkStartDecision {
-  if (!currentUserId || !currentSessionId || !emailVerified) {
+  if (
+    !isCanonicalIdentifier(currentUserId) ||
+    !isCanonicalIdentifier(currentSessionId) ||
+    sessionVerified !== true ||
+    emailVerified !== true
+  ) {
     return { status: "unavailable" };
   }
-
-  if (!credentialConfirmed) {
+  if (credentialConfirmed !== true) {
     return { status: "credential-confirmation-required" };
   }
-
   if (!isApprovedSocialIdentityProvider(provider)) {
     return { status: "provider-not-approved" };
   }
-
   return {
     status: "start-allowed",
     userId: currentUserId,
@@ -114,114 +206,174 @@ export function decideSocialLinkStart({
   };
 }
 
+function callbackMatchesRequest(
+  request: SocialLinkRequest,
+  callback: SocialCallbackEvidence,
+) {
+  return Boolean(
+    callback &&
+      callback.requestId === request.id &&
+      callback.userId === request.userId &&
+      callback.sessionId === request.initiatingSessionId &&
+      callback.provider === request.provider &&
+      isCanonicalIdentifier(callback.providerSubject, 255) &&
+      callback.stateId === request.stateId &&
+      callback.nonceId === request.nonceId &&
+      callback.pkceChallengeId === request.pkceChallengeId &&
+      callback.stateVerified === true &&
+      callback.nonceVerified === true &&
+      callback.pkceVerified === true &&
+      callback.issuerVerified === true &&
+      callback.audienceVerified === true &&
+      callback.signatureVerified === true &&
+      callback.timestampsVerified === true &&
+      (callback.stateConsumedAt === null ||
+        callback.stateConsumedAt === undefined),
+  );
+}
+
+function isExistingLinkEvidenceValid(
+  link: SocialIdentityLink,
+  request: SocialLinkRequest,
+  providerSubject: string,
+) {
+  return Boolean(
+    link &&
+      isCanonicalIdentifier(link.id) &&
+      isCanonicalIdentifier(link.userId) &&
+      link.provider === request.provider &&
+      link.providerSubject === providerSubject,
+  );
+}
+
 export function decideSocialLinkCompletion({
   request,
   currentUserId,
   currentSessionId,
-  callbackProvider,
-  providerSubject,
-  stateVerified,
-  nonceVerified,
-  pkceVerified,
-  existingLinkUserId,
+  sessionVerified,
+  callback,
+  existingLink,
   now = new Date(),
 }: {
   request: SocialLinkRequest;
   currentUserId: string;
   currentSessionId: string;
-  callbackProvider: string;
-  providerSubject: string;
-  stateVerified: boolean;
-  nonceVerified: boolean;
-  pkceVerified: boolean;
-  existingLinkUserId: string | null;
+  sessionVerified: boolean;
+  callback: SocialCallbackEvidence;
+  existingLink: SocialIdentityLink | null;
   now?: Date;
 }): SocialLinkCompletionDecision {
   if (
-    !request.id ||
-    !currentUserId ||
-    !currentSessionId ||
+    sessionVerified !== true ||
+    !isCanonicalIdentifier(currentUserId) ||
+    !isCanonicalIdentifier(currentSessionId) ||
+    !isRequestShapeValid(request) ||
     request.userId !== currentUserId ||
-    request.initiatingSessionId !== currentSessionId
+    request.initiatingSessionId !== currentSessionId ||
+    !isValidDate(now)
   ) {
     return { status: "unavailable" };
   }
 
   const status = getEffectiveSocialLinkRequestStatus(request, now);
-
-  if (status === "EXPIRED") {
-    return { status: "expired" };
-  }
-
-  if (status !== "PENDING") {
-    return { status: "unavailable" };
-  }
-
-  if (
-    callbackProvider !== request.provider ||
-    !providerSubject.trim() ||
-    !stateVerified ||
-    !nonceVerified ||
-    !pkceVerified
-  ) {
+  if (status === "EXPIRED") return { status: "expired" };
+  if (status !== "PENDING") return { status: "unavailable" };
+  if (!callbackMatchesRequest(request, callback)) {
     return { status: "invalid-callback" };
   }
 
-  if (existingLinkUserId === currentUserId) {
-    return { status: "already-linked" };
-  }
-
-  if (existingLinkUserId) {
-    return { status: "provider-identity-unavailable" };
+  if (existingLink !== null) {
+    if (
+      !isExistingLinkEvidenceValid(
+        existingLink,
+        request,
+        callback.providerSubject,
+      )
+    ) {
+      return { status: "unavailable" };
+    }
+    return existingLink.userId === currentUserId
+      ? { status: "already-linked" }
+      : { status: "provider-identity-unavailable" };
   }
 
   return {
     status: "link-allowed",
+    requestId: request.id,
     userId: request.userId,
+    sessionId: request.initiatingSessionId,
     provider: request.provider,
-    providerSubject: providerSubject.trim(),
+    providerSubject: callback.providerSubject,
     linkedAt: now,
+    transactionPlan: {
+      consumeRequest: true,
+      preserveUserId: true,
+      preserveVerifiedEmail: true,
+      mergeByProviderEmail: false,
+      reassignExistingIdentity: false,
+    },
   };
+}
+
+function isLinkShapeValid(link: SocialIdentityLink) {
+  return Boolean(
+    link &&
+      isCanonicalIdentifier(link.id) &&
+      isCanonicalIdentifier(link.userId) &&
+      isApprovedSocialIdentityProvider(link.provider) &&
+      isCanonicalIdentifier(link.providerSubject, 255),
+  );
 }
 
 export function decideSocialUnlink({
   currentUserId,
+  currentSessionId,
+  sessionVerified,
   emailVerified,
   credentialConfirmed,
-  provider,
-  linkedUserId,
-  alternateVerifiedSignInMethods,
+  link,
+  alternateSignIn,
 }: {
   currentUserId: string;
+  currentSessionId: string;
+  sessionVerified: boolean;
   emailVerified: boolean;
   credentialConfirmed: boolean;
-  provider: string;
-  linkedUserId: string;
-  alternateVerifiedSignInMethods: number;
+  link: SocialIdentityLink;
+  alternateSignIn: AlternateSignInEvidence | null;
 }): SocialUnlinkDecision {
   if (
-    !currentUserId ||
-    !emailVerified ||
-    linkedUserId !== currentUserId ||
-    !isApprovedSocialIdentityProvider(provider)
+    !isCanonicalIdentifier(currentUserId) ||
+    !isCanonicalIdentifier(currentSessionId) ||
+    sessionVerified !== true ||
+    emailVerified !== true ||
+    !isLinkShapeValid(link) ||
+    link.userId !== currentUserId
   ) {
     return { status: "unavailable" };
   }
-
-  if (!credentialConfirmed) {
+  if (credentialConfirmed !== true) {
     return { status: "credential-confirmation-required" };
   }
-
   if (
-    !Number.isInteger(alternateVerifiedSignInMethods) ||
-    alternateVerifiedSignInMethods < 1
+    !alternateSignIn ||
+    alternateSignIn.userId !== currentUserId ||
+    !isCanonicalIdentifier(alternateSignIn.methodId) ||
+    alternateSignIn.methodId === link.id ||
+    alternateSignIn.verified !== true
   ) {
     return { status: "alternate-sign-in-required" };
   }
-
   return {
     status: "unlink-allowed",
+    linkId: link.id,
     userId: currentUserId,
-    provider,
+    provider: link.provider,
+    providerSubject: link.providerSubject,
+    lifecyclePlan: {
+      preserveUserId: true,
+      revokeProviderSessions: true,
+      notifyVerifiedEmail: true,
+    },
   };
 }
