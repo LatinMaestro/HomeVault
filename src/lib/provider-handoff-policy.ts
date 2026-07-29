@@ -1,6 +1,9 @@
+import { createHash } from "node:crypto";
+
 export const PROVIDER_HANDOFF_POLICY_VERSION = "homevault-provider-handoff-v1";
 export const PROVIDER_WEBHOOK_MAX_AGE_MS = 5 * 60 * 1000;
 export const PROVIDER_HANDOFF_DRAFT_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+export const PROVIDER_EVIDENCE_MAX_AGE_MS = 10 * 60 * 1000;
 export const PROVIDER_HANDOFF_MAX_MESSAGE_CHARACTERS = 2_000;
 export const PROVIDER_HANDOFF_MAX_WINDOWS = 5;
 export const PROVIDER_HANDOFF_AUDIT_RETENTION_MS = 30 * 24 * 60 * 60 * 1000;
@@ -62,6 +65,61 @@ export type ProviderConnectorScope =
 export type ProviderHandoffRole = "OWNER" | "ADULT" | "CHILD" | "GUEST";
 export type ProviderHandoffKind = "ENQUIRY" | "MESSAGE" | "BOOKING_REQUEST";
 
+export type ProviderMembershipEvidence = {
+  userId: string;
+  homeId: string;
+  role: ProviderHandoffRole;
+  active: boolean;
+  membershipRevision: number;
+};
+
+export type ProviderConfirmationPurpose =
+  | "PROFILE_SAVE"
+  | "DRAFT_REVIEW"
+  | "FINAL_PREVIEW"
+  | "RESPONSE_REVIEW"
+  | "CANCELLATION";
+
+export type ProviderConfirmationEvidence = {
+  id: string;
+  userId: string;
+  homeId: string;
+  purpose: ProviderConfirmationPurpose;
+  subjectId: string;
+  bindingDigest: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  consumed: boolean;
+};
+
+export type ProviderDraftSafetyEvidence = {
+  homeId: string;
+  taskId: string;
+  providerId: string;
+  disclosureDigest: string;
+  policyVersion: typeof PROVIDER_HANDOFF_POLICY_VERSION;
+  scannedAt: Date;
+  containsPaymentCredentials: boolean;
+  containsInsuranceClaimInstructions: boolean;
+  containsBudgetOrValuationAdvice: boolean;
+  containsAdvertisingOrTrackingData: boolean;
+  containsUnrelatedHouseholdData: boolean;
+  containsAttachmentOrPrivateUrl: boolean;
+};
+
+export type ProviderPayloadEvidence = {
+  handoffId: string;
+  canonicalPayloadDigest: string;
+  serverRecomputed: boolean;
+};
+
+export type ProviderIdempotencyEvidence = {
+  handoffId: string;
+  idempotencyKey: string;
+  serverGenerated: boolean;
+  consumed: boolean;
+};
+
 export type ProviderProfile = {
   id: string;
   homeId: string;
@@ -121,6 +179,12 @@ export type ProviderHandoffDraft = {
 };
 
 export type ProviderConnectorGate = {
+  approvalId: string;
+  approvalVersion: number;
+  connectorId: string;
+  externalProviderAccountId: string;
+  approvedAt: Date;
+  expiresAt: Date;
   providerApproved: boolean;
   accountApproved: boolean;
   costApproved: boolean;
@@ -129,6 +193,29 @@ export type ProviderConnectorGate = {
   boundedRetentionConfigured: boolean;
   oauthScopes: readonly string[];
   credentialsServerHeld: boolean;
+};
+
+export type ProviderWebhookEvidence = {
+  handoffId: string;
+  homeId: string;
+  providerId: string;
+  connectorId: string;
+  externalProviderAccountId: string;
+  providerEventId: string;
+  responseDigest: string;
+  receivedAt: Date;
+  secretConfigured: boolean;
+  signatureValid: boolean;
+  responseScopeAllowed: boolean;
+};
+
+export type ProviderCleanupEvidence = {
+  scope: "HANDOFF" | "PROVIDER" | "TASK" | "PROPERTY" | "ACCOUNT";
+  homeId: string;
+  subjectId: string;
+  issuedAt: Date;
+  expiresAt: Date;
+  serverAuthorized: boolean;
 };
 
 export type ProviderHandoffResponse = {
@@ -284,6 +371,14 @@ export type ProviderCleanupDecision =
       cancelPendingHandoffs: true;
       deleteDraftPayloads: true;
       deleteProviderResponses: true;
+      deleteProviderCopies: true;
+      deleteWebhookQueues: true;
+      deleteIdempotencyKeys: true;
+      deleteServerCaches: true;
+      deleteDeviceOfflineCopies: true;
+      deleteQueuedActions: true;
+      deleteNotificationReferences: true;
+      redactSensitiveAuditPayloads: true;
       deleteAuditAfter: Date;
       deleteHouseholdTask: boolean;
       requireRetryableCleanupLedger: true;
@@ -312,6 +407,192 @@ function validText(value: unknown, maximum: number) {
 
 function validDate(value: unknown): value is Date {
   return value instanceof Date && Number.isFinite(value.getTime());
+}
+
+function digest(value: unknown) {
+  return createHash("sha256").update(JSON.stringify(value)).digest("hex");
+}
+
+function normalizedDisclosures(disclosures: readonly ProviderDisclosure[]) {
+  return disclosures
+    .map((disclosure) => ({
+      field: disclosure.field,
+      value: disclosure.value.trim(),
+      explicitlyConfirmed: disclosure.explicitlyConfirmed,
+    }))
+    .sort((left, right) => left.field.localeCompare(right.field));
+}
+
+function profileBinding(profile: ProviderProfile) {
+  return digest({
+    id: profile.id,
+    homeId: profile.homeId,
+    revision: profile.revision,
+    displayName: profile.displayName.trim(),
+    serviceCategories: [...profile.serviceCategories].sort(),
+    channel: profile.channel,
+  });
+}
+
+function draftBinding({
+  task,
+  provider,
+  kind,
+  disclosures,
+}: {
+  task: ProviderTaskSnapshot;
+  provider: ProviderProfile;
+  kind: ProviderHandoffKind;
+  disclosures: readonly ProviderDisclosure[];
+}) {
+  return digest({
+    homeId: task.homeId,
+    taskId: task.id,
+    taskRevision: task.revision,
+    providerId: provider.id,
+    providerRevision: provider.revision,
+    kind,
+    disclosures: normalizedDisclosures(disclosures),
+  });
+}
+
+function sendBinding(
+  draft: ProviderHandoffDraft,
+  idempotencyEvidence: ProviderIdempotencyEvidence,
+) {
+  return digest({
+    handoffId: draft.id,
+    homeId: draft.homeId,
+    taskId: draft.taskId,
+    taskRevision: draft.taskRevision,
+    providerId: draft.providerId,
+    providerRevision: draft.providerRevision,
+    canonicalPayloadDigest: draft.canonicalPayloadDigest,
+    idempotencyKey: idempotencyEvidence.idempotencyKey,
+  });
+}
+
+function responseBinding(
+  handoff: ProviderHandoffDraft,
+  response: ProviderHandoffResponse,
+) {
+  return digest({
+    handoffId: handoff.id,
+    homeId: handoff.homeId,
+    providerId: handoff.providerId,
+    responseId: response.id,
+    providerEventId: response.providerEventId,
+    status: response.status,
+    plainTextMessage: response.plainTextMessage,
+    proposedStartAt: response.proposedStartAt?.toISOString() ?? null,
+    createdAt: response.createdAt.toISOString(),
+  });
+}
+
+function cancellationBinding(
+  handoff: ProviderHandoffDraft,
+  provider: ProviderProfile,
+) {
+  return digest({
+    handoffId: handoff.id,
+    homeId: handoff.homeId,
+    status: handoff.status,
+    providerId: provider.id,
+    providerRevision: provider.revision,
+  });
+}
+
+function webhookResponseDigest({
+  handoff,
+  providerEventId,
+  responseStatus,
+  plainTextMessage,
+  proposedStartAt,
+}: {
+  handoff: ProviderHandoffDraft;
+  providerEventId: string;
+  responseStatus: ProviderHandoffResponse["status"];
+  plainTextMessage: string | null;
+  proposedStartAt: Date | null;
+}) {
+  return digest({
+    handoffId: handoff.id,
+    homeId: handoff.homeId,
+    providerId: handoff.providerId,
+    providerEventId,
+    responseStatus,
+    plainTextMessage,
+    proposedStartAt:
+      proposedStartAt === null
+        ? null
+        : validDate(proposedStartAt)
+          ? proposedStartAt.toISOString()
+          : "INVALID",
+  });
+}
+
+export const providerHandoffBindings = {
+  profile: profileBinding,
+  disclosures: (disclosures: readonly ProviderDisclosure[]) =>
+    digest(normalizedDisclosures(disclosures)),
+  draft: draftBinding,
+  send: sendBinding,
+  response: responseBinding,
+  cancellation: cancellationBinding,
+  webhookResponse: webhookResponseDigest,
+};
+
+function validMembershipEvidence(
+  evidence: ProviderMembershipEvidence,
+  currentUserId: string,
+  selectedHomeId: string,
+) {
+  return (
+    typeof evidence === "object" &&
+    evidence !== null &&
+    evidence.userId === currentUserId &&
+    evidence.homeId === selectedHomeId &&
+    evidence.active === true &&
+    validRole(evidence.role) &&
+    Number.isInteger(evidence.membershipRevision) &&
+    evidence.membershipRevision >= 1
+  );
+}
+
+function validConfirmationEvidence({
+  evidence,
+  currentUserId,
+  selectedHomeId,
+  purpose,
+  subjectId,
+  bindingDigest,
+  now,
+}: {
+  evidence: ProviderConfirmationEvidence;
+  currentUserId: string;
+  selectedHomeId: string;
+  purpose: ProviderConfirmationPurpose;
+  subjectId: string;
+  bindingDigest: string;
+  now: Date;
+}) {
+  return (
+    typeof evidence === "object" &&
+    evidence !== null &&
+    validText(evidence.id, 200) &&
+    evidence.userId === currentUserId &&
+    evidence.homeId === selectedHomeId &&
+    evidence.purpose === purpose &&
+    evidence.subjectId === subjectId &&
+    evidence.bindingDigest === bindingDigest &&
+    validDate(evidence.issuedAt) &&
+    validDate(evidence.expiresAt) &&
+    evidence.issuedAt <= now &&
+    evidence.expiresAt > now &&
+    evidence.expiresAt.getTime() - evidence.issuedAt.getTime() <=
+      PROVIDER_EVIDENCE_MAX_AGE_MS &&
+    evidence.consumed === false
+  );
 }
 
 function validEmailAddress(value: string) {
@@ -405,7 +686,6 @@ function validDisclosures(disclosures: readonly ProviderDisclosure[]) {
   return (
     Array.isArray(disclosures) &&
     disclosures.length > 0 &&
-    uniqueValues(disclosures.map((disclosure) => disclosure.field)) &&
     disclosures.every(
       (disclosure) =>
         typeof disclosure === "object" &&
@@ -413,7 +693,8 @@ function validDisclosures(disclosures: readonly ProviderDisclosure[]) {
         PROVIDER_DISCLOSURE_FIELDS.includes(disclosure.field) &&
         disclosure.explicitlyConfirmed === true &&
         validDisclosureValue(disclosure),
-    )
+    ) &&
+    uniqueValues(disclosures.map((disclosure) => disclosure.field))
   );
 }
 
@@ -448,8 +729,33 @@ function validConnectorGateShape(gate: ProviderConnectorGate) {
   return (
     typeof gate === "object" &&
     gate !== null &&
+    validText(gate.approvalId, 200) &&
+    Number.isInteger(gate.approvalVersion) &&
+    gate.approvalVersion >= 1 &&
+    validText(gate.connectorId, 200) &&
+    validText(gate.externalProviderAccountId, 200) &&
+    validDate(gate.approvedAt) &&
+    validDate(gate.expiresAt) &&
     Array.isArray(gate.oauthScopes) &&
     gate.oauthScopes.every((scope) => validText(scope, 100))
+  );
+}
+
+function exactConnectorGate(
+  gate: ProviderConnectorGate,
+  provider: ProviderProfile,
+  now: Date,
+) {
+  return (
+    validConnectorGateShape(gate) &&
+    provider.channel.type === "APPROVED_CONNECTOR" &&
+    gate.connectorId === provider.channel.connectorId &&
+    gate.externalProviderAccountId ===
+      provider.channel.externalProviderAccountId &&
+    gate.approvedAt <= now &&
+    gate.expiresAt > now &&
+    gate.expiresAt.getTime() - gate.approvedAt.getTime() <=
+      30 * 24 * 60 * 60 * 1000
   );
 }
 
@@ -501,40 +807,52 @@ function connectorGateReason(
 export function decideProviderProfileSave({
   currentUserId,
   selectedHomeId,
-  sessionVerified,
-  hasCurrentMembership,
-  role,
+  membershipEvidence,
   profile,
-  explicitConfirmation,
+  confirmationEvidence,
   connectorGate,
+  now,
 }: {
   currentUserId: string;
   selectedHomeId: string;
-  sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ProviderHandoffRole;
+  membershipEvidence: ProviderMembershipEvidence;
   profile: ProviderProfile;
-  explicitConfirmation: boolean;
+  confirmationEvidence: ProviderConfirmationEvidence;
   connectorGate: ProviderConnectorGate | null;
+  now: Date;
 }): ProviderProfileDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    sessionVerified !== true ||
-    hasCurrentMembership !== true ||
-    !validRole(role) ||
+    !validDate(now) ||
+    !validMembershipEvidence(
+      membershipEvidence,
+      currentUserId,
+      selectedHomeId,
+    ) ||
     !validProvider(profile) ||
     profile.homeId !== selectedHomeId
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) return { status: "read-only" };
-  if (explicitConfirmation !== true) {
+  if (!hasWriteRole(membershipEvidence.role)) return { status: "read-only" };
+  if (
+    !validConfirmationEvidence({
+      evidence: confirmationEvidence,
+      currentUserId,
+      selectedHomeId,
+      purpose: "PROFILE_SAVE",
+      subjectId: profile.id,
+      bindingDigest: profileBinding(profile),
+      now,
+    })
+  ) {
     return { status: "confirmation-required" };
   }
   if (profile.channel.type === "APPROVED_CONNECTOR") {
     if (connectorGate === null) return { status: "unavailable" };
     if (
+      !exactConnectorGate(connectorGate, profile, now) ||
       connectorGateReason(connectorGate) !== null ||
       connectorGate.credentialsServerHeld !== true ||
       !uniqueValues(connectorGate.oauthScopes) ||
@@ -561,68 +879,47 @@ export function decideProviderProfileSave({
 export function decideProviderHandoffDraft({
   currentUserId,
   selectedHomeId,
-  sessionVerified,
-  hasCurrentMembership,
-  role,
+  membershipEvidence,
   task,
   provider,
   kind,
   disclosures,
-  explicitDisclosureReview,
-  containsPaymentCredentials,
-  containsInsuranceClaimInstructions,
-  containsBudgetOrValuationAdvice,
-  containsAdvertisingOrTrackingData,
-  containsUnrelatedHouseholdData,
-  containsAttachmentOrPrivateUrl,
+  confirmationEvidence,
+  safetyEvidence,
+  now,
 }: {
   currentUserId: string;
   selectedHomeId: string;
-  sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ProviderHandoffRole;
+  membershipEvidence: ProviderMembershipEvidence;
   task: ProviderTaskSnapshot;
   provider: ProviderProfile;
   kind: ProviderHandoffKind;
   disclosures: readonly ProviderDisclosure[];
-  explicitDisclosureReview: boolean;
-  containsPaymentCredentials: boolean;
-  containsInsuranceClaimInstructions: boolean;
-  containsBudgetOrValuationAdvice: boolean;
-  containsAdvertisingOrTrackingData: boolean;
-  containsUnrelatedHouseholdData: boolean;
-  containsAttachmentOrPrivateUrl: boolean;
+  confirmationEvidence: ProviderConfirmationEvidence;
+  safetyEvidence: ProviderDraftSafetyEvidence;
+  now: Date;
 }): ProviderHandoffDraftDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    sessionVerified !== true ||
-    hasCurrentMembership !== true ||
-    !validRole(role) ||
+    !validDate(now) ||
+    !validMembershipEvidence(
+      membershipEvidence,
+      currentUserId,
+      selectedHomeId,
+    ) ||
     !PROVIDER_HANDOFF_KINDS.includes(kind) ||
     !validTask(task) ||
     !validProvider(provider) ||
+    !validDisclosures(disclosures) ||
     task.homeId !== selectedHomeId ||
     provider.homeId !== selectedHomeId ||
     !provider.serviceCategories.includes(task.serviceCategory)
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) return { status: "read-only" };
-  if (explicitDisclosureReview !== true) {
-    return { status: "confirmation-required" };
-  }
-  if (
-    !validDisclosures(disclosures) ||
-    containsPaymentCredentials !== false ||
-    containsInsuranceClaimInstructions !== false ||
-    containsBudgetOrValuationAdvice !== false ||
-    containsAdvertisingOrTrackingData !== false ||
-    containsUnrelatedHouseholdData !== false ||
-    containsAttachmentOrPrivateUrl !== false
-  ) {
-    return { status: "unavailable" };
-  }
+  const disclosureDigest = digest(normalizedDisclosures(disclosures));
+  const bindingDigest = draftBinding({ task, provider, kind, disclosures });
   const category = disclosures.find(
     (disclosure) => disclosure.field === "SERVICE_CATEGORY",
   );
@@ -630,6 +927,41 @@ export function decideProviderHandoffDraft({
     !category ||
     category.value.trim().toLowerCase() !==
       task.serviceCategory.trim().toLowerCase()
+  ) {
+    return { status: "unavailable" };
+  }
+  if (!hasWriteRole(membershipEvidence.role)) return { status: "read-only" };
+  if (
+    !validConfirmationEvidence({
+      evidence: confirmationEvidence,
+      currentUserId,
+      selectedHomeId,
+      purpose: "DRAFT_REVIEW",
+      subjectId: task.id,
+      bindingDigest,
+      now,
+    })
+  ) {
+    return { status: "confirmation-required" };
+  }
+  if (
+    typeof safetyEvidence !== "object" ||
+    safetyEvidence === null ||
+    safetyEvidence.homeId !== selectedHomeId ||
+    safetyEvidence.taskId !== task.id ||
+    safetyEvidence.providerId !== provider.id ||
+    safetyEvidence.disclosureDigest !== disclosureDigest ||
+    safetyEvidence.policyVersion !== PROVIDER_HANDOFF_POLICY_VERSION ||
+    !validDate(safetyEvidence.scannedAt) ||
+    safetyEvidence.scannedAt > now ||
+    now.getTime() - safetyEvidence.scannedAt.getTime() >
+      PROVIDER_EVIDENCE_MAX_AGE_MS ||
+    safetyEvidence.containsPaymentCredentials !== false ||
+    safetyEvidence.containsInsuranceClaimInstructions !== false ||
+    safetyEvidence.containsBudgetOrValuationAdvice !== false ||
+    safetyEvidence.containsAdvertisingOrTrackingData !== false ||
+    safetyEvidence.containsUnrelatedHouseholdData !== false ||
+    safetyEvidence.containsAttachmentOrPrivateUrl !== false
   ) {
     return { status: "unavailable" };
   }
@@ -655,40 +987,36 @@ export function decideProviderHandoffDraft({
 export function decideProviderHandoffSend({
   currentUserId,
   selectedHomeId,
-  sessionVerified,
-  hasCurrentMembership,
-  role,
+  membershipEvidence,
   task,
   provider,
   draft,
-  canonicalPayloadDigestServerVerified,
-  finalPreviewConfirmed,
-  idempotencyKey,
-  idempotencyKeyServerGenerated,
+  payloadEvidence,
+  confirmationEvidence,
+  idempotencyEvidence,
   connectorGate,
   now,
 }: {
   currentUserId: string;
   selectedHomeId: string;
-  sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ProviderHandoffRole;
+  membershipEvidence: ProviderMembershipEvidence;
   task: ProviderTaskSnapshot;
   provider: ProviderProfile;
   draft: ProviderHandoffDraft;
-  canonicalPayloadDigestServerVerified: boolean;
-  finalPreviewConfirmed: boolean;
-  idempotencyKey: string;
-  idempotencyKeyServerGenerated: boolean;
+  payloadEvidence: ProviderPayloadEvidence;
+  confirmationEvidence: ProviderConfirmationEvidence;
+  idempotencyEvidence: ProviderIdempotencyEvidence;
   connectorGate: ProviderConnectorGate | null;
   now: Date;
 }): ProviderHandoffSendDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    sessionVerified !== true ||
-    hasCurrentMembership !== true ||
-    !validRole(role) ||
+    !validMembershipEvidence(
+      membershipEvidence,
+      currentUserId,
+      selectedHomeId,
+    ) ||
     !validDraftEnvelope(draft) ||
     draft.homeId !== selectedHomeId ||
     draft.createdByUserId !== currentUserId ||
@@ -701,19 +1029,36 @@ export function decideProviderHandoffSend({
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) return { status: "read-only" };
+  if (!hasWriteRole(membershipEvidence.role)) return { status: "read-only" };
   if (!exactDraftDependencies(draft, task, provider)) {
     return { status: "stale" };
   }
   if (
-    canonicalPayloadDigestServerVerified !== true ||
-    !validText(draft.canonicalPayloadDigest, 256) ||
-    !validText(idempotencyKey, 200) ||
-    idempotencyKeyServerGenerated !== true
+    typeof payloadEvidence !== "object" ||
+    payloadEvidence === null ||
+    payloadEvidence.handoffId !== draft.id ||
+    payloadEvidence.canonicalPayloadDigest !== draft.canonicalPayloadDigest ||
+    payloadEvidence.serverRecomputed !== true ||
+    typeof idempotencyEvidence !== "object" ||
+    idempotencyEvidence === null ||
+    idempotencyEvidence.handoffId !== draft.id ||
+    !validText(idempotencyEvidence.idempotencyKey, 200) ||
+    idempotencyEvidence.serverGenerated !== true ||
+    idempotencyEvidence.consumed !== false
   ) {
     return { status: "unavailable" };
   }
-  if (finalPreviewConfirmed !== true) {
+  if (
+    !validConfirmationEvidence({
+      evidence: confirmationEvidence,
+      currentUserId,
+      selectedHomeId,
+      purpose: "FINAL_PREVIEW",
+      subjectId: draft.id,
+      bindingDigest: sendBinding(draft, idempotencyEvidence),
+      now,
+    })
+  ) {
     return { status: "confirmation-required" };
   }
   if (provider.channel.type === "USER_MEDIATED_EMAIL") {
@@ -734,6 +1079,7 @@ export function decideProviderHandoffSend({
   const reason = connectorGateReason(connectorGate);
   if (reason) return { status: "connector-gate", reason };
   if (
+    !exactConnectorGate(connectorGate, provider, now) ||
     connectorGate.credentialsServerHeld !== true ||
     !uniqueValues(connectorGate.oauthScopes) ||
     connectorGate.oauthScopes.some(
@@ -757,7 +1103,7 @@ export function decideProviderHandoffSend({
   return {
     status: "connector-send-authorized",
     handoffId: draft.id,
-    idempotencyKey,
+    idempotencyKey: idempotencyEvidence.idempotencyKey,
     canonicalPayloadDigest: draft.canonicalPayloadDigest,
     allowedScopes: requiredScopes,
     markSentOnlyAfterProviderAck: true,
@@ -775,10 +1121,7 @@ export function decideProviderWebhookIngress({
   plainTextMessage,
   proposedStartAt,
   connectorGate,
-  webhookSecretConfigured,
-  webhookSignatureValid,
-  webhookTimestamp,
-  connectorScopeAllowed,
+  webhookEvidence,
   existingResponse,
   now,
 }: {
@@ -789,10 +1132,7 @@ export function decideProviderWebhookIngress({
   plainTextMessage: string | null;
   proposedStartAt: Date | null;
   connectorGate: ProviderConnectorGate;
-  webhookSecretConfigured: boolean;
-  webhookSignatureValid: boolean;
-  webhookTimestamp: Date;
-  connectorScopeAllowed: boolean;
+  webhookEvidence: ProviderWebhookEvidence;
   existingResponse?: Pick<
     ProviderHandoffResponse,
     "id" | "handoffId" | "homeId" | "providerId" | "providerEventId"
@@ -802,7 +1142,6 @@ export function decideProviderWebhookIngress({
   if (
     !validConnectorGateShape(connectorGate) ||
     !validDate(now) ||
-    !validDate(webhookTimestamp) ||
     !validDraftEnvelope(handoff) ||
     !validProvider(provider) ||
     handoff.providerId !== provider.id ||
@@ -820,21 +1159,40 @@ export function decideProviderWebhookIngress({
   const gateReason = connectorGateReason(connectorGate);
   if (gateReason) return { status: "provider-gate", reason: gateReason };
   if (
+    !exactConnectorGate(connectorGate, provider, now) ||
     connectorGate.credentialsServerHeld !== true ||
     !connectorGate.oauthScopes.includes("responses:read")
   ) {
     return { status: "provider-gate", reason: "scope" };
   }
   if (
-    webhookSecretConfigured !== true ||
-    webhookSignatureValid !== true
+    typeof webhookEvidence !== "object" ||
+    webhookEvidence === null ||
+    webhookEvidence.handoffId !== handoff.id ||
+    webhookEvidence.homeId !== handoff.homeId ||
+    webhookEvidence.providerId !== provider.id ||
+    webhookEvidence.providerEventId !== providerEventId ||
+    webhookEvidence.connectorId !== provider.channel.connectorId ||
+    webhookEvidence.externalProviderAccountId !==
+      provider.channel.externalProviderAccountId ||
+    webhookEvidence.responseDigest !==
+      webhookResponseDigest({
+        handoff,
+        providerEventId,
+        responseStatus,
+        plainTextMessage,
+        proposedStartAt,
+      }) ||
+    !validDate(webhookEvidence.receivedAt) ||
+    webhookEvidence.secretConfigured !== true ||
+    webhookEvidence.signatureValid !== true
   ) {
     return { status: "provider-gate", reason: "webhook" };
   }
-  if (connectorScopeAllowed !== true) {
+  if (webhookEvidence.responseScopeAllowed !== true) {
     return { status: "provider-gate", reason: "scope" };
   }
-  const webhookAge = now.getTime() - webhookTimestamp.getTime();
+  const webhookAge = now.getTime() - webhookEvidence.receivedAt.getTime();
   if (webhookAge < 0 || webhookAge > PROVIDER_WEBHOOK_MAX_AGE_MS) {
     return { status: "invalid-response", reason: "replay" };
   }
@@ -878,34 +1236,32 @@ export function decideProviderWebhookIngress({
 export function decideProviderResponseReview({
   currentUserId,
   selectedHomeId,
-  sessionVerified,
-  hasCurrentMembership,
-  role,
+  membershipEvidence,
   handoff,
   task,
   provider,
   response,
-  explicitConfirmation,
+  confirmationEvidence,
   now,
 }: {
   currentUserId: string;
   selectedHomeId: string;
-  sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ProviderHandoffRole;
+  membershipEvidence: ProviderMembershipEvidence;
   handoff: ProviderHandoffDraft;
   task: ProviderTaskSnapshot;
   provider: ProviderProfile;
   response: ProviderHandoffResponse;
-  explicitConfirmation: boolean;
+  confirmationEvidence: ProviderConfirmationEvidence;
   now: Date;
 }): ProviderResponseReviewDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    sessionVerified !== true ||
-    hasCurrentMembership !== true ||
-    !validRole(role) ||
+    !validMembershipEvidence(
+      membershipEvidence,
+      currentUserId,
+      selectedHomeId,
+    ) ||
     !validDate(now) ||
     typeof response !== "object" ||
     response === null ||
@@ -922,12 +1278,9 @@ export function decideProviderResponseReview({
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) return { status: "read-only" };
+  if (!hasWriteRole(membershipEvidence.role)) return { status: "read-only" };
   if (!exactDraftDependencies(handoff, task, provider)) {
     return { status: "stale" };
-  }
-  if (explicitConfirmation !== true) {
-    return { status: "confirmation-required" };
   }
   if (
     !validText(response.id, 200) ||
@@ -950,6 +1303,19 @@ export function decideProviderResponseReview({
   ) {
     return { status: "unavailable" };
   }
+  if (
+    !validConfirmationEvidence({
+      evidence: confirmationEvidence,
+      currentUserId,
+      selectedHomeId,
+      purpose: "RESPONSE_REVIEW",
+      subjectId: response.id,
+      bindingDigest: responseBinding(handoff, response),
+      now,
+    })
+  ) {
+    return { status: "confirmation-required" };
+  }
   return {
     status: "response-review-authorized",
     handoffId: handoff.id,
@@ -966,26 +1332,29 @@ export function decideProviderResponseReview({
 export function decideProviderCancellation({
   currentUserId,
   selectedHomeId,
-  sessionVerified,
-  hasCurrentMembership,
-  role,
+  membershipEvidence,
   handoff,
   provider,
+  confirmationEvidence,
+  now,
 }: {
   currentUserId: string;
   selectedHomeId: string;
-  sessionVerified: boolean;
-  hasCurrentMembership: boolean;
-  role: ProviderHandoffRole;
+  membershipEvidence: ProviderMembershipEvidence;
   handoff: ProviderHandoffDraft;
   provider: ProviderProfile;
+  confirmationEvidence: ProviderConfirmationEvidence;
+  now: Date;
 }): ProviderCancellationDecision {
   if (
     !validText(currentUserId, 200) ||
     !validText(selectedHomeId, 200) ||
-    sessionVerified !== true ||
-    hasCurrentMembership !== true ||
-    !validRole(role) ||
+    !validDate(now) ||
+    !validMembershipEvidence(
+      membershipEvidence,
+      currentUserId,
+      selectedHomeId,
+    ) ||
     !validDraftEnvelope(handoff) ||
     handoff.homeId !== selectedHomeId ||
     !validProvider(provider) ||
@@ -997,7 +1366,20 @@ export function decideProviderCancellation({
   ) {
     return { status: "unavailable" };
   }
-  if (!hasWriteRole(role)) return { status: "read-only" };
+  if (!hasWriteRole(membershipEvidence.role)) return { status: "read-only" };
+  if (
+    !validConfirmationEvidence({
+      evidence: confirmationEvidence,
+      currentUserId,
+      selectedHomeId,
+      purpose: "CANCELLATION",
+      subjectId: handoff.id,
+      bindingDigest: cancellationBinding(handoff, provider),
+      now,
+    })
+  ) {
+    return { status: "unavailable" };
+  }
   return {
     status: "cancellation-authorized",
     handoffId: handoff.id,
@@ -1010,15 +1392,36 @@ export function decideProviderCancellation({
 }
 
 export function decideProviderCleanup({
-  scope,
+  evidence,
+  expectedHomeId,
+  expectedSubjectId,
   now,
 }: {
-  scope: "HANDOFF" | "PROVIDER" | "TASK" | "PROPERTY" | "ACCOUNT";
+  evidence: ProviderCleanupEvidence;
+  expectedHomeId: string;
+  expectedSubjectId: string;
   now: Date;
 }): ProviderCleanupDecision {
-  if (!PROVIDER_CLEANUP_SCOPES.includes(scope) || !validDate(now)) {
+  if (
+    typeof evidence !== "object" ||
+    evidence === null ||
+    !validText(expectedHomeId, 200) ||
+    !validText(expectedSubjectId, 200) ||
+    !PROVIDER_CLEANUP_SCOPES.includes(evidence.scope) ||
+    evidence.homeId !== expectedHomeId ||
+    evidence.subjectId !== expectedSubjectId ||
+    !validDate(evidence.issuedAt) ||
+    !validDate(evidence.expiresAt) ||
+    !validDate(now) ||
+    evidence.issuedAt > now ||
+    evidence.expiresAt <= now ||
+    evidence.expiresAt.getTime() - evidence.issuedAt.getTime() >
+      PROVIDER_EVIDENCE_MAX_AGE_MS ||
+    evidence.serverAuthorized !== true
+  ) {
     return { status: "unavailable" };
   }
+  const scope = evidence.scope;
   return {
     status: "cleanup-authorized",
     scope,
@@ -1031,6 +1434,14 @@ export function decideProviderCleanup({
     cancelPendingHandoffs: true,
     deleteDraftPayloads: true,
     deleteProviderResponses: true,
+    deleteProviderCopies: true,
+    deleteWebhookQueues: true,
+    deleteIdempotencyKeys: true,
+    deleteServerCaches: true,
+    deleteDeviceOfflineCopies: true,
+    deleteQueuedActions: true,
+    deleteNotificationReferences: true,
+    redactSensitiveAuditPayloads: true,
     deleteAuditAfter: new Date(
       now.getTime() + PROVIDER_HANDOFF_AUDIT_RETENTION_MS,
     ),
