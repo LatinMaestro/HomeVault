@@ -10,7 +10,10 @@ import {
   decideProviderProfileSave,
   decideProviderResponseReview,
   decideProviderWebhookIngress,
+  providerHandoffBindings,
+  type ProviderConfirmationEvidence,
   type ProviderConnectorGate,
+  type ProviderDraftSafetyEvidence,
   type ProviderHandoffDraft,
   type ProviderHandoffResponse,
   type ProviderProfile,
@@ -18,6 +21,8 @@ import {
 } from "../src/lib/provider-handoff-policy";
 
 const now = new Date("2026-07-28T08:00:00.000Z");
+const issuedAt = new Date("2026-07-28T07:55:00.000Z");
+const expiresAt = new Date("2026-07-28T08:05:00.000Z");
 
 const task: ProviderTaskSnapshot = {
   id: "task-1",
@@ -84,6 +89,12 @@ const draft: ProviderHandoffDraft = {
 };
 
 const connectorGate: ProviderConnectorGate = {
+  approvalId: "approval-1",
+  approvalVersion: 1,
+  connectorId: "connector-fictional",
+  externalProviderAccountId: "provider-account-1",
+  approvedAt: new Date("2026-07-28T07:00:00.000Z"),
+  expiresAt: new Date("2026-08-27T07:00:00.000Z"),
   providerApproved: true,
   accountApproved: true,
   costApproved: true,
@@ -94,19 +105,96 @@ const connectorGate: ProviderConnectorGate = {
   credentialsServerHeld: true,
 };
 
+const membershipEvidence = {
+  userId: "user-1",
+  homeId: "home-1",
+  role: "ADULT" as const,
+  active: true,
+  membershipRevision: 4,
+};
+
+function confirmation(
+  purpose: ProviderConfirmationEvidence["purpose"],
+  subjectId: string,
+  bindingDigest: string,
+): ProviderConfirmationEvidence {
+  return {
+    id: `confirmation-${purpose.toLowerCase()}`,
+    userId: "user-1",
+    homeId: "home-1",
+    purpose,
+    subjectId,
+    bindingDigest,
+    issuedAt,
+    expiresAt,
+    consumed: false,
+  };
+}
+
+const safetyEvidence: ProviderDraftSafetyEvidence = {
+  homeId: "home-1",
+  taskId: "task-1",
+  providerId: "provider-1",
+  disclosureDigest: providerHandoffBindings.disclosures(disclosures),
+  policyVersion: PROVIDER_HANDOFF_POLICY_VERSION,
+  scannedAt: issuedAt,
+  containsPaymentCredentials: false,
+  containsInsuranceClaimInstructions: false,
+  containsBudgetOrValuationAdvice: false,
+  containsAdvertisingOrTrackingData: false,
+  containsUnrelatedHouseholdData: false,
+  containsAttachmentOrPrivateUrl: false,
+};
+
+const idempotencyEvidence = {
+  handoffId: "handoff-1",
+  idempotencyKey: "handoff-idempotency-1",
+  serverGenerated: true,
+  consumed: false,
+};
+
+const payloadEvidence = {
+  handoffId: "handoff-1",
+  canonicalPayloadDigest: "payload-digest",
+  serverRecomputed: true,
+};
+
+const draftRequestInput = {
+  currentUserId: "user-1",
+  selectedHomeId: "home-1",
+  membershipEvidence,
+  task,
+  provider: emailProvider,
+  kind: "ENQUIRY" as const,
+  disclosures,
+  confirmationEvidence: confirmation(
+    "DRAFT_REVIEW",
+    task.id,
+    providerHandoffBindings.draft({
+      task,
+      provider: emailProvider,
+      kind: "ENQUIRY",
+      disclosures,
+    }),
+  ),
+  safetyEvidence,
+  now,
+};
+
 const sendInput = {
   currentUserId: "user-1",
   selectedHomeId: "home-1",
-  sessionVerified: true,
-  hasCurrentMembership: true,
-  role: "ADULT" as const,
+  membershipEvidence,
   task,
   provider: emailProvider,
   draft,
-  canonicalPayloadDigestServerVerified: true,
-  finalPreviewConfirmed: true,
-  idempotencyKey: "handoff-idempotency-1",
-  idempotencyKeyServerGenerated: true,
+  payloadEvidence,
+  confirmationEvidence: confirmation(
+    "FINAL_PREVIEW",
+    "handoff-1",
+    providerHandoffBindings.send(draft, idempotencyEvidence),
+  ),
+  idempotencyEvidence,
   connectorGate: null,
   now,
 };
@@ -129,12 +217,15 @@ test("saves only explicit property-scoped user-supplied provider profiles", () =
     decideProviderProfileSave({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "OWNER",
+      membershipEvidence: { ...membershipEvidence, role: "OWNER" },
       profile: emailProvider,
-      explicitConfirmation: true,
+      confirmationEvidence: confirmation(
+        "PROFILE_SAVE",
+        emailProvider.id,
+        providerHandoffBindings.profile(emailProvider),
+      ),
       connectorGate: null,
+      now,
     }),
     {
       status: "profile-save-authorized",
@@ -151,12 +242,15 @@ test("saves only explicit property-scoped user-supplied provider profiles", () =
     decideProviderProfileSave({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "GUEST",
+      membershipEvidence: { ...membershipEvidence, role: "GUEST" },
       profile: emailProvider,
-      explicitConfirmation: true,
+      confirmationEvidence: confirmation(
+        "PROFILE_SAVE",
+        emailProvider.id,
+        providerHandoffBindings.profile(emailProvider),
+      ),
       connectorGate: null,
+      now,
     }),
     { status: "read-only" },
   );
@@ -164,36 +258,55 @@ test("saves only explicit property-scoped user-supplied provider profiles", () =
     decideProviderProfileSave({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "OWNER",
+      membershipEvidence: { ...membershipEvidence, role: "OWNER" },
       profile: connectorProvider,
-      explicitConfirmation: true,
+      confirmationEvidence: confirmation(
+        "PROFILE_SAVE",
+        connectorProvider.id,
+        providerHandoffBindings.profile(connectorProvider),
+      ),
       connectorGate: null,
+      now,
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("rejects substituted or truthy membership evidence", () => {
+  const input = {
+    currentUserId: "user-1",
+    selectedHomeId: "home-1",
+    membershipEvidence: { ...membershipEvidence, role: "OWNER" as const },
+    profile: emailProvider,
+    confirmationEvidence: confirmation(
+      "PROFILE_SAVE",
+      emailProvider.id,
+      providerHandoffBindings.profile(emailProvider),
+    ),
+    connectorGate: null,
+    now,
+  };
+  assert.deepEqual(
+    decideProviderProfileSave({
+      ...input,
+      membershipEvidence: { ...input.membershipEvidence, userId: "user-2" },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideProviderProfileSave({
+      ...input,
+      membershipEvidence: {
+        ...input.membershipEvidence,
+        active: "true" as never,
+      },
     }),
     { status: "unavailable" },
   );
 });
 
 test("builds a reviewed minimal-disclosure handoff draft", () => {
-  const decision = decideProviderHandoffDraft({
-    currentUserId: "user-1",
-    selectedHomeId: "home-1",
-    sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "ADULT",
-    task,
-    provider: emailProvider,
-    kind: "ENQUIRY",
-    disclosures,
-    explicitDisclosureReview: true,
-    containsPaymentCredentials: false,
-    containsInsuranceClaimInstructions: false,
-    containsBudgetOrValuationAdvice: false,
-    containsAdvertisingOrTrackingData: false,
-    containsUnrelatedHouseholdData: false,
-    containsAttachmentOrPrivateUrl: false,
-  });
+  const decision = decideProviderHandoffDraft(draftRequestInput);
   assert.equal(decision.status, "draft-authorized");
   if (decision.status !== "draft-authorized") return;
   assert.equal(decision.noAttachments, true);
@@ -205,26 +318,35 @@ test("builds a reviewed minimal-disclosure handoff draft", () => {
   assert.equal(decision.requireFinalPreview, true);
 });
 
+test("binds disclosure confirmation and safety evidence to the exact draft", () => {
+  assert.deepEqual(
+    decideProviderHandoffDraft({
+      ...draftRequestInput,
+      confirmationEvidence: {
+        ...draftRequestInput.confirmationEvidence,
+        subjectId: "task-2",
+      },
+    }),
+    { status: "confirmation-required" },
+  );
+  assert.deepEqual(
+    decideProviderHandoffDraft({
+      ...draftRequestInput,
+      safetyEvidence: {
+        ...safetyEvidence,
+        disclosureDigest: "substituted",
+      },
+    }),
+    { status: "unavailable" },
+  );
+});
+
 test("denies read-only, cross-property and unreviewed drafts", () => {
-  const input = {
-    currentUserId: "user-1",
-    selectedHomeId: "home-1",
-    sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "ADULT" as const,
-    task,
-    provider: emailProvider,
-    kind: "MESSAGE" as const,
-    disclosures,
-    explicitDisclosureReview: true,
-    containsPaymentCredentials: false,
-    containsInsuranceClaimInstructions: false,
-    containsBudgetOrValuationAdvice: false,
-    containsAdvertisingOrTrackingData: false,
-    containsUnrelatedHouseholdData: false,
-    containsAttachmentOrPrivateUrl: false,
-  };
-  assert.deepEqual(decideProviderHandoffDraft({ ...input, role: "CHILD" }), {
+  const input = draftRequestInput;
+  assert.deepEqual(decideProviderHandoffDraft({
+    ...input,
+    membershipEvidence: { ...membershipEvidence, role: "CHILD" },
+  }), {
     status: "read-only",
   });
   assert.deepEqual(
@@ -237,7 +359,10 @@ test("denies read-only, cross-property and unreviewed drafts", () => {
   assert.deepEqual(
     decideProviderHandoffDraft({
       ...input,
-      explicitDisclosureReview: false,
+      confirmationEvidence: {
+        ...input.confirmationEvidence,
+        bindingDigest: "substituted",
+      },
     }),
     { status: "confirmation-required" },
   );
@@ -245,22 +370,8 @@ test("denies read-only, cross-property and unreviewed drafts", () => {
 
 test("rejects unconfirmed, duplicate and mismatched disclosure fields", () => {
   const input = {
-    currentUserId: "user-1",
-    selectedHomeId: "home-1",
-    sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "OWNER" as const,
-    task,
-    provider: emailProvider,
-    kind: "ENQUIRY" as const,
-    disclosures,
-    explicitDisclosureReview: true,
-    containsPaymentCredentials: false,
-    containsInsuranceClaimInstructions: false,
-    containsBudgetOrValuationAdvice: false,
-    containsAdvertisingOrTrackingData: false,
-    containsUnrelatedHouseholdData: false,
-    containsAttachmentOrPrivateUrl: false,
+    ...draftRequestInput,
+    membershipEvidence: { ...membershipEvidence, role: "OWNER" as const },
   };
   assert.deepEqual(
     decideProviderHandoffDraft({
@@ -275,21 +386,30 @@ test("rejects unconfirmed, duplicate and mismatched disclosure fields", () => {
   assert.deepEqual(
     decideProviderHandoffDraft({
       ...input,
-      containsPaymentCredentials: true,
+      safetyEvidence: {
+        ...safetyEvidence,
+        containsPaymentCredentials: true,
+      },
     }),
     { status: "unavailable" },
   );
   assert.deepEqual(
     decideProviderHandoffDraft({
       ...input,
-      containsBudgetOrValuationAdvice: true,
+      safetyEvidence: {
+        ...safetyEvidence,
+        containsBudgetOrValuationAdvice: true,
+      },
     }),
     { status: "unavailable" },
   );
   assert.deepEqual(
     decideProviderHandoffDraft({
       ...input,
-      containsAdvertisingOrTrackingData: true,
+      safetyEvidence: {
+        ...safetyEvidence,
+        containsAdvertisingOrTrackingData: true,
+      },
     }),
     { status: "unavailable" },
   );
@@ -306,24 +426,7 @@ test("rejects unconfirmed, duplicate and mismatched disclosure fields", () => {
 });
 
 test("fails closed on unknown kinds, states and malformed runtime values", () => {
-  const draftInput = {
-    currentUserId: "user-1",
-    selectedHomeId: "home-1",
-    sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "OWNER" as const,
-    task,
-    provider: emailProvider,
-    kind: "ENQUIRY" as const,
-    disclosures,
-    explicitDisclosureReview: true,
-    containsPaymentCredentials: false,
-    containsInsuranceClaimInstructions: false,
-    containsBudgetOrValuationAdvice: false,
-    containsAdvertisingOrTrackingData: false,
-    containsUnrelatedHouseholdData: false,
-    containsAttachmentOrPrivateUrl: false,
-  };
+  const draftInput = draftRequestInput;
   assert.deepEqual(
     decideProviderHandoffDraft({
       ...draftInput,
@@ -364,14 +467,53 @@ test("opens user email only after final preview without claiming it sent", () =>
   assert.deepEqual(
     decideProviderHandoffSend({
       ...sendInput,
-      finalPreviewConfirmed: false,
+      confirmationEvidence: {
+        ...sendInput.confirmationEvidence,
+        consumed: true,
+      },
     }),
     { status: "confirmation-required" },
   );
   assert.deepEqual(
     decideProviderHandoffSend({
       ...sendInput,
-      idempotencyKeyServerGenerated: false,
+      idempotencyEvidence: {
+        ...idempotencyEvidence,
+        serverGenerated: false,
+      },
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("rejects replayed or substituted send evidence", () => {
+  assert.deepEqual(
+    decideProviderHandoffSend({
+      ...sendInput,
+      confirmationEvidence: {
+        ...sendInput.confirmationEvidence,
+        expiresAt: now,
+      },
+    }),
+    { status: "confirmation-required" },
+  );
+  assert.deepEqual(
+    decideProviderHandoffSend({
+      ...sendInput,
+      payloadEvidence: {
+        ...payloadEvidence,
+        canonicalPayloadDigest: "substituted",
+      },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideProviderHandoffSend({
+      ...sendInput,
+      idempotencyEvidence: {
+        ...idempotencyEvidence,
+        handoffId: "handoff-2",
+      },
     }),
     { status: "unavailable" },
   );
@@ -466,19 +608,60 @@ test("rejects over-scoped or client-held connector credentials", () => {
   );
 });
 
-test("quarantines only signed fresh scoped provider responses", () => {
+test("binds connector approval to the exact external account and lifetime", () => {
   const input = {
-    handoff: { ...draft, status: "SENT" as const },
+    ...sendInput,
+    provider: connectorProvider,
+    connectorGate,
+  };
+  assert.deepEqual(
+    decideProviderHandoffSend({
+      ...input,
+      connectorGate: {
+        ...connectorGate,
+        externalProviderAccountId: "provider-account-2",
+      },
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideProviderHandoffSend({
+      ...input,
+      connectorGate: { ...connectorGate, expiresAt: now },
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("quarantines only signed fresh scoped provider responses", () => {
+  const sentHandoff = { ...draft, status: "SENT" as const };
+  const input = {
+    handoff: sentHandoff,
     provider: connectorProvider,
     providerEventId: "provider-event-1",
     responseStatus: "RECEIVED" as const,
     plainTextMessage: "Fictional response received.",
     proposedStartAt: null,
     connectorGate,
-    webhookSecretConfigured: true,
-    webhookSignatureValid: true,
-    webhookTimestamp: new Date("2026-07-28T07:59:00.000Z"),
-    connectorScopeAllowed: true,
+    webhookEvidence: {
+      handoffId: "handoff-1",
+      homeId: "home-1",
+      providerId: "provider-1",
+      connectorId: "connector-fictional",
+      externalProviderAccountId: "provider-account-1",
+      providerEventId: "provider-event-1",
+      responseDigest: providerHandoffBindings.webhookResponse({
+        handoff: sentHandoff,
+        providerEventId: "provider-event-1",
+        responseStatus: "RECEIVED",
+        plainTextMessage: "Fictional response received.",
+        proposedStartAt: null,
+      }),
+      receivedAt: new Date("2026-07-28T07:59:00.000Z"),
+      secretConfigured: true,
+      signatureValid: true,
+      responseScopeAllowed: true,
+    },
     now,
   };
   assert.deepEqual(decideProviderWebhookIngress(input), {
@@ -494,14 +677,20 @@ test("quarantines only signed fresh scoped provider responses", () => {
   assert.deepEqual(
     decideProviderWebhookIngress({
       ...input,
-      webhookSignatureValid: false,
+      webhookEvidence: {
+        ...input.webhookEvidence,
+        signatureValid: false,
+      },
     }),
     { status: "provider-gate", reason: "webhook" },
   );
   assert.deepEqual(
     decideProviderWebhookIngress({
       ...input,
-      webhookTimestamp: new Date("2026-07-28T07:54:59.000Z"),
+      webhookEvidence: {
+        ...input.webhookEvidence,
+        receivedAt: new Date("2026-07-28T07:54:59.000Z"),
+      },
     }),
     { status: "invalid-response", reason: "replay" },
   );
@@ -518,18 +707,34 @@ test("quarantines only signed fresh scoped provider responses", () => {
 });
 
 test("deduplicates exact responses and rejects cross-property collisions", () => {
+  const sentHandoff = { ...draft, status: "SENT" as const };
   const input = {
-    handoff: { ...draft, status: "SENT" as const },
+    handoff: sentHandoff,
     provider: connectorProvider,
     providerEventId: "provider-event-1",
     responseStatus: "RECEIVED" as const,
     plainTextMessage: null,
     proposedStartAt: null,
     connectorGate,
-    webhookSecretConfigured: true,
-    webhookSignatureValid: true,
-    webhookTimestamp: now,
-    connectorScopeAllowed: true,
+    webhookEvidence: {
+      handoffId: "handoff-1",
+      homeId: "home-1",
+      providerId: "provider-1",
+      connectorId: "connector-fictional",
+      externalProviderAccountId: "provider-account-1",
+      providerEventId: "provider-event-1",
+      responseDigest: providerHandoffBindings.webhookResponse({
+        handoff: sentHandoff,
+        providerEventId: "provider-event-1",
+        responseStatus: "RECEIVED",
+        plainTextMessage: null,
+        proposedStartAt: null,
+      }),
+      receivedAt: now,
+      secretConfigured: true,
+      signatureValid: true,
+      responseScopeAllowed: true,
+    },
     now,
     existingResponse: {
       id: "response-existing",
@@ -552,19 +757,72 @@ test("deduplicates exact responses and rejects cross-property collisions", () =>
   );
 });
 
+test("rejects substituted webhook identity and response evidence", () => {
+  const sentHandoff = { ...draft, status: "SENT" as const };
+  const input = {
+    handoff: sentHandoff,
+    provider: connectorProvider,
+    providerEventId: "provider-event-1",
+    responseStatus: "RECEIVED" as const,
+    plainTextMessage: "Fictional response received.",
+    proposedStartAt: null,
+    connectorGate,
+    webhookEvidence: {
+      handoffId: "handoff-1",
+      homeId: "home-1",
+      providerId: "provider-1",
+      connectorId: "connector-fictional",
+      externalProviderAccountId: "provider-account-1",
+      providerEventId: "provider-event-1",
+      responseDigest: "substituted",
+      receivedAt: now,
+      secretConfigured: true,
+      signatureValid: true,
+      responseScopeAllowed: true,
+    },
+    now,
+  };
+  assert.deepEqual(decideProviderWebhookIngress(input), {
+    status: "provider-gate",
+    reason: "webhook",
+  });
+  assert.deepEqual(
+    decideProviderWebhookIngress({
+      ...input,
+      webhookEvidence: {
+        ...input.webhookEvidence,
+        responseDigest: providerHandoffBindings.webhookResponse({
+          handoff: sentHandoff,
+          providerEventId: "provider-event-1",
+          responseStatus: "RECEIVED",
+          plainTextMessage: "Fictional response received.",
+          proposedStartAt: null,
+        }),
+        providerId: "provider-2",
+      },
+    }),
+    { status: "provider-gate", reason: "webhook" },
+  );
+});
+
 test("keeps provider responses review-only and uses normal task updates", () => {
+  const responseNow = new Date("2026-07-28T08:02:00.000Z");
+  const sentHandoff = { ...draft, status: "SENT" as const };
+  const reviewConfirmation = confirmation(
+    "RESPONSE_REVIEW",
+    response.id,
+    providerHandoffBindings.response(sentHandoff, response),
+  );
   const decision = decideProviderResponseReview({
     currentUserId: "user-1",
     selectedHomeId: "home-1",
-    sessionVerified: true,
-    hasCurrentMembership: true,
-    role: "OWNER",
-    handoff: { ...draft, status: "SENT" as const },
+    membershipEvidence: { ...membershipEvidence, role: "OWNER" },
+    handoff: sentHandoff,
     task,
     provider: connectorProvider,
     response,
-    explicitConfirmation: true,
-    now: new Date("2026-07-28T08:02:00.000Z"),
+    confirmationEvidence: reviewConfirmation,
+    now: responseNow,
   });
   assert.equal(decision.status, "response-review-authorized");
   if (decision.status !== "response-review-authorized") return;
@@ -576,15 +834,13 @@ test("keeps provider responses review-only and uses normal task updates", () => 
     decideProviderResponseReview({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "OWNER",
-      handoff: { ...draft, status: "SENT" as const },
+      membershipEvidence: { ...membershipEvidence, role: "OWNER" },
+      handoff: sentHandoff,
       task,
       provider: emailProvider,
       response,
-      explicitConfirmation: true,
-      now: new Date("2026-07-28T08:02:00.000Z"),
+      confirmationEvidence: reviewConfirmation,
+      now: responseNow,
     }),
     { status: "unavailable" },
   );
@@ -592,15 +848,13 @@ test("keeps provider responses review-only and uses normal task updates", () => 
     decideProviderResponseReview({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "OWNER",
-      handoff: { ...draft, status: "SENT" as const },
+      membershipEvidence: { ...membershipEvidence, role: "OWNER" },
+      handoff: sentHandoff,
       task,
       provider: connectorProvider,
       response: { ...response, status: "AUTO_BOOKED" as never },
-      explicitConfirmation: true,
-      now: new Date("2026-07-28T08:02:00.000Z"),
+      confirmationEvidence: reviewConfirmation,
+      now: responseNow,
     }),
     { status: "unavailable" },
   );
@@ -608,15 +862,20 @@ test("keeps provider responses review-only and uses normal task updates", () => 
 
 test("cancellation never claims external completion or automates refunds", () => {
   const sentDraft = { ...draft, status: "SENT" as const };
+  const cancellationConfirmation = confirmation(
+    "CANCELLATION",
+    sentDraft.id,
+    providerHandoffBindings.cancellation(sentDraft, connectorProvider),
+  );
   assert.deepEqual(
     decideProviderCancellation({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "ADULT",
+      membershipEvidence,
       handoff: sentDraft,
       provider: connectorProvider,
+      confirmationEvidence: cancellationConfirmation,
+      now,
     }),
     {
       status: "cancellation-authorized",
@@ -632,18 +891,31 @@ test("cancellation never claims external completion or automates refunds", () =>
     decideProviderCancellation({
       currentUserId: "user-1",
       selectedHomeId: "home-1",
-      sessionVerified: true,
-      hasCurrentMembership: true,
-      role: "ADULT",
+      membershipEvidence,
       handoff: { ...sentDraft, disclosures: [] },
       provider: connectorProvider,
+      confirmationEvidence: cancellationConfirmation,
+      now,
     }),
     { status: "unavailable" },
   );
 });
 
 test("lifecycle cleanup removes integrations without deleting tasks by default", () => {
-  assert.deepEqual(decideProviderCleanup({ scope: "PROVIDER", now }), {
+  const providerCleanupEvidence = {
+    scope: "PROVIDER" as const,
+    homeId: "home-1",
+    subjectId: "provider-1",
+    issuedAt,
+    expiresAt,
+    serverAuthorized: true,
+  };
+  assert.deepEqual(decideProviderCleanup({
+    evidence: providerCleanupEvidence,
+    expectedHomeId: "home-1",
+    expectedSubjectId: "provider-1",
+    now,
+  }), {
     status: "cleanup-authorized",
     scope: "PROVIDER",
     archiveProviderProfile: true,
@@ -652,25 +924,82 @@ test("lifecycle cleanup removes integrations without deleting tasks by default",
     cancelPendingHandoffs: true,
     deleteDraftPayloads: true,
     deleteProviderResponses: true,
+    deleteProviderCopies: true,
+    deleteWebhookQueues: true,
+    deleteIdempotencyKeys: true,
+    deleteServerCaches: true,
+    deleteDeviceOfflineCopies: true,
+    deleteQueuedActions: true,
+    deleteNotificationReferences: true,
+    redactSensitiveAuditPayloads: true,
     deleteAuditAfter: new Date("2026-08-27T08:00:00.000Z"),
     deleteHouseholdTask: false,
     requireRetryableCleanupLedger: true,
   });
-  const propertyCleanup = decideProviderCleanup({ scope: "PROPERTY", now });
+  const propertyCleanup = decideProviderCleanup({
+    evidence: {
+      ...providerCleanupEvidence,
+      scope: "PROPERTY",
+      subjectId: "home-1",
+    },
+    expectedHomeId: "home-1",
+    expectedSubjectId: "home-1",
+    now,
+  });
   assert.equal(propertyCleanup.status, "cleanup-authorized");
   if (propertyCleanup.status !== "cleanup-authorized") return;
   assert.equal(propertyCleanup.deleteHouseholdTask, true);
   assert.deepEqual(
     decideProviderCleanup({
-      scope: "EVERYTHING" as never,
+      evidence: {
+        ...providerCleanupEvidence,
+        scope: "EVERYTHING" as never,
+      },
+      expectedHomeId: "home-1",
+      expectedSubjectId: "provider-1",
       now,
     }),
     { status: "unavailable" },
   );
   assert.deepEqual(
     decideProviderCleanup({
-      scope: "PROPERTY",
+      evidence: {
+        ...providerCleanupEvidence,
+        scope: "PROPERTY",
+        subjectId: "home-1",
+      },
+      expectedHomeId: "home-1",
+      expectedSubjectId: "home-1",
       now: new Date("invalid"),
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("binds cleanup authorization to exact scope, property and subject", () => {
+  const evidence = {
+    scope: "PROVIDER" as const,
+    homeId: "home-1",
+    subjectId: "provider-1",
+    issuedAt,
+    expiresAt,
+    serverAuthorized: true,
+  };
+  assert.deepEqual(
+    decideProviderCleanup({
+      evidence,
+      expectedHomeId: "home-2",
+      expectedSubjectId: "provider-1",
+      now,
+    }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideProviderCleanup({
+      evidence: { ...evidence, serverAuthorized: "true" as never },
+      expectedHomeId: "home-1",
+      expectedSubjectId: "provider-1",
+      now,
     }),
     { status: "unavailable" },
   );
