@@ -454,14 +454,22 @@ function isDeletionScopeResult(
 }
 
 function isCandidate(value: unknown): value is CandidateIdentity {
+  if (!isRecord(value)) {
+    return false;
+  }
+  const buildNumber =
+    typeof value.buildNumber === "string" ? Number(value.buildNumber) : NaN;
   return (
-    isRecord(value) &&
     isIdentifier(value.candidateId) &&
     isPositiveInteger(value.revision) &&
     isCommit(value.releaseCommit) &&
-    isIdentifier(value.deploymentId) &&
-    /^\d+\.\d+\.\d+$/.test(value.appVersion as string) &&
-    /^[1-9]\d*$/.test(value.buildNumber as string)
+    typeof value.deploymentId === "string" &&
+    /^dpl_[A-Za-z0-9]+$/.test(value.deploymentId) &&
+    typeof value.appVersion === "string" &&
+    /^\d+\.\d+\.\d+$/.test(value.appVersion) &&
+    typeof value.buildNumber === "string" &&
+    /^[1-9]\d*$/.test(value.buildNumber) &&
+    Number.isSafeInteger(buildNumber)
   );
 }
 
