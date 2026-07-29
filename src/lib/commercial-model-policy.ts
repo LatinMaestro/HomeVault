@@ -444,6 +444,15 @@ export function decideEntitlement({
   ) {
     return { status: "unavailable" };
   }
+  if (transaction.consumedVerificationId !== null) {
+    if (
+      transaction.consumedVerificationId === transaction.verificationId &&
+      existingEntitlement?.sourceTransactionId === transaction.transactionId
+    ) {
+      return { status: "duplicate", transactionId: transaction.transactionId };
+    }
+    return { status: "unavailable" };
+  }
   if (
     transaction.revoked === true ||
     transaction.refunded === true ||
