@@ -3,16 +3,22 @@ import test from "node:test";
 
 import {
   CRASH_REPORTING_POLICY_VERSION,
+  crashReportingBindings,
   decideCrashCapture,
   decideCrashCleanup,
+  type CrashCleanupEvidence,
   type CrashConsent,
+  type CrashInstallationEvidence,
   type CrashProviderGate,
+  type CrashRedactionEvidence,
   type CrashReportDraft,
 } from "../src/lib/crash-reporting-policy";
 
 const now = new Date("2026-07-28T09:00:00.000Z");
 
 const consent: CrashConsent = {
+  id: "crash-consent-1",
+  revision: 3,
   installationId: "install-1",
   processorSubjectId: "subject-pseudonym-1",
   enabled: true,
@@ -24,12 +30,21 @@ const consent: CrashConsent = {
 };
 
 const providerGate: CrashProviderGate = {
+  approvalId: "crash-provider-approval-1",
+  approvalVersion: 2,
+  providerId: "approved-crash-provider",
+  projectId: "homevault-production",
+  approvedAt: new Date("2026-07-28T08:00:00.000Z"),
+  expiresAt: new Date("2026-08-27T08:00:00.000Z"),
   providerApproved: true,
   accountApproved: true,
   costApproved: true,
   privacyApproved: true,
   approvedRegionConfigured: true,
   dataProcessingAgreementApproved: true,
+  subprocessorInventoryApproved: true,
+  deletionSupported: true,
+  credentialsServerHeld: true,
   retentionDays: 14,
   trackingDisabled: true,
   advertisingDisabled: true,
@@ -66,7 +81,38 @@ const report: CrashReportDraft = {
   networkAvailable: true,
   memoryPressure: false,
   offlineMode: false,
-  canonicalDigest: "canonical-crash-digest-1",
+  canonicalDigest: "",
+  containsUserIdentity: false,
+  containsHouseholdIdentifier: false,
+  containsRecordContent: false,
+  containsFileNameOrUrl: false,
+  containsRequestOrResponseBody: false,
+  containsCredentialsOrTokens: false,
+  containsLocationOrContacts: false,
+};
+report.canonicalDigest = crashReportingBindings.canonicalReport(report);
+
+const installationEvidence: CrashInstallationEvidence = {
+  consentId: consent.id,
+  consentRevision: consent.revision,
+  installationId: consent.installationId,
+  processorSubjectId: consent.processorSubjectId,
+  subjectMappingRevision: 4,
+  uploadTokenId: "crash-upload-token-1",
+  issuedAt: new Date("2026-07-28T08:55:00.000Z"),
+  expiresAt: new Date("2026-07-28T09:05:00.000Z"),
+  serverResolved: true,
+};
+
+const redactionEvidence: CrashRedactionEvidence = {
+  eventId: report.id,
+  processorSubjectId: report.processorSubjectId,
+  releaseCommit: report.releaseCommit,
+  inputDigest: crashReportingBindings.reportInput(report),
+  canonicalDigest: report.canonicalDigest,
+  policyVersion: CRASH_REPORTING_POLICY_VERSION,
+  redactedAt: new Date("2026-07-28T08:59:30.000Z"),
+  serverRecomputed: true,
   containsUserIdentity: false,
   containsHouseholdIdentifier: false,
   containsRecordContent: false,
@@ -76,14 +122,36 @@ const report: CrashReportDraft = {
   containsLocationOrContacts: false,
 };
 
+function redactionFor(draft: CrashReportDraft): CrashRedactionEvidence {
+  return {
+    ...redactionEvidence,
+    eventId: draft.id,
+    processorSubjectId: draft.processorSubjectId,
+    releaseCommit: draft.releaseCommit,
+    inputDigest: crashReportingBindings.reportInput(draft),
+    canonicalDigest: crashReportingBindings.canonicalReport(draft),
+  };
+}
+
+const cleanupEvidence: CrashCleanupEvidence = {
+  scope: "ACCOUNT",
+  installationId: consent.installationId,
+  processorSubjectId: consent.processorSubjectId,
+  consentId: consent.id,
+  consentRevision: consent.revision,
+  issuedAt: new Date("2026-07-28T08:55:00.000Z"),
+  expiresAt: new Date("2026-07-28T09:05:00.000Z"),
+  serverAuthorized: true,
+};
+
 const input = {
   consent,
   report,
   providerGate,
-  installationIdServerVerified: true,
-  processorSubjectServerVerified: true,
-  canonicalRedactionServerVerified: true,
-  canonicalDigestServerVerified: true,
+  expectedProviderId: providerGate.providerId,
+  expectedProjectId: providerGate.projectId,
+  installationEvidence,
+  redactionEvidence,
   now,
 };
 
@@ -93,7 +161,7 @@ test("authorizes only consented operational crash uploads through redaction", ()
     eventId: "crash-event-1",
     processorSubjectId: "subject-pseudonym-1",
     releaseCommit: "8ed478b78c24dc37a43320ea272e5db6ccced4fb",
-    canonicalDigest: "canonical-crash-digest-1",
+    canonicalDigest: report.canonicalDigest,
     useHomeVaultRedactionProxy: true,
     operationalDiagnosticsOnly: true,
     retentionDays: 14,
@@ -164,6 +232,30 @@ test("rejects long retention and unsafe SDK capabilities", () => {
   );
 });
 
+test("binds provider approval to the exact configured project", () => {
+  assert.deepEqual(
+    decideCrashCapture({ ...input, expectedProviderId: "another-provider" }),
+    { status: "provider-gate", reason: "provider" },
+  );
+  assert.deepEqual(
+    decideCrashCapture({ ...input, expectedProjectId: "another-project" }),
+    { status: "provider-gate", reason: "provider" },
+  );
+  for (const patch of [
+    { subprocessorInventoryApproved: false },
+    { deletionSupported: false },
+    { credentialsServerHeld: false },
+  ]) {
+    assert.deepEqual(
+      decideCrashCapture({
+        ...input,
+        providerGate: { ...providerGate, ...patch },
+      }),
+      { status: "provider-gate", reason: "privacy" },
+    );
+  }
+});
+
 test("rejects identity, household content and request bodies", () => {
   for (const patch of [
     { containsUserIdentity: true },
@@ -184,40 +276,88 @@ test("rejects identity, household content and request bodies", () => {
   }
 });
 
-test("requires server-verified installation, subject, redaction and digest", () => {
-  for (const field of [
-    "installationIdServerVerified",
-    "processorSubjectServerVerified",
-    "canonicalRedactionServerVerified",
-    "canonicalDigestServerVerified",
-  ] as const) {
+test("binds installation and subject evidence to the exact consent", () => {
+  for (const installationPatch of [
+    { consentId: "another-consent" },
+    { consentRevision: consent.revision + 1 },
+    { installationId: "another-installation" },
+    { processorSubjectId: "another-subject" },
+    { subjectMappingRevision: 0 },
+    { uploadTokenId: " " },
+    { serverResolved: false },
+    { serverResolved: 1 as never },
+    { expiresAt: now },
+  ]) {
     assert.deepEqual(
-      decideCrashCapture({ ...input, [field]: false }),
+      decideCrashCapture({
+        ...input,
+        installationEvidence: {
+          ...installationEvidence,
+          ...installationPatch,
+        },
+      }),
       { status: "unavailable" },
     );
   }
 });
 
-test("rejects stale and future crash envelopes", () => {
+test("binds redaction to the exact event, release and server digest", () => {
+  for (const redactionPatch of [
+    { eventId: "another-event" },
+    { processorSubjectId: "another-subject" },
+    { releaseCommit: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" },
+    { inputDigest: "substituted-input" },
+    { canonicalDigest: "substituted-output" },
+    { serverRecomputed: false },
+    { containsRecordContent: true },
+    { containsCredentialsOrTokens: true },
+    { redactedAt: new Date("2026-07-28T08:49:59.999Z") },
+  ]) {
+    assert.deepEqual(
+      decideCrashCapture({
+        ...input,
+        redactionEvidence: { ...redactionEvidence, ...redactionPatch },
+      }),
+      { status: "unavailable" },
+    );
+  }
   assert.deepEqual(
     decideCrashCapture({
       ...input,
-      report: {
-        ...report,
-        occurredAt: new Date("2026-07-27T08:59:59.999Z"),
-      },
+      report: { ...report, errorCode: "SUBSTITUTED_ERROR_CODE" },
+    }),
+    { status: "unavailable" },
+  );
+});
+
+test("rejects stale and future crash envelopes", () => {
+  const staleReport = {
+    ...report,
+    occurredAt: new Date("2026-07-27T08:59:59.999Z"),
+  };
+  staleReport.canonicalDigest =
+    crashReportingBindings.canonicalReport(staleReport);
+  assert.deepEqual(
+    decideCrashCapture({
+      ...input,
+      report: staleReport,
+      redactionEvidence: redactionFor(staleReport),
     }),
     { status: "stale" },
   );
+  const futureReport = {
+    ...report,
+    occurredAt: new Date("2026-07-28T09:00:00.001Z"),
+  };
+  futureReport.canonicalDigest =
+    crashReportingBindings.canonicalReport(futureReport);
   assert.deepEqual(
     decideCrashCapture({
       ...input,
-      report: {
-        ...report,
-        occurredAt: new Date("2026-07-28T09:00:00.001Z"),
-      },
+      report: futureReport,
+      redactionEvidence: redactionFor(futureReport),
     }),
-    { status: "stale" },
+    { status: "unavailable" },
   );
 });
 
@@ -270,6 +410,16 @@ test("fails closed for malformed runtime dates, arrays and gate booleans", () =>
       now: "2026-07-28T09:00:00.000Z" as never,
     }),
     { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideCrashCapture({
+      ...input,
+      providerGate: {
+        ...providerGate,
+        expiresAt: "2026-08-27T08:00:00.000Z" as never,
+      },
+    }),
+    { status: "provider-gate", reason: "provider" },
   );
   assert.deepEqual(
     decideCrashCapture({
@@ -348,27 +498,52 @@ test("rejects policy drift and mismatched processor subjects", () => {
 });
 
 test("opt-out and lifecycle cleanup delete device and processor state", () => {
-  assert.deepEqual(decideCrashCleanup({ scope: "ACCOUNT", now }), {
+  const cleanupInput = {
+    evidence: cleanupEvidence,
+    consent,
+    expectedInstallationId: consent.installationId,
+    expectedProcessorSubjectId: consent.processorSubjectId,
+    now,
+  };
+  assert.deepEqual(decideCrashCleanup(cleanupInput), {
     status: "cleanup-authorized",
     scope: "ACCOUNT",
     revokeInstallationUploadToken: true,
     purgeLocalCrashQueue: true,
     deleteProcessorEventsBySubject: true,
+    deleteProviderBackups: true,
+    deleteDeliveryQueues: true,
+    deleteDeduplicationKeys: true,
+    deleteServerCaches: true,
+    deleteDeviceOfflineCopies: true,
+    deleteSourceMapAccessGrants: true,
+    redactSensitiveAuditPayloads: true,
     deleteSubjectMapping: true,
     disableFutureCapture: true,
     deleteOperationalAuditAfter: new Date("2026-08-11T09:00:00.000Z"),
     requireRetryableProcessorDeletionLedger: true,
     deleteHouseholdRecords: false,
   });
+  for (const patch of [
+    { scope: "EVERYTHING" as never },
+    { installationId: "another-installation" },
+    { processorSubjectId: "another-subject" },
+    { consentId: "another-consent" },
+    { consentRevision: consent.revision + 1 },
+    { serverAuthorized: false },
+    { serverAuthorized: 1 as never },
+    { expiresAt: now },
+  ]) {
+    assert.deepEqual(
+      decideCrashCleanup({
+        ...cleanupInput,
+        evidence: { ...cleanupEvidence, ...patch },
+      }),
+      { status: "unavailable" },
+    );
+  }
   assert.deepEqual(
-    decideCrashCleanup({ scope: "ACCOUNT", now: new Date("invalid") }),
-    { status: "unavailable" },
-  );
-  assert.deepEqual(
-    decideCrashCleanup({
-      scope: "EVERYTHING" as never,
-      now,
-    }),
+    decideCrashCleanup({ ...cleanupInput, now: new Date("invalid") }),
     { status: "unavailable" },
   );
 });
