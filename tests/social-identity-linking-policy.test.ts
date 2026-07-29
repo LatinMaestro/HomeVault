@@ -6,247 +6,326 @@ import {
   decideSocialLinkStart,
   decideSocialUnlink,
   getEffectiveSocialLinkRequestStatus,
+  type SocialCallbackEvidence,
+  type SocialIdentityLink,
   type SocialLinkRequest,
 } from "../src/lib/social-identity-linking-policy";
 
-const now = new Date("2026-07-27T00:00:00.000Z");
-
-const pendingRequest: SocialLinkRequest = {
+const now = new Date("2026-07-29T01:00:00.000Z");
+const expiry = new Date("2026-07-29T01:10:00.000Z");
+const request: SocialLinkRequest = {
   id: "social-link-1",
   userId: "user-1",
   initiatingSessionId: "session-1",
   provider: "apple",
+  stateId: "state-1",
+  nonceId: "nonce-1",
+  pkceChallengeId: "pkce-1",
   status: "PENDING",
-  expiresAt: new Date("2026-07-27T00:10:00.000Z"),
+  expiresAt: expiry,
+};
+const callback: SocialCallbackEvidence = {
+  requestId: "social-link-1",
+  userId: "user-1",
+  sessionId: "session-1",
+  provider: "apple",
+  providerSubject: "provider-subject-1",
+  stateId: "state-1",
+  nonceId: "nonce-1",
+  pkceChallengeId: "pkce-1",
+  stateVerified: true,
+  nonceVerified: true,
+  pkceVerified: true,
+  issuerVerified: true,
+  audienceVerified: true,
+  signatureVerified: true,
+  timestampsVerified: true,
+};
+const link: SocialIdentityLink = {
+  id: "link-1",
+  userId: "user-1",
+  provider: "apple",
+  providerSubject: "provider-subject-1",
 };
 
-test("starts an approved provider link only from a verified reconfirmed session", () => {
+test("starts only from an exactly verified and reconfirmed session", () => {
+  const input = {
+    currentUserId: "user-1",
+    currentSessionId: "session-1",
+    sessionVerified: true,
+    emailVerified: true,
+    credentialConfirmed: true,
+    provider: "apple",
+  };
+  assert.deepEqual(decideSocialLinkStart(input), {
+    status: "start-allowed",
+    userId: "user-1",
+    sessionId: "session-1",
+    provider: "apple",
+  });
   assert.deepEqual(
-    decideSocialLinkStart({
-      currentUserId: "user-1",
-      currentSessionId: "session-1",
-      emailVerified: true,
-      credentialConfirmed: true,
-      provider: "apple",
-    }),
-    {
-      status: "start-allowed",
-      userId: "user-1",
-      sessionId: "session-1",
-      provider: "apple",
-    },
-  );
-
-  assert.deepEqual(
-    decideSocialLinkStart({
-      currentUserId: "user-1",
-      currentSessionId: "session-1",
-      emailVerified: false,
-      credentialConfirmed: true,
-      provider: "apple",
-    }),
+    decideSocialLinkStart({ ...input, sessionVerified: 1 as never }),
     { status: "unavailable" },
   );
-
   assert.deepEqual(
-    decideSocialLinkStart({
-      currentUserId: "user-1",
-      currentSessionId: "session-1",
-      emailVerified: true,
-      credentialConfirmed: false,
-      provider: "apple",
-    }),
+    decideSocialLinkStart({ ...input, emailVerified: "yes" as never }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideSocialLinkStart({ ...input, credentialConfirmed: 1 as never }),
     { status: "credential-confirmation-required" },
   );
-
   assert.deepEqual(
-    decideSocialLinkStart({
-      currentUserId: "user-1",
-      currentSessionId: "session-1",
-      emailVerified: true,
-      credentialConfirmed: true,
-      provider: "unapproved",
-    }),
+    decideSocialLinkStart({ ...input, currentUserId: " user-1" }),
+    { status: "unavailable" },
+  );
+});
+
+test("allows only Apple and Google without runtime coercion", () => {
+  const input = {
+    currentUserId: "user-1",
+    currentSessionId: "session-1",
+    sessionVerified: true,
+    emailVerified: true,
+    credentialConfirmed: true,
+    provider: "github",
+  };
+  assert.deepEqual(decideSocialLinkStart(input), {
+    status: "provider-not-approved",
+  });
+  assert.deepEqual(
+    decideSocialLinkStart({ ...input, provider: { toString: () => "apple" } }),
     { status: "provider-not-approved" },
   );
 });
 
-test("expires a pending social-link request at the exact deadline", () => {
+test("invalid request dates and shapes fail closed", () => {
   assert.equal(
     getEffectiveSocialLinkRequestStatus(
-      pendingRequest,
-      new Date("2026-07-27T00:09:59.999Z"),
+      { ...request, expiresAt: new Date("invalid") },
+      now,
     ),
-    "PENDING",
+    "INVALID",
   );
   assert.equal(
-    getEffectiveSocialLinkRequestStatus(
-      pendingRequest,
-      pendingRequest.expiresAt,
-    ),
-    "EXPIRED",
+    getEffectiveSocialLinkRequestStatus(request, new Date("invalid")),
+    "INVALID",
   );
+  assert.equal(getEffectiveSocialLinkRequestStatus(request, expiry), "EXPIRED");
 });
 
-test("links a verified provider subject to the immutable current user", () => {
+test("links a fully bound callback to the immutable current user", () => {
   assert.deepEqual(
     decideSocialLinkCompletion({
-      request: pendingRequest,
+      request,
       currentUserId: "user-1",
       currentSessionId: "session-1",
-      callbackProvider: "apple",
-      providerSubject: " provider-subject-1 ",
-      stateVerified: true,
-      nonceVerified: true,
-      pkceVerified: true,
-      existingLinkUserId: null,
+      sessionVerified: true,
+      callback,
+      existingLink: null,
       now,
     }),
     {
       status: "link-allowed",
+      requestId: "social-link-1",
       userId: "user-1",
+      sessionId: "session-1",
       provider: "apple",
       providerSubject: "provider-subject-1",
       linkedAt: now,
+      transactionPlan: {
+        consumeRequest: true,
+        preserveUserId: true,
+        preserveVerifiedEmail: true,
+        mergeByProviderEmail: false,
+        reassignExistingIdentity: false,
+      },
     },
   );
 });
 
-test("rejects session swaps, provider swaps and incomplete callback proofs", () => {
-  const completion = {
-    request: pendingRequest,
+test("request, user, session, provider, state, nonce and PKCE substitutions fail", () => {
+  const base = {
+    request,
     currentUserId: "user-1",
     currentSessionId: "session-1",
-    callbackProvider: "apple",
-    providerSubject: "provider-subject-1",
-    stateVerified: true,
-    nonceVerified: true,
-    pkceVerified: true,
-    existingLinkUserId: null,
+    sessionVerified: true,
+    callback,
+    existingLink: null,
     now,
   };
+  const changes: Partial<SocialCallbackEvidence>[] = [
+    { requestId: "other-request" },
+    { userId: "other-user" },
+    { sessionId: "other-session" },
+    { provider: "google" },
+    { stateId: "other-state" },
+    { nonceId: "other-nonce" },
+    { pkceChallengeId: "other-pkce" },
+  ];
+  for (const change of changes) {
+    assert.deepEqual(
+      decideSocialLinkCompletion({
+        ...base,
+        callback: { ...callback, ...change },
+      }),
+      { status: "invalid-callback" },
+    );
+  }
+});
 
+test("all callback cryptographic and token checks require exact true", () => {
+  const base = {
+    request,
+    currentUserId: "user-1",
+    currentSessionId: "session-1",
+    sessionVerified: true,
+    callback,
+    existingLink: null,
+    now,
+  };
+  for (const field of [
+    "stateVerified",
+    "nonceVerified",
+    "pkceVerified",
+    "issuerVerified",
+    "audienceVerified",
+    "signatureVerified",
+    "timestampsVerified",
+  ] as const) {
+    assert.deepEqual(
+      decideSocialLinkCompletion({
+        ...base,
+        callback: { ...callback, [field]: 1 as never },
+      }),
+      { status: "invalid-callback" },
+    );
+  }
   assert.deepEqual(
     decideSocialLinkCompletion({
-      ...completion,
-      currentSessionId: "other-session",
-    }),
-    { status: "unavailable" },
-  );
-  assert.deepEqual(
-    decideSocialLinkCompletion({
-      ...completion,
-      callbackProvider: "google",
-    }),
-    { status: "invalid-callback" },
-  );
-  assert.deepEqual(
-    decideSocialLinkCompletion({
-      ...completion,
-      nonceVerified: false,
-    }),
-    { status: "invalid-callback" },
-  );
-  assert.deepEqual(
-    decideSocialLinkCompletion({
-      ...completion,
-      pkceVerified: false,
-    }),
-    { status: "invalid-callback" },
-  );
-  assert.deepEqual(
-    decideSocialLinkCompletion({
-      ...completion,
-      stateVerified: false,
+      ...base,
+      callback: { ...callback, stateConsumedAt: now },
     }),
     { status: "invalid-callback" },
   );
 });
 
-test("never merges accounts by provider email or reassigns an existing identity", () => {
-  const completion = {
-    request: pendingRequest,
+test("existing-link evidence must match the exact provider subject", () => {
+  const base = {
+    request,
     currentUserId: "user-1",
     currentSessionId: "session-1",
-    callbackProvider: "apple",
-    providerSubject: "provider-subject-1",
-    stateVerified: true,
-    nonceVerified: true,
-    pkceVerified: true,
+    sessionVerified: true,
+    callback,
     now,
   };
-
   assert.deepEqual(
-    decideSocialLinkCompletion({
-      ...completion,
-      existingLinkUserId: "user-1",
-    }),
+    decideSocialLinkCompletion({ ...base, existingLink: link }),
     { status: "already-linked" },
   );
   assert.deepEqual(
     decideSocialLinkCompletion({
-      ...completion,
-      existingLinkUserId: "other-user",
+      ...base,
+      existingLink: { ...link, userId: "other-user" },
     }),
     { status: "provider-identity-unavailable" },
   );
+  assert.deepEqual(
+    decideSocialLinkCompletion({
+      ...base,
+      existingLink: { ...link, providerSubject: "other-subject" },
+    }),
+    { status: "unavailable" },
+  );
 });
 
-test("rejects expired and terminal request replay", () => {
-  const completion = {
-    request: pendingRequest,
+test("expired and terminal link requests cannot be replayed", () => {
+  const base = {
+    request,
     currentUserId: "user-1",
     currentSessionId: "session-1",
-    callbackProvider: "apple",
-    providerSubject: "provider-subject-1",
-    stateVerified: true,
-    nonceVerified: true,
-    pkceVerified: true,
-    existingLinkUserId: null,
+    sessionVerified: true,
+    callback,
+    existingLink: null,
   };
-
+  assert.deepEqual(decideSocialLinkCompletion({ ...base, now: expiry }), {
+    status: "expired",
+  });
   assert.deepEqual(
     decideSocialLinkCompletion({
-      ...completion,
-      now: pendingRequest.expiresAt,
-    }),
-    { status: "expired" },
-  );
-  assert.deepEqual(
-    decideSocialLinkCompletion({
-      ...completion,
-      request: { ...pendingRequest, status: "LINKED" },
+      ...base,
+      request: { ...request, status: "LINKED" },
       now,
     }),
     { status: "unavailable" },
   );
 });
 
-test("unlink requires reconfirmation and another verified sign-in method", () => {
-  const unlink = {
+test("unlink requires an exact verified alternate sign-in record", () => {
+  const input = {
     currentUserId: "user-1",
+    currentSessionId: "session-1",
+    sessionVerified: true,
     emailVerified: true,
     credentialConfirmed: true,
-    provider: "apple",
-    linkedUserId: "user-1",
-    alternateVerifiedSignInMethods: 1,
+    link,
+    alternateSignIn: {
+      userId: "user-1",
+      methodId: "password-1",
+      verified: true,
+    },
   };
-
-  assert.deepEqual(decideSocialUnlink(unlink), {
+  assert.deepEqual(decideSocialUnlink(input), {
     status: "unlink-allowed",
+    linkId: "link-1",
     userId: "user-1",
     provider: "apple",
+    providerSubject: "provider-subject-1",
+    lifecyclePlan: {
+      preserveUserId: true,
+      revokeProviderSessions: true,
+      notifyVerifiedEmail: true,
+    },
   });
   assert.deepEqual(
-    decideSocialUnlink({ ...unlink, credentialConfirmed: false }),
-    { status: "credential-confirmation-required" },
-  );
-  assert.deepEqual(
-    decideSocialUnlink({ ...unlink, alternateVerifiedSignInMethods: 0 }),
+    decideSocialUnlink({
+      ...input,
+      alternateSignIn: { ...input.alternateSignIn, verified: 1 as never },
+    }),
     { status: "alternate-sign-in-required" },
   );
   assert.deepEqual(
-    decideSocialUnlink({ ...unlink, linkedUserId: "other-user" }),
+    decideSocialUnlink({
+      ...input,
+      alternateSignIn: { ...input.alternateSignIn, userId: "other-user" },
+    }),
+    { status: "alternate-sign-in-required" },
+  );
+  assert.deepEqual(
+    decideSocialUnlink({ ...input, credentialConfirmed: 1 as never }),
+    { status: "credential-confirmation-required" },
+  );
+});
+
+test("unlink rejects cross-user, malformed and last-method evidence", () => {
+  const input = {
+    currentUserId: "user-1",
+    currentSessionId: "session-1",
+    sessionVerified: true,
+    emailVerified: true,
+    credentialConfirmed: true,
+    link,
+    alternateSignIn: null,
+  };
+  assert.deepEqual(decideSocialUnlink(input), {
+    status: "alternate-sign-in-required",
+  });
+  assert.deepEqual(
+    decideSocialUnlink({ ...input, link: { ...link, userId: "other-user" } }),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decideSocialUnlink({ ...input, currentSessionId: " session-1" }),
     { status: "unavailable" },
   );
 });
