@@ -486,6 +486,17 @@ test("supports a recorded free model with strict not-applicable evidence", () =>
     }).status,
     "blocked",
   );
+  const falselyExecutable = decideFullSystemAcceptance({
+    ...input,
+    commercialModel: "FREE",
+    commercialSelection: freeSelection,
+  });
+  assert.ok(
+    falselyExecutable.status === "blocked" &&
+      falselyExecutable.reasons.includes(
+        "domain:COMMERCIAL_ENTITLEMENTS:not-applicable-required",
+      ),
+  );
 });
 
 test("does not accept fabricated client-gate completion", () => {
