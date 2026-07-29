@@ -4,37 +4,34 @@ Status: staged contract; production social sign-in and account linking remain di
 
 ## Identity Boundary
 
-- HomeVault keeps one immutable internal user ID. A provider identity is an optional sign-in method, never a replacement account.
-- Linking starts only inside a verified, signed-in session after credential reconfirmation.
-- Apple and Google are the only initially approved providers; each requires a separate provider, privacy and store-disclosure review before enablement.
-- Provider email, name or profile claims never merge accounts, select a household or transfer ownership.
-- Provider identities are keyed by the provider issuer and stable subject, with a database uniqueness constraint.
+- HomeVault keeps one immutable internal user ID. Provider identities are optional sign-in methods, never replacement accounts.
+- Linking starts only inside an exactly verified session after credential reconfirmation.
+- Apple and Google are the only initially approved providers; each requires separate provider, privacy and store review before enablement.
+- Provider email, profile or name claims never merge accounts, select households, change the verified HomeVault email or transfer ownership.
+- Provider identities are uniquely keyed by approved provider issuer and stable subject.
 
-## Callback And Takeover Controls
+## Bound Callback And Takeover Controls
 
-- Generate a short-lived, single-use link request bound to the current user, current session and chosen provider.
-- Use provider-standard authorization code flow with verified redirect URI, state, nonce and PKCE.
-- Validate issuer, audience, signature, timestamps and stable subject server-side.
-- Enforce exact expiry and reject cancelled, superseded, linked or replayed requests.
-- If the provider subject already belongs to another HomeVault user, return a generic unavailable result. Never reveal or reassign the other account.
-- Complete the provider link and consume the request in one transaction after re-reading the current session and uniqueness constraint.
-- Linking cannot change the verified HomeVault email, household roles, property access or recovery destination.
+- Each short-lived request binds canonical request, user, initiating-session, provider, state, nonce and PKCE challenge identifiers.
+- Callback evidence must repeat those exact bindings and independently verify state, nonce, PKCE, issuer, audience, signature and token timestamps.
+- Every verification result must be the exact server boolean `true`; truthy runtime values fail closed.
+- Unknown providers, malformed identifiers, consumed state, invalid dates, expired or terminal requests and callback substitutions fail closed.
+- Existing-link evidence must match the exact provider and subject before the policy returns already-linked or generic unavailable.
+- The atomic allow plan consumes the request while preserving the internal user and verified email, explicitly prohibiting email-based merge or identity reassignment.
 
 ## Unlink And Recovery
 
-- Unlinking requires a current verified session and credential reconfirmation.
-- At least one other verified sign-in method must remain, such as password access or another linked provider.
-- A user must verify a new recovery method before removing the last existing one.
+- Unlinking requires the exact current user, verified session, verified HomeVault email and credential reconfirmation.
+- A count is insufficient: one alternate sign-in method must be bound to the same user and independently verified.
+- The unlink allow plan preserves the user, revokes sessions authenticated through the removed provider and notifies the verified HomeVault email.
 - Account recovery, verified email change and ownership transfer remain separate workflows.
-- Security notifications go to the verified HomeVault address after link or unlink without including household content.
 
 ## Privacy And Operations
 
-- Request the minimum provider scopes needed for authentication; do not request contacts, calendar, drive, profile enrichment or advertising permissions.
-- Store only provider, stable subject, required token metadata and audit timestamps. Encrypt refresh tokens if a provider flow genuinely requires them; otherwise do not retain them.
+- Request only authentication scopes; never request contacts, calendar, drive, profile enrichment or advertising permissions.
+- Store only provider, stable subject, required token metadata and audit timestamps.
 - Never log authorization codes, tokens, provider claims or private relay addresses.
-- Account export identifies linked providers without exposing secrets. Account deletion removes provider links, tokens, pending requests and processor copies.
+- Export identifies providers without secrets; deletion removes links, tokens, requests, sessions and processor copies.
 - Rate limits and generic errors prevent account/provider enumeration.
-- Store privacy disclosures, support guidance and reviewer instructions must be updated before production enablement.
 
-Production integration requires provider-console configuration, reviewed Better Auth integration, migration, concurrent-link, callback substitution, replay, unlink/recovery, export/deletion and exact-head CI/native evidence.
+Production integration still requires provider-console configuration, reviewed Better Auth integration, migration, concurrent-link and substitution tests, replay/unlink/recovery coverage, export/deletion verification, exact-head standard/native CI and client approval.
