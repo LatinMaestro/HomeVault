@@ -1,20 +1,20 @@
 export const ROLE_SOURCE_EXTRACTION_POLICY_VERSION =
-  "homevault-role-source-extraction-v1";
+  "homevault-role-source-extraction-v2";
 export const ROLE_SOURCE_EVIDENCE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 export const ROLE_SOURCE_BRANCH = "agent/household-role-policy-foundation";
 export const ROLE_SOURCE_BASE =
   "e809b2a4a4a1845efc849455843687ce8686ca4d";
 export const ROLE_SOURCE_HEAD =
-  "33fb9ccd3d0a8ed57fb41c9c5440ccb0b3084ef5";
+  "a1abd92cbd2befc1b24f10f7d359c39b791924e8";
 export const ROLE_SOURCE_MANIFEST_DIGEST =
-  "1ea530f49c6a4a0ae29f97bc74db4a1af0a77246ac81b9fe719a95290dae2a96";
+  "19315d5368aa0c9b9f1548ebd72a8f1d9dab013a8448389d08ea4f11641b1b8a";
 
 export const ROLE_SOURCE_FILES = [
   {
     path: "docs/PHASE_5A_HOUSEHOLD_ROLE_POLICY.md",
     status: "ADDED",
     baseBlob: null,
-    headBlob: "8b4888b3e95acc0f9c9031986f1de1800b64f865",
+    headBlob: "d21e35c0f4f5add7ac7973b61be9bac12bd9a1d9",
     additions: 36,
     deletions: 0,
   },
@@ -22,16 +22,16 @@ export const ROLE_SOURCE_FILES = [
     path: "src/lib/household-access.ts",
     status: "MODIFIED",
     baseBlob: "3d32305450a2d125376cf0b9b6a8a6ddefb03295",
-    headBlob: "ed647c29ff84db576b662daac5aa23ac564987be",
-    additions: 32,
+    headBlob: "53589a8dbe6374714440e35c5d75a8094b87efb5",
+    additions: 35,
     deletions: 0,
   },
   {
     path: "tests/household-access.test.ts",
     status: "MODIFIED",
     baseBlob: "45656028aee01f643b2ff0d54df89b021b531233",
-    headBlob: "d4899f585462349a50f87704d5b260ba78043c03",
-    additions: 65,
+    headBlob: "c74f9f8e034eb212931e3dcbc7010da9986866b6",
+    additions: 76,
     deletions: 0,
   },
 ] as const;
