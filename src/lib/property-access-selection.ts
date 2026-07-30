@@ -5,12 +5,19 @@ export type PropertyMembership = {
   userId: string;
   homeId: string;
   role: HouseholdAccessRole;
+  version: number;
+  active: true;
 };
 
 export type PropertyMembershipSelection =
   | {
       status: "selected";
-      membership: PropertyMembership;
+      userId: string;
+      homeId: string;
+      membershipId: string;
+      role: HouseholdAccessRole;
+      expectedMembershipVersion: number;
+      selection: "implicit" | "explicit";
     }
   | {
       status: "selection-required";
@@ -19,6 +26,7 @@ export type PropertyMembershipSelection =
       status: "unavailable";
     };
 
+const MAX_PROPERTY_MEMBERSHIPS = 100;
 const PROPERTY_ROLES = new Set<HouseholdAccessRole>([
   "OWNER",
   "ADULT",
@@ -30,32 +38,58 @@ function isCanonicalIdentifier(value: unknown): value is string {
   return (
     typeof value === "string" &&
     value.length > 0 &&
-    value.trim() === value
+    value.length <= 191 &&
+    value.trim() === value &&
+    !/\s/.test(value)
   );
 }
 
 function isPropertyMembership(
-  membership: PropertyMembership,
+  membership: unknown,
   currentUserId: string,
 ): membership is PropertyMembership {
+  if (typeof membership !== "object" || membership === null) return false;
+
+  const candidate = membership as Record<string, unknown>;
   return (
-    isCanonicalIdentifier(membership.id) &&
-    isCanonicalIdentifier(membership.userId) &&
-    membership.userId === currentUserId &&
-    isCanonicalIdentifier(membership.homeId) &&
-    PROPERTY_ROLES.has(membership.role)
+    isCanonicalIdentifier(candidate.id) &&
+    isCanonicalIdentifier(candidate.userId) &&
+    candidate.userId === currentUserId &&
+    isCanonicalIdentifier(candidate.homeId) &&
+    PROPERTY_ROLES.has(candidate.role as HouseholdAccessRole) &&
+    Number.isSafeInteger(candidate.version) &&
+    (candidate.version as number) >= 1 &&
+    candidate.active === true
   );
 }
 
-export function resolvePropertyMembershipSelection({
-  currentUserId,
-  requestedHomeId,
-  memberships,
-}: {
-  currentUserId: string;
-  requestedHomeId?: string | null;
-  memberships: readonly PropertyMembership[];
-}): PropertyMembershipSelection {
+function selectedMembership(
+  membership: PropertyMembership,
+  selection: "implicit" | "explicit",
+): PropertyMembershipSelection {
+  return {
+    status: "selected",
+    userId: membership.userId,
+    homeId: membership.homeId,
+    membershipId: membership.id,
+    role: membership.role,
+    expectedMembershipVersion: membership.version,
+    selection,
+  };
+}
+
+export function resolvePropertyMembershipSelection(
+  input: unknown,
+): PropertyMembershipSelection {
+  if (typeof input !== "object" || input === null) {
+    return { status: "unavailable" };
+  }
+
+  const candidate = input as Record<string, unknown>;
+  const currentUserId = candidate.currentUserId;
+  const requestedHomeId = candidate.requestedHomeId;
+  const memberships = candidate.memberships;
+
   if (!isCanonicalIdentifier(currentUserId)) {
     return { status: "unavailable" };
   }
@@ -69,7 +103,9 @@ export function resolvePropertyMembershipSelection({
   }
 
   if (
+    !Array.isArray(memberships) ||
     memberships.length === 0 ||
+    memberships.length > MAX_PROPERTY_MEMBERSHIPS ||
     memberships.some(
       (membership) => !isPropertyMembership(membership, currentUserId),
     )
@@ -94,16 +130,16 @@ export function resolvePropertyMembershipSelection({
 
   if (requestedHomeId !== undefined && requestedHomeId !== null) {
     const membership = memberships.find(
-      (candidate) => candidate.homeId === requestedHomeId,
+      (membership) => membership.homeId === requestedHomeId,
     );
 
     return membership
-      ? { status: "selected", membership }
+      ? selectedMembership(membership, "explicit")
       : { status: "unavailable" };
   }
 
   if (memberships.length === 1) {
-    return { status: "selected", membership: memberships[0] };
+    return selectedMembership(memberships[0], "implicit");
   }
 
   return { status: "selection-required" };
