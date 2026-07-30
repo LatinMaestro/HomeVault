@@ -1,6 +1,6 @@
 # HomeVault Complete App Store Delivery Plan
 
-Status date: 27 July 2026  
+Status date: 30 July 2026  
 Target: complete HomeVault product, including all optional features, ready for Apple App Review submission  
 Repository baseline: `8ed478b78c24dc37a43320ea272e5db6ccced4fb` (merged PR #158)
 
@@ -20,12 +20,19 @@ If an optional feature proves incompatible with platform policy, privacy obligat
 - Store privacy drafts, listing drafts, reviewer journey, client release actions and final acceptance protocol exist.
 - PR #158 added optional file selection during receipt/document creation, authorised inline viewing and request/navigation latency improvements.
 - PR #158 did not receive executable GitHub CI evidence, and its Vercel preview was deferred by service capacity. Current main is not yet release-green.
-- Draft PR #159 contains this current-status delivery plan.
+- Draft PR #159 contains this current-status delivery plan. Its GitHub Actions run `30206507509` and subsequent unchanged-head retries ended before executing any job steps and produced no logs or artifacts; this is neither a source pass nor a source failure.
+- A large remote branch set now contains reviewed policy-contract slices for the required optional programme, including household roles and invitations, ownership transfer, multi-property access/lifecycle, notifications, calendar connections, biometrics, capture, encrypted offline access, native utilities, expanded attachments, OCR/AI drafts, email ingestion, controlled sharing, provider handoff, privacy-safe diagnostics, commercial gating and full-system acceptance.
+- Those branches are development inputs, not release evidence: most are stale stacked branches, many have divergent ancestry, none may be treated as merged or standard/native-CI verified merely because focused tests or earlier Vercel previews passed.
+- Production health/readiness most recently returned HTTP 200 on 30 July 2026, but production and current `main` are not yet a verified immutable release candidate.
+- No signed IPA, processed TestFlight build, physical-device acceptance, final legal/provider approval, reviewer credential or submission approval exists yet.
 
 ## Delivery Principles
 
 - GitHub `main` is the source of truth; work through focused branches and pull requests.
 - Development and verification remain online-first.
+- GitHub Actions is authoritative for routine dependency, lint, strict TypeScript, test, build, migration, route-smoke and native verification.
+- Conserve the shared Vercel daily deployment allowance: do not manually deploy, redeploy, retry or use Vercel as a per-commit/per-PR check. Use Vercel only at the integration milestones defined below, for a release candidate, or when a required production-specific property cannot be evidenced by GitHub Actions.
+- Batch each remote slice into one reviewed atomic commit where practical. Avoid sequential file-by-file commits that can trigger multiple automatic Vercel deployments. If the Git integration deploys automatically, do not retrigger or create deployment-only/no-op commits.
 - Every release claim identifies the exact commit, deployment/build and evidence.
 - Use fictional accounts, files and household data for development, QA and review.
 - Keep server-side household authorisation and private-file controls fail closed.
@@ -77,6 +84,77 @@ The following remain outside HomeVault because they are unrelated or conflict wi
 - automated service-provider payments;
 - unrestricted public attachments;
 - unnecessary location, contacts, microphone, USB or payment permissions.
+
+## Actions-Reset Integration Plan
+
+When GitHub Actions capacity is available, stop creating new independent policy branches and switch to integration mode.
+
+### Gate 0: Plan and current-main recovery
+
+1. Obtain one real unchanged-head GitHub Actions execution for PR #159. Do not create a no-op retry commit.
+2. Inspect the exact PR #159 diff and review threads. If its required checks pass, merge it and verify the resulting `main` commit.
+3. Run the complete standard and native workflow set on exact `main`, including the PR #158 attachment/navigation behaviour. Fix actual source failures in focused PRs; classify pre-execution platform failures separately.
+4. Establish one evidence ledger containing exact source commit, workflow run/job URLs, artifacts, test counts and any unavailable gate.
+
+Exit: the delivery plan is merged, current `main` has executable exact-head evidence, and PR #158 behaviour is covered.
+
+### Gate 1: Dependency-ordered branch consolidation
+
+Treat every remote policy branch as source material. For each slice:
+
+1. resolve the verified source head and its intended file set;
+2. extract or rebase only that focused patch onto the latest verified `main`;
+3. preserve source/rebased blob lineage and review the complete diff;
+4. run its focused suite plus repository lint, strict TypeScript, production build and all relevant standard/native/security/migration checks;
+5. open one focused PR, resolve all review threads and merge only the exact green head;
+6. verify the resulting `main` before starting the next dependent slice.
+
+Process the existing work in these waves:
+
+1. Household authority: role policy → invitation contract → invitation lifecycle → ownership transfer.
+2. Multi-property and identity: property selection → creation → isolation → export → deletion/account lifecycle → verified email change → safe social linking.
+3. Notifications and calendar: preferences/quiet hours → scheduling/delivery/deep links → external calendar connection and revocation.
+4. Native capability: biometric re-entry → document capture → encrypted offline access → widgets/shortcuts/share-import utilities.
+5. Document intelligence: expanded attachments/scanning gate → OCR drafts → AI drafts → email ingestion.
+6. Controlled external surfaces: revocable sharing → provider handoff/integrations → privacy-safe crash reporting → commercial/IAP decision implementation only if the approved model requires it.
+7. Release acceptance: candidate-bound full-system regression, accessibility/performance/export/deletion thresholds, security/privacy thresholds, disclosure/client gates, native-release evidence and final submission-readiness audit.
+
+Do not merge a later wave ahead of an unmet dependency. If a source slice conflicts with newer `main`, re-derive the smallest correct patch rather than preserving obsolete ancestry.
+
+### Vercel milestone budget
+
+Use no manual Vercel deployment during Gate 0 or routine Gate 1 PRs unless GitHub Actions cannot exercise a required Vercel-only contract. Planned hosted deployment checkpoints are:
+
+1. after household, invitation and multi-property integration;
+2. after notifications/calendar and native-capability integration;
+3. after document intelligence and controlled external-surface integration;
+4. the immutable full-system release candidate;
+5. a replacement release candidate only when a verified blocker requires one.
+
+At each checkpoint, create at most one exact-head deployment, verify commit identity, build state, health/readiness, canonical host, private storage/auth boundaries and the milestone journeys, then record evidence. Do not redeploy unchanged code.
+
+### Gate 2: Complete-product release candidate
+
+After all waves are merged:
+
+1. freeze one exact candidate commit and version;
+2. run the complete standard/native CI matrix and candidate-bound 24-case hosted regression manifest;
+3. run security, privacy, accessibility, performance, export and full deletion regression across database, private files, devices, processors, calendars, notification tokens and shares;
+4. perform the final milestone Vercel deployment and controlled synthetic production acceptance;
+5. close all severity-one and severity-two defects through a new verified candidate.
+
+Exit: one immutable source candidate is engineering-green. Provider, legal, Apple, signing and physical-device gates remain explicitly separate.
+
+### Gate 3: Client and Apple release gates
+
+1. Finalise approved public identity, seller/legal details, privacy/support/deletion URLs, retention and processor disclosures, category, territories, pricing and commercial model.
+2. Configure only approved providers and least-privilege production credentials; record provider ownership, cost and deletion/incident responsibilities.
+3. Complete Apple Developer/App Store Connect agreements, bundle identity and protected signing access.
+4. Build and inspect the signed IPA, upload the authorised candidate to TestFlight and complete current-iPhone plus representative-iPad physical-device QA.
+5. Produce final screenshots, App Privacy answers, permission explanations, listing metadata, reviewer notes and a stable fictional reviewer household.
+6. Run the final go/no-go audit tying the exact Git commit, GitHub CI, milestone Vercel deployment, migrations, provider state, signed artifact, TestFlight processing, physical-device results, disclosures, reviewer access, rollback and support ownership together.
+
+Exit: HomeVault is ready for submission. App Review submission and public release still require separate explicit approval.
 
 ## Phase A: Restore Exact-Head Evidence
 
@@ -281,12 +359,12 @@ Ready-for-submission means the complete core and optional scope is implemented a
 
 ## Current Critical Path
 
-1. Review and merge the expanded plan in PR #159.
-2. Restore exact-head verification for current main and PR #158 behaviour.
-3. Complete current-product controlled production acceptance.
-4. Implement optional phases D–I in focused dependency-ordered PRs.
-5. Re-run full-system security, privacy and acceptance.
-6. Close public identity/legal/provider/client-account gates.
-7. Produce and physically test the signed TestFlight candidate.
-8. Finalise disclosures, listing, screenshots and reviewer access.
-9. Complete the submission-readiness audit and request submission approval.
+1. After the Actions allowance resets, obtain one executable unchanged-head run for PR #159; review and merge it only if exact-head gates pass.
+2. Restore executable exact-head standard/native evidence for current `main` and PR #158 behaviour.
+3. Consolidate and merge the existing policy branches in the seven dependency waves above, one focused exact-green PR at a time.
+4. Use GitHub Actions for routine verification and reserve Vercel for the four planned major milestones and any genuinely required replacement release candidate.
+5. Freeze one complete candidate and run full security, privacy, accessibility, performance, export, deletion and hosted acceptance.
+6. Close provider, public identity, legal, commercial and operational gates.
+7. Produce a signed IPA, complete TestFlight processing and physical-device QA.
+8. Finalise disclosures, listing, screenshots and reviewer access against the approved build.
+9. Complete the submission-readiness audit and request explicit submission approval.
