@@ -1,4 +1,4 @@
-# Phase 13B: Dependency-Safe Release Consolidation
+# Phase 13C: Dependency-Safe Release Consolidation
 
 Status: prepared as a dependency-safe policy slice; not rebased, opened,
 merged, activated, signed or submitted.
@@ -39,10 +39,33 @@ processed one at a time:
 
 The machine-readable manifest contains 28 exact branch names in that order.
 
+## Source-Lineage Gate
+
+The prepared branches are a development stack, not 28 independent branches
+from `main`. A fresh remote audit found that 26 of the 28 adjacent stack
+relationships have diverged because earlier slices received later hardening
+commits after their successor was created.
+
+A whole-branch rebase is therefore insufficient evidence. Before a rebased
+slice can proceed, server-resolved evidence must bind:
+
+- the original source base and source branch head;
+- the exact source diff digest and unique changed-file set;
+- the exact rebased diff digest and unique changed-file set; and
+- the exact current `main` commit receiving the slice.
+
+The source and rebased digests and file sets must match. This prevents stale
+stacked history, an omitted hardening commit or an unrelated later slice from
+being smuggled into a focused rebase. If a conflict requires a deliberate
+content change, update and review the focused source slice first so it obtains
+a new source digest; do not weaken the equivalence gate.
+
 ## Per-Slice Gate
 
 Every focused slice must prove:
 
+- its intended source patch was extracted from the server-resolved source base
+  and head without adding or omitting changed files;
 - its branch was rebased onto the current merged `main`;
 - the exact diff was reviewed and all review threads resolved;
 - every declared conflict domain was reviewed;
@@ -100,4 +123,5 @@ The policy cannot update refs, force-push, merge, sign, upload or submit.
 PR #159 remains `blocked-baseline-ci` because run `30206507509` continues to
 return `startup_failure` with zero jobs and zero artifacts. The prepared role
 policy remains the first consolidation slice after that external blocker
-clears.
+clears. The source-lineage audit is complete, but it does not authorise a
+rebase or merge while the baseline gate remains closed.
