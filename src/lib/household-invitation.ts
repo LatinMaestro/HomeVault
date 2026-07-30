@@ -36,11 +36,17 @@ export type PreparedHouseholdInvitation = {
   expiresAt: Date;
 };
 
-export function normalizeHouseholdInvitationEmail(value: string) {
-  return value.trim().toLowerCase();
+export function isHouseholdInvitationRole(
+  value: unknown,
+): value is HouseholdInvitationRole {
+  return value === "ADULT" || value === "CHILD" || value === "GUEST";
 }
 
-export function validateHouseholdInvitationEmail(value: string) {
+export function normalizeHouseholdInvitationEmail(value: unknown) {
+  return typeof value === "string" ? value.trim().toLowerCase() : "";
+}
+
+export function validateHouseholdInvitationEmail(value: unknown) {
   const email = normalizeHouseholdInvitationEmail(value);
   if (!email) return "Enter the household member's email address.";
   if (email.length > 254) return "Keep the email address to 254 characters or fewer.";
@@ -62,7 +68,12 @@ export function verifyHouseholdInvitationToken(
   token: string,
   expectedHash: string,
 ) {
-  if (!token || !/^[a-f0-9]{64}$/.test(expectedHash)) {
+  if (
+    typeof token !== "string" ||
+    !/^[A-Za-z0-9_-]{43}$/.test(token) ||
+    typeof expectedHash !== "string" ||
+    !/^[a-f0-9]{64}$/.test(expectedHash)
+  ) {
     return false;
   }
 
@@ -76,7 +87,19 @@ export function verifyHouseholdInvitationToken(
 }
 
 export function getHouseholdInvitationExpiry(now: Date) {
-  return new Date(now.getTime() + HOUSEHOLD_INVITATION_LIFETIME_MS);
+  if (!(now instanceof Date) || !Number.isFinite(now.getTime())) {
+    throw new HouseholdInvitationInputError(
+      "Invitation time is unavailable.",
+    );
+  }
+
+  const expiresAt = new Date(now.getTime() + HOUSEHOLD_INVITATION_LIFETIME_MS);
+  if (!Number.isFinite(expiresAt.getTime())) {
+    throw new HouseholdInvitationInputError(
+      "Invitation time is unavailable.",
+    );
+  }
+  return expiresAt;
 }
 
 export function prepareHouseholdInvitation(
@@ -84,7 +107,8 @@ export function prepareHouseholdInvitation(
 ): PreparedHouseholdInvitation {
   const invitedRole = input.invitedRole;
   if (
-    invitedRole === "OWNER" ||
+    input.actorRole !== "OWNER" ||
+    !isHouseholdInvitationRole(invitedRole) ||
     !canInviteHouseholdMember(input.actorRole, invitedRole)
   ) {
     throw new HouseholdInvitationInputError(
@@ -97,22 +121,29 @@ export function prepareHouseholdInvitation(
     throw new HouseholdInvitationInputError(validationError);
   }
 
+  if (validateHouseholdInvitationEmail(input.actorEmail)) {
+    throw new HouseholdInvitationInputError(
+      "Verified account email is unavailable.",
+    );
+  }
+
   const actorEmail = normalizeHouseholdInvitationEmail(input.actorEmail);
   const inviteeEmail = normalizeHouseholdInvitationEmail(input.inviteeEmail);
-  if (actorEmail && actorEmail === inviteeEmail) {
+  if (actorEmail === inviteeEmail) {
     throw new HouseholdInvitationInputError(
       "Use the existing membership instead of inviting yourself.",
     );
   }
 
-  const token = createHouseholdInvitationToken();
   const now = input.now ?? new Date();
+  const expiresAt = getHouseholdInvitationExpiry(now);
+  const token = createHouseholdInvitationToken();
 
   return {
     inviteeEmail,
     invitedRole,
     token,
     tokenHash: hashHouseholdInvitationToken(token),
-    expiresAt: getHouseholdInvitationExpiry(now),
+    expiresAt,
   };
 }
