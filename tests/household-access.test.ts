@@ -85,6 +85,17 @@ test("self-departure is derived from authenticated and target user identities", 
   );
 });
 
+test("self-departure rejects contradictory role evidence for one identity", () => {
+  assert.equal(
+    canRemoveHouseholdMember("OWNER", "ADULT", "owner-1", "owner-1"),
+    false,
+  );
+  assert.equal(
+    canRemoveHouseholdMember("ADULT", "GUEST", "member-1", "member-1"),
+    false,
+  );
+});
+
 test("owners cannot be removed through the generic membership path", () => {
   assert.equal(
     canRemoveHouseholdMember("OWNER", "OWNER", "owner-1", "member-2"),
