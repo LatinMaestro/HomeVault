@@ -8,8 +8,10 @@ import {
   canInviteHouseholdMember,
   canRemoveHouseholdMember,
   canWriteHousehold,
+  isHouseholdAccessRole,
   requireMatchingHome,
   type HouseholdAccess,
+  type HouseholdAccessRole,
 } from "../src/lib/household-access";
 
 const access: HouseholdAccess = {
@@ -20,11 +22,24 @@ const access: HouseholdAccess = {
   role: "OWNER",
 };
 
+const runtimeRole = (value: string) => value as HouseholdAccessRole;
+
+test("runtime role validation accepts only the four approved roles", () => {
+  assert.equal(isHouseholdAccessRole("OWNER"), true);
+  assert.equal(isHouseholdAccessRole("ADULT"), true);
+  assert.equal(isHouseholdAccessRole("CHILD"), true);
+  assert.equal(isHouseholdAccessRole("GUEST"), true);
+  assert.equal(isHouseholdAccessRole("ADMIN"), false);
+  assert.equal(isHouseholdAccessRole(""), false);
+  assert.equal(isHouseholdAccessRole(null), false);
+});
+
 test("owner and adult memberships can write household records", () => {
   assert.equal(canWriteHousehold("OWNER"), true);
   assert.equal(canWriteHousehold("ADULT"), true);
   assert.equal(canWriteHousehold("CHILD"), false);
   assert.equal(canWriteHousehold("GUEST"), false);
+  assert.equal(canWriteHousehold(runtimeRole("ADMIN")), false);
 });
 
 test("only owners can administer a household", () => {
@@ -32,6 +47,7 @@ test("only owners can administer a household", () => {
   assert.equal(canAdministerHousehold("ADULT"), false);
   assert.equal(canAdministerHousehold("CHILD"), false);
   assert.equal(canAdministerHousehold("GUEST"), false);
+  assert.equal(canAdministerHousehold(runtimeRole("ADMIN")), false);
 });
 
 test("owners can invite non-owner roles but cannot create another owner", () => {
@@ -42,6 +58,12 @@ test("owners can invite non-owner roles but cannot create another owner", () => 
   assert.equal(canInviteHouseholdMember("ADULT", "GUEST"), false);
 });
 
+test("invitations reject unknown runtime roles", () => {
+  assert.equal(canInviteHouseholdMember("OWNER", runtimeRole("ADMIN")), false);
+  assert.equal(canInviteHouseholdMember(runtimeRole("ADMIN"), "GUEST"), false);
+  assert.equal(canInviteHouseholdMember("OWNER", runtimeRole("")), false);
+});
+
 test("generic role changes cannot alter or create ownership", () => {
   assert.equal(canChangeHouseholdMemberRole("OWNER", "ADULT", "CHILD"), true);
   assert.equal(canChangeHouseholdMemberRole("OWNER", "GUEST", "ADULT"), true);
@@ -49,6 +71,21 @@ test("generic role changes cannot alter or create ownership", () => {
   assert.equal(canChangeHouseholdMemberRole("OWNER", "OWNER", "ADULT"), false);
   assert.equal(canChangeHouseholdMemberRole("OWNER", "ADULT", "OWNER"), false);
   assert.equal(canChangeHouseholdMemberRole("ADULT", "GUEST", "ADULT"), false);
+});
+
+test("generic role changes reject unknown runtime roles", () => {
+  assert.equal(
+    canChangeHouseholdMemberRole("OWNER", "ADULT", runtimeRole("ADMIN")),
+    false,
+  );
+  assert.equal(
+    canChangeHouseholdMemberRole("OWNER", runtimeRole("ADMIN"), "ADULT"),
+    false,
+  );
+  assert.equal(
+    canChangeHouseholdMemberRole(runtimeRole("ADMIN"), "GUEST", "ADULT"),
+    false,
+  );
 });
 
 test("owners can remove non-owners and non-owners can leave themselves", () => {
@@ -70,6 +107,27 @@ test("owners can remove non-owners and non-owners can leave themselves", () => {
   );
   assert.equal(
     canRemoveHouseholdMember("ADULT", "GUEST", "adult-1", "guest-1"),
+    false,
+  );
+});
+
+test("member removal rejects unknown runtime roles", () => {
+  assert.equal(
+    canRemoveHouseholdMember(
+      "OWNER",
+      runtimeRole("ADMIN"),
+      "owner-1",
+      "member-1",
+    ),
+    false,
+  );
+  assert.equal(
+    canRemoveHouseholdMember(
+      runtimeRole("ADMIN"),
+      "GUEST",
+      "admin-1",
+      "guest-1",
+    ),
     false,
   );
 });
