@@ -10,6 +10,7 @@ Establish fail-closed, executable role invariants before invitations, member adm
 
 ## Policy
 
+- Runtime role evidence must resolve to exactly OWNER, ADULT, CHILD or GUEST; unknown or malformed values fail closed.
 - Only an OWNER can administer another household member.
 - Invitations may create ADULT, CHILD or GUEST memberships, never OWNER.
 - Generic role changes may move only between ADULT, CHILD and GUEST.
