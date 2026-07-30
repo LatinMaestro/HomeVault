@@ -80,12 +80,20 @@ function slice(
 ): ConsolidationSliceEvidence {
   const definition = CONSOLIDATION_SLICES[index];
   const headCommit = (index + 2).toString(16).padStart(2, "0").repeat(20);
+  const diffDigest = digest(String((index + 2) % 10));
+  const changedFiles = [`src/lib/${definition.id.toLowerCase()}.ts`];
   return {
     sliceId: definition.id,
     branch: definition.branch,
+    sourceBaseCommit: baseCommit,
+    sourceBranchHead: headCommit,
+    sourceDiffDigest: diffDigest,
+    sourceChangedFiles: changedFiles,
+    sourceLineageServerResolved: true,
     headCommit,
     rebasedOntoCommit: baseCommit,
-    diffDigest: digest(String((index + 2) % 10)),
+    diffDigest,
+    rebasedChangedFiles: changedFiles,
     sourceDiffReviewed: true,
     reviewThreadsResolved: true,
     reviewedConflictDomains: definition.domains,
@@ -107,7 +115,7 @@ function slice(
 test("publishes a unique, complete and ordered consolidation manifest", () => {
   assert.equal(
     RELEASE_CONSOLIDATION_POLICY_VERSION,
-    "homevault-release-consolidation-v1",
+    "homevault-release-consolidation-v2",
   );
   assert.equal(CONSOLIDATION_SLICES.length, 28);
   assert.equal(
@@ -120,6 +128,7 @@ test("publishes a unique, complete and ordered consolidation manifest", () => {
   );
   for (const item of CONSOLIDATION_SLICES) {
     assert.ok(item.domains.length > 0);
+    assert.equal(new Set(item.domains).size, item.domains.length);
     assert.ok(
       item.domains.every((domain) =>
         CONSOLIDATION_CONFLICT_DOMAINS.includes(domain),
@@ -203,6 +212,23 @@ test("requires every conflict domain to be reviewed", () => {
     decision.status === "blocked" &&
       decision.reasons.includes("slice:HOUSEHOLD_ROLE_POLICY:conflict-domains"),
   );
+});
+
+test("requires exact server-resolved source lineage after rebasing", () => {
+  for (const overrides of [
+    { sourceLineageServerResolved: false },
+    { sourceBaseCommit: "02".repeat(20) },
+    { sourceDiffDigest: digest("9") },
+    { sourceChangedFiles: ["src/lib/source.ts"] },
+    { rebasedChangedFiles: ["src/lib/rebased.ts"] },
+  ]) {
+    const evidence = slice(0, planMerge, overrides);
+    const decision = auditReleaseConsolidation(mergedPlan([evidence]), now);
+    assert.ok(
+      decision.status === "blocked" &&
+        decision.reasons.includes("slice:HOUSEHOLD_ROLE_POLICY:source-lineage"),
+    );
+  }
 });
 
 test("requires focused checks before exact-head CI", () => {
