@@ -12,14 +12,14 @@ The household-role branch is the first implementation slice after the complete A
 
 - Branch: `agent/household-role-policy-foundation`
 - Source base: `e809b2a4a4a1845efc849455843687ce8686ca4d`
-- Source head: `33fb9ccd3d0a8ed57fb41c9c5440ccb0b3084ef5`
-- Manifest digest: `1ea530f49c6a4a0ae29f97bc74db4a1af0a77246ac81b9fe719a95290dae2a96`
+- Source head: `a1abd92cbd2befc1b24f10f7d359c39b791924e8`
+- Manifest digest: `19315d5368aa0c9b9f1548ebd72a8f1d9dab013a8448389d08ea4f11641b1b8a`
 - Changed files:
   - `docs/PHASE_5A_HOUSEHOLD_ROLE_POLICY.md`
   - `src/lib/household-access.ts`
   - `tests/household-access.test.ts`
 
-The executable policy also fixes the server-resolved base and head Git blobs plus additions/deletions for every file. Source branch drift, missing or additional paths, reordered substitution, stale observations and synthetic lineage claims fail closed.
+The digest is SHA-256 over UTF-8 `JSON.stringify` output for the ordered object `{ branch, baseCommit, headCommit, files }`, where every file contains `{ path, status, baseBlob, headBlob, additions, deletions }`. The executable policy also fixes those server-resolved base and head Git blobs plus additions/deletions. Source branch drift, missing or additional paths, reordered substitution, stale observations and synthetic lineage claims fail closed.
 
 ## Dependency gate
 
