@@ -1,40 +1,30 @@
-# Household Invitation Lifecycle Contract
+# Phase 5C — Household invitation lifecycle
 
-## Status
-
-Implementation staged on `agent/household-invitation-lifecycle` above the secure invitation preparation contract.
-
-## Purpose
-
-Define fail-closed invitation acceptance, expiry and revocation decisions before database persistence, email delivery or public routes are introduced.
+Status: implementation policy complete on an isolated development branch; not
+merged, provider-enabled, or production-activated.
 
 ## Contract
 
-- Stored invitation states are PENDING, ACCEPTED and REVOKED.
-- A pending invitation becomes effectively EXPIRED at its exact server-side deadline.
-- Invalid invitee email, expiry, server-time, lifecycle status or terminal timestamps produce an explicit INVALID state.
-- Corrupt lifecycle data can never be treated as pending, accepted or revocable.
-- PENDING records cannot contain acceptance or revocation timestamps.
-- ACCEPTED and REVOKED records require the matching server timestamp, no conflicting terminal timestamp and a timestamp before expiry.
-- Only a verified account whose canonical email matches the invitee may accept.
-- Expired, invalid, accepted and revoked invitations cannot be accepted again.
-- Only an OWNER may revoke a valid, unexpired pending invitation.
-- Acceptance records a server-supplied timestamp.
-- Token verification remains a separate prerequisite at the route boundary.
-- Membership creation and invitation acceptance must later occur in one idempotent database transaction.
-- Ownership transfer remains a separate authenticated transaction.
+- Stored lifecycle records fail closed unless the invitation, household,
+  non-owner role, version, email, status, expiry, and terminal timestamps are
+  structurally valid.
+- Acceptance requires an exact verified account email and canonical user ID.
+- Successful acceptance evidence is bound to the invitation ID, household,
+  invited role, expected pending status, expected version, accepting user, and
+  server time.
+- Revocation requires a canonical actor, the owner role, and the invitation's
+  exact household.
+- Successful revocation evidence is bound to the invitation ID, household,
+  expected pending status, expected version, revoking owner, and server time.
+- Persistence must use the returned expected status and version as a
+  compare-and-set condition so replay, races, and cross-invitation substitution
+  fail.
+- Route handlers must map policy failures to generic client messages and must
+  not disclose whether an email has a pending invitation.
 
-## Scope
+## Verification boundary
 
-This slice adds pure lifecycle decisions and unit contracts. It does not add:
-
-- schema models or migrations;
-- invitation persistence or email delivery;
-- acceptance, revocation or resend routes;
-- membership creation;
-- member-management UI;
-- production configuration.
-
-## Verification
-
-Run `tests/household-invitation-lifecycle.test.ts`, the full unit suite, lint, typecheck and build when execution capacity is available. Do not claim verification before the exact branch head executes.
+The unit suite covers exact expiry, verified-email matching, malformed runtime
+records, terminal-state coherence, owner-only revocation, household isolation,
+and acceptance/revocation evidence binding. Hosted exact-head standard and
+native CI remain required after dependency-ordered extraction.
