@@ -2,40 +2,46 @@
 
 ## Status
 
-Implementation staged on `agent/property-access-selection-policy` above the household ownership-transfer policy.
+Implementation staged on `agent/property-access-selection-policy` above the
+household ownership-transfer policy.
 
 ## Purpose
 
-Define the fail-closed membership selection boundary required before HomeVault can expose multiple properties.
+Define the fail-closed membership selection boundary required before HomeVault
+can expose multiple properties.
 
 ## Policy
 
-- Membership candidates are resolved server-side for the current immutable user ID.
-- User, membership, property and requested-property identifiers must be non-empty canonical strings without surrounding whitespace.
-- Every candidate must belong to the exact current user and use one of the approved household roles.
-- A user with one valid property membership may select it implicitly.
-- A user with multiple distinct valid property memberships must make an explicit selection.
-- HomeVault must never fall back to the first or earliest property when multiple memberships exist.
-- A requested property is selected only when exactly one current-user membership matches it.
-- Missing, malformed, cross-user, unknown or duplicate membership records fail the complete candidate set closed; corrupt rows are never silently ignored.
-- Duplicate membership IDs or multiple memberships for the same user and property fail closed.
-- The selected property identifier must be stored in signed, server-controlled state.
-- Every request must revalidate the stored selection against current membership.
-- Reads, mutations, search, files, exports, reminders, notifications and deletion must all use the same selected property scope.
-- Unknown and cross-property selections must produce the same non-revealing unavailable response.
+- Membership candidates are resolved server-side for one canonical immutable
+  user ID.
+- The complete runtime container and every candidate must be valid; malformed,
+  foreign, inactive, duplicate or oversized evidence fails closed without
+  throwing or silently dropping rows.
+- User, membership, property and requested-property identifiers are bounded
+  canonical strings without whitespace.
+- Membership roles, active state and positive integer versions are exact
+  runtime evidence.
+- One valid property may be selected implicitly. Multiple distinct properties
+  require an explicit exact property selection.
+- A successful result contains immutable scalar evidence bound to the exact
+  user, property, membership, role, membership version and selection mode.
+- Persistence must compare-and-set the expected membership version, and every
+  request must revalidate the signed selection against current server state.
+- Reads, mutations, search, files, exports, reminders, notifications and
+  deletion must all use the same selected property scope.
+- Unknown and cross-property selections produce the same non-revealing
+  unavailable response.
 
 ## Scope
 
-This slice adds pure property-selection decisions and unit contracts. It does not add:
-
-- new Home or membership schema;
-- property creation or switching UI;
-- signed selection storage;
-- changes to the current runtime resolver;
-- migrations, routes or production configuration.
+This slice adds pure property-selection decisions and unit contracts. It does
+not add schema, property creation, switching UI, signed selection storage,
+routes, migrations or production configuration.
 
 ## Verification
 
-The focused pure-policy suite covers exact selection, explicit multi-property choice, cross-user contamination, duplicate identifiers, duplicate property membership, invalid runtime roles and whitespace/malformed identifiers.
-
-Run `tests/property-access-selection.test.ts`, the full unit suite, lint, typecheck and build when execution capacity is available. Do not claim repository verification before the exact branch head executes.
+The focused suite covers implicit and explicit binding, multi-property
+selection, cross-user contamination, duplicate identifiers, malformed runtime
+containers, bounded canonical identifiers, invalid roles, stale/inactive
+memberships, invalid versions and bounded candidate sets. Full exact-head
+standard/native CI remains required after dependency-ordered extraction.
