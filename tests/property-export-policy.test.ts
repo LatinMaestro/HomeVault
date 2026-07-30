@@ -5,13 +5,15 @@ import {
   decidePropertyExportAccess,
   PROPERTY_EXPORT_KINDS,
   type PropertyExportMembership,
-} from "../src/lib/property-export-policy";
+} from "../src/property-export-policy.ts";
 
 const ownerProperty: PropertyExportMembership = {
   id: "membership-owner",
   userId: "user-1",
   homeId: "home-1",
   role: "OWNER",
+  active: true,
+  version: 3,
 };
 
 const adultProperty: PropertyExportMembership = {
@@ -19,25 +21,43 @@ const adultProperty: PropertyExportMembership = {
   userId: "user-1",
   homeId: "home-2",
   role: "ADULT",
+  active: true,
+  version: 6,
 };
 
+const nowMs = 1_800_000_000_000;
+
 const validRequest = {
-  currentUserId: "user-1",
-  identityVerified: true,
+  identity: {
+    userId: "user-1",
+    sessionId: "session-1",
+    sessionVersion: 7,
+    active: true,
+    emailVerified: true,
+    resolvedAtMs: nowMs - 10_000,
+    expiresAtMs: nowMs + 60 * 60 * 1_000,
+  },
+  nowMs,
   selectedHomeId: "home-2",
   requestedExportKind: "inventory-csv" as const,
   memberships: [ownerProperty, adultProperty],
 };
 
 test("binds an allowed export to the exact identity, property and format", () => {
-  assert.deepEqual(decidePropertyExportAccess(validRequest), {
+  const decision = decidePropertyExportAccess(validRequest);
+
+  assert.deepEqual(decision, {
     status: "export-allowed",
     userId: "user-1",
+    sessionId: "session-1",
+    sessionVersion: 7,
     homeId: "home-2",
     membershipId: "membership-adult",
+    membershipVersion: 6,
     role: "ADULT",
     exportKind: "inventory-csv",
   });
+  assert.equal(Object.isFrozen(decision), true);
 });
 
 test("preserves every approved read role for every current export kind", () => {
@@ -53,8 +73,11 @@ test("preserves every approved read role for every current export kind", () => {
         {
           status: "export-allowed",
           userId: "user-1",
+          sessionId: "session-1",
+          sessionVersion: 7,
           homeId: "home-1",
           membershipId: "membership-owner",
+          membershipVersion: 3,
           role,
           exportKind: requestedExportKind,
         },
@@ -64,17 +87,26 @@ test("preserves every approved read role for every current export kind", () => {
 });
 
 test("requires exact verified-identity evidence", () => {
-  assert.deepEqual(
-    decidePropertyExportAccess({ ...validRequest, identityVerified: false }),
-    { status: "unavailable" },
-  );
-  assert.deepEqual(
-    decidePropertyExportAccess({
-      ...validRequest,
-      identityVerified: "true" as unknown as boolean,
-    }),
-    { status: "unavailable" },
-  );
+  const invalidIdentityEvidence = [
+    { ...validRequest.identity, active: false },
+    { ...validRequest.identity, emailVerified: false },
+    { ...validRequest.identity, userId: "user-2" },
+    { ...validRequest.identity, sessionId: "session 1" },
+    { ...validRequest.identity, sessionVersion: 0 },
+    {
+      ...validRequest.identity,
+      resolvedAtMs: nowMs - 5 * 60 * 1_000 - 1,
+    },
+    { ...validRequest.identity, resolvedAtMs: nowMs + 1 },
+    { ...validRequest.identity, expiresAtMs: nowMs },
+  ];
+
+  for (const identity of invalidIdentityEvidence) {
+    assert.deepEqual(
+      decidePropertyExportAccess({ ...validRequest, identity }),
+      { status: "unavailable" },
+    );
+  }
 });
 
 test("never falls back when selection or export kind is invalid", () => {
@@ -101,12 +133,15 @@ test("never falls back when selection or export kind is invalid", () => {
 test("rejects malformed, foreign-user and invalid-role evidence without throwing", () => {
   const malformedInputs: unknown[] = [
     null,
-    { ...validRequest, currentUserId: " user-1" },
     { ...validRequest, selectedHomeId: "home-2 " },
+    { ...validRequest, selectedHomeId: "home 2" },
+    { ...validRequest, selectedHomeId: "home-\u200b2" },
     { ...validRequest, memberships: null },
     { ...validRequest, memberships: [null] },
-    { ...validRequest, memberships: [{ ...ownerProperty, id: "" }] },
-    { ...validRequest, memberships: [{ ...ownerProperty, role: "ADMIN" }] },
+    { ..validRequest, memberships: [{ ...ownerProperty, id: "" }] },
+    { ..validRequest, memberships: [{ ...ownerProperty, role: "ADMIN" }] },
+   { ..validRequest, memberships: [{ ...ownerProperty, active: false }] },
+   { ..validRequest, memberships: [{ ...ownerProperty, version: 0 }] },
     {
       ...validRequest,
       memberships: [
@@ -116,6 +151,8 @@ test("rejects malformed, foreign-user and invalid-role evidence without throwing
           userId: "user-2",
           homeId: "home-3",
           role: "OWNER",
+          active: true,
+          version: 1,
         },
       ],
     },
@@ -127,6 +164,34 @@ test("rejects malformed, foreign-user and invalid-role evidence without throwing
       { status: "unavailable" },
     );
   }
+});
+
+test("rejects accessors and hostile proxies without throwing", () => {
+  const accessorInput = Object.defineProperty(
+    { ...validRequest },
+    "selectedHomeId",
+    { enumerable: true, get: () => "home-2" },
+  );
+  const hostileInput = new Proxy(
+    {},
+    {
+      getOwnPropertyDescriptor() {
+        throw new Error("hostile descriptor");
+      },
+      getPrototypeOf() {
+        throw new Error("hostile prototype");
+      },
+    },
+  );
+
+  assert.deepEqual(
+    decidePropertyExportAccess(accessorInput),
+    { status: "unavailable" },
+  );
+  assert.deepEqual(
+    decidePropertyExportAccess(hostileInput as typeof validRequest),
+    { status: "unavailable" },
+  );
 });
 
 test("fails closed for duplicate membership or property evidence", () => {
@@ -163,6 +228,8 @@ test("bounds the complete server-resolved membership set", () => {
     userId: "user-1",
     homeId: `home-${index}`,
     role: index === 0 ? ("OWNER" as const) : ("ADULT" as const),
+    active: true,
+    version: index + 1,
   }));
 
   assert.deepEqual(
