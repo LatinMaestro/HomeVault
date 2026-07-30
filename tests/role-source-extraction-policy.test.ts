@@ -82,7 +82,7 @@ function mergedInput(): RoleSourceExtractionInput {
 test("locks one immutable role-source snapshot", () => {
   assert.equal(
     ROLE_SOURCE_EXTRACTION_POLICY_VERSION,
-    "homevault-role-source-extraction-v2",
+    "homevault-role-source-extraction-v3",
   );
   assert.equal(ROLE_SOURCE_FILES.length, 3);
   assert.equal(new Set(ROLE_SOURCE_FILES.map((item) => item.path)).size, 3);
