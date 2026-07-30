@@ -1,5 +1,5 @@
 export const RELEASE_CONSOLIDATION_POLICY_VERSION =
-  "homevault-release-consolidation-v1";
+  "homevault-release-consolidation-v2";
 export const CONSOLIDATION_EVIDENCE_MAX_AGE_MS = 24 * 60 * 60 * 1000;
 export const DELIVERY_PLAN_BRANCH =
   "agent/app-store-delivery-plan-2026-07-27";
@@ -308,9 +308,15 @@ export type DeliveryPlanEvidence = {
 export type ConsolidationSliceEvidence = {
   sliceId: ConsolidationSliceId;
   branch: string;
+  sourceBaseCommit: string;
+  sourceBranchHead: string;
+  sourceDiffDigest: string;
+  sourceChangedFiles: readonly string[];
+  sourceLineageServerResolved: boolean;
   headCommit: string;
   rebasedOntoCommit: string;
   diffDigest: string;
+  rebasedChangedFiles: readonly string[];
   sourceDiffReviewed: boolean;
   reviewThreadsResolved: boolean;
   reviewedConflictDomains: readonly ConsolidationConflictDomain[];
@@ -400,6 +406,29 @@ function digest(value: unknown): value is string {
   return typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 }
 
+function repositoryPath(value: unknown): value is string {
+  return (
+    typeof value === "string" &&
+    value.length > 0 &&
+    value.length <= 240 &&
+    !value.startsWith("/") &&
+    !value.endsWith("/") &&
+    !value.includes("\\") &&
+    !value.split("/").includes("..") &&
+    /^[A-Za-z0-9._/-]+$/.test(value)
+  );
+}
+
+function changedFiles(value: unknown): value is readonly string[] {
+  return (
+    Array.isArray(value) &&
+    value.length > 0 &&
+    value.length <= 100 &&
+    value.every(repositoryPath) &&
+    new Set(value).size === value.length
+  );
+}
+
 function execution(
   value: unknown,
 ): value is ExactHeadExecutionEvidence {
@@ -463,9 +492,15 @@ function sliceEvidence(value: unknown): value is ConsolidationSliceEvidence {
   return (
     CONSOLIDATION_SLICES.some((item) => item.id === value.sliceId) &&
     text(value.branch) &&
+    commit(value.sourceBaseCommit) &&
+    commit(value.sourceBranchHead) &&
+    digest(value.sourceDiffDigest) &&
+    changedFiles(value.sourceChangedFiles) &&
+    typeof value.sourceLineageServerResolved === "boolean" &&
     commit(value.headCommit) &&
     commit(value.rebasedOntoCommit) &&
     digest(value.diffDigest) &&
+    changedFiles(value.rebasedChangedFiles) &&
     typeof value.sourceDiffReviewed === "boolean" &&
     typeof value.reviewThreadsResolved === "boolean" &&
     Array.isArray(value.reviewedConflictDomains) &&
@@ -497,6 +532,23 @@ function exactDomains(
     provided.length === required.length &&
     new Set(provided).size === required.length &&
     required.every((domain) => provided.includes(domain))
+  );
+}
+
+function exactFiles(provided: readonly string[], required: readonly string[]) {
+  return (
+    provided.length === required.length &&
+    new Set(provided).size === required.length &&
+    required.every((path) => provided.includes(path))
+  );
+}
+
+function sourceLineagePreserved(evidence: ConsolidationSliceEvidence) {
+  return (
+    evidence.sourceLineageServerResolved &&
+    evidence.sourceBaseCommit !== evidence.sourceBranchHead &&
+    evidence.sourceDiffDigest === evidence.diffDigest &&
+    exactFiles(evidence.sourceChangedFiles, evidence.rebasedChangedFiles)
   );
 }
 
@@ -618,6 +670,9 @@ export function auditReleaseConsolidation(
   if (evidence.branch !== next.branch) return { status: "unavailable" };
 
   const reviewReasons: string[] = [];
+  if (!sourceLineagePreserved(evidence)) {
+    reviewReasons.push(`slice:${next.id}:source-lineage`);
+  }
   if (!evidence.sourceDiffReviewed) {
     reviewReasons.push(`slice:${next.id}:diff-review`);
   }
@@ -657,6 +712,9 @@ function inspectSlice(
 ) {
   const reasons: string[] = [];
   if (!evidence.sourceDiffReviewed) reasons.push(`slice:${definition.id}:diff-review`);
+  if (!sourceLineagePreserved(evidence)) {
+    reasons.push(`slice:${definition.id}:source-lineage`);
+  }
   if (!evidence.reviewThreadsResolved) {
     reasons.push(`slice:${definition.id}:review-threads`);
   }
