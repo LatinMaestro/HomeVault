@@ -12,14 +12,14 @@ The household-role branch is the first implementation slice after the complete A
 
 - Branch: `agent/household-role-policy-foundation`
 - Source base: `e809b2a4a4a1845efc849455843687ce8686ca4d`
-- Source head: `a1abd92cbd2befc1b24f10f7d359c39b791924e8`
-- Manifest digest: `19315d5368aa0c9b9f1548ebd72a8f1d9dab013a8448389d08ea4f11641b1b8a`
+- Source head: `b98fd9805c0b45cf0b7f67e37901d526e11a5ab6`
+- Manifest digest: `d27b42d4442e1f8f486edac7f34f986fc4d05793478a4529f99997774bbae543`
 - Changed files:
   - `docs/PHASE_5A_HOUSEHOLD_ROLE_POLICY.md`
   - `src/lib/household-access.ts`
   - `tests/household-access.test.ts`
 
-The digest is SHA-256 over UTF-8 `JSON.stringify` output for the ordered object `{ branch, baseCommit, headCommit, files }`, where every file contains `{ path, status, baseBlob, headBlob, additions, deletions }`. The executable policy also fixes those server-resolved base and head Git blobs plus additions/deletions. Source branch drift, missing or additional paths, reordered substitution, stale observations and synthetic lineage claims fail closed.
+The digest is SHA-256 over UTF-8 `JSON.stringify` output for the ordered object `{ branch, baseCommit, headCommit, files }`, where every file contains `{ path, status, baseBlob, headBlob, additions, deletions }`. Version three locks the runtime role allowlist hardening as well as the server-resolved base and head Git blobs plus additions/deletions. Source branch drift, missing or additional paths, reordered substitution, stale observations and synthetic lineage claims fail closed.
 
 ## Dependency gate
 
