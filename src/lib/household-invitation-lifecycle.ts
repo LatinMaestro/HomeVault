@@ -1,6 +1,5 @@
 import type { HouseholdAccessRole } from "@/lib/household-access";
 import {
-  isHouseholdInvitationRole,
   normalizeHouseholdInvitationEmail,
   validateHouseholdInvitationEmail,
   type HouseholdInvitationRole,
@@ -85,6 +84,12 @@ function isCanonicalIdentifier(value: unknown): value is string {
     value === value.trim() &&
     !/\s/.test(value)
   );
+}
+
+function isHouseholdInvitationRole(
+  value: unknown,
+): value is HouseholdInvitationRole {
+  return value === "ADULT" || value === "CHILD" || value === "GUEST";
 }
 
 export function isValidHouseholdInvitationLifecycle(
