@@ -11,15 +11,16 @@ Define the security-sensitive invitation input and token contract before adding 
 ## Contract
 
 - Only an OWNER may prepare an invitation.
-- Invitations may grant ADULT, CHILD or GUEST, never OWNER.
+- Runtime invitation roles must resolve to ADULT, CHILD or GUEST; OWNER and unknown values fail closed.
+- The verified actor email and invitee email must both be valid.
 - Invitee email addresses are trimmed and canonicalised to lowercase.
 - Invalid, oversized and self-invite email addresses are rejected.
 - Tokens contain 32 bytes of cryptographic randomness and are generated internally.
 - Callers cannot supply weaker invitation tokens.
 - Persistence must store only the SHA-256 token hash.
-- Token verification uses a constant-time hash comparison.
+- Token verification accepts only the canonical bounded token shape and uses a constant-time hash comparison.
 - Raw tokens are returned only to the later delivery boundary.
-- Invitations expire seven days after creation.
+- Invitations expire seven days after a finite server creation time; invalid time evidence fails closed.
 - Ownership transfer remains a separate authenticated transaction.
 
 ## Scope
