@@ -56,9 +56,12 @@ export function canRemoveHouseholdMember(
   targetUserId: string,
 ) {
   if (!actorUserId || !targetUserId || targetRole === "OWNER") return false;
-  return (
-    actorUserId === targetUserId || canAdministerHousehold(actorRole)
-  );
+
+  if (actorUserId === targetUserId) {
+    return actorRole === targetRole;
+  }
+
+  return canAdministerHousehold(actorRole);
 }
 
 export function requireMatchingHome(access: HouseholdAccess, requestedHomeId: string) {
