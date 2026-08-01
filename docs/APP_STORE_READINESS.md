@@ -1,5 +1,7 @@
 # App Store And Google Play Readiness
 
+> Current checkpoint: the repository has verified policy-contract foundations but is not release-green. There is no immutable release candidate, signed IPA, processed TestFlight build, physical-device acceptance or submission approval. Use `docs/APP_STORE_DELIVERY_PLAN_CURRENT_STATUS_2026-08-01.md` for the authoritative completion and evidence gates.
+
 HomeVault is intended for eventual distribution through both the Apple App Store and Google Play. The shared Next.js application remains the product and backend foundation, but store packaging must provide a polished, app-like mobile experience rather than a low-value website wrapper.
 
 ## Current Position
