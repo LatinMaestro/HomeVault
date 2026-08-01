@@ -1,5 +1,7 @@
 # Store Privacy Disclosure Matrix
 
+> Candidate-bound document: update this matrix whenever an approved optional capability or processor is enabled, then derive the final store answers from the exact signed build and executed deletion evidence.
+
 This document is the engineering source for Apple App Privacy and Google Play Data safety answers. Store forms remain client-submitted legal declarations and must be rechecked against the signed build, production vendor contracts and final privacy policy immediately before submission.
 
 ## Product Commitments
@@ -8,9 +10,9 @@ This document is the engineering source for Apple App Privacy and Google Play Da
 - No cross-app or cross-site tracking.
 - No sale of account or household data.
 - No behavioural analytics SDK.
-- No AI or OCR processing.
-- No location, contacts, microphone or camera permission.
-- No payment or budgeting feature.
+- No automatic or unconfirmed AI/OCR writes; any approved processing is user-initiated, minimised, draft-only and disclosed.
+- No location, contacts or microphone permission; camera permission is requested only for explicit user-initiated document capture when that capability passes release gates.
+- No budgeting feature; payment/IAP is implemented only if the explicitly approved commercial model requires digital entitlements.
 - Household data is used to provide HomeVault functionality.
 - Transport to the production service uses HTTPS.
 - Account export and deletion are available to verified users.
