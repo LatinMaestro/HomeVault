@@ -1,5 +1,7 @@
 # Store Reviewer Package
 
+> Candidate-bound document: current feature and exclusion wording reflects the earlier baseline and must be regenerated from the exact signed release candidate. The approved completion programme includes notifications, advanced household/property controls, biometrics, capture, offline access, OCR/AI drafts, email ingestion, controlled sharing and provider handoff; none may be claimed until its implementation and disclosure gates pass.
+
 This is the engineering handoff for Apple App Review and Google Play review. Replace every bracketed client-owned value before submission. Never place real passwords, signing credentials or private household information in this file or a pull request.
 
 ## Submitted Product
