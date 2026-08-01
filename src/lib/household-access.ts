@@ -6,6 +6,17 @@ import { getAuthDb, getDb, isPreviewDatabaseEnabled } from "@/lib/db";
 
 export type HouseholdAccessRole = "OWNER" | "ADULT" | "CHILD" | "GUEST";
 
+const householdAccessRoles: readonly HouseholdAccessRole[] = [
+  "OWNER",
+  "ADULT",
+  "CHILD",
+  "GUEST",
+];
+
+export function isHouseholdAccessRole(value: unknown): value is HouseholdAccessRole {
+  return householdAccessRoles.includes(value as HouseholdAccessRole);
+}
+
 export type HouseholdAccess = {
   mode: "authenticated" | "preview";
   userId: string;
@@ -22,11 +33,62 @@ export class HouseholdAccessError extends Error {
 }
 
 export function canWriteHousehold(role: HouseholdAccessRole) {
-  return role === "OWNER" || role === "ADULT";
+  return isHouseholdAccessRole(role) && (role === "OWNER" || role === "ADULT");
 }
 
 export function canAdministerHousehold(role: HouseholdAccessRole) {
-  return role === "OWNER";
+  return isHouseholdAccessRole(role) && role === "OWNER";
+}
+
+export function canInviteHouseholdMember(
+  actorRole: HouseholdAccessRole,
+  invitedRole: HouseholdAccessRole,
+) {
+  return (
+    isHouseholdAccessRole(actorRole) &&
+    isHouseholdAccessRole(invitedRole) &&
+    canAdministerHousehold(actorRole) &&
+    invitedRole !== "OWNER"
+  );
+}
+
+export function canChangeHouseholdMemberRole(
+  actorRole: HouseholdAccessRole,
+  currentRole: HouseholdAccessRole,
+  nextRole: HouseholdAccessRole,
+) {
+  return (
+    isHouseholdAccessRole(actorRole) &&
+    isHouseholdAccessRole(currentRole) &&
+    isHouseholdAccessRole(nextRole) &&
+    canAdministerHousehold(actorRole) &&
+    currentRole !== "OWNER" &&
+    nextRole !== "OWNER" &&
+    currentRole !== nextRole
+  );
+}
+
+export function canRemoveHouseholdMember(
+  actorRole: HouseholdAccessRole,
+  targetRole: HouseholdAccessRole,
+  actorUserId: string,
+  targetUserId: string,
+) {
+  if (
+    !isHouseholdAccessRole(actorRole) ||
+    !isHouseholdAccessRole(targetRole) ||
+    !actorUserId ||
+    !targetUserId ||
+    targetRole === "OWNER"
+  ) {
+    return false;
+  }
+
+  if (actorUserId === targetUserId) {
+    return actorRole === targetRole;
+  }
+
+  return canAdministerHousehold(actorRole);
 }
 
 export function requireMatchingHome(access: HouseholdAccess, requestedHomeId: string) {
