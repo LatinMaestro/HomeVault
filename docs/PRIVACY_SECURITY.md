@@ -1,12 +1,14 @@
 # Privacy And Security
 
+> This policy applies to the complete approved programme. Optional processors remain disabled until provider, cost, retention, regional, disclosure and exact-head security gates are satisfied.
+
 ## Principles
 
 - Collect the least information needed.
 - Scope every authenticated household read and mutation to verified membership.
 - Do not add analytics or persist search terms.
-- Do not send household data to AI or OCR services.
-- Avoid paid or external integrations without explicit approval.
+- Send the minimum necessary household data to an approved OCR or AI processor only after explicit user action; treat every output as an untrusted draft requiring confirmation and complete processor cleanup.
+- Use paid or external integrations only after explicit provider, cost, least-privilege, retention, regional and disclosure approval.
 - Keep database-free previews useful and non-destructive.
 - Never present the single-user preview as production-secure.
 

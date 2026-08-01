@@ -2,17 +2,17 @@
 
 HomeVault is a privacy-first home maintenance, warranty, receipt, asset and reminder vault for Australian homeowners and families.
 
-Phase 4W is complete. HomeVault provides guarded household record workflows with curated sample fallback, controlled preview database access and automatic recurring maintenance schedule advancement. The app does not yet include production authentication, delete workflows, document uploads/storage, OCR, AI, notification delivery, billing, analytics or external integrations.
+HomeVault is in the dependency-ordered App Store completion programme defined by `docs/APP_STORE_DELIVERY_PLAN_CURRENT_STATUS_2026-08-01.md`. Production authentication, transactional email, the reviewed Neon migration baseline and private Blob storage are connected. The merged household and multi-property slices are policy contracts; remaining schema, server, UI, provider and end-to-end work must be completed before release.
 
 ## Current Status
 
-- Phase: `4W Reviewer And Release Package` complete
+- Phase: App Store completion — Phase 0 repository truth and integration controls
 - App: Next.js App Router, TypeScript, Tailwind CSS, shadcn-compatible components, installable metadata and phone-sized touch controls
-- Auth: verified entry, recovery, onboarding, household authorization, profile/password/session controls, protected exports and password-confirmed account deletion are implemented fail-closed; production service enablement follows
-- Data: authenticated database reads require verified household membership; controlled synthetic preview and curated sample fallback remain isolated; the reviewed PostgreSQL migration baseline is ready for cloud deployment rehearsal
-- Mutations: existing create/edit and additive maintenance completion actions require writable OWNER or ADULT household access; controlled synthetic preview remains isolated while production auth is disabled
-- Storage: guarded private PDF/JPEG/PNG attachment lifecycle is implemented; live use remains disabled until a private Vercel Blob store and production identity are connected
-- Current review posture: fallback-safe and contract-tested online for routes, authenticated navigation, household data boundaries, security headers, health, install metadata, crawler rules and the non-sensitive offline shell
+- Auth: production Better Auth and verified Resend delivery are connected; existing account/session and household boundaries are implemented, while advanced invitation, ownership, multi-property identity and social-linking journeys remain in the completion programme
+- Data: production Neon migrations are connected; authenticated reads and mutations require server-resolved household membership, and newly merged role/property policy contracts remain staged foundations until their persistence and end-to-end journeys are implemented
+- Mutations: current core create/edit and maintenance actions require writable OWNER or ADULT access; optional role, invitation, property lifecycle, notification, native, intelligence and external-surface mutations remain disabled until exact-green implementation
+- Storage: private Vercel Blob and production identity are connected; authorised PDF/JPEG/PNG attachment routes are implemented, while galleries, HEIC/HEIF, capture and scanning remain gated
+- Current review posture: GitHub Actions is authoritative for routine verification; automatic Vercel Git deployments are disabled and hosted deployments are reserved for the four milestones in the current delivery plan
 - Home: fallback-safe household snapshot and attention queue for maintenance, reminders, warranties, inventory, receipts and documents
 - Presentation: household-friendly status, frequency and document labels
 - Findability: server-rendered search across core lists plus household-wide search from the app header
@@ -39,9 +39,9 @@ HomeVault is developed online-first. The client should not need to run the app, 
 4. Open pull requests for review.
 5. Use GitHub PR diffs and checks as code review evidence.
 6. Use GitHub Actions as the primary automated check gate when Vercel usage is constrained.
-7. Use Vercel Preview Deployment URLs as the preferred UI review method when usage allows.
+7. Use hosted Vercel validation only at an authorised delivery milestone.
 8. Merge to `main` only after the PR is in scope and review evidence is acceptable.
-9. Let Vercel deploy production from `main` after merge.
+9. Deploy deliberately only from the exact reviewed milestone or release-candidate commit.
 
 Do not ask the client to run local `npm`, PowerShell, Git, database, package-cache or dev-server commands unless there is genuinely no online alternative. Do not bypass, allowlist or disable antivirus protections casually.
 
