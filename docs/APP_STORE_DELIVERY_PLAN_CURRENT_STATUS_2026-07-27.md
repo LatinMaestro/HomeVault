@@ -1,5 +1,7 @@
 # HomeVault Complete App Store Delivery Plan
 
+> Historical checkpoint retained for audit evidence. Ongoing delivery is governed by `docs/APP_STORE_DELIVERY_PLAN_CURRENT_STATUS_2026-08-01.md`; do not use the baseline, CI state or branch readiness below as current truth.
+
 Status date: 30 July 2026  
 Target: complete HomeVault product, including all optional features, ready for Apple App Review submission  
 Repository baseline: `8ed478b78c24dc37a43320ea272e5db6ccced4fb` (merged PR #158)
