@@ -1,5 +1,11 @@
 # HomeVault Plan
 
+## Current Authority — 1 August 2026
+
+The dependency-ordered completion authority is `docs/APP_STORE_DELIVERY_PLAN_CURRENT_STATUS_2026-08-01.md`. It includes the complete core product, all 17 approved optional capabilities, milestone-only Vercel deployment, client/provider gates, native release evidence and the final explicit submission-approval stop.
+
+The historical phase records below remain valid evidence of what was built at the time. Their earlier exclusions or deferred-feature wording does not remove anything from the approved completion programme. Merged optional-feature policy contracts must not be described as complete product journeys until schema, server, UI, provider and end-to-end evidence exists.
+
 ## Project Workflow
 
 HomeVault now uses an online-first workflow for normal MVP development.
@@ -9,8 +15,8 @@ HomeVault now uses an online-first workflow for normal MVP development.
 - Codex cloud/sandbox environments are preferred for implementation and checks.
 - GitHub PRs are the preferred code review method.
 - GitHub Actions is the primary automated check gate when Vercel usage is constrained.
-- Vercel Preview Deployment URLs are the preferred UI review method when usage allows.
-- Vercel production deployment comes from `main` after merge.
+- Automatic Vercel Git deployments are disabled; use Vercel only at an authorised milestone.
+- Milestone deployments must be deliberate and bound to the exact reviewed commit.
 - The client should not be asked to run local development commands unless there is genuinely no online alternative.
 - Local development instructions are optional developer reference only.
 
