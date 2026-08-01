@@ -1,5 +1,7 @@
 # Backlog And Roadmap
 
+> Current completion order and scope are governed by `docs/APP_STORE_DELIVERY_PLAN_CURRENT_STATUS_2026-08-01.md`. Earlier deferred or excluded wording below is historical and does not remove any of the 17 approved optional capabilities from version 1.0 delivery.
+
 ## Complete
 
 - Phase 1A foundation and visual shell.
