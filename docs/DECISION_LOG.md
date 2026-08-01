@@ -1185,3 +1185,13 @@ Expose existing reminder metadata and relationships now, while keeping record mu
 - Authorised files support private inline viewing and explicit download.
 - Navigation avoids eager authenticated route prefetching, and request-scoped access resolution is deduplicated to reduce latency.
 - OCR, AI, public links and multi-file galleries remain excluded.
+
+
+## 2026-08-01 — App Store completion reset after Actions recovery
+
+- **Decision:** Use `docs/APP_STORE_DELIVERY_PLAN_CURRENT_STATUS_2026-08-01.md` as the authoritative dependency-ordered completion plan through explicit submission approval.
+- **Decision:** Treat the optional-feature branches created during the Actions outage as source material only; lock and extract focused patches onto verified current main rather than bulk-merging divergent stacks.
+- **Decision:** Distinguish merged policy contracts from complete end-user capability and require schema, server, UI, provider and end-to-end evidence before claiming completion.
+- **Decision:** Disable automatic Vercel Git deployments with `git.deploymentEnabled: false`; GitHub Actions is authoritative for routine integration and Vercel is reserved for four recorded milestones.
+- **Decision:** Retain historical plans and exclusions as evidence while making the approved 17-capability programme controlling for version 1.0.
+- **Status:** Accepted.
